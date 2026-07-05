@@ -3303,6 +3303,117 @@
     },
     "url": "https://www.itsworthmore.com/sell/alienware-17/alienware-17-r5"
   },
+  "alienware-area-series-desktop/alienware-area-51-aat2250": {
+    "base_price": 625,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 5,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[area-51-aat2250]",
+          "processor_type": "[intel-core-ultra-7-series-2]"
+        },
+        "label": "Intel Core Ultra 7 Series 2"
+      },
+      {
+        "adj": 200,
+        "attrs": {
+          "model": "[area-51-aat2250]",
+          "processor_type": "[intel-core-ultra-9-series-2]"
+        },
+        "label": "Intel Core Ultra 9 Series 2"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -220,
+      "good": -110,
+      "mint": 0,
+      "sealed": 75,
+      "verygood": -55
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce RTX 5070": 0,
+      "NVIDIA GeForce RTX 5070 Ti": 100,
+      "NVIDIA GeForce RTX 5080": 200,
+      "NVIDIA GeForce RTX 5090": 600
+    },
+    "iwm_name": "Sell Your Alienware Area-51 AAT2250 for the Most Cash",
+    "model": "alienware-area-51-aat2250",
+    "ram_adj": {
+      "32GB RAM": 0,
+      "64GB RAM": 100
+    },
+    "scraped_at": "2026-07-05T09:40:29+00:00",
+    "series": "alienware-area-series-desktop",
+    "storage_adj": {
+      "1TB SSD": 0,
+      "2TB SSD": 100,
+      "4TB SSD": 200
+    },
+    "submodels": {
+      "": {
+        "base_price": 625,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 5,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[area-51-aat2250]",
+              "processor_type": "[intel-core-ultra-7-series-2]"
+            },
+            "label": "Intel Core Ultra 7 Series 2"
+          },
+          {
+            "adj": 200,
+            "attrs": {
+              "model": "[area-51-aat2250]",
+              "processor_type": "[intel-core-ultra-9-series-2]"
+            },
+            "label": "Intel Core Ultra 9 Series 2"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -220,
+          "good": -110,
+          "mint": 0,
+          "sealed": 75,
+          "verygood": -55
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 5070": 0,
+          "NVIDIA GeForce RTX 5070 Ti": 100,
+          "NVIDIA GeForce RTX 5080": 200,
+          "NVIDIA GeForce RTX 5090": 600
+        },
+        "model_label": "",
+        "ram_adj": {
+          "32GB RAM": 0,
+          "64GB RAM": 100
+        },
+        "storage_adj": {
+          "1TB SSD": 0,
+          "2TB SSD": 100,
+          "4TB SSD": 200
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-area-series-desktop/alienware-area-51-aat2250"
+  },
   "alienware-area-series-laptop/alienware-16-area-51": {
     "base_price": 1400,
     "battery_adj": {
@@ -3951,6 +4062,1697 @@
       }
     },
     "url": "https://www.itsworthmore.com/sell/alienware-aurora-laptop/alienware-16x-aurora"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-act1250": {
+    "base_price": 750,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 5,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 10
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-act1250]",
+          "processor_type": "[intel-core-ultra-7-series-2]"
+        },
+        "label": "Intel Core Ultra 7 Series 2"
+      },
+      {
+        "adj": 175,
+        "attrs": {
+          "model": "[aurora-act1250]",
+          "processor_type": "[intel-core-ultra-9-series-2]"
+        },
+        "label": "Intel Core Ultra 9 Series 2"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -325,
+      "good": -140,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -55
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce RTX 5060 Ti": 0,
+      "NVIDIA GeForce RTX 5070": 150,
+      "NVIDIA GeForce RTX 5070 Ti": 250,
+      "NVIDIA GeForce RTX 5080": 450
+    },
+    "iwm_name": "Sell Your Alienware Aurora ACT1250 for the Most Cash",
+    "model": "alienware-aurora-act1250",
+    "ram_adj": {
+      "32GB RAM": 0,
+      "64GB RAM": 100
+    },
+    "scraped_at": "2026-07-05T09:40:29+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB SSD": 0,
+      "2TB SSD": 100,
+      "4TB SSD": 200
+    },
+    "submodels": {
+      "": {
+        "base_price": 750,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 5,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 10
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-act1250]",
+              "processor_type": "[intel-core-ultra-7-series-2]"
+            },
+            "label": "Intel Core Ultra 7 Series 2"
+          },
+          {
+            "adj": 175,
+            "attrs": {
+              "model": "[aurora-act1250]",
+              "processor_type": "[intel-core-ultra-9-series-2]"
+            },
+            "label": "Intel Core Ultra 9 Series 2"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -325,
+          "good": -140,
+          "mint": 0,
+          "sealed": 50,
+          "verygood": -55
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 5060 Ti": 0,
+          "NVIDIA GeForce RTX 5070": 150,
+          "NVIDIA GeForce RTX 5070 Ti": 250,
+          "NVIDIA GeForce RTX 5080": 450
+        },
+        "model_label": "",
+        "ram_adj": {
+          "32GB RAM": 0,
+          "64GB RAM": 100
+        },
+        "storage_adj": {
+          "1TB SSD": 0,
+          "2TB SSD": 100,
+          "4TB SSD": 200
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-act1250"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r10": {
+    "base_price": 125,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r10]",
+          "processor_type": "[amd-ryzen-5-5600x]"
+        },
+        "label": "AMD Ryzen 5 5600X"
+      },
+      {
+        "adj": -25,
+        "attrs": {
+          "model": "[aurora-r10]",
+          "processor_type": "[amd-ryzen-7-3700x]"
+        },
+        "label": "AMD Ryzen 7 3700X"
+      },
+      {
+        "adj": 25,
+        "attrs": {
+          "model": "[aurora-r10]",
+          "processor_type": "[amd-ryzen-7-5800x]"
+        },
+        "label": "AMD Ryzen 7 5800X"
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "model": "[aurora-r10]",
+          "processor_type": "[amd-ryzen-9-5900x]"
+        },
+        "label": "AMD Ryzen 9 5900X"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -40,
+      "mint": 0,
+      "sealed": 30
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6700 XT": 20,
+      "NVIDIA GeForce GTX 1660": 0,
+      "NVIDIA GeForce RTX 2060": 15,
+      "NVIDIA GeForce RTX 2080": 40,
+      "NVIDIA GeForce RTX 3060 Ti": 30,
+      "NVIDIA GeForce RTX 3070": 40,
+      "NVIDIA GeForce RTX 3080": 70,
+      "NVIDIA GeForce RTX 3080 Ti": 85,
+      "NVIDIA GeForce RTX 3090": 100
+    },
+    "iwm_name": "Sell Your Alienware Aurora R10 for the Most Cash",
+    "model": "alienware-aurora-r10",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:20+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 50,
+      "256GB SSD": 20,
+      "2TB HDD": 20,
+      "2TB SSD": 70,
+      "512GB SSD": 35
+    },
+    "submodels": {
+      "": {
+        "base_price": 125,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r10]",
+              "processor_type": "[amd-ryzen-5-5600x]"
+            },
+            "label": "AMD Ryzen 5 5600X"
+          },
+          {
+            "adj": -25,
+            "attrs": {
+              "model": "[aurora-r10]",
+              "processor_type": "[amd-ryzen-7-3700x]"
+            },
+            "label": "AMD Ryzen 7 3700X"
+          },
+          {
+            "adj": 25,
+            "attrs": {
+              "model": "[aurora-r10]",
+              "processor_type": "[amd-ryzen-7-5800x]"
+            },
+            "label": "AMD Ryzen 7 5800X"
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "model": "[aurora-r10]",
+              "processor_type": "[amd-ryzen-9-5900x]"
+            },
+            "label": "AMD Ryzen 9 5900X"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -100,
+          "good": -40,
+          "mint": 0,
+          "sealed": 30
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6700 XT": 20,
+          "NVIDIA GeForce GTX 1660": 0,
+          "NVIDIA GeForce RTX 2060": 15,
+          "NVIDIA GeForce RTX 2080": 40,
+          "NVIDIA GeForce RTX 3060 Ti": 30,
+          "NVIDIA GeForce RTX 3070": 40,
+          "NVIDIA GeForce RTX 3080": 70,
+          "NVIDIA GeForce RTX 3080 Ti": 85,
+          "NVIDIA GeForce RTX 3090": 100
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 50,
+          "256GB SSD": 20,
+          "2TB HDD": 20,
+          "2TB SSD": 70,
+          "512GB SSD": 35
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r10"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r11": {
+    "base_price": 35,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r11]",
+          "processor_type": "[intel-core-i5-10th-gen]"
+        },
+        "label": "Intel Core i5 10th Gen."
+      },
+      {
+        "adj": 55,
+        "attrs": {
+          "model": "[aurora-r11]",
+          "processor_type": "[intel-core-i7-10th-gen]"
+        },
+        "label": "Intel Core i7 10th Gen."
+      },
+      {
+        "adj": 125,
+        "attrs": {
+          "model": "[aurora-r11]",
+          "processor_type": "[intel-core-i9-10th-gen]"
+        },
+        "label": "Intel Core i9 10th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -15
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 5700 XT": 0,
+      "NVIDIA GeForce RTX 1650": 50,
+      "NVIDIA GeForce RTX 2060": 75,
+      "NVIDIA GeForce RTX 2070": 100,
+      "NVIDIA GeForce RTX 2080": 120,
+      "NVIDIA GeForce RTX 3060 Ti": 100,
+      "NVIDIA GeForce RTX 3070": 135,
+      "NVIDIA GeForce RTX 3080": 175,
+      "NVIDIA GeForce RTX 3090": 200
+    },
+    "iwm_name": "Sell Your Alienware Aurora R11 for the Most Cash",
+    "model": "alienware-aurora-r11",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:20+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 30,
+      "256GB SSD": 0,
+      "2TB HDD": 15,
+      "2TB SSD": 50,
+      "512GB SSD": 15
+    },
+    "submodels": {
+      "": {
+        "base_price": 35,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r11]",
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 55,
+            "attrs": {
+              "model": "[aurora-r11]",
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 125,
+            "attrs": {
+              "model": "[aurora-r11]",
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -80,
+          "good": -30,
+          "mint": 0,
+          "sealed": 20,
+          "verygood": -15
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 5700 XT": 0,
+          "NVIDIA GeForce RTX 1650": 50,
+          "NVIDIA GeForce RTX 2060": 75,
+          "NVIDIA GeForce RTX 2070": 100,
+          "NVIDIA GeForce RTX 2080": 120,
+          "NVIDIA GeForce RTX 3060 Ti": 100,
+          "NVIDIA GeForce RTX 3070": 135,
+          "NVIDIA GeForce RTX 3080": 175,
+          "NVIDIA GeForce RTX 3090": 200
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "2TB HDD": 15,
+          "2TB SSD": 50,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r11"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r12": {
+    "base_price": 125,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r12]",
+          "processor_type": "[intel-core-i5-11th-gen]"
+        },
+        "label": "Intel Core i5 11th Gen."
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "model": "[aurora-r12]",
+          "processor_type": "[intel-core-i7-11th-gen]"
+        },
+        "label": "Intel Core i7 11th Gen."
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "model": "[aurora-r12]",
+          "processor_type": "[intel-core-i9-11th-gen]"
+        },
+        "label": "Intel Core i9 11th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -60,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -30
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6800 XT": 0,
+      "NVIDIA GeForce RTX 2060": -20,
+      "NVIDIA GeForce RTX 3050": -5,
+      "NVIDIA GeForce RTX 3060": 0,
+      "NVIDIA GeForce RTX 3060 Ti": 10,
+      "NVIDIA GeForce RTX 3070": 40,
+      "NVIDIA GeForce RTX 3080": 85,
+      "NVIDIA GeForce RTX 3080 Ti": 100,
+      "NVIDIA GeForce RTX 3090": 160
+    },
+    "iwm_name": "Sell Your Alienware Aurora R12 for the Most Cash",
+    "model": "alienware-aurora-r12",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:21+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 40,
+      "256GB SSD": 10,
+      "2TB SSD": 60,
+      "512GB SSD": 25
+    },
+    "submodels": {
+      "": {
+        "base_price": 125,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r12]",
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "model": "[aurora-r12]",
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "model": "[aurora-r12]",
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -120,
+          "good": -60,
+          "mint": 0,
+          "sealed": 20,
+          "verygood": -30
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6800 XT": 0,
+          "NVIDIA GeForce RTX 2060": -20,
+          "NVIDIA GeForce RTX 3050": -5,
+          "NVIDIA GeForce RTX 3060": 0,
+          "NVIDIA GeForce RTX 3060 Ti": 10,
+          "NVIDIA GeForce RTX 3070": 40,
+          "NVIDIA GeForce RTX 3080": 85,
+          "NVIDIA GeForce RTX 3080 Ti": 100,
+          "NVIDIA GeForce RTX 3090": 160
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 40,
+          "256GB SSD": 10,
+          "2TB SSD": 60,
+          "512GB SSD": 25
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r12"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r13": {
+    "base_price": 220,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r13]",
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 60,
+        "attrs": {
+          "model": "[aurora-r13]",
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 130,
+        "attrs": {
+          "model": "[aurora-r13]",
+          "processor_type": "[intel-core-i9-12th-gen]"
+        },
+        "label": "Intel Core i9 12th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -125,
+      "good": -50,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -30
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6600 XT": 0,
+      "AMD Radeon RX 6700 XT": 15,
+      "AMD Radeon RX 6800 XT": 30,
+      "AMD Radeon RX 6900 XT": 70,
+      "NVIDIA GeForce GTX 1650": -45,
+      "NVIDIA GeForce GTX 1660": -20,
+      "NVIDIA GeForce GTX 1660 Ti": -10,
+      "NVIDIA GeForce RTX 3060": 15,
+      "NVIDIA GeForce RTX 3060 Ti": 30,
+      "NVIDIA GeForce RTX 3070": 55,
+      "NVIDIA GeForce RTX 3070 Ti": 80,
+      "NVIDIA GeForce RTX 3080": 130,
+      "NVIDIA GeForce RTX 3080 Ti": 155,
+      "NVIDIA GeForce RTX 3090": 205
+    },
+    "iwm_name": "Sell Your Alienware Aurora R13 for the Most Cash",
+    "model": "alienware-aurora-r13",
+    "ram_adj": {
+      "128GB RAM": 100,
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:22+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 45,
+      "256GB SSD": 15,
+      "2TB SSD": 65,
+      "512GB SSD": 30
+    },
+    "submodels": {
+      "": {
+        "base_price": 220,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r13]",
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "model": "[aurora-r13]",
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 130,
+            "attrs": {
+              "model": "[aurora-r13]",
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -125,
+          "good": -50,
+          "mint": 0,
+          "sealed": 25,
+          "verygood": -30
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6600 XT": 0,
+          "AMD Radeon RX 6700 XT": 15,
+          "AMD Radeon RX 6800 XT": 30,
+          "AMD Radeon RX 6900 XT": 70,
+          "NVIDIA GeForce GTX 1650": -45,
+          "NVIDIA GeForce GTX 1660": -20,
+          "NVIDIA GeForce GTX 1660 Ti": -10,
+          "NVIDIA GeForce RTX 3060": 15,
+          "NVIDIA GeForce RTX 3060 Ti": 30,
+          "NVIDIA GeForce RTX 3070": 55,
+          "NVIDIA GeForce RTX 3070 Ti": 80,
+          "NVIDIA GeForce RTX 3080": 130,
+          "NVIDIA GeForce RTX 3080 Ti": 155,
+          "NVIDIA GeForce RTX 3090": 205
+        },
+        "model_label": "",
+        "ram_adj": {
+          "128GB RAM": 100,
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 45,
+          "256GB SSD": 15,
+          "2TB SSD": 65,
+          "512GB SSD": 30
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r13"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r14": {
+    "base_price": 200,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r14]",
+          "processor_type": "[amd-ryzen-5-5600x]"
+        },
+        "label": "AMD Ryzen 5 5600X"
+      },
+      {
+        "adj": 75,
+        "attrs": {
+          "model": "[aurora-r14]",
+          "processor_type": "[amd-ryzen-7-5800x]"
+        },
+        "label": "AMD Ryzen 7 5800X"
+      },
+      {
+        "adj": 145,
+        "attrs": {
+          "model": "[aurora-r14]",
+          "processor_type": "[amd-ryzen-9-5900x]"
+        },
+        "label": "AMD Ryzen 9 5900X"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -145,
+      "good": -55,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6600 XT": 0,
+      "AMD Radeon RX 6700 XT": 15,
+      "AMD Radeon RX 6800 XT": 30,
+      "AMD Radeon RX 6900 XT": 60,
+      "NVIDIA GeForce GTX 1650 SUPER": -45,
+      "NVIDIA GeForce GTX 1660 SUPER": -20,
+      "NVIDIA GeForce GTX 1660 Ti": -20,
+      "NVIDIA GeForce RTX 3050": 5,
+      "NVIDIA GeForce RTX 3060": 20,
+      "NVIDIA GeForce RTX 3060 Ti": 30,
+      "NVIDIA GeForce RTX 3070": 60,
+      "NVIDIA GeForce RTX 3070 Ti": 80,
+      "NVIDIA GeForce RTX 3080": 130,
+      "NVIDIA GeForce RTX 3080 Ti": 155,
+      "NVIDIA GeForce RTX 3090": 205,
+      "NVIDIA GeForce RTX 3090 Ti": 230
+    },
+    "iwm_name": "Sell Your Alienware Aurora R14 for the Most Cash",
+    "model": "alienware-aurora-r14",
+    "ram_adj": {
+      "128GB RAM": 125,
+      "16GB RAM": 20,
+      "32GB RAM": 40,
+      "64GB RAM": 75,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:22+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB SSD": 40,
+      "256GB SSD": 0,
+      "2TB SSD": 75,
+      "512GB SSD": 20
+    },
+    "submodels": {
+      "": {
+        "base_price": 200,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r14]",
+              "processor_type": "[amd-ryzen-5-5600x]"
+            },
+            "label": "AMD Ryzen 5 5600X"
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "model": "[aurora-r14]",
+              "processor_type": "[amd-ryzen-7-5800x]"
+            },
+            "label": "AMD Ryzen 7 5800X"
+          },
+          {
+            "adj": 145,
+            "attrs": {
+              "model": "[aurora-r14]",
+              "processor_type": "[amd-ryzen-9-5900x]"
+            },
+            "label": "AMD Ryzen 9 5900X"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -145,
+          "good": -55,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6600 XT": 0,
+          "AMD Radeon RX 6700 XT": 15,
+          "AMD Radeon RX 6800 XT": 30,
+          "AMD Radeon RX 6900 XT": 60,
+          "NVIDIA GeForce GTX 1650 SUPER": -45,
+          "NVIDIA GeForce GTX 1660 SUPER": -20,
+          "NVIDIA GeForce GTX 1660 Ti": -20,
+          "NVIDIA GeForce RTX 3050": 5,
+          "NVIDIA GeForce RTX 3060": 20,
+          "NVIDIA GeForce RTX 3060 Ti": 30,
+          "NVIDIA GeForce RTX 3070": 60,
+          "NVIDIA GeForce RTX 3070 Ti": 80,
+          "NVIDIA GeForce RTX 3080": 130,
+          "NVIDIA GeForce RTX 3080 Ti": 155,
+          "NVIDIA GeForce RTX 3090": 205,
+          "NVIDIA GeForce RTX 3090 Ti": 230
+        },
+        "model_label": "",
+        "ram_adj": {
+          "128GB RAM": 125,
+          "16GB RAM": 20,
+          "32GB RAM": 40,
+          "64GB RAM": 75,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 40,
+          "256GB SSD": 0,
+          "2TB SSD": 75,
+          "512GB SSD": 20
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r14"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r15": {
+    "base_price": 450,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r15]",
+          "processor_type": "[amd-ryzen-5-7600x]"
+        },
+        "label": "AMD Ryzen 5 7600X"
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "model": "[aurora-r15]",
+          "processor_type": "[amd-ryzen-7-7700x]"
+        },
+        "label": "AMD Ryzen 7 7700X"
+      },
+      {
+        "adj": 140,
+        "attrs": {
+          "model": "[aurora-r15]",
+          "processor_type": "[amd-ryzen-9-7900x]"
+        },
+        "label": "AMD Ryzen 9 7900X"
+      },
+      {
+        "adj": 175,
+        "attrs": {
+          "model": "[aurora-r15]",
+          "processor_type": "[amd-ryzen-9-7950x]"
+        },
+        "label": "AMD Ryzen 9 7950X"
+      },
+      {
+        "adj": -50,
+        "attrs": {
+          "model": "[aurora-r15]",
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 10,
+        "attrs": {
+          "model": "[aurora-r15]",
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "model": "[aurora-r15]",
+          "processor_type": "[intel-core-i9-13th-gen.]"
+        },
+        "label": "Intel Core i9 13th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -165,
+      "good": -55,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -30
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6500 XT": 0,
+      "AMD Radeon RX 6600 XT": 25,
+      "AMD Radeon RX 6700 XT": 50,
+      "AMD Radeon RX 6800 XT": 75,
+      "AMD Radeon RX 6900 XT": 100,
+      "NVIDIA GeForce RTX 3050": 75,
+      "NVIDIA GeForce RTX 3060": 100,
+      "NVIDIA GeForce RTX 3060 Ti": 125,
+      "NVIDIA GeForce RTX 3070": 150,
+      "NVIDIA GeForce RTX 3070 Ti": 175,
+      "NVIDIA GeForce RTX 3080": 200,
+      "NVIDIA GeForce RTX 3080 Ti": 225,
+      "NVIDIA GeForce RTX 3090": 300,
+      "NVIDIA GeForce RTX 3090 Ti": 325,
+      "NVIDIA GeForce RTX 4060": 125,
+      "NVIDIA GeForce RTX 4060 Ti": 150,
+      "NVIDIA GeForce RTX 4070": 200,
+      "NVIDIA GeForce RTX 4070 Ti": 225,
+      "NVIDIA GeForce RTX 4080": 300,
+      "NVIDIA GeForce RTX 4090": 500
+    },
+    "iwm_name": "Sell Your Alienware Aurora R15 for the Most Cash",
+    "model": "alienware-aurora-r15",
+    "ram_adj": {
+      "16GB RAM": 20,
+      "32GB RAM": 40,
+      "64GB RAM": 75,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:22+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB SSD": 40,
+      "256GB SSD": 0,
+      "2TB SSD": 60,
+      "4TB SSD": 100,
+      "512GB SSD": 20
+    },
+    "submodels": {
+      "": {
+        "base_price": 450,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r15]",
+              "processor_type": "[amd-ryzen-5-7600x]"
+            },
+            "label": "AMD Ryzen 5 7600X"
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "model": "[aurora-r15]",
+              "processor_type": "[amd-ryzen-7-7700x]"
+            },
+            "label": "AMD Ryzen 7 7700X"
+          },
+          {
+            "adj": 140,
+            "attrs": {
+              "model": "[aurora-r15]",
+              "processor_type": "[amd-ryzen-9-7900x]"
+            },
+            "label": "AMD Ryzen 9 7900X"
+          },
+          {
+            "adj": 175,
+            "attrs": {
+              "model": "[aurora-r15]",
+              "processor_type": "[amd-ryzen-9-7950x]"
+            },
+            "label": "AMD Ryzen 9 7950X"
+          },
+          {
+            "adj": -50,
+            "attrs": {
+              "model": "[aurora-r15]",
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 10,
+            "attrs": {
+              "model": "[aurora-r15]",
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "model": "[aurora-r15]",
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -165,
+          "good": -55,
+          "mint": 0,
+          "sealed": 50,
+          "verygood": -30
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6500 XT": 0,
+          "AMD Radeon RX 6600 XT": 25,
+          "AMD Radeon RX 6700 XT": 50,
+          "AMD Radeon RX 6800 XT": 75,
+          "AMD Radeon RX 6900 XT": 100,
+          "NVIDIA GeForce RTX 3050": 75,
+          "NVIDIA GeForce RTX 3060": 100,
+          "NVIDIA GeForce RTX 3060 Ti": 125,
+          "NVIDIA GeForce RTX 3070": 150,
+          "NVIDIA GeForce RTX 3070 Ti": 175,
+          "NVIDIA GeForce RTX 3080": 200,
+          "NVIDIA GeForce RTX 3080 Ti": 225,
+          "NVIDIA GeForce RTX 3090": 300,
+          "NVIDIA GeForce RTX 3090 Ti": 325,
+          "NVIDIA GeForce RTX 4060": 125,
+          "NVIDIA GeForce RTX 4060 Ti": 150,
+          "NVIDIA GeForce RTX 4070": 200,
+          "NVIDIA GeForce RTX 4070 Ti": 225,
+          "NVIDIA GeForce RTX 4080": 300,
+          "NVIDIA GeForce RTX 4090": 500
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 20,
+          "32GB RAM": 40,
+          "64GB RAM": 75,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 40,
+          "256GB SSD": 0,
+          "2TB SSD": 60,
+          "4TB SSD": 100,
+          "512GB SSD": 20
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r15"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r16": {
+    "base_price": 375,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 5,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r16]",
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "model": "[aurora-r16]",
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r16]",
+          "processor_type": "[intel-core-i9-12th-gen]"
+        },
+        "label": "Intel Core i9 12th Gen."
+      },
+      {
+        "adj": 45,
+        "attrs": {
+          "model": "[aurora-r16]",
+          "processor_type": "[intel-core-i9-13th-gen.]"
+        },
+        "label": "Intel Core i9 13th Gen."
+      },
+      {
+        "adj": 165,
+        "attrs": {
+          "model": "[aurora-r16]",
+          "processor_type": "[intel-core-i9-14th-gen.]"
+        },
+        "label": "Intel Core i9 14th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -220,
+      "good": -110,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -55
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce RTX 3050": 0,
+      "NVIDIA GeForce RTX 4060": 100,
+      "NVIDIA GeForce RTX 4060 Ti": 125,
+      "NVIDIA GeForce RTX 4070": 175,
+      "NVIDIA GeForce RTX 4070 Super": 200,
+      "NVIDIA GeForce RTX 4070 Ti": 225,
+      "NVIDIA GeForce RTX 4070 Ti Super": 275,
+      "NVIDIA GeForce RTX 4080": 450,
+      "NVIDIA GeForce RTX 4080 Super": 500,
+      "NVIDIA GeForce RTX 4090": 900
+    },
+    "iwm_name": "Sell Your Alienware Aurora R16 for the Most Cash",
+    "model": "alienware-aurora-r16",
+    "ram_adj": {
+      "16GB RAM": 25,
+      "32GB RAM": 50,
+      "64GB RAM": 100,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:23+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB SSD": 50,
+      "256GB SSD": 0,
+      "2TB SSD": 100,
+      "4TB SSD": 175,
+      "512GB SSD": 25
+    },
+    "submodels": {
+      "": {
+        "base_price": 375,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 5,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r16]",
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "model": "[aurora-r16]",
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r16]",
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          },
+          {
+            "adj": 45,
+            "attrs": {
+              "model": "[aurora-r16]",
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          },
+          {
+            "adj": 165,
+            "attrs": {
+              "model": "[aurora-r16]",
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -220,
+          "good": -110,
+          "mint": 0,
+          "sealed": 50,
+          "verygood": -55
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 3050": 0,
+          "NVIDIA GeForce RTX 4060": 100,
+          "NVIDIA GeForce RTX 4060 Ti": 125,
+          "NVIDIA GeForce RTX 4070": 175,
+          "NVIDIA GeForce RTX 4070 Super": 200,
+          "NVIDIA GeForce RTX 4070 Ti": 225,
+          "NVIDIA GeForce RTX 4070 Ti Super": 275,
+          "NVIDIA GeForce RTX 4080": 450,
+          "NVIDIA GeForce RTX 4080 Super": 500,
+          "NVIDIA GeForce RTX 4090": 900
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 25,
+          "32GB RAM": 50,
+          "64GB RAM": 100,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 50,
+          "256GB SSD": 0,
+          "2TB SSD": 100,
+          "4TB SSD": 175,
+          "512GB SSD": 25
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r16"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r7": {
+    "base_price": 10,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r7]",
+          "processor_type": "[intel-core-i5-8th-gen]"
+        },
+        "label": "Intel Core i5 8th Gen."
+      },
+      {
+        "adj": 20,
+        "attrs": {
+          "model": "[aurora-r7]",
+          "processor_type": "[intel-core-i7-8th-gen]"
+        },
+        "label": "Intel Core i7 8th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -45,
+      "good": -20,
+      "mint": 0,
+      "sealed": 15
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce GTX 1050": 0,
+      "NVIDIA GeForce GTX 1060": 15,
+      "NVIDIA GeForce GTX 1070": 25,
+      "NVIDIA GeForce GTX 1080": 35,
+      "NVIDIA GeForce RTX  1080 Ti": 40
+    },
+    "iwm_name": "Sell Your Alienware Aurora R7 for the Most Cash",
+    "model": "alienware-aurora-r7",
+    "ram_adj": {
+      "16GB RAM": 10,
+      "32GB RAM": 20,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 30,
+      "256GB SSD": 10,
+      "512GB SSD": 20
+    },
+    "submodels": {
+      "": {
+        "base_price": 10,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r7]",
+              "processor_type": "[intel-core-i5-8th-gen]"
+            },
+            "label": "Intel Core i5 8th Gen."
+          },
+          {
+            "adj": 20,
+            "attrs": {
+              "model": "[aurora-r7]",
+              "processor_type": "[intel-core-i7-8th-gen]"
+            },
+            "label": "Intel Core i7 8th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -45,
+          "good": -20,
+          "mint": 0,
+          "sealed": 15
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce GTX 1050": 0,
+          "NVIDIA GeForce GTX 1060": 15,
+          "NVIDIA GeForce GTX 1070": 25,
+          "NVIDIA GeForce GTX 1080": 35,
+          "NVIDIA GeForce RTX  1080 Ti": 40
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 10,
+          "32GB RAM": 20,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 30,
+          "256GB SSD": 10,
+          "512GB SSD": 20
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r7"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r8": {
+    "base_price": 10,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 1
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r8]",
+          "processor_type": "[intel-core-i5-8th-gen]"
+        },
+        "label": "Intel Core i5 8th Gen."
+      },
+      {
+        "adj": 30,
+        "attrs": {
+          "model": "[aurora-r8]",
+          "processor_type": "[intel-core-i5-9th-gen]"
+        },
+        "label": "Intel Core i5 9th Gen."
+      },
+      {
+        "adj": 40,
+        "attrs": {
+          "model": "[aurora-r8]",
+          "processor_type": "[intel-core-i7-8th-gen]"
+        },
+        "label": "Intel Core i7 8th Gen."
+      },
+      {
+        "adj": 75,
+        "attrs": {
+          "model": "[aurora-r8]",
+          "processor_type": "[intel-core-i7-9th-gen]"
+        },
+        "label": "Intel Core i7 9th Gen."
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "model": "[aurora-r8]",
+          "processor_type": "[intel-core-i9-9th-gen]"
+        },
+        "label": "Intel Core i9 9th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -75,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 5700 XT": 0,
+      "NVIDIA GeForce GTX 1080 Ti": 10,
+      "NVIDIA GeForce GTX 1650": -30,
+      "NVIDIA GeForce GTX 1660": -15,
+      "NVIDIA GeForce RTX 2060": 10,
+      "NVIDIA GeForce RTX 2070": 35,
+      "NVIDIA GeForce RTX 2070 Super": 50,
+      "NVIDIA GeForce RTX 2080": 70
+    },
+    "iwm_name": "Sell Your Alienware Aurora R8 for the Most Cash",
+    "model": "alienware-aurora-r8",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:20+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 40,
+      "256GB SSD": 10,
+      "512GB SSD": 25
+    },
+    "submodels": {
+      "": {
+        "base_price": 10,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 1
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r8]",
+              "processor_type": "[intel-core-i5-8th-gen]"
+            },
+            "label": "Intel Core i5 8th Gen."
+          },
+          {
+            "adj": 30,
+            "attrs": {
+              "model": "[aurora-r8]",
+              "processor_type": "[intel-core-i5-9th-gen]"
+            },
+            "label": "Intel Core i5 9th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "model": "[aurora-r8]",
+              "processor_type": "[intel-core-i7-8th-gen]"
+            },
+            "label": "Intel Core i7 8th Gen."
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "model": "[aurora-r8]",
+              "processor_type": "[intel-core-i7-9th-gen]"
+            },
+            "label": "Intel Core i7 9th Gen."
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "model": "[aurora-r8]",
+              "processor_type": "[intel-core-i9-9th-gen]"
+            },
+            "label": "Intel Core i9 9th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -75,
+          "good": -30,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 5700 XT": 0,
+          "NVIDIA GeForce GTX 1080 Ti": 10,
+          "NVIDIA GeForce GTX 1650": -30,
+          "NVIDIA GeForce GTX 1660": -15,
+          "NVIDIA GeForce RTX 2060": 10,
+          "NVIDIA GeForce RTX 2070": 35,
+          "NVIDIA GeForce RTX 2070 Super": 50,
+          "NVIDIA GeForce RTX 2080": 70
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 40,
+          "256GB SSD": 10,
+          "512GB SSD": 25
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r8"
+  },
+  "alienware-aurora-series-desktop/alienware-aurora-r9": {
+    "base_price": 85,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[aurora-r9]",
+          "processor_type": "[intel-core-i7-9th-gen]"
+        },
+        "label": "Intel Core i7 9th Gen."
+      },
+      {
+        "adj": 25,
+        "attrs": {
+          "model": "[aurora-r9]",
+          "processor_type": "[intel-core-i9-9th-gen]"
+        },
+        "label": "Intel Core i9 9th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -85,
+      "good": -30,
+      "mint": 0,
+      "sealed": 30
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce GTX 1650": 0,
+      "NVIDIA GeForce GTX 1660": 20,
+      "NVIDIA GeForce RTX 2060": 35,
+      "NVIDIA GeForce RTX 2070": 50,
+      "NVIDIA GeForce RTX 2080": 70
+    },
+    "iwm_name": "Sell Your Alienware Aurora R9 for the Most Cash",
+    "model": "alienware-aurora-r9",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:20+00:00",
+    "series": "alienware-aurora-series-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 40,
+      "256GB SSD": 10,
+      "2TB HDD": 10,
+      "2TB SSD": 60,
+      "512GB SSD": 25
+    },
+    "submodels": {
+      "": {
+        "base_price": 85,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[aurora-r9]",
+              "processor_type": "[intel-core-i7-9th-gen]"
+            },
+            "label": "Intel Core i7 9th Gen."
+          },
+          {
+            "adj": 25,
+            "attrs": {
+              "model": "[aurora-r9]",
+              "processor_type": "[intel-core-i9-9th-gen]"
+            },
+            "label": "Intel Core i9 9th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -85,
+          "good": -30,
+          "mint": 0,
+          "sealed": 30
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce GTX 1650": 0,
+          "NVIDIA GeForce GTX 1660": 20,
+          "NVIDIA GeForce RTX 2060": 35,
+          "NVIDIA GeForce RTX 2070": 50,
+          "NVIDIA GeForce RTX 2080": 70
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 40,
+          "256GB SSD": 10,
+          "2TB HDD": 10,
+          "2TB SSD": 60,
+          "512GB SSD": 25
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/alienware-aurora-series-desktop/alienware-aurora-r9"
   },
   "alienware-desktop/alienware-aurora-r5": {
     "done": true,
@@ -9516,6 +11318,496 @@
     "scraped_at": "2026-07-05T08:29:18+00:00",
     "series": "dell-laptop",
     "url": "https://www.itsworthmore.com/sell/dell-laptop/dell-chromebook"
+  },
+  "dell-optiplex-desktop/optiplex-small-form-factor": {
+    "base_price": 110,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-i3-13th-gen.]"
+        },
+        "label": "Intel Core i3 13th Gen."
+      },
+      {
+        "adj": -110,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": -110,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 65,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -90,
+      "good": -35,
+      "mint": 0,
+      "sealed": 35
+    },
+    "done": true,
+    "iwm_name": "Sell Your Dell Optiplex Small Form Factor Desktop for the Most Cash",
+    "model": "optiplex-small-form-factor",
+    "ram_adj": {
+      "16GB RAM": 55,
+      "32GB RAM": 75,
+      "8GB RAM": 35
+    },
+    "scraped_at": "2026-07-05T09:40:24+00:00",
+    "series": "dell-optiplex-desktop",
+    "storage_adj": {
+      "1TB SSD": 75,
+      "256GB SSD": 35,
+      "512GB SSD": 55
+    },
+    "submodels": {
+      "7010-small-form-factor": {
+        "base_price": 110,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i3-13th-gen.]"
+            },
+            "label": "Intel Core i3 13th Gen."
+          },
+          {
+            "adj": -110,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": -110,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 65,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -90,
+          "good": -35,
+          "mint": 0,
+          "sealed": 35
+        },
+        "model_label": "7010 Small Form Factor",
+        "ram_adj": {
+          "16GB RAM": 55,
+          "32GB RAM": 75,
+          "8GB RAM": 35
+        },
+        "storage_adj": {
+          "1TB SSD": 75,
+          "256GB SSD": 35,
+          "512GB SSD": 55
+        }
+      },
+      "7080-small-form-factor": {
+        "base_price": 90,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": -90,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": -90,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 30,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -65,
+          "good": -25,
+          "mint": 0,
+          "sealed": 20
+        },
+        "model_label": "7080 Small Form Factor",
+        "ram_adj": {
+          "16GB RAM": 55,
+          "32GB RAM": 75,
+          "8GB RAM": 35
+        },
+        "storage_adj": {
+          "1TB SSD": 75,
+          "256GB SSD": 35,
+          "512GB SSD": 55
+        }
+      },
+      "7090-small-form-factor": {
+        "base_price": 100,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": -100,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": -100,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 35,
+            "attrs": {
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 85,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 110,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          },
+          {
+            "adj": 140,
+            "attrs": {
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -75,
+          "good": -25,
+          "mint": 0,
+          "sealed": 25
+        },
+        "model_label": "7090 Small Form Factor",
+        "ram_adj": {
+          "16GB RAM": 55,
+          "32GB RAM": 75,
+          "8GB RAM": 35
+        },
+        "storage_adj": {
+          "1TB SSD": 75,
+          "256GB SSD": 35,
+          "512GB SSD": 55
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/dell-optiplex-desktop/optiplex-small-form-factor"
+  },
+  "dell-optiplex-desktop/optiplex-tower": {
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -105,
+      "good": -40,
+      "mint": 0,
+      "sealed": 30
+    },
+    "done": true,
+    "iwm_name": "Sell Your Dell Optiplex Tower Desktop for the Most Cash",
+    "model": "optiplex-tower",
+    "ram_adj": {
+      "16GB RAM": 25,
+      "32GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:23+00:00",
+    "series": "dell-optiplex-desktop",
+    "storage_adj": {
+      "1TB SSD": 30,
+      "256GB SSD": 0,
+      "512GB SSD": 15
+    },
+    "submodels": {
+      "7010-tower": {
+        "base_price": 0,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -105,
+          "good": -40,
+          "mint": 0,
+          "sealed": 30
+        },
+        "model_label": "7010 Tower",
+        "ram_adj": {
+          "16GB RAM": 25,
+          "32GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "512GB SSD": 15
+        }
+      },
+      "7010-tower-plus": {
+        "base_price": 210,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -120,
+          "good": -45,
+          "mint": 0,
+          "sealed": 30
+        },
+        "model_label": "7010 Tower Plus",
+        "ram_adj": {
+          "16GB RAM": 10,
+          "32GB RAM": 25,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "512GB SSD": 15
+        }
+      },
+      "7080-tower": {
+        "base_price": 20,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 250,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 20,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -65,
+          "good": -25,
+          "mint": 0,
+          "sealed": 20
+        },
+        "model_label": "7080 Tower",
+        "ram_adj": {
+          "16GB RAM": 10,
+          "32GB RAM": 20,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "512GB SSD": 15
+        }
+      },
+      "7090-tower": {
+        "base_price": 30,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 180,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 240,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 70,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 95,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 130,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          },
+          {
+            "adj": 160,
+            "attrs": {
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -120,
+          "good": -45,
+          "mint": 0,
+          "sealed": 20
+        },
+        "model_label": "7090 Tower",
+        "ram_adj": {
+          "16GB RAM": 10,
+          "32GB RAM": 25,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "128GB SSD": -10,
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/dell-optiplex-desktop/optiplex-tower"
   },
   "dell-pro-13-laptop/dell-pro-13-plus--2-in-1-pb13250": {
     "base_price": 385,
@@ -16652,7 +18944,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "hp-omen",
-    "scraped_at": "2026-05-16T02:38:28+00:00",
+    "scraped_at": "2026-07-05T09:40:19+00:00",
     "series": "hp-desktop",
     "url": "https://www.itsworthmore.com/sell/hp-desktop/hp-omen"
   },
@@ -23505,6 +25797,1098 @@
     },
     "url": "https://www.itsworthmore.com/sell/hp-notebook/hp-notebook-17"
   },
+  "hp-omen-desktop/hp-omen-16l-desktop": {
+    "base_price": 130,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[16l]",
+          "processor_type": "[amd-ryzen-5-8400f]"
+        },
+        "label": "AMD Ryzen 5 8400F"
+      },
+      {
+        "adj": 95,
+        "attrs": {
+          "model": "[16l]",
+          "processor_type": "[amd-ryzen-7-8700f]"
+        },
+        "label": "AMD Ryzen 7 8700F"
+      },
+      {
+        "adj": 30,
+        "attrs": {
+          "model": "[16l]",
+          "processor_type": "[intel-core-i5-14th-gen.]"
+        },
+        "label": "Intel Core i5 14th Gen."
+      },
+      {
+        "adj": 70,
+        "attrs": {
+          "model": "[16l]",
+          "processor_type": "[intel-core-ultra-5-series-2]"
+        },
+        "label": "Intel Core Ultra 5 Series 2"
+      },
+      {
+        "adj": 55,
+        "attrs": {
+          "model": "[16l]",
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 110,
+        "attrs": {
+          "model": "[16l]",
+          "processor_type": "[intel-core-ultra-7-series-2]"
+        },
+        "label": "Intel Core Ultra 7 Series 2"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 7600": 0,
+      "NVIDIA GeForce RTX 3050": -15,
+      "NVIDIA GeForce RTX 4060": 15,
+      "NVIDIA GeForce RTX 5060 Ti": 45
+    },
+    "iwm_name": "Sell your HP Omen 16L Desktop for More Cash Online",
+    "model": "hp-omen-16l-desktop",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:26+00:00",
+    "series": "hp-omen-desktop",
+    "storage_adj": {
+      "1TB SSD": 30,
+      "2TB SSD": 50,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "": {
+        "base_price": 130,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[16l]",
+              "processor_type": "[amd-ryzen-5-8400f]"
+            },
+            "label": "AMD Ryzen 5 8400F"
+          },
+          {
+            "adj": 95,
+            "attrs": {
+              "model": "[16l]",
+              "processor_type": "[amd-ryzen-7-8700f]"
+            },
+            "label": "AMD Ryzen 7 8700F"
+          },
+          {
+            "adj": 30,
+            "attrs": {
+              "model": "[16l]",
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 70,
+            "attrs": {
+              "model": "[16l]",
+              "processor_type": "[intel-core-ultra-5-series-2]"
+            },
+            "label": "Intel Core Ultra 5 Series 2"
+          },
+          {
+            "adj": 55,
+            "attrs": {
+              "model": "[16l]",
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 110,
+            "attrs": {
+              "model": "[16l]",
+              "processor_type": "[intel-core-ultra-7-series-2]"
+            },
+            "label": "Intel Core Ultra 7 Series 2"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -80,
+          "good": -40,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 7600": 0,
+          "NVIDIA GeForce RTX 3050": -15,
+          "NVIDIA GeForce RTX 4060": 15,
+          "NVIDIA GeForce RTX 5060 Ti": 45
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "2TB SSD": 50,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/hp-omen-desktop/hp-omen-16l-desktop"
+  },
+  "hp-omen-desktop/hp-omen-25l-desktop": {
+    "base_price": 40,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[25l]",
+          "processor_type": "[intel-core-i5-10th-gen]"
+        },
+        "label": "Intel Core i5 10th Gen."
+      },
+      {
+        "adj": 20,
+        "attrs": {
+          "model": "[25l]",
+          "processor_type": "[intel-core-i5-11th-gen]"
+        },
+        "label": "Intel Core i5 11th Gen."
+      },
+      {
+        "adj": 140,
+        "attrs": {
+          "model": "[25l]",
+          "processor_type": "[intel-core-i5-14th-gen.]"
+        },
+        "label": "Intel Core i5 14th Gen."
+      },
+      {
+        "adj": 30,
+        "attrs": {
+          "model": "[25l]",
+          "processor_type": "[intel-core-i7-10th-gen]"
+        },
+        "label": "Intel Core i7 10th Gen."
+      },
+      {
+        "adj": 70,
+        "attrs": {
+          "model": "[25l]",
+          "processor_type": "[intel-core-i7-11th-gen]"
+        },
+        "label": "Intel Core i7 11th Gen."
+      },
+      {
+        "adj": 180,
+        "attrs": {
+          "model": "[25l]",
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -60,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 5700": 0,
+      "NVIDIA GeForce GTX 1660": -25,
+      "NVIDIA GeForce GTX 1660 Ti": -20,
+      "NVIDIA GeForce RTX 2060": -10,
+      "NVIDIA GeForce RTX 2080": 30,
+      "NVIDIA GeForce RTX 3050": -25,
+      "NVIDIA GeForce RTX 3060": 10,
+      "NVIDIA GeForce RTX 3070": 45,
+      "NVIDIA GeForce RTX 3080": 65
+    },
+    "iwm_name": "Sell your HP Omen 25L Desktop for More Cash Online",
+    "model": "hp-omen-25l-desktop",
+    "ram_adj": {
+      "16GB RAM": 5,
+      "32GB RAM": 10,
+      "64GB RAM": 40,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:26+00:00",
+    "series": "hp-omen-desktop",
+    "storage_adj": {
+      "1TB SSD": 20,
+      "256GB SSD": 0,
+      "512GB SSD": 10
+    },
+    "submodels": {
+      "": {
+        "base_price": 40,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[25l]",
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 20,
+            "attrs": {
+              "model": "[25l]",
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 140,
+            "attrs": {
+              "model": "[25l]",
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 30,
+            "attrs": {
+              "model": "[25l]",
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 70,
+            "attrs": {
+              "model": "[25l]",
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 180,
+            "attrs": {
+              "model": "[25l]",
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -120,
+          "good": -60,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 5700": 0,
+          "NVIDIA GeForce GTX 1660": -25,
+          "NVIDIA GeForce GTX 1660 Ti": -20,
+          "NVIDIA GeForce RTX 2060": -10,
+          "NVIDIA GeForce RTX 2080": 30,
+          "NVIDIA GeForce RTX 3050": -25,
+          "NVIDIA GeForce RTX 3060": 10,
+          "NVIDIA GeForce RTX 3070": 45,
+          "NVIDIA GeForce RTX 3080": 65
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 5,
+          "32GB RAM": 10,
+          "64GB RAM": 40,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 20,
+          "256GB SSD": 0,
+          "512GB SSD": 10
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/hp-omen-desktop/hp-omen-25l-desktop"
+  },
+  "hp-omen-desktop/hp-omen-30l-desktop": {
+    "base_price": 95,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[30l]",
+          "processor_type": "[amd-ryzen-5-5600g]"
+        },
+        "label": "AMD Ryzen 5 5600G"
+      },
+      {
+        "adj": 25,
+        "attrs": {
+          "model": "[30l]",
+          "processor_type": "[amd-ryzen-5-5600x]"
+        },
+        "label": "AMD Ryzen 5 5600X"
+      },
+      {
+        "adj": 115,
+        "attrs": {
+          "model": "[30l]",
+          "processor_type": "[amd-ryzen-7-5700g]"
+        },
+        "label": "AMD Ryzen 7 5700G"
+      },
+      {
+        "adj": 145,
+        "attrs": {
+          "model": "[30l]",
+          "processor_type": "[amd-ryzen-7-5800x]"
+        },
+        "label": "AMD Ryzen 7 5800X"
+      },
+      {
+        "adj": 195,
+        "attrs": {
+          "model": "[30l]",
+          "processor_type": "[amd-ryzen-9-5900x]"
+        },
+        "label": "AMD Ryzen 9 5900X"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -60,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6600 XT": 0,
+      "NVIDIA GeForce GTX 1660": -20,
+      "NVIDIA GeForce RTX 2060": 0,
+      "NVIDIA GeForce RTX 2080 Ti": 40,
+      "NVIDIA GeForce RTX 3060": 15,
+      "NVIDIA GeForce RTX 3060 Ti": 30,
+      "NVIDIA GeForce RTX 3080": 75,
+      "NVIDIA GeForce RTX 3090": 125
+    },
+    "iwm_name": "Sell your HP Omen 30L Desktop for More Cash Online",
+    "model": "hp-omen-30l-desktop",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 20,
+      "64GB RAM": 40
+    },
+    "scraped_at": "2026-07-05T09:40:28+00:00",
+    "series": "hp-omen-desktop",
+    "storage_adj": {
+      "1TB SSD": 20,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "": {
+        "base_price": 95,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[30l]",
+              "processor_type": "[amd-ryzen-5-5600g]"
+            },
+            "label": "AMD Ryzen 5 5600G"
+          },
+          {
+            "adj": 25,
+            "attrs": {
+              "model": "[30l]",
+              "processor_type": "[amd-ryzen-5-5600x]"
+            },
+            "label": "AMD Ryzen 5 5600X"
+          },
+          {
+            "adj": 115,
+            "attrs": {
+              "model": "[30l]",
+              "processor_type": "[amd-ryzen-7-5700g]"
+            },
+            "label": "AMD Ryzen 7 5700G"
+          },
+          {
+            "adj": 145,
+            "attrs": {
+              "model": "[30l]",
+              "processor_type": "[amd-ryzen-7-5800x]"
+            },
+            "label": "AMD Ryzen 7 5800X"
+          },
+          {
+            "adj": 195,
+            "attrs": {
+              "model": "[30l]",
+              "processor_type": "[amd-ryzen-9-5900x]"
+            },
+            "label": "AMD Ryzen 9 5900X"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -120,
+          "good": -60,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6600 XT": 0,
+          "NVIDIA GeForce GTX 1660": -20,
+          "NVIDIA GeForce RTX 2060": 0,
+          "NVIDIA GeForce RTX 2080 Ti": 40,
+          "NVIDIA GeForce RTX 3060": 15,
+          "NVIDIA GeForce RTX 3060 Ti": 30,
+          "NVIDIA GeForce RTX 3080": 75,
+          "NVIDIA GeForce RTX 3090": 125
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 20,
+          "64GB RAM": 40
+        },
+        "storage_adj": {
+          "1TB SSD": 20,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/hp-omen-desktop/hp-omen-30l-desktop"
+  },
+  "hp-omen-desktop/hp-omen-35l-desktop": {
+    "base_price": 265,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[35l]",
+          "processor_type": "[amd-ryzen-5-8500g]"
+        },
+        "label": "AMD Ryzen 5 8500G"
+      },
+      {
+        "adj": 75,
+        "attrs": {
+          "model": "[35l]",
+          "processor_type": "[amd-ryzen-7-8700g]"
+        },
+        "label": "AMD Ryzen 7 8700G"
+      },
+      {
+        "adj": 60,
+        "attrs": {
+          "model": "[35l]",
+          "processor_type": "[intel-core-i5-14th-gen.]"
+        },
+        "label": "Intel Core i5 14th Gen."
+      },
+      {
+        "adj": 95,
+        "attrs": {
+          "model": "[35l]",
+          "processor_type": "[intel-core-ultra-5-series-2]"
+        },
+        "label": "Intel Core Ultra 5 Series 2"
+      },
+      {
+        "adj": 115,
+        "attrs": {
+          "model": "[35l]",
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 175,
+        "attrs": {
+          "model": "[35l]",
+          "processor_type": "[intel-core-ultra-7-series-2]"
+        },
+        "label": "Intel Core Ultra 7 Series 2"
+      },
+      {
+        "adj": 225,
+        "attrs": {
+          "model": "[35l]",
+          "processor_type": "[intel-core-ultra-9-series-2]"
+        },
+        "label": "Intel Core Ultra 9 Series 2"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -50,
+      "mint": 0,
+      "sealed": 30
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 7600": 0,
+      "NVIDIA GeForce RTX 4060": 50,
+      "NVIDIA GeForce RTX 4080 SUPER": 100,
+      "NVIDIA GeForce RTX 5070": 150,
+      "NVIDIA GeForce RTX 5070 Ti": 200,
+      "NVIDIA GeForce RTX 5080": 250
+    },
+    "iwm_name": "Sell your HP Omen 35L Desktop for More Cash Online",
+    "model": "hp-omen-35l-desktop",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 25,
+      "64GB RAM": 50
+    },
+    "scraped_at": "2026-07-05T09:40:28+00:00",
+    "series": "hp-omen-desktop",
+    "storage_adj": {
+      "1TB SSD": 25,
+      "2TB SSD": 50,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "": {
+        "base_price": 265,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[35l]",
+              "processor_type": "[amd-ryzen-5-8500g]"
+            },
+            "label": "AMD Ryzen 5 8500G"
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "model": "[35l]",
+              "processor_type": "[amd-ryzen-7-8700g]"
+            },
+            "label": "AMD Ryzen 7 8700G"
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "model": "[35l]",
+              "processor_type": "[intel-core-i5-14th-gen.]"
+            },
+            "label": "Intel Core i5 14th Gen."
+          },
+          {
+            "adj": 95,
+            "attrs": {
+              "model": "[35l]",
+              "processor_type": "[intel-core-ultra-5-series-2]"
+            },
+            "label": "Intel Core Ultra 5 Series 2"
+          },
+          {
+            "adj": 115,
+            "attrs": {
+              "model": "[35l]",
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 175,
+            "attrs": {
+              "model": "[35l]",
+              "processor_type": "[intel-core-ultra-7-series-2]"
+            },
+            "label": "Intel Core Ultra 7 Series 2"
+          },
+          {
+            "adj": 225,
+            "attrs": {
+              "model": "[35l]",
+              "processor_type": "[intel-core-ultra-9-series-2]"
+            },
+            "label": "Intel Core Ultra 9 Series 2"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -100,
+          "good": -50,
+          "mint": 0,
+          "sealed": 30
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 7600": 0,
+          "NVIDIA GeForce RTX 4060": 50,
+          "NVIDIA GeForce RTX 4080 SUPER": 100,
+          "NVIDIA GeForce RTX 5070": 150,
+          "NVIDIA GeForce RTX 5070 Ti": 200,
+          "NVIDIA GeForce RTX 5080": 250
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 25,
+          "64GB RAM": 50
+        },
+        "storage_adj": {
+          "1TB SSD": 25,
+          "2TB SSD": 50,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/hp-omen-desktop/hp-omen-35l-desktop"
+  },
+  "hp-omen-desktop/hp-omen-40l-desktop": {
+    "base_price": 225,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[40l]",
+          "processor_type": "[amd-ryzen-7-5800x]"
+        },
+        "label": "AMD Ryzen 7 5800X"
+      },
+      {
+        "adj": 150,
+        "attrs": {
+          "model": "[40l]",
+          "processor_type": "[amd-ryzen-7-7700x]"
+        },
+        "label": "AMD Ryzen 7 7700X"
+      },
+      {
+        "adj": 50,
+        "attrs": {
+          "model": "[40l]",
+          "processor_type": "[amd-ryzen-9-5900x]"
+        },
+        "label": "AMD Ryzen 9 5900X"
+      },
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[40l]",
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 175,
+        "attrs": {
+          "model": "[40l]",
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 75,
+        "attrs": {
+          "model": "[40l]",
+          "processor_type": "[intel-core-i9-12th-gen]"
+        },
+        "label": "Intel Core i9 12th Gen."
+      },
+      {
+        "adj": 225,
+        "attrs": {
+          "model": "[40l]",
+          "processor_type": "[intel-core-i9-14th-gen.]"
+        },
+        "label": "Intel Core i9 14th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6700 XT": 0,
+      "NVIDIA GeForce RTX 3060 Ti": 0,
+      "NVIDIA GeForce RTX 3080": 50,
+      "NVIDIA GeForce RTX 3090": 100,
+      "NVIDIA GeForce RTX 4060": -50,
+      "NVIDIA GeForce RTX 4060 Ti": 0,
+      "NVIDIA GeForce RTX 4070 Super": 50,
+      "NVIDIA GeForce RTX 4070 Ti Super": 90,
+      "NVIDIA GeForce RTX 4080 Super": 150
+    },
+    "iwm_name": "Sell your HP Omen 40L Desktop for More Cash Online",
+    "model": "hp-omen-40l-desktop",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 20,
+      "64GB RAM": 40
+    },
+    "scraped_at": "2026-07-05T09:40:28+00:00",
+    "series": "hp-omen-desktop",
+    "storage_adj": {
+      "1TB SSD": 15,
+      "2TB SSD": 30,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "": {
+        "base_price": 225,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[40l]",
+              "processor_type": "[amd-ryzen-7-5800x]"
+            },
+            "label": "AMD Ryzen 7 5800X"
+          },
+          {
+            "adj": 150,
+            "attrs": {
+              "model": "[40l]",
+              "processor_type": "[amd-ryzen-7-7700x]"
+            },
+            "label": "AMD Ryzen 7 7700X"
+          },
+          {
+            "adj": 50,
+            "attrs": {
+              "model": "[40l]",
+              "processor_type": "[amd-ryzen-9-5900x]"
+            },
+            "label": "AMD Ryzen 9 5900X"
+          },
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[40l]",
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 175,
+            "attrs": {
+              "model": "[40l]",
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "model": "[40l]",
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          },
+          {
+            "adj": 225,
+            "attrs": {
+              "model": "[40l]",
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -80,
+          "good": -40,
+          "mint": 0,
+          "sealed": 20
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6700 XT": 0,
+          "NVIDIA GeForce RTX 3060 Ti": 0,
+          "NVIDIA GeForce RTX 3080": 50,
+          "NVIDIA GeForce RTX 3090": 100,
+          "NVIDIA GeForce RTX 4060": -50,
+          "NVIDIA GeForce RTX 4060 Ti": 0,
+          "NVIDIA GeForce RTX 4070 Super": 50,
+          "NVIDIA GeForce RTX 4070 Ti Super": 90,
+          "NVIDIA GeForce RTX 4080 Super": 150
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 20,
+          "64GB RAM": 40
+        },
+        "storage_adj": {
+          "1TB SSD": 15,
+          "2TB SSD": 30,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/hp-omen-desktop/hp-omen-40l-desktop"
+  },
+  "hp-omen-desktop/hp-omen-45l-desktop": {
+    "base_price": 800,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[45l]",
+          "processor_type": "[intel-core-i9-13th-gen.]"
+        },
+        "label": "Intel Core i9 13th Gen."
+      },
+      {
+        "adj": 25,
+        "attrs": {
+          "model": "[45l]",
+          "processor_type": "[intel-core-ultra-7-series-2]"
+        },
+        "label": "Intel Core Ultra 7 Series 2"
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "model": "[45l]",
+          "processor_type": "[intel-core-ultra-9-series-2]"
+        },
+        "label": "Intel Core Ultra 9 Series 2"
+      },
+      {
+        "adj": 25,
+        "attrs": {
+          "model": "[45l]",
+          "processor_type": "[intel-core-ultra-7-series-2]"
+        },
+        "label": "Intel Core Ultra 7 Series 2"
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "model": "[45l]",
+          "processor_type": "[intel-core-ultra-9-series-2]"
+        },
+        "label": "Intel Core Ultra 9 Series 2"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -280,
+      "good": -120,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -50
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce RTX 4060 Ti": 0,
+      "NVIDIA GeForce RTX 4070 Ti": 50,
+      "NVIDIA GeForce RTX 4080": 150,
+      "NVIDIA GeForce RTX 4090": 350,
+      "NVIDIA GeForce RTX 5070": 150,
+      "NVIDIA GeForce RTX 5070 Ti": 250,
+      "NVIDIA GeForce RTX 5080": 450,
+      "NVIDIA GeForce RTX 5090": 850
+    },
+    "iwm_name": "Sell your HP Omen 45L Desktop for More Cash Online",
+    "model": "hp-omen-45l-desktop",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 20,
+      "64GB RAM": 40
+    },
+    "scraped_at": "2026-07-05T09:40:28+00:00",
+    "series": "hp-omen-desktop",
+    "storage_adj": {
+      "1TB SSD": 20,
+      "2TB SSD": 40,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "": {
+        "base_price": 800,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[45l]",
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          },
+          {
+            "adj": 25,
+            "attrs": {
+              "model": "[45l]",
+              "processor_type": "[intel-core-ultra-7-series-2]"
+            },
+            "label": "Intel Core Ultra 7 Series 2"
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "model": "[45l]",
+              "processor_type": "[intel-core-ultra-9-series-2]"
+            },
+            "label": "Intel Core Ultra 9 Series 2"
+          },
+          {
+            "adj": 25,
+            "attrs": {
+              "model": "[45l]",
+              "processor_type": "[intel-core-ultra-7-series-2]"
+            },
+            "label": "Intel Core Ultra 7 Series 2"
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "model": "[45l]",
+              "processor_type": "[intel-core-ultra-9-series-2]"
+            },
+            "label": "Intel Core Ultra 9 Series 2"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -280,
+          "good": -120,
+          "mint": 0,
+          "sealed": 20,
+          "verygood": -50
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce RTX 4060 Ti": 0,
+          "NVIDIA GeForce RTX 4070 Ti": 50,
+          "NVIDIA GeForce RTX 4080": 150,
+          "NVIDIA GeForce RTX 4090": 350,
+          "NVIDIA GeForce RTX 5070": 150,
+          "NVIDIA GeForce RTX 5070 Ti": 250,
+          "NVIDIA GeForce RTX 5080": 450,
+          "NVIDIA GeForce RTX 5090": 850
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 20,
+          "64GB RAM": 40
+        },
+        "storage_adj": {
+          "1TB SSD": 20,
+          "2TB SSD": 40,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/hp-omen-desktop/hp-omen-45l-desktop"
+  },
   "hp-omen-laptop/hp-omen-15": {
     "base_price": 0,
     "battery_adj": {
@@ -26931,6 +30315,145 @@
       }
     },
     "url": "https://www.itsworthmore.com/sell/hp-omnibook/hp-omnibook-x-flip"
+  },
+  "hp-omnistudio-desktop/hp-omnistudio-x": {
+    "base_price": 100,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-ultra-5]"
+        },
+        "label": "Intel Core Ultra 5"
+      },
+      {
+        "adj": 180,
+        "attrs": {
+          "processor_type": "[intel-core-ultra-5-series-2]"
+        },
+        "label": "Intel Core Ultra 5 Series 2"
+      },
+      {
+        "adj": 60,
+        "attrs": {
+          "processor_type": "[intel-core-ultra-7]"
+        },
+        "label": "Intel Core Ultra 7"
+      },
+      {
+        "adj": 240,
+        "attrs": {
+          "processor_type": "[intel-core-ultra-7-series-2]"
+        },
+        "label": "Intel Core Ultra 7 Series 2"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -40,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -40
+    },
+    "display_adj": {
+      "27in": 0,
+      "31.5in": 0
+    },
+    "done": true,
+    "gpu_adj": {
+      "Integrated Graphics Only": 0,
+      "NVIDIA GeForce RTX 4050": 0
+    },
+    "iwm_name": "Sell Your HP OmniStudio X Desktop for the Most Cash",
+    "model": "hp-omnistudio-x",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 30
+    },
+    "scraped_at": "2026-07-05T09:40:29+00:00",
+    "series": "hp-omnistudio-desktop",
+    "storage_adj": {
+      "1TB SSD": 50,
+      "256GB SSD": 0,
+      "512GB SSD": 25
+    },
+    "submodels": {
+      "": {
+        "base_price": 100,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-ultra-5]"
+            },
+            "label": "Intel Core Ultra 5"
+          },
+          {
+            "adj": 180,
+            "attrs": {
+              "processor_type": "[intel-core-ultra-5-series-2]"
+            },
+            "label": "Intel Core Ultra 5 Series 2"
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "processor_type": "[intel-core-ultra-7]"
+            },
+            "label": "Intel Core Ultra 7"
+          },
+          {
+            "adj": 240,
+            "attrs": {
+              "processor_type": "[intel-core-ultra-7-series-2]"
+            },
+            "label": "Intel Core Ultra 7 Series 2"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -100,
+          "good": -40,
+          "mint": 0,
+          "sealed": 25,
+          "verygood": -40
+        },
+        "display_adj": {
+          "27in": 0,
+          "31.5in": 0
+        },
+        "gpu_adj": {
+          "Integrated Graphics Only": 0,
+          "NVIDIA GeForce RTX 4050": 0
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 30
+        },
+        "storage_adj": {
+          "1TB SSD": 50,
+          "256GB SSD": 0,
+          "512GB SSD": 25
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/hp-omnistudio-desktop/hp-omnistudio-x"
   },
   "hp-pavilion/hp-pavilion-14": {
     "base_price": 0,
@@ -57575,6 +61098,430 @@
     "series": "lenovo-thinkbook-series/lenovo-thinkbook-16-series",
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkbook-series/lenovo-thinkbook-16-series/thinkbook-16p"
   },
+  "lenovo-thinkcentre/lenovo-thinkcentre-aio": {
+    "done": true,
+    "error": "no_pricing",
+    "model": "lenovo-thinkcentre-aio",
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "lenovo-thinkcentre",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-aio"
+  },
+  "lenovo-thinkcentre/lenovo-thinkcentre-nano-desktop": {
+    "done": true,
+    "error": "no_pricing",
+    "model": "lenovo-thinkcentre-nano-desktop",
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "lenovo-thinkcentre",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-nano-desktop"
+  },
+  "lenovo-thinkcentre/lenovo-thinkcentre-sff": {
+    "done": true,
+    "error": "no_pricing",
+    "model": "lenovo-thinkcentre-sff",
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "lenovo-thinkcentre",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-sff"
+  },
+  "lenovo-thinkcentre/lenovo-thinkcentre-tiny-desktop": {
+    "base_price": 50,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 1
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-i5-10th-gen]"
+        },
+        "label": "Intel Core i5 10th Gen."
+      },
+      {
+        "adj": 40,
+        "attrs": {
+          "processor_type": "[intel-core-i5-11th-gen]"
+        },
+        "label": "Intel Core i5 11th Gen."
+      },
+      {
+        "adj": 90,
+        "attrs": {
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 35,
+        "attrs": {
+          "processor_type": "[intel-core-i7-10th-gen]"
+        },
+        "label": "Intel Core i7 10th Gen."
+      },
+      {
+        "adj": 80,
+        "attrs": {
+          "processor_type": "[intel-core-i7-11th-gen]"
+        },
+        "label": "Intel Core i7 11th Gen."
+      },
+      {
+        "adj": 110,
+        "attrs": {
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 70,
+        "attrs": {
+          "processor_type": "[intel-core-i9-10th-gen]"
+        },
+        "label": "Intel Core i9 10th Gen."
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "processor_type": "[intel-core-i9-11th-gen]"
+        },
+        "label": "Intel Core i9 11th Gen."
+      },
+      {
+        "adj": 150,
+        "attrs": {
+          "processor_type": "[intel-core-i9-12th-gen]"
+        },
+        "label": "Intel Core i9 12th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -30,
+      "mint": 0,
+      "sealed": 15
+    },
+    "done": true,
+    "iwm_name": "Sell Your Lenovo ThinkCentre Tiny Desktop for the Most Cash",
+    "model": "lenovo-thinkcentre-tiny-desktop",
+    "ram_adj": {
+      "16GB RAM": 25,
+      "32GB RAM": 40,
+      "4GB RAM": 0,
+      "8GB RAM": 10
+    },
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "lenovo-thinkcentre",
+    "storage_adj": {
+      "128GB SSD": 0,
+      "1TB HDD": 0,
+      "256GB SSD": 10,
+      "512GB SSD": 25
+    },
+    "submodels": {
+      "m70q": {
+        "base_price": 50,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 1
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 90,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 35,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 80,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 110,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 70,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          },
+          {
+            "adj": 150,
+            "attrs": {
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -80,
+          "good": -30,
+          "mint": 0,
+          "sealed": 15
+        },
+        "model_label": "M70q",
+        "ram_adj": {
+          "16GB RAM": 25,
+          "32GB RAM": 40,
+          "4GB RAM": 0,
+          "8GB RAM": 10
+        },
+        "storage_adj": {
+          "128GB SSD": 0,
+          "1TB HDD": 0,
+          "256GB SSD": 10,
+          "512GB SSD": 25
+        }
+      },
+      "m75q": {
+        "base_price": 55,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 1
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[amd-ryzen-5-pro]"
+            },
+            "label": "AMD Ryzen 5 Pro"
+          },
+          {
+            "adj": 15,
+            "attrs": {
+              "processor_type": "[amd-ryzen-7-pro]"
+            },
+            "label": "AMD Ryzen 7 Pro"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -50,
+          "good": -20,
+          "mint": 0,
+          "sealed": 15
+        },
+        "model_label": "M75q",
+        "ram_adj": {
+          "16GB RAM": 20,
+          "32GB RAM": 30,
+          "4GB RAM": 0,
+          "8GB RAM": 10
+        },
+        "storage_adj": {
+          "128GB SSD": -10,
+          "1TB HDD": 0,
+          "256GB SSD": 0,
+          "512GB SSD": 10
+        }
+      },
+      "m80q": {
+        "base_price": 115,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 1
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 20,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 55,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -80,
+          "good": -30,
+          "mint": 0,
+          "sealed": 20
+        },
+        "model_label": "M80q",
+        "ram_adj": {
+          "16GB RAM": 20,
+          "32GB RAM": 30,
+          "4GB RAM": 0,
+          "8GB RAM": 10
+        },
+        "storage_adj": {
+          "128GB SSD": -10,
+          "1TB HDD": 0,
+          "256GB SSD": 0,
+          "512GB SSD": 10
+        }
+      },
+      "m90q": {
+        "base_price": 110,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 80,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 30,
+            "attrs": {
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 75,
+            "attrs": {
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 130,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 85,
+            "attrs": {
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          },
+          {
+            "adj": 120,
+            "attrs": {
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          },
+          {
+            "adj": 190,
+            "attrs": {
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -90,
+          "good": -35,
+          "mint": 0,
+          "sealed": 20
+        },
+        "model_label": "M90q",
+        "ram_adj": {
+          "16GB RAM": 25,
+          "32GB RAM": 40,
+          "4GB RAM": 0,
+          "8GB RAM": 10
+        },
+        "storage_adj": {
+          "128GB SSD": -10,
+          "1TB HDD": 0,
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-tiny-desktop"
+  },
+  "lenovo-thinkcentre/lenovo-thinkcentre-tower": {
+    "done": true,
+    "error": "no_pricing",
+    "model": "lenovo-thinkcentre-tower",
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "lenovo-thinkcentre",
+    "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-tower"
+  },
   "lenovo-thinkpad-e14-laptop/lenovo-thinkpad-e14-gen-5": {
     "base_price": 190,
     "battery_adj": {
@@ -72593,6 +76540,353 @@
     },
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-z-series/lenovo-thinkpad-z16"
   },
+  "lenovo-yoga-desktop/lenovo-yoga-a940": {
+    "base_price": 95,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 1
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model_year": "[2018]",
+          "processor_type": "[intel-core-i5-8th-gen]"
+        },
+        "label": "Intel Core i5 8th Gen."
+      },
+      {
+        "adj": 30,
+        "attrs": {
+          "model_year": "[2019]",
+          "processor_type": "[intel-core-i5-9th-gen]"
+        },
+        "label": "Intel Core i5 9th Gen."
+      },
+      {
+        "adj": 30,
+        "attrs": {
+          "model_year": "[2018]",
+          "processor_type": "[intel-core-i7-8th-gen]"
+        },
+        "label": "Intel Core i7 8th Gen."
+      },
+      {
+        "adj": 105,
+        "attrs": {
+          "model_year": "[2019]",
+          "processor_type": "[intel-core-i7-9th-gen]"
+        },
+        "label": "Intel Core i7 9th Gen."
+      },
+      {
+        "adj": 95,
+        "attrs": {
+          "model_year": "[2018]",
+          "processor_type": "[intel-core-i9-8th-gen]"
+        },
+        "label": "Intel Core i9 8th Gen."
+      },
+      {
+        "adj": 135,
+        "attrs": {
+          "model_year": "[2019]",
+          "processor_type": "[intel-core-i9-9th-gen]"
+        },
+        "label": "Intel Core i9 9th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -95,
+      "good": -50,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "iwm_name": "Sell Your Lenovo Yoga A940 Desktop for the Most Cash",
+    "model": "lenovo-yoga-a940",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 25
+    },
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "lenovo-yoga-desktop",
+    "storage_adj": {
+      "1TB SSD": 30,
+      "256GB SSD": 0,
+      "512GB SSD": 15
+    },
+    "submodels": {
+      "": {
+        "base_price": 95,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 1
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model_year": "[2018]",
+              "processor_type": "[intel-core-i5-8th-gen]"
+            },
+            "label": "Intel Core i5 8th Gen."
+          },
+          {
+            "adj": 30,
+            "attrs": {
+              "model_year": "[2019]",
+              "processor_type": "[intel-core-i5-9th-gen]"
+            },
+            "label": "Intel Core i5 9th Gen."
+          },
+          {
+            "adj": 30,
+            "attrs": {
+              "model_year": "[2018]",
+              "processor_type": "[intel-core-i7-8th-gen]"
+            },
+            "label": "Intel Core i7 8th Gen."
+          },
+          {
+            "adj": 105,
+            "attrs": {
+              "model_year": "[2019]",
+              "processor_type": "[intel-core-i7-9th-gen]"
+            },
+            "label": "Intel Core i7 9th Gen."
+          },
+          {
+            "adj": 95,
+            "attrs": {
+              "model_year": "[2018]",
+              "processor_type": "[intel-core-i9-8th-gen]"
+            },
+            "label": "Intel Core i9 8th Gen."
+          },
+          {
+            "adj": 135,
+            "attrs": {
+              "model_year": "[2019]",
+              "processor_type": "[intel-core-i9-9th-gen]"
+            },
+            "label": "Intel Core i9 9th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -95,
+          "good": -50,
+          "mint": 0,
+          "sealed": 20
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 25
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-desktop/lenovo-yoga-a940"
+  },
+  "lenovo-yoga-desktop/lenovo-yoga-aio-7": {
+    "base_price": 0,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 1
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model_year": "[2021]",
+          "processor_type": "[amd-ryzen-5-5600h]"
+        },
+        "label": "AMD Ryzen 5 5600H"
+      },
+      {
+        "adj": 0,
+        "attrs": {
+          "model_year": "[2021]",
+          "processor_type": "[amd-ryzen-7-5800h]"
+        },
+        "label": "AMD Ryzen 7 5800H"
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -145,
+      "good": -55,
+      "mint": 0,
+      "sealed": 25
+    },
+    "done": true,
+    "iwm_name": "Sell Your Lenovo Yoga AIO 7 Desktop for the Most Cash",
+    "model": "lenovo-yoga-aio-7",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 50
+    },
+    "scraped_at": "2026-07-05T09:40:19+00:00",
+    "series": "lenovo-yoga-desktop",
+    "storage_adj": {
+      "1TB SSD": 30,
+      "256GB SSD": 0,
+      "512GB SSD": 15
+    },
+    "submodels": {
+      "": {
+        "base_price": 0,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 5,
+          "mouse": 5,
+          "power cord": 1
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model_year": "[2021]",
+              "processor_type": "[amd-ryzen-5-5600h]"
+            },
+            "label": "AMD Ryzen 5 5600H"
+          },
+          {
+            "adj": 0,
+            "attrs": {
+              "model_year": "[2021]",
+              "processor_type": "[amd-ryzen-7-5800h]"
+            },
+            "label": "AMD Ryzen 7 5800H"
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -145,
+          "good": -55,
+          "mint": 0,
+          "sealed": 25
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 50
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-desktop/lenovo-yoga-aio-7"
+  },
+  "lenovo-yoga-desktop/lenovo-yoga-aio-9i": {
+    "base_price": 640,
+    "battery_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model_year": "[2023]",
+          "processor_type": "[intel-core-i9-13th-gen.]"
+        },
+        "label": "Intel Core i9 13th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -240,
+      "good": -80,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -40
+    },
+    "done": true,
+    "gpu_adj": {
+      "Integrated Graphics Only": 0,
+      "NVIDIA GeForce RTX 4050": 50
+    },
+    "iwm_name": "Sell Your Lenovo Yoga AIO 9i Desktop for the Most Cash",
+    "model": "lenovo-yoga-aio-9i",
+    "ram_adj": {
+      "16GB RAM": 0,
+      "32GB RAM": 30
+    },
+    "scraped_at": "2026-07-05T09:40:26+00:00",
+    "series": "lenovo-yoga-desktop",
+    "storage_adj": {
+      "1TB SSD": 30,
+      "512GB SSD": 0
+    },
+    "submodels": {
+      "": {
+        "base_price": 640,
+        "battery_adj": {},
+        "charger_adj": {
+          "hdmi": 1,
+          "keyboard": 1,
+          "mouse": 1,
+          "power cord": 5
+        },
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model_year": "[2023]",
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -240,
+          "good": -80,
+          "mint": 0,
+          "sealed": 25,
+          "verygood": -40
+        },
+        "gpu_adj": {
+          "Integrated Graphics Only": 0,
+          "NVIDIA GeForce RTX 4050": 50
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 0,
+          "32GB RAM": 30
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "512GB SSD": 0
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/lenovo-yoga-desktop/lenovo-yoga-aio-9i"
+  },
   "lenovo-yoga-laptop/lenovo-yoga-6": {
     "base_price": 150,
     "battery_adj": {
@@ -76472,16 +80766,15 @@
       "NVIDIA GeForce RTX 4080": 425,
       "NVIDIA GeForce RTX 4080 SUPER": 225
     },
-    "iwm_name": "MSI Aegis Gaming",
+    "iwm_name": "Sell your MSI Aegis Gaming Desktop for More Cash Online",
     "model": "msi-aegis-gaming-desktop",
     "ram_adj": {
       "16GB RAM": 30,
       "32GB RAM": 55,
       "64GB RAM": 80
     },
-    "scraped_at": "2026-05-16T02:38:43+00:00",
+    "scraped_at": "2026-07-05T09:40:24+00:00",
     "series": "msi-desktop",
-    "stale": true,
     "storage_adj": {
       "1TB SSD": 25,
       "2TB SSD": 50,
@@ -76897,7 +81190,7 @@
     "url": "https://www.itsworthmore.com/sell/msi-desktop/msi-aegis-gaming-desktop"
   },
   "msi-desktop/msi-codex-gaming-desktop": {
-    "base_price": 100,
+    "base_price": 125,
     "battery_adj": {},
     "charger_adj": {},
     "chips": [
@@ -76909,49 +81202,49 @@
         "label": "Intel Core i5 11th Gen."
       },
       {
-        "adj": 150,
+        "adj": 145,
         "attrs": {
           "processor_type": "[intel-core-i5-12th-gen]"
         },
         "label": "Intel Core i5 12th Gen."
       },
       {
-        "adj": 200,
+        "adj": 195,
         "attrs": {
           "processor_type": "[intel-core-i5-13th-gen.]"
         },
         "label": "Intel Core i5 13th Gen."
       },
       {
-        "adj": 240,
+        "adj": 225,
         "attrs": {
           "processor_type": "[intel-core-i5-14th-gen.]"
         },
         "label": "Intel Core i5 14th Gen."
       },
       {
-        "adj": 235,
+        "adj": 225,
         "attrs": {
           "processor_type": "[intel-core-i7-13th-gen.]"
         },
         "label": "Intel Core i7 13th Gen."
       },
       {
-        "adj": 280,
+        "adj": 265,
         "attrs": {
           "processor_type": "[intel-core-i7-14th-gen.]"
         },
         "label": "Intel Core i7 14th Gen."
       },
       {
-        "adj": 60,
+        "adj": 50,
         "attrs": {
           "processor_type": "[intel-core-i5-12th-gen]"
         },
         "label": "Intel Core i5 12th Gen."
       },
       {
-        "adj": 85,
+        "adj": 75,
         "attrs": {
           "processor_type": "[intel-core-i5-13th-gen.]"
         },
@@ -76965,28 +81258,28 @@
         "label": "Intel Core i5 14th Gen."
       },
       {
-        "adj": 50,
+        "adj": 55,
         "attrs": {
           "processor_type": "[intel-core-i7-11th-gen]"
         },
         "label": "Intel Core i7 11th Gen."
       },
       {
-        "adj": 75,
+        "adj": 85,
         "attrs": {
           "processor_type": "[intel-core-i7-12th-gen]"
         },
         "label": "Intel Core i7 12th Gen."
       },
       {
-        "adj": 140,
+        "adj": 150,
         "attrs": {
           "processor_type": "[intel-core-i7-13th-gen.]"
         },
         "label": "Intel Core i7 13th Gen."
       },
       {
-        "adj": 200,
+        "adj": 215,
         "attrs": {
           "processor_type": "[intel-core-i7-14th-gen.]"
         },
@@ -77010,16 +81303,15 @@
       "NVIDIA GeForce RTX 4060 Ti": 100,
       "NVIDIA GeForce RTX 4070 SUPER": 125
     },
-    "iwm_name": "MSI Codex Gaming",
+    "iwm_name": "Sell your MSI Codex Gaming Desktop for More Cash Online",
     "model": "msi-codex-gaming-desktop",
     "ram_adj": {
       "16GB RAM": 15,
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-05-16T02:38:40+00:00",
+    "scraped_at": "2026-07-05T09:40:24+00:00",
     "series": "msi-desktop",
-    "stale": true,
     "storage_adj": {
       "1TB HDD": -25,
       "1TB SSD": 25,
@@ -77029,7 +81321,7 @@
     },
     "submodels": {
       "codex-r": {
-        "base_price": 100,
+        "base_price": 125,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -77041,49 +81333,49 @@
             "label": "Intel Core i5 11th Gen."
           },
           {
-            "adj": 150,
+            "adj": 145,
             "attrs": {
               "processor_type": "[intel-core-i5-12th-gen]"
             },
             "label": "Intel Core i5 12th Gen."
           },
           {
-            "adj": 200,
+            "adj": 195,
             "attrs": {
               "processor_type": "[intel-core-i5-13th-gen.]"
             },
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 240,
+            "adj": 225,
             "attrs": {
               "processor_type": "[intel-core-i5-14th-gen.]"
             },
             "label": "Intel Core i5 14th Gen."
           },
           {
-            "adj": 235,
+            "adj": 225,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 280,
+            "adj": 265,
             "attrs": {
               "processor_type": "[intel-core-i7-14th-gen.]"
             },
             "label": "Intel Core i7 14th Gen."
           },
           {
-            "adj": 60,
+            "adj": 50,
             "attrs": {
               "processor_type": "[intel-core-i5-12th-gen]"
             },
             "label": "Intel Core i5 12th Gen."
           },
           {
-            "adj": 85,
+            "adj": 75,
             "attrs": {
               "processor_type": "[intel-core-i5-13th-gen.]"
             },
@@ -77097,28 +81389,28 @@
             "label": "Intel Core i5 14th Gen."
           },
           {
-            "adj": 50,
+            "adj": 55,
             "attrs": {
               "processor_type": "[intel-core-i7-11th-gen]"
             },
             "label": "Intel Core i7 11th Gen."
           },
           {
-            "adj": 75,
+            "adj": 85,
             "attrs": {
               "processor_type": "[intel-core-i7-12th-gen]"
             },
             "label": "Intel Core i7 12th Gen."
           },
           {
-            "adj": 140,
+            "adj": 150,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 200,
+            "adj": 215,
             "attrs": {
               "processor_type": "[intel-core-i7-14th-gen.]"
             },
@@ -77156,7 +81448,7 @@
         }
       },
       "codex-r2": {
-        "base_price": 250,
+        "base_price": 270,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -77175,21 +81467,21 @@
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 90,
+            "adj": 80,
             "attrs": {
               "processor_type": "[intel-core-i5-14th-gen.]"
             },
             "label": "Intel Core i5 14th Gen."
           },
           {
-            "adj": 85,
+            "adj": 80,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 130,
+            "adj": 120,
             "attrs": {
               "processor_type": "[intel-core-i7-14th-gen.]"
             },
@@ -77222,7 +81514,7 @@
         }
       },
       "codex-z": {
-        "base_price": 210,
+        "base_price": 200,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -77234,35 +81526,35 @@
             "label": "AMD Ryzen 5 5600X"
           },
           {
-            "adj": 40,
+            "adj": 70,
             "attrs": {
               "processor_type": "[intel-core-i5-12th-gen]"
             },
             "label": "Intel Core i5 12th Gen."
           },
           {
-            "adj": 90,
+            "adj": 120,
             "attrs": {
               "processor_type": "[intel-core-i5-13th-gen.]"
             },
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 130,
+            "adj": 150,
             "attrs": {
               "processor_type": "[intel-core-i5-14th-gen.]"
             },
             "label": "Intel Core i5 14th Gen."
           },
           {
-            "adj": 125,
+            "adj": 150,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 170,
+            "adj": 190,
             "attrs": {
               "processor_type": "[intel-core-i7-14th-gen.]"
             },
@@ -77312,7 +81604,7 @@
     "url": "https://www.itsworthmore.com/sell/msi-desktop/msi-codex-gaming-desktop"
   },
   "msi-desktop/msi-trident-gaming-desktop": {
-    "base_price": 150,
+    "base_price": 155,
     "battery_adj": {},
     "charger_adj": {},
     "chips": [
@@ -77324,49 +81616,49 @@
         "label": "Intel Core i5 11th Gen."
       },
       {
-        "adj": 190,
+        "adj": 185,
         "attrs": {
           "processor_type": "[intel-core-i5-13th-gen.]"
         },
         "label": "Intel Core i5 13th Gen."
       },
       {
-        "adj": 190,
+        "adj": 185,
         "attrs": {
           "processor_type": "[intel-core-i5-14th-gen.]"
         },
         "label": "Intel Core i5 14th Gen."
       },
       {
-        "adj": 190,
+        "adj": 185,
         "attrs": {
           "processor_type": "[intel-core-i7-10th-gen]"
         },
         "label": "Intel Core i7 10th Gen."
       },
       {
-        "adj": 190,
+        "adj": 185,
         "attrs": {
           "processor_type": "[intel-core-i7-12th-gen]"
         },
         "label": "Intel Core i7 12th Gen."
       },
       {
-        "adj": 190,
+        "adj": 185,
         "attrs": {
           "processor_type": "[intel-core-i7-13th-gen.]"
         },
         "label": "Intel Core i7 13th Gen."
       },
       {
-        "adj": 190,
+        "adj": 185,
         "attrs": {
           "processor_type": "[intel-core-i7-14th-gen.]"
         },
         "label": "Intel Core i7 14th Gen."
       },
       {
-        "adj": 50,
+        "adj": 55,
         "attrs": {
           "processor_type": "[intel-core-i5-12th-gen]"
         },
@@ -77380,21 +81672,21 @@
         "label": "Intel Core i5 13th Gen."
       },
       {
-        "adj": 50,
+        "adj": 65,
         "attrs": {
           "processor_type": "[intel-core-i7-11th-gen]"
         },
         "label": "Intel Core i7 11th Gen."
       },
       {
-        "adj": 90,
+        "adj": 105,
         "attrs": {
           "processor_type": "[intel-core-i7-12th-gen]"
         },
         "label": "Intel Core i7 12th Gen."
       },
       {
-        "adj": 125,
+        "adj": 145,
         "attrs": {
           "processor_type": "[intel-core-i7-13th-gen.]"
         },
@@ -77418,16 +81710,15 @@
       "NVIDIA GeForce RTX 4060 Ti": 0,
       "NVIDIA GeForce RTX 4070": 0
     },
-    "iwm_name": "MSI Trident Gaming",
+    "iwm_name": "Sell your MSI Trident Gaming Desktop for More Cash Online",
     "model": "msi-trident-gaming-desktop",
     "ram_adj": {
       "16GB RAM": 15,
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-05-16T02:38:37+00:00",
+    "scraped_at": "2026-07-05T09:40:24+00:00",
     "series": "msi-desktop",
-    "stale": true,
     "storage_adj": {
       "1TB SSD": 30,
       "2TB SSD": 60,
@@ -77435,7 +81726,7 @@
     },
     "submodels": {
       "trident-3": {
-        "base_price": 150,
+        "base_price": 155,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -77447,49 +81738,49 @@
             "label": "Intel Core i5 11th Gen."
           },
           {
-            "adj": 190,
+            "adj": 185,
             "attrs": {
               "processor_type": "[intel-core-i5-13th-gen.]"
             },
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 190,
+            "adj": 185,
             "attrs": {
               "processor_type": "[intel-core-i5-14th-gen.]"
             },
             "label": "Intel Core i5 14th Gen."
           },
           {
-            "adj": 190,
+            "adj": 185,
             "attrs": {
               "processor_type": "[intel-core-i7-10th-gen]"
             },
             "label": "Intel Core i7 10th Gen."
           },
           {
-            "adj": 190,
+            "adj": 185,
             "attrs": {
               "processor_type": "[intel-core-i7-12th-gen]"
             },
             "label": "Intel Core i7 12th Gen."
           },
           {
-            "adj": 190,
+            "adj": 185,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 190,
+            "adj": 185,
             "attrs": {
               "processor_type": "[intel-core-i7-14th-gen.]"
             },
             "label": "Intel Core i7 14th Gen."
           },
           {
-            "adj": 50,
+            "adj": 55,
             "attrs": {
               "processor_type": "[intel-core-i5-12th-gen]"
             },
@@ -77503,21 +81794,21 @@
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 50,
+            "adj": 65,
             "attrs": {
               "processor_type": "[intel-core-i7-11th-gen]"
             },
             "label": "Intel Core i7 11th Gen."
           },
           {
-            "adj": 90,
+            "adj": 105,
             "attrs": {
               "processor_type": "[intel-core-i7-12th-gen]"
             },
             "label": "Intel Core i7 12th Gen."
           },
           {
-            "adj": 125,
+            "adj": 145,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
@@ -77553,7 +81844,7 @@
         }
       },
       "trident-x": {
-        "base_price": 375,
+        "base_price": 460,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -77565,56 +81856,56 @@
             "label": "Intel Core i7 11th Gen."
           },
           {
-            "adj": -35,
+            "adj": -120,
             "attrs": {
               "processor_type": "[intel-core-i5-13th-gen.]"
             },
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": -35,
+            "adj": -120,
             "attrs": {
               "processor_type": "[intel-core-i5-14th-gen.]"
             },
             "label": "Intel Core i5 14th Gen."
           },
           {
-            "adj": -35,
+            "adj": -120,
             "attrs": {
               "processor_type": "[intel-core-i7-10th-gen]"
             },
             "label": "Intel Core i7 10th Gen."
           },
           {
-            "adj": -35,
+            "adj": -120,
             "attrs": {
               "processor_type": "[intel-core-i7-12th-gen]"
             },
             "label": "Intel Core i7 12th Gen."
           },
           {
-            "adj": -35,
+            "adj": -120,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": -35,
+            "adj": -120,
             "attrs": {
               "processor_type": "[intel-core-i7-14th-gen.]"
             },
             "label": "Intel Core i7 14th Gen."
           },
           {
-            "adj": 75,
+            "adj": 60,
             "attrs": {
               "processor_type": "[intel-core-i7-12th-gen]"
             },
             "label": "Intel Core i7 12th Gen."
           },
           {
-            "adj": 65,
+            "adj": 80,
             "attrs": {
               "processor_type": "[intel-core-i9-11th-gen]"
             },
@@ -85176,6 +89467,300 @@
       }
     },
     "url": "https://www.itsworthmore.com/sell/panasonic-laptop/panasonic-toughbook-fz-55"
+  },
+  "precision-3000-series-desktop/precision-3260-compact": {
+    "base_price": 230,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 40,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 85,
+        "attrs": {
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 145,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 140,
+        "attrs": {
+          "processor_type": "[intel-core-i9-12th-gen]"
+        },
+        "label": "Intel Core i9 12th Gen."
+      },
+      {
+        "adj": 170,
+        "attrs": {
+          "processor_type": "[intel-core-i9-13th-gen.]"
+        },
+        "label": "Intel Core i9 13th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -145,
+      "good": -55,
+      "mint": 0,
+      "sealed": 20
+    },
+    "done": true,
+    "iwm_name": "Sell Your Dell Precision 3260 Compact Desktop for the Most Cash",
+    "model": "precision-3260-compact",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:23+00:00",
+    "series": "precision-3000-series-desktop",
+    "storage_adj": {
+      "1TB SSD": 30,
+      "256GB SSD": 0,
+      "2TB SSD": 50,
+      "4TB SSD": 100,
+      "512GB SSD": 15
+    },
+    "submodels": {
+      "": {
+        "base_price": 230,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 85,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 145,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 140,
+            "attrs": {
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          },
+          {
+            "adj": 170,
+            "attrs": {
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -145,
+          "good": -55,
+          "mint": 0,
+          "sealed": 20
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "2TB SSD": 50,
+          "4TB SSD": 100,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/precision-3000-series-desktop/precision-3260-compact"
+  },
+  "precision-3000-series-desktop/precision-3460-sff": {
+    "base_price": 250,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 160,
+        "attrs": {
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 115,
+        "attrs": {
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 210,
+        "attrs": {
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 260,
+        "attrs": {
+          "processor_type": "[intel-core-i9-12th-gen]"
+        },
+        "label": "Intel Core i9 12th Gen."
+      },
+      {
+        "adj": 310,
+        "attrs": {
+          "processor_type": "[intel-core-i9-13th-gen.]"
+        },
+        "label": "Intel Core i9 13th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -150,
+      "good": -50,
+      "mint": 0,
+      "sealed": 25
+    },
+    "done": true,
+    "iwm_name": "Sell Your Dell Precision 3460 Small Form Factor Desktop for the Most Cash",
+    "model": "precision-3460-sff",
+    "ram_adj": {
+      "16GB RAM": 10,
+      "32GB RAM": 25,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:23+00:00",
+    "series": "precision-3000-series-desktop",
+    "storage_adj": {
+      "1TB SSD": 25,
+      "256GB SSD": 0,
+      "2TB SSD": 50,
+      "4TB SSD": 100,
+      "512GB SSD": 10
+    },
+    "submodels": {
+      "": {
+        "base_price": 250,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 160,
+            "attrs": {
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 115,
+            "attrs": {
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 210,
+            "attrs": {
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 260,
+            "attrs": {
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          },
+          {
+            "adj": 310,
+            "attrs": {
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -150,
+          "good": -50,
+          "mint": 0,
+          "sealed": 25
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 10,
+          "32GB RAM": 25,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB SSD": 25,
+          "256GB SSD": 0,
+          "2TB SSD": 50,
+          "4TB SSD": 100,
+          "512GB SSD": 10
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/precision-3000-series-desktop/precision-3460-sff"
   },
   "precision-3000-series-laptop/precision-3000-series-14": {
     "base_price": 170,
@@ -106251,6 +110836,729 @@
     "scraped_at": "2026-05-16T02:14:18+00:00",
     "series": "vostro-7000-series-laptop",
     "url": "https://www.itsworthmore.com/sell/vostro-7000-series-laptop/7620"
+  },
+  "xps-desktop/xps-8920-desktop": {
+    "base_price": 5,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[8920]",
+          "processor_type": "[intel-core-i7-7th-gen]"
+        },
+        "label": "Intel Core i7 7th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -30,
+      "good": -10,
+      "mint": 0,
+      "sealed": 15
+    },
+    "done": true,
+    "gpu_adj": {
+      "NVIDIA GeForce GTX 1050 Ti": 0,
+      "NVIDIA GeForce GTX 1060": 10,
+      "NVIDIA GeForce GTX 1070": 15,
+      "NVIDIA GeForce GTX 1080": 30
+    },
+    "iwm_name": "Sell Your XPS 8920 Desktop for the Most Cash",
+    "model": "xps-8920-desktop",
+    "ram_adj": {
+      "16GB RAM": 5,
+      "32GB RAM": 10,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:25+00:00",
+    "series": "xps-desktop",
+    "storage_adj": {
+      "1TB HDD": 10,
+      "1TB SSD": 25,
+      "256GB SSD": 10,
+      "2TB HDD": 15,
+      "2TB SSD": 40,
+      "500GB HDD": 0,
+      "512GB SSD": 15
+    },
+    "submodels": {
+      "": {
+        "base_price": 5,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[8920]",
+              "processor_type": "[intel-core-i7-7th-gen]"
+            },
+            "label": "Intel Core i7 7th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -30,
+          "good": -10,
+          "mint": 0,
+          "sealed": 15
+        },
+        "gpu_adj": {
+          "NVIDIA GeForce GTX 1050 Ti": 0,
+          "NVIDIA GeForce GTX 1060": 10,
+          "NVIDIA GeForce GTX 1070": 15,
+          "NVIDIA GeForce GTX 1080": 30
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 5,
+          "32GB RAM": 10,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 10,
+          "1TB SSD": 25,
+          "256GB SSD": 10,
+          "2TB HDD": 15,
+          "2TB SSD": 40,
+          "500GB HDD": 0,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/xps-desktop/xps-8920-desktop"
+  },
+  "xps-desktop/xps-8930-desktop": {
+    "base_price": 5,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[8930]",
+          "processor_type": "[intel-core-i7-8th-gen]"
+        },
+        "label": "Intel Core i7 8th Gen."
+      },
+      {
+        "adj": 5,
+        "attrs": {
+          "model": "[8930]",
+          "processor_type": "[intel-core-i7-9th-gen]"
+        },
+        "label": "Intel Core i7 9th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -30,
+      "mint": 0,
+      "sealed": 15
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 560": 0,
+      "AMD Radeon RX 570": 10,
+      "AMD Radeon RX 580": 20,
+      "NVIDIA GeForce GTX 1050 Ti": 10,
+      "NVIDIA GeForce GTX 1060": 20,
+      "NVIDIA GeForce GTX 1070": 30,
+      "NVIDIA GeForce GTX 1080": 50,
+      "NVIDIA GeForce RTX 2060": 60
+    },
+    "iwm_name": "Sell Your XPS 8930 Desktop for the Most Cash",
+    "model": "xps-8930-desktop",
+    "ram_adj": {
+      "16GB RAM": 10,
+      "32GB RAM": 20,
+      "64GB RAM": 35,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:25+00:00",
+    "series": "xps-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 25,
+      "256GB SSD": 0,
+      "2TB HDD": 15,
+      "2TB SSD": 50,
+      "4TB HDD": 25,
+      "500GB HDD": -10,
+      "512GB SSD": 10
+    },
+    "submodels": {
+      "": {
+        "base_price": 5,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[8930]",
+              "processor_type": "[intel-core-i7-8th-gen]"
+            },
+            "label": "Intel Core i7 8th Gen."
+          },
+          {
+            "adj": 5,
+            "attrs": {
+              "model": "[8930]",
+              "processor_type": "[intel-core-i7-9th-gen]"
+            },
+            "label": "Intel Core i7 9th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -80,
+          "good": -30,
+          "mint": 0,
+          "sealed": 15
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 560": 0,
+          "AMD Radeon RX 570": 10,
+          "AMD Radeon RX 580": 20,
+          "NVIDIA GeForce GTX 1050 Ti": 10,
+          "NVIDIA GeForce GTX 1060": 20,
+          "NVIDIA GeForce GTX 1070": 30,
+          "NVIDIA GeForce GTX 1080": 50,
+          "NVIDIA GeForce RTX 2060": 60
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 10,
+          "32GB RAM": 20,
+          "64GB RAM": 35,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 25,
+          "256GB SSD": 0,
+          "2TB HDD": 15,
+          "2TB SSD": 50,
+          "4TB HDD": 25,
+          "500GB HDD": -10,
+          "512GB SSD": 10
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/xps-desktop/xps-8930-desktop"
+  },
+  "xps-desktop/xps-8940-desktop": {
+    "base_price": 140,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[8940]",
+          "processor_type": "[intel-core-i5-10th-gen]"
+        },
+        "label": "Intel Core i5 10th Gen."
+      },
+      {
+        "adj": 40,
+        "attrs": {
+          "model": "[8940]",
+          "processor_type": "[intel-core-i5-11th-gen]"
+        },
+        "label": "Intel Core i5 11th Gen."
+      },
+      {
+        "adj": 40,
+        "attrs": {
+          "model": "[8940]",
+          "processor_type": "[intel-core-i7-10th-gen]"
+        },
+        "label": "Intel Core i7 10th Gen."
+      },
+      {
+        "adj": 60,
+        "attrs": {
+          "model": "[8940]",
+          "processor_type": "[intel-core-i7-11th-gen]"
+        },
+        "label": "Intel Core i7 11th Gen."
+      },
+      {
+        "adj": 120,
+        "attrs": {
+          "model": "[8940]",
+          "processor_type": "[intel-core-i9-10th-gen]"
+        },
+        "label": "Intel Core i9 10th Gen."
+      },
+      {
+        "adj": 160,
+        "attrs": {
+          "model": "[8940]",
+          "processor_type": "[intel-core-i9-11th-gen]"
+        },
+        "label": "Intel Core i9 11th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -150,
+      "good": -50,
+      "mint": 0,
+      "sealed": 25
+    },
+    "done": true,
+    "gpu_adj": {
+      "Integrated Graphics": 0,
+      "NVIDIA GeForce GTX 1660 SUPER": 80,
+      "NVIDIA GeForce GTX 1660 Ti": 80,
+      "NVIDIA GeForce RTX 2070": 100,
+      "NVIDIA GeForce RTX 2080": 125,
+      "NVIDIA GeForce RTX 2080 Ti": 130,
+      "NVIDIA GeForce RTX 3060": 125,
+      "NVIDIA GeForce RTX 3060 Ti": 135,
+      "NVIDIA GeForce RTX 3070": 175
+    },
+    "iwm_name": "Sell Your XPS 8940 Desktop for the Most Cash",
+    "model": "xps-8940-desktop",
+    "ram_adj": {
+      "16GB RAM": 15,
+      "32GB RAM": 30,
+      "64GB RAM": 50,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:25+00:00",
+    "series": "xps-desktop",
+    "storage_adj": {
+      "1TB HDD": 0,
+      "1TB SSD": 30,
+      "256GB SSD": 0,
+      "2TB HDD": 15,
+      "2TB SSD": 50,
+      "500GB HDD": -20,
+      "512GB SSD": 15
+    },
+    "submodels": {
+      "": {
+        "base_price": 140,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[8940]",
+              "processor_type": "[intel-core-i5-10th-gen]"
+            },
+            "label": "Intel Core i5 10th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "model": "[8940]",
+              "processor_type": "[intel-core-i5-11th-gen]"
+            },
+            "label": "Intel Core i5 11th Gen."
+          },
+          {
+            "adj": 40,
+            "attrs": {
+              "model": "[8940]",
+              "processor_type": "[intel-core-i7-10th-gen]"
+            },
+            "label": "Intel Core i7 10th Gen."
+          },
+          {
+            "adj": 60,
+            "attrs": {
+              "model": "[8940]",
+              "processor_type": "[intel-core-i7-11th-gen]"
+            },
+            "label": "Intel Core i7 11th Gen."
+          },
+          {
+            "adj": 120,
+            "attrs": {
+              "model": "[8940]",
+              "processor_type": "[intel-core-i9-10th-gen]"
+            },
+            "label": "Intel Core i9 10th Gen."
+          },
+          {
+            "adj": 160,
+            "attrs": {
+              "model": "[8940]",
+              "processor_type": "[intel-core-i9-11th-gen]"
+            },
+            "label": "Intel Core i9 11th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -150,
+          "good": -50,
+          "mint": 0,
+          "sealed": 25
+        },
+        "gpu_adj": {
+          "Integrated Graphics": 0,
+          "NVIDIA GeForce GTX 1660 SUPER": 80,
+          "NVIDIA GeForce GTX 1660 Ti": 80,
+          "NVIDIA GeForce RTX 2070": 100,
+          "NVIDIA GeForce RTX 2080": 125,
+          "NVIDIA GeForce RTX 2080 Ti": 130,
+          "NVIDIA GeForce RTX 3060": 125,
+          "NVIDIA GeForce RTX 3060 Ti": 135,
+          "NVIDIA GeForce RTX 3070": 175
+        },
+        "model_label": "",
+        "ram_adj": {
+          "16GB RAM": 15,
+          "32GB RAM": 30,
+          "64GB RAM": 50,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 0,
+          "1TB SSD": 30,
+          "256GB SSD": 0,
+          "2TB HDD": 15,
+          "2TB SSD": 50,
+          "500GB HDD": -20,
+          "512GB SSD": 15
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/xps-desktop/xps-8940-desktop"
+  },
+  "xps-desktop/xps-8950-desktop": {
+    "base_price": 210,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[8950]",
+          "processor_type": "[intel-core-i5-12th-gen]"
+        },
+        "label": "Intel Core i5 12th Gen."
+      },
+      {
+        "adj": 90,
+        "attrs": {
+          "model": "[8950]",
+          "processor_type": "[intel-core-i7-12th-gen]"
+        },
+        "label": "Intel Core i7 12th Gen."
+      },
+      {
+        "adj": 170,
+        "attrs": {
+          "model": "[8950]",
+          "processor_type": "[intel-core-i9-12th-gen]"
+        },
+        "label": "Intel Core i9 12th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -150,
+      "good": -60,
+      "mint": 0,
+      "sealed": 50
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6700 XT": 70,
+      "Integrated Graphics": 0,
+      "NVIDIA GeForce GTX 1650 SUPER": 50,
+      "NVIDIA GeForce GTX 1660 SUPER": 75,
+      "NVIDIA GeForce GTX 1660 Ti": 70,
+      "NVIDIA GeForce RTX 3050": 100,
+      "NVIDIA GeForce RTX 3060": 125,
+      "NVIDIA GeForce RTX 3060 Ti": 135,
+      "NVIDIA GeForce RTX 3070": 175,
+      "NVIDIA GeForce RTX 3070 Ti": 200,
+      "NVIDIA GeForce RTX 3080": 250,
+      "NVIDIA GeForce RTX 3080 Ti": 275,
+      "NVIDIA GeForce RTX 3090": 400
+    },
+    "iwm_name": "Sell Your XPS 8950 Desktop for the Most Cash",
+    "model": "xps-8950-desktop",
+    "ram_adj": {
+      "128GB RAM": 100,
+      "16GB RAM": 20,
+      "32GB RAM": 40,
+      "64GB RAM": 75,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:25+00:00",
+    "series": "xps-desktop",
+    "storage_adj": {
+      "1TB HDD": 20,
+      "1TB SSD": 60,
+      "256GB SSD": 20,
+      "2TB HDD": 30,
+      "2TB SSD": 95,
+      "500GB HDD": 0,
+      "512GB SSD": 40
+    },
+    "submodels": {
+      "": {
+        "base_price": 210,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[8950]",
+              "processor_type": "[intel-core-i5-12th-gen]"
+            },
+            "label": "Intel Core i5 12th Gen."
+          },
+          {
+            "adj": 90,
+            "attrs": {
+              "model": "[8950]",
+              "processor_type": "[intel-core-i7-12th-gen]"
+            },
+            "label": "Intel Core i7 12th Gen."
+          },
+          {
+            "adj": 170,
+            "attrs": {
+              "model": "[8950]",
+              "processor_type": "[intel-core-i9-12th-gen]"
+            },
+            "label": "Intel Core i9 12th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -150,
+          "good": -60,
+          "mint": 0,
+          "sealed": 50
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6700 XT": 70,
+          "Integrated Graphics": 0,
+          "NVIDIA GeForce GTX 1650 SUPER": 50,
+          "NVIDIA GeForce GTX 1660 SUPER": 75,
+          "NVIDIA GeForce GTX 1660 Ti": 70,
+          "NVIDIA GeForce RTX 3050": 100,
+          "NVIDIA GeForce RTX 3060": 125,
+          "NVIDIA GeForce RTX 3060 Ti": 135,
+          "NVIDIA GeForce RTX 3070": 175,
+          "NVIDIA GeForce RTX 3070 Ti": 200,
+          "NVIDIA GeForce RTX 3080": 250,
+          "NVIDIA GeForce RTX 3080 Ti": 275,
+          "NVIDIA GeForce RTX 3090": 400
+        },
+        "model_label": "",
+        "ram_adj": {
+          "128GB RAM": 100,
+          "16GB RAM": 20,
+          "32GB RAM": 40,
+          "64GB RAM": 75,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 20,
+          "1TB SSD": 60,
+          "256GB SSD": 20,
+          "2TB HDD": 30,
+          "2TB SSD": 95,
+          "500GB HDD": 0,
+          "512GB SSD": 40
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/xps-desktop/xps-8950-desktop"
+  },
+  "xps-desktop/xps-8960-desktop": {
+    "base_price": 475,
+    "battery_adj": {},
+    "charger_adj": {},
+    "chips": [
+      {
+        "adj": 0,
+        "attrs": {
+          "model": "[8960]",
+          "processor_type": "[intel-core-i5-13th-gen.]"
+        },
+        "label": "Intel Core i5 13th Gen."
+      },
+      {
+        "adj": 100,
+        "attrs": {
+          "model": "[8960]",
+          "processor_type": "[intel-core-i7-13th-gen.]"
+        },
+        "label": "Intel Core i7 13th Gen."
+      },
+      {
+        "adj": 150,
+        "attrs": {
+          "model": "[8960]",
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 135,
+        "attrs": {
+          "model": "[8960]",
+          "processor_type": "[intel-core-i9-13th-gen.]"
+        },
+        "label": "Intel Core i9 13th Gen."
+      }
+    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -180,
+      "good": -60,
+      "mint": 0,
+      "sealed": 40
+    },
+    "done": true,
+    "gpu_adj": {
+      "AMD Radeon RX 6500 XT": 70,
+      "AMD Radeon RX 6600 XT": 100,
+      "AMD Radeon RX 6700 XT": 120,
+      "AMD Radeon RX 6800 XT": 130,
+      "AMD Radeon RX 6900 XT": 150,
+      "Integrated Graphics": 0,
+      "NVIDIA GeForce RTX 3050": 100,
+      "NVIDIA GeForce RTX 3060": 120,
+      "NVIDIA GeForce RTX 3060 Ti": 130,
+      "NVIDIA GeForce RTX 3070": 150,
+      "NVIDIA GeForce RTX 3070 Ti": 165,
+      "NVIDIA GeForce RTX 3080": 200,
+      "NVIDIA GeForce RTX 3080 Ti": 250,
+      "NVIDIA GeForce RTX 3090": 450,
+      "NVIDIA GeForce RTX 3090 Ti": 500,
+      "NVIDIA GeForce RTX 4060 Ti": 150,
+      "NVIDIA GeForce RTX 4070 Ti": 250,
+      "NVIDIA GeForce RTX 4080": 450,
+      "NVIDIA GeForce RTX 4090": 800
+    },
+    "iwm_name": "Sell Your XPS 8960 Desktop for the Most Cash",
+    "model": "xps-8960-desktop",
+    "ram_adj": {
+      "128GB RAM": 150,
+      "16GB RAM": 25,
+      "32GB RAM": 50,
+      "48GB RAM": 70,
+      "64GB RAM": 100,
+      "8GB RAM": 0
+    },
+    "scraped_at": "2026-07-05T09:40:26+00:00",
+    "series": "xps-desktop",
+    "storage_adj": {
+      "1TB HDD": 20,
+      "1TB SSD": 70,
+      "256GB SSD": 20,
+      "2TB HDD": 40,
+      "2TB SSD": 120,
+      "500GB HDD": 0,
+      "512GB SSD": 45
+    },
+    "submodels": {
+      "": {
+        "base_price": 475,
+        "battery_adj": {},
+        "charger_adj": {},
+        "chips": [
+          {
+            "adj": 0,
+            "attrs": {
+              "model": "[8960]",
+              "processor_type": "[intel-core-i5-13th-gen.]"
+            },
+            "label": "Intel Core i5 13th Gen."
+          },
+          {
+            "adj": 100,
+            "attrs": {
+              "model": "[8960]",
+              "processor_type": "[intel-core-i7-13th-gen.]"
+            },
+            "label": "Intel Core i7 13th Gen."
+          },
+          {
+            "adj": 150,
+            "attrs": {
+              "model": "[8960]",
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 135,
+            "attrs": {
+              "model": "[8960]",
+              "processor_type": "[intel-core-i9-13th-gen.]"
+            },
+            "label": "Intel Core i9 13th Gen."
+          }
+        ],
+        "condition_adj": {
+          "broken": 0,
+          "fair": -180,
+          "good": -60,
+          "mint": 0,
+          "sealed": 40
+        },
+        "gpu_adj": {
+          "AMD Radeon RX 6500 XT": 70,
+          "AMD Radeon RX 6600 XT": 100,
+          "AMD Radeon RX 6700 XT": 120,
+          "AMD Radeon RX 6800 XT": 130,
+          "AMD Radeon RX 6900 XT": 150,
+          "Integrated Graphics": 0,
+          "NVIDIA GeForce RTX 3050": 100,
+          "NVIDIA GeForce RTX 3060": 120,
+          "NVIDIA GeForce RTX 3060 Ti": 130,
+          "NVIDIA GeForce RTX 3070": 150,
+          "NVIDIA GeForce RTX 3070 Ti": 165,
+          "NVIDIA GeForce RTX 3080": 200,
+          "NVIDIA GeForce RTX 3080 Ti": 250,
+          "NVIDIA GeForce RTX 3090": 450,
+          "NVIDIA GeForce RTX 3090 Ti": 500,
+          "NVIDIA GeForce RTX 4060 Ti": 150,
+          "NVIDIA GeForce RTX 4070 Ti": 250,
+          "NVIDIA GeForce RTX 4080": 450,
+          "NVIDIA GeForce RTX 4090": 800
+        },
+        "model_label": "",
+        "ram_adj": {
+          "128GB RAM": 150,
+          "16GB RAM": 25,
+          "32GB RAM": 50,
+          "48GB RAM": 70,
+          "64GB RAM": 100,
+          "8GB RAM": 0
+        },
+        "storage_adj": {
+          "1TB HDD": 20,
+          "1TB SSD": 70,
+          "256GB SSD": 20,
+          "2TB HDD": 40,
+          "2TB SSD": 120,
+          "500GB HDD": 0,
+          "512GB SSD": 45
+        }
+      }
+    },
+    "url": "https://www.itsworthmore.com/sell/xps-desktop/xps-8960-desktop"
   },
   "xps-laptop/xps-13-7390": {
     "done": true,

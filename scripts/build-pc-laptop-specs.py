@@ -345,13 +345,31 @@ MANUAL_ID_TO_SUBMODEL = {
 }
 
 # Page variants whose IWM URL slug needs a manual hint (not derivable
-# from bridge files or image filenames).
+# from bridge files or image filenames). Desktops became IWM-priceable in
+# the June-2026 restructure — these were inquiry-only placeholders before.
 MANUAL_ID_TO_DESKTOP_SLUG = {
     "msiinfinity": "msi-trident-gaming-desktop",
     "msitrident": "msi-trident-gaming-desktop",
     "msinightblade": "msi-codex-gaming-desktop",
     "msicodex5": "msi-codex-gaming-desktop",
     "msipro": "msi-aegis-gaming-desktop",
+    "awaurorar16": "alienware-aurora-r16",
+    "awaurorar15": "alienware-aurora-r15",
+    "awaurorar14": "alienware-aurora-r14",
+    "awaurorar13": "alienware-aurora-r13",
+    "awaurorar12": "alienware-aurora-r12",
+    "awaurorar10": "alienware-aurora-r10",
+    "awarea51desktop": "alienware-area-51-aat2250",
+    "dxps8960": "xps-8960-desktop",
+    "dxps8950": "xps-8950-desktop",
+    "doptiplex7010": "optiplex-tower",
+    "doptiplex5000": "optiplex-tower",
+    "hpomendsk": "hp-omen-45l-desktop",
+    "hpomen40": "hp-omen-40l-desktop",
+    "lnthinkm": "lenovo-thinkcentre-tower",
+    "lnthinkm90q": "lenovo-thinkcentre-tiny-desktop",
+    "lnlegion5dtwr": "lenovo-legion-tower-5i",
+    "lnlegion7dtwr": "lenovo-legion-tower-7i",
 }
 
 

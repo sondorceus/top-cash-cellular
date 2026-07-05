@@ -113,6 +113,8 @@ jobs:
         timeout-minutes: 45
       - name: Apply IWM × 0.90 base prices to page.tsx
         run: python scripts/apply-iwm-pc-laptop-prices.py
+      - name: Refresh console / VR / desktop bases (IWM × 0.90)
+        run: python scripts/refresh-simple-bases.py
       - name: Rebuild pc-laptop-specs.json
         run: |
           python scripts/build-pc-laptop-specs.py

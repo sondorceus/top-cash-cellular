@@ -6873,32 +6873,49 @@
     ]
   },
   "awarea51desktop": {
-    "_form_factor": "80L full tower (DIY-friendly, 420mm AIO support)",
-    "_inquiry_only": true,
-    "_market_value_usd": "2800-6000",
-    "base_price": 0,
+    "base_price": 625,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 5,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -220,
+      "good": -110,
+      "mint": 0,
+      "sealed": 75,
+      "verygood": -55
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_5070_ti",
-        "label": "RTX 5070 Ti",
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_5080",
-        "label": "RTX 5080",
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_5090",
-        "label": "RTX 5090",
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_5080",
+        "label": "NVIDIA GeForce RTX 5080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 600,
+        "id": "nvidia_geforce_rtx_5090",
+        "label": "NVIDIA GeForce RTX 5090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -6908,37 +6925,30 @@
       {
         "adj": 0,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 100,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "core_ultra_9_285k",
-        "label": "Core Ultra 9 285K",
+        "adj": 625,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_7_9800x3d",
-        "label": "Ryzen 7 9800X3D",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_9_9950x_9950x3d",
-        "label": "Ryzen 9 9950X/9950X3D",
+        "adj": 825,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -6952,14 +6962,14 @@
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 100,
         "id": "2tb",
         "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 200,
         "id": "4tb",
         "label": "4TB SSD",
         "multiplier": 1.0,
@@ -6968,60 +6978,84 @@
     ]
   },
   "awaurorar10": {
-    "_form_factor": "Oval 'Legend' mid-tower",
-    "_inquiry_only": true,
-    "_market_value_usd": "550-1400",
-    "base_price": 0,
+    "base_price": 125,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power": 5,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -40,
+      "mint": 0,
+      "sealed": 30
+    },
+    "display": [],
     "graphics": [
       {
-        "adj": 0,
-        "id": "gtx_1660_super",
-        "label": "GTX 1660 Super",
+        "adj": 20,
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "id": "nvidia_geforce_gtx_1660",
+        "label": "NVIDIA GeForce GTX 1660",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070",
-        "label": "RTX 3070",
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080",
-        "label": "RTX 3080",
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_2080",
+        "label": "NVIDIA GeForce RTX 2080",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3090",
-        "label": "RTX 3090",
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rx_5700",
-        "label": "RX 5700",
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rx_6800_xt",
-        "label": "RX 6800/XT",
+        "adj": 70,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7031,79 +7065,58 @@
       {
         "adj": 0,
         "id": "r8",
-        "label": "8GB",
+        "label": "8GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 15,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 30,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 50,
         "id": "r64",
-        "label": "64GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r128",
-        "label": "128GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "ryzen_5_3500_3600x_xt",
-        "label": "Ryzen 5 3500/3600X/XT",
+        "adj": 125,
+        "id": "amd_ryzen_5_5600x",
+        "label": "AMD Ryzen 5 5600X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_7_3700x_3800x_xt",
-        "label": "Ryzen 7 3700X/3800X/XT",
+        "adj": 100,
+        "id": "amd_ryzen_7_3700x",
+        "label": "AMD Ryzen 7 3700X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_9_3900_x_xt_3950x",
-        "label": "Ryzen 9 3900/X/XT/3950X",
+        "adj": 150,
+        "id": "amd_ryzen_7_5800x",
+        "label": "AMD Ryzen 7 5800X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_5_5600x",
-        "label": "Ryzen 5 5600X",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_7_5800x",
-        "label": "Ryzen 7 5800X",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_9_5900x_5950x",
-        "label": "Ryzen 9 5900X/5950X",
+        "adj": 225,
+        "id": "amd_ryzen_9_5900x",
+        "label": "AMD Ryzen 9 5900X",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7111,89 +7124,127 @@
     "storage": [
       {
         "adj": 0,
-        "id": "256gb",
-        "label": "256GB SSD",
+        "id": "1tb",
+        "label": "1TB HDD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 50,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "2tb",
+        "label": "2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 70,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 35,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "awaurorar12": {
-    "_form_factor": "Oval 'Legend' mid-tower (pre-redesign)",
-    "_inquiry_only": true,
-    "_market_value_usd": "650-1500",
-    "base_price": 0,
+    "base_price": 125,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -60,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -30
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "gtx_1650_super",
-        "label": "GTX 1650 Super",
+        "id": "amd_radeon_rx_6800_xt",
+        "label": "AMD Radeon RX 6800 XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -20,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -5,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3060_ti",
-        "label": "RTX 3060 Ti",
+        "adj": 10,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070",
-        "label": "RTX 3070",
+        "adj": 40,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080",
-        "label": "RTX 3080",
+        "adj": 85,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080_ti",
-        "label": "RTX 3080 Ti",
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3090",
-        "label": "RTX 3090",
+        "adj": 160,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7203,65 +7254,51 @@
       {
         "adj": 0,
         "id": "r8",
-        "label": "8GB",
+        "label": "8GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 15,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 30,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 50,
         "id": "r64",
-        "label": "64GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r128",
-        "label": "128GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i5_11400_f",
-        "label": "i5-11400/F",
+        "adj": 125,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i5_11600k_kf",
-        "label": "i5-11600K/KF",
+        "adj": 175,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_11700_f_k_kf",
-        "label": "i7-11700/F/K/KF",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_11900_k_kf",
-        "label": "i9-11900/K/KF",
+        "adj": 225,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7269,89 +7306,155 @@
     "storage": [
       {
         "adj": 0,
-        "id": "256gb",
-        "label": "256GB SSD",
+        "id": "1tb",
+        "label": "1TB HDD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 40,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 10,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "awaurorar13": {
-    "_form_factor": "Curved 'Legend 2.0' mid-tower",
-    "_inquiry_only": true,
-    "_market_value_usd": "750-1800",
-    "base_price": 0,
+    "base_price": 220,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -125,
+      "good": -50,
+      "mint": 0,
+      "sealed": 25,
+      "verygood": -30
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "id": "amd_radeon_rx_6600_xt",
+        "label": "AMD Radeon RX 6600 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070",
-        "label": "RTX 3070",
+        "adj": 15,
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070_ti",
-        "label": "RTX 3070 Ti",
+        "adj": 30,
+        "id": "amd_radeon_rx_6800_xt",
+        "label": "AMD Radeon RX 6800 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080",
-        "label": "RTX 3080",
+        "adj": 70,
+        "id": "amd_radeon_rx_6900_xt",
+        "label": "AMD Radeon RX 6900 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080_ti",
-        "label": "RTX 3080 Ti",
+        "adj": -45,
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3090",
-        "label": "RTX 3090",
+        "adj": -20,
+        "id": "nvidia_geforce_gtx_1660",
+        "label": "NVIDIA GeForce GTX 1660",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rx_6800_xt",
-        "label": "RX 6800 XT",
+        "adj": -10,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 55,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 130,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 155,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 205,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7360,80 +7463,59 @@
     "memory": [
       {
         "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 30,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 50,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 100,
         "id": "r128",
-        "label": "128GB",
+        "label": "128GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i5_12400",
-        "label": "i5-12400",
+        "adj": 220,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i5_12600k",
-        "label": "i5-12600K",
+        "adj": 280,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_12700",
-        "label": "i7-12700",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i7_12700kf",
-        "label": "i7-12700KF",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_12900",
-        "label": "i9-12900",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_12900k",
-        "label": "i9-12900K",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_12900kf",
-        "label": "i9-12900KF",
+        "adj": 350,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7441,82 +7523,168 @@
     "storage": [
       {
         "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
+        "id": "1tb",
+        "label": "1TB HDD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 45,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "awaurorar14": {
-    "_form_factor": "Curved 'Legend 2.0' mid-tower",
-    "_inquiry_only": true,
-    "_market_value_usd": "800-1900",
-    "base_price": 0,
+    "base_price": 200,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -145,
+      "good": -55,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "id": "amd_radeon_rx_6600_xt",
+        "label": "AMD Radeon RX 6600 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3060_ti",
-        "label": "RTX 3060 Ti",
+        "adj": 15,
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070",
-        "label": "RTX 3070",
+        "adj": 30,
+        "id": "amd_radeon_rx_6800_xt",
+        "label": "AMD Radeon RX 6800 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080",
-        "label": "RTX 3080",
+        "adj": 60,
+        "id": "amd_radeon_rx_6900_xt",
+        "label": "AMD Radeon RX 6900 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080_ti",
-        "label": "RTX 3080 Ti",
+        "adj": -45,
+        "id": "nvidia_geforce_gtx_1650_super",
+        "label": "NVIDIA GeForce GTX 1650 SUPER",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3090",
-        "label": "RTX 3090",
+        "adj": -20,
+        "id": "nvidia_geforce_gtx_1660_super",
+        "label": "NVIDIA GeForce GTX 1660 SUPER",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rx_6800_xt",
-        "label": "RX 6800 XT",
+        "adj": -20,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 5,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 130,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 155,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 205,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 230,
+        "id": "nvidia_geforce_rtx_3090_ti",
+        "label": "NVIDIA GeForce RTX 3090 Ti",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7525,87 +7693,66 @@
     "memory": [
       {
         "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 40,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 75,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 125,
         "id": "r128",
-        "label": "128GB",
+        "label": "128GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "ryzen_5_5600x",
-        "label": "Ryzen 5 5600X",
+        "adj": 200,
+        "id": "amd_ryzen_5_5600x",
+        "label": "AMD Ryzen 5 5600X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_7_5800",
-        "label": "Ryzen 7 5800",
+        "adj": 275,
+        "id": "amd_ryzen_7_5800x",
+        "label": "AMD Ryzen 7 5800X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_7_5800x",
-        "label": "Ryzen 7 5800X",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_9_5900",
-        "label": "Ryzen 9 5900",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_9_5900x",
-        "label": "Ryzen 9 5900X",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_9_5950x",
-        "label": "Ryzen 9 5950X",
+        "adj": 345,
+        "id": "amd_ryzen_9_5900x",
+        "label": "AMD Ryzen 9 5900X",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 40,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
@@ -7613,61 +7760,183 @@
       },
       {
         "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 75,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "awaurorar15": {
-    "_form_factor": "Curved 'Legend 2.0' mid-tower (~80L)",
-    "_inquiry_only": true,
-    "_market_value_usd": "1000-2500",
-    "base_price": 0,
+    "base_price": 450,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -165,
+      "good": -55,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -30
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "id": "amd_radeon_rx_6500_xt",
+        "label": "AMD Radeon RX 6500 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070_ti",
-        "label": "RTX 3070 Ti",
+        "adj": 25,
+        "id": "amd_radeon_rx_6600_xt",
+        "label": "AMD Radeon RX 6600 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070",
-        "label": "RTX 4070",
+        "adj": 50,
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_ti",
-        "label": "RTX 4070 Ti",
+        "adj": 75,
+        "id": "amd_radeon_rx_6800_xt",
+        "label": "AMD Radeon RX 6800 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4080",
-        "label": "RTX 4080",
+        "adj": 100,
+        "id": "amd_radeon_rx_6900_xt",
+        "label": "AMD Radeon RX 6900 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4090",
-        "label": "RTX 4090",
+        "adj": 75,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 325,
+        "id": "nvidia_geforce_rtx_3090_ti",
+        "label": "NVIDIA GeForce RTX 3090 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "nvidia_geforce_rtx_4070_ti",
+        "label": "NVIDIA GeForce RTX 4070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 500,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7676,66 +7945,87 @@
     "memory": [
       {
         "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 40,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 75,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i7_13700f",
-        "label": "i7-13700F",
+        "adj": 450,
+        "id": "amd_ryzen_5_7600x",
+        "label": "AMD Ryzen 5 7600X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_13700kf",
-        "label": "i7-13700KF",
+        "adj": 500,
+        "id": "amd_ryzen_7_7700x",
+        "label": "AMD Ryzen 7 7700X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_13900f",
-        "label": "i9-13900F",
+        "adj": 590,
+        "id": "amd_ryzen_9_7900x",
+        "label": "AMD Ryzen 9 7900X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_13900kf",
-        "label": "i9-13900KF",
+        "adj": 625,
+        "id": "amd_ryzen_9_7950x",
+        "label": "AMD Ryzen 9 7950X",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 460,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 500,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 40,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
@@ -7743,61 +8033,120 @@
       },
       {
         "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 60,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "4tb",
+        "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 20,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "awaurorar16": {
-    "_form_factor": "35L slim mid-tower",
-    "_inquiry_only": true,
-    "_market_value_usd": "1100-2800",
-    "base_price": 0,
+    "base_price": 375,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 5,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -220,
+      "good": -110,
+      "mint": 0,
+      "sealed": 50,
+      "verygood": -55
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_4060",
-        "label": "RTX 4060",
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4060_ti",
-        "label": "RTX 4060 Ti",
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070",
-        "label": "RTX 4070",
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_super",
-        "label": "RTX 4070 Super",
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4080_super",
-        "label": "RTX 4080 Super",
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_4070_super",
+        "label": "NVIDIA GeForce RTX 4070 Super",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4090",
-        "label": "RTX 4090",
+        "adj": 225,
+        "id": "nvidia_geforce_rtx_4070_ti",
+        "label": "NVIDIA GeForce RTX 4070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "nvidia_geforce_rtx_4070_ti_super",
+        "label": "NVIDIA GeForce RTX 4070 Ti Super",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 450,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 500,
+        "id": "nvidia_geforce_rtx_4080_super",
+        "label": "NVIDIA GeForce RTX 4080 Super",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 900,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -7806,73 +8155,73 @@
     "memory": [
       {
         "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 50,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 100,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i7_13700f",
-        "label": "i7-13700F",
+        "adj": 375,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_13900f",
-        "label": "i9-13900F",
+        "adj": 425,
+        "id": "intel_core_i7_14th_gen",
+        "label": "Intel Core i7 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_14700f",
-        "label": "i7-14700F",
+        "adj": 375,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_14900f",
-        "label": "i9-14900F",
+        "adj": 420,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_14900kf",
-        "label": "i9-14900KF",
+        "adj": 540,
+        "id": "intel_core_i9_14th_gen",
+        "label": "Intel Core i9 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 50,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
@@ -7880,15 +8229,29 @@
       },
       {
         "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
         "id": "2tb",
         "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 175,
         "id": "4tb",
         "label": "4TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -22529,121 +22892,61 @@
     ]
   },
   "doptiplex5000": {
-    "_form_factor": "SFF (also MT and Micro variants)",
-    "_inquiry_only": true,
-    "_market_value_usd": "200-450",
-    "base_price": 0,
+    "base_price": 210,
     "battery_adj": {},
     "charger_adj": {},
-    "condition_adj": {},
-    "graphics": [
-      {
-        "adj": 0,
-        "id": "intel_uhd_730_770",
-        "label": "Intel UHD 730/770",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "optional_low_profile_dgpu_gtx_1660_t400",
-        "label": "Optional low-profile dGPU (GTX 1660, T400)",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -45,
+      "mint": 0,
+      "sealed": 30
+    },
+    "display": [],
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
         "adj": 0,
         "id": "r8",
-        "label": "8GB",
+        "label": "8GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 10,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 25,
         "id": "r32",
-        "label": "32GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r64",
-        "label": "64GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i3_12100",
-        "label": "i3-12100",
+        "adj": 210,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i3_12300",
-        "label": "i3-12300",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_12400",
-        "label": "i5-12400",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_12500",
-        "label": "i5-12500",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_12600",
-        "label": "i5-12600",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i7_12700",
-        "label": "i7-12700",
+        "adj": 270,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "256gb",
-        "label": "256GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 30,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
@@ -22651,150 +22954,76 @@
       },
       {
         "adj": 0,
-        "id": "2tb",
-        "label": "2TB SSD",
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "doptiplex7010": {
-    "_form_factor": "Tower / SFF / Micro / Plus Tower / Plus SFF",
-    "_inquiry_only": true,
-    "_market_value_usd": "150-500",
-    "base_price": 0,
+    "base_price": 210,
     "battery_adj": {},
     "charger_adj": {},
-    "condition_adj": {},
-    "graphics": [
-      {
-        "adj": 0,
-        "id": "intel_uhd_730",
-        "label": "Intel UHD 730",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "intel_uhd_770",
-        "label": "Intel UHD 770",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "optional_low_profile_dgpu_t1000",
-        "label": "Optional low-profile dGPU (T1000)",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
+    "condition_adj": {
+      "broken": 0,
+      "fair": -120,
+      "good": -45,
+      "mint": 0,
+      "sealed": 30
+    },
+    "display": [],
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
         "adj": 0,
         "id": "r8",
-        "label": "8GB",
+        "label": "8GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 10,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 25,
         "id": "r32",
-        "label": "32GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r64",
-        "label": "64GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i3_13100",
-        "label": "i3-13100",
+        "adj": 210,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i3_13100t",
-        "label": "i3-13100T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_13400",
-        "label": "i5-13400",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_13500",
-        "label": "i5-13500",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_13500t",
-        "label": "i5-13500T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_13600",
-        "label": "i5-13600",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i7_13700",
-        "label": "i7-13700",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i7_13700t",
-        "label": "i7-13700T",
+        "adj": 270,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "256gb",
-        "label": "256GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 30,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
@@ -22802,8 +23031,15 @@
       },
       {
         "adj": 0,
-        "id": "2tb",
-        "label": "2TB SSD",
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -22982,67 +23218,106 @@
     ]
   },
   "dxps8950": {
-    "_form_factor": "Mid-tower",
-    "_inquiry_only": true,
-    "_market_value_usd": "600-2000",
-    "base_price": 0,
+    "base_price": 210,
     "battery_adj": {},
     "charger_adj": {},
-    "condition_adj": {},
+    "condition_adj": {
+      "broken": 0,
+      "fair": -150,
+      "good": -60,
+      "mint": 0,
+      "sealed": 50
+    },
+    "display": [],
     "graphics": [
       {
-        "adj": 0,
-        "id": "gtx_1650_super",
-        "label": "GTX 1650 Super",
+        "adj": 70,
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3050",
-        "label": "RTX 3050",
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "adj": 50,
+        "id": "nvidia_geforce_gtx_1650_super",
+        "label": "NVIDIA GeForce GTX 1650 SUPER",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3060_ti",
-        "label": "RTX 3060 Ti",
+        "adj": 75,
+        "id": "nvidia_geforce_gtx_1660_super",
+        "label": "NVIDIA GeForce GTX 1660 SUPER",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070",
-        "label": "RTX 3070",
+        "adj": 70,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080",
-        "label": "RTX 3080",
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3090",
-        "label": "RTX 3090",
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rx_6700_6900_xt",
-        "label": "RX 6700/6900 XT",
+        "adj": 135,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 175,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 275,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -23052,162 +23327,257 @@
       {
         "adj": 0,
         "id": "r8",
-        "label": "8GB",
+        "label": "8GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 20,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 40,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 75,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "r128",
+        "label": "128GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i5_12600k",
-        "label": "i5-12600K",
+        "adj": 210,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_12700",
-        "label": "i7-12700",
+        "adj": 300,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_12700k",
-        "label": "i7-12700K",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_12900",
-        "label": "i9-12900",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_12900k",
-        "label": "i9-12900K",
+        "adj": 380,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "256gb",
-        "label": "256GB SSD",
+        "adj": 20,
+        "id": "1tb",
+        "label": "1TB HDD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 60,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "2tb",
+        "label": "2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 95,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "500",
+        "label": "500GB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "dxps8960": {
-    "_form_factor": "Mid-tower",
-    "_inquiry_only": true,
-    "_market_value_usd": "800-2500",
-    "base_price": 0,
+    "base_price": 475,
     "battery_adj": {},
     "charger_adj": {},
-    "condition_adj": {},
+    "condition_adj": {
+      "broken": 0,
+      "fair": -180,
+      "good": -60,
+      "mint": 0,
+      "sealed": 40
+    },
+    "display": [],
     "graphics": [
       {
-        "adj": 0,
-        "id": "rtx_3050",
-        "label": "RTX 3050",
+        "adj": 70,
+        "id": "amd_radeon_rx_6500_xt",
+        "label": "AMD Radeon RX 6500 XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "amd_radeon_rx_6600_xt",
+        "label": "AMD Radeon RX 6600 XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 130,
+        "id": "amd_radeon_rx_6800_xt",
+        "label": "AMD Radeon RX 6800 XT",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "amd_radeon_rx_6900_xt",
+        "label": "AMD Radeon RX 6900 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_4060",
-        "label": "RTX 4060",
+        "id": "integrated_graphics",
+        "label": "Integrated Graphics",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4060_ti",
-        "label": "RTX 4060 Ti",
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070",
-        "label": "RTX 4070",
+        "adj": 120,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_ti",
-        "label": "RTX 4070 Ti",
+        "adj": 130,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4080",
-        "label": "RTX 4080",
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4090",
-        "label": "RTX 4090",
+        "adj": 165,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rx_7600_7700_xt",
-        "label": "RX 7600/7700 XT",
+        "adj": 200,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 450,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 500,
+        "id": "nvidia_geforce_rtx_3090_ti",
+        "label": "NVIDIA GeForce RTX 3090 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_4070_ti",
+        "label": "NVIDIA GeForce RTX 4070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 450,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 800,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -23216,96 +23586,124 @@
     "memory": [
       {
         "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 50,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 70,
+        "id": "r48",
+        "label": "48GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "r128",
+        "label": "128GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i5_13400",
-        "label": "i5-13400",
+        "adj": 475,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_13700",
-        "label": "i7-13700",
+        "adj": 575,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_13700k",
-        "label": "i7-13700K",
+        "adj": 625,
+        "id": "intel_core_i7_14th_gen",
+        "label": "Intel Core i7 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_13900",
-        "label": "i9-13900",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_13900k",
-        "label": "i9-13900K",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i7_14700k",
-        "label": "i7-14700K",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_14900k",
-        "label": "i9-14900K",
+        "adj": 610,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
+        "adj": 20,
+        "id": "1tb",
+        "label": "1TB HDD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 70,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 20,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 40,
+        "id": "2tb",
+        "label": "2TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 120,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "500",
+        "label": "500GB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 45,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -29021,74 +29419,83 @@
     ]
   },
   "hpomen40": {
-    "_form_factor": "Mid-full tower (GT21 chassis)",
-    "_inquiry_only": true,
-    "_market_value_usd": "800-2000",
-    "base_price": 0,
+    "base_price": 225,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "id": "amd_radeon_rx_6700_xt",
+        "label": "AMD Radeon RX 6700 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3060_ti",
-        "label": "RTX 3060 Ti",
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3090",
+        "label": "NVIDIA GeForce RTX 3090",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": -50,
+        "id": "nvidia_geforce_rtx_4060",
+        "label": "NVIDIA GeForce RTX 4060",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3070",
-        "label": "RTX 3070",
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070_ti",
-        "label": "RTX 3070 Ti",
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4070_super",
+        "label": "NVIDIA GeForce RTX 4070 Super",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080",
-        "label": "RTX 3080",
+        "adj": 90,
+        "id": "nvidia_geforce_rtx_4070_ti_super",
+        "label": "NVIDIA GeForce RTX 4070 Ti Super",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3080_ti",
-        "label": "RTX 3080 Ti",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "rtx_3090",
-        "label": "RTX 3090",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "rx_6700_xt",
-        "label": "RX 6700 XT",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "rx_6800_xt",
-        "label": "RX 6800 XT",
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4080_super",
+        "label": "NVIDIA GeForce RTX 4080 Super",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -29098,155 +29505,172 @@
       {
         "adj": 0,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 20,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 40,
         "id": "r64",
-        "label": "64GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i7_12700k",
-        "label": "i7-12700K",
+        "adj": 225,
+        "id": "amd_ryzen_7_5800x",
+        "label": "AMD Ryzen 7 5800X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_12900k",
-        "label": "i9-12900K",
+        "adj": 375,
+        "id": "amd_ryzen_7_7700x",
+        "label": "AMD Ryzen 7 7700X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_7_5700g",
-        "label": "Ryzen 7 5700G",
+        "adj": 275,
+        "id": "amd_ryzen_9_5900x",
+        "label": "AMD Ryzen 9 5900X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_7_5800x",
-        "label": "Ryzen 7 5800X",
+        "adj": 225,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_9_5900x",
-        "label": "Ryzen 9 5900X",
+        "adj": 400,
+        "id": "intel_core_i7_14th_gen",
+        "label": "Intel Core i7 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_9_5950x",
-        "label": "Ryzen 9 5950X",
+        "adj": 300,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 450,
+        "id": "intel_core_i9_14th_gen",
+        "label": "Intel Core i9 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 15,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 30,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "hpomendsk": {
-    "_form_factor": "Full tower (GT22 chassis, Cryo Chamber)",
-    "_inquiry_only": true,
-    "_market_value_usd": "1200-3200",
-    "base_price": 0,
+    "base_price": 800,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 1,
+      "mouse": 1,
+      "power cord": 5
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -280,
+      "good": -120,
+      "mint": 0,
+      "sealed": 20,
+      "verygood": -50
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_4060_ti",
-        "label": "RTX 4060 Ti",
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070",
-        "label": "RTX 4070",
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_4070_ti",
+        "label": "NVIDIA GeForce RTX 4070 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_super",
-        "label": "RTX 4070 Super",
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_ti_super",
-        "label": "RTX 4070 Ti Super",
+        "adj": 350,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4080",
-        "label": "RTX 4080",
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_5070",
+        "label": "NVIDIA GeForce RTX 5070",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4080_super",
-        "label": "RTX 4080 Super",
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_5070_ti",
+        "label": "NVIDIA GeForce RTX 5070 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4090",
-        "label": "RTX 4090",
+        "adj": 450,
+        "id": "nvidia_geforce_rtx_5080",
+        "label": "NVIDIA GeForce RTX 5080",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rx_7900_xt_xtx",
-        "label": "RX 7900 XT/XTX",
+        "adj": 850,
+        "id": "nvidia_geforce_rtx_5090",
+        "label": "NVIDIA GeForce RTX 5090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -29256,102 +29680,81 @@
       {
         "adj": 0,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 20,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 40,
         "id": "r64",
-        "label": "64GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r128",
-        "label": "128GB",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i7_13700k",
-        "label": "i7-13700K",
+        "adj": 800,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_13900k",
-        "label": "i9-13900K",
+        "adj": 825,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_14700k",
-        "label": "i7-14700K",
+        "adj": 900,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i9_14900k",
-        "label": "i9-14900K",
+        "adj": 825,
+        "id": "intel_core_ultra_7_series_2",
+        "label": "Intel Core Ultra 7 Series 2",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "ryzen_7_7700x",
-        "label": "Ryzen 7 7700X",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_9_7900x",
-        "label": "Ryzen 9 7900X",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "ryzen_9_7950x",
-        "label": "Ryzen 9 7950X",
+        "adj": 900,
+        "id": "intel_core_ultra_9_series_2",
+        "label": "Intel Core Ultra 9 Series 2",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
+        "adj": 20,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 40,
         "id": "2tb",
         "label": "2TB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -47408,74 +47811,146 @@
     ]
   },
   "lnlegion5dtwr": {
-    "_form_factor": "Mid Tower (26L)",
-    "_inquiry_only": true,
-    "_market_value_usd": "550-1600",
-    "base_price": 0,
+    "base_price": 100,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -100,
+      "good": -40,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_3060",
-        "label": "RTX 3060",
+        "id": "nvidia_geforce_gtx_1650",
+        "label": "NVIDIA GeForce GTX 1650",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3060_ti",
-        "label": "RTX 3060 Ti",
+        "id": "nvidia_geforce_gtx_1650_super",
+        "label": "NVIDIA GeForce GTX 1650 Super",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070",
-        "label": "RTX 3070",
+        "adj": 15,
+        "id": "nvidia_geforce_gtx_1660_super",
+        "label": "NVIDIA GeForce GTX 1660 SUPER",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_3070_ti",
-        "label": "RTX 3070 Ti",
+        "adj": 50,
+        "id": "nvidia_geforce_gtx_1660_super",
+        "label": "NVIDIA GeForce GTX 1660 Super",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4060",
-        "label": "RTX 4060",
+        "adj": 25,
+        "id": "nvidia_geforce_gtx_1660_ti",
+        "label": "NVIDIA GeForce GTX 1660 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4060_ti",
-        "label": "RTX 4060 Ti",
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070",
-        "label": "RTX 4070",
+        "adj": 65,
+        "id": "nvidia_geforce_rtx_2070",
+        "label": "NVIDIA GeForce RTX 2070",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_super",
-        "label": "RTX 4070 Super",
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_3050",
+        "label": "NVIDIA GeForce RTX 3050",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_ti_super",
-        "label": "RTX 4070 Ti Super",
+        "adj": 80,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3060_ti",
+        "label": "NVIDIA GeForce RTX 3060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 100,
+        "id": "nvidia_geforce_rtx_3070_ti",
+        "label": "NVIDIA GeForce RTX 3070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 125,
+        "id": "nvidia_geforce_rtx_4060_ti",
+        "label": "NVIDIA GeForce RTX 4060 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4070",
+        "label": "NVIDIA GeForce RTX 4070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 225,
+        "id": "nvidia_geforce_rtx_4070_super",
+        "label": "NVIDIA GeForce RTX 4070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "nvidia_geforce_rtx_4070_ti",
+        "label": "NVIDIA GeForce RTX 4070 Ti",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "nvidia_geforce_rtx_4070_ti_super",
+        "label": "NVIDIA GeForce RTX 4070 Ti SUPER",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -47485,58 +47960,128 @@
       {
         "adj": 0,
         "id": "r8",
-        "label": "8GB",
+        "label": "8GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 15,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 30,
         "id": "r32",
-        "label": "32GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r64",
-        "label": "64GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i5_11400f_i7_11700f_i7_11700kf",
-        "label": "i5-11400F/i7-11700F/i7-11700KF",
+        "adj": 100,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i5_12400f_i7_12700f_i7_12700kf",
-        "label": "i5-12400F/i7-12700F/i7-12700KF",
+        "adj": 125,
+        "id": "intel_core_i5_11th_gen",
+        "label": "Intel Core i5 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i5_13400f_i7_13700f_i7_13700kf_i9_13900f",
-        "label": "i5-13400F/i7-13700F/i7-13700KF/i9-13900F",
+        "adj": 200,
+        "id": "intel_core_i5_12th_gen",
+        "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i5_14400f_i7_14700f_i9_14900f",
-        "label": "i5-14400F/i7-14700F/i9-14900F",
+        "adj": 250,
+        "id": "intel_core_i5_13th_gen",
+        "label": "Intel Core i5 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "intel_core_i5_14th_gen",
+        "label": "Intel Core i5 14th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 115,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 190,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 250,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 300,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "intel_core_i7_14th_gen",
+        "label": "Intel Core i7 14th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 200,
+        "id": "intel_core_i9_10th_gen",
+        "label": "Intel Core i9 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 240,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 295,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 375,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 460,
+        "id": "intel_core_i9_14th_gen",
+        "label": "Intel Core i9 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -47544,110 +48089,140 @@
     "storage": [
       {
         "adj": 0,
-        "id": "512gb",
-        "label": "512GB SSD",
+        "id": "1tb",
+        "label": "1TB HDD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 45,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 15,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 65,
         "id": "2tb",
         "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "1tb_plus_1tb",
-        "label": "1TB SSD + 1TB HDD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "1tb_plus_2tb",
-        "label": "1TB SSD + 2TB HDD",
+        "adj": 30,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "lnlegion7dtwr": {
-    "_form_factor": "Full Tower with 240mm AIO liquid cooling",
-    "_inquiry_only": true,
-    "_market_value_usd": "900-3200",
-    "base_price": 0,
+    "base_price": 310,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -195,
+      "flawless": 0,
+      "good": -65,
+      "sealed": 20
+    },
+    "display": [],
     "graphics": [
       {
         "adj": 0,
-        "id": "rtx_3080",
-        "label": "RTX 3080",
+        "id": "amd_radeon_rx_5700_xt",
+        "label": "AMD Radeon RX 5700 XT",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3080_ti",
-        "label": "RTX 3080 Ti",
+        "id": "nvidia_geforce_rtx_2060",
+        "label": "NVIDIA GeForce RTX 2060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
+        "id": "nvidia_geforce_rtx_2070",
+        "label": "NVIDIA GeForce RTX 2070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_2070_super",
+        "label": "NVIDIA GeForce RTX 2070 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_2080_super",
+        "label": "NVIDIA GeForce RTX 2080 SUPER",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 25,
+        "id": "nvidia_geforce_rtx_3060",
+        "label": "NVIDIA GeForce RTX 3060",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
+        "id": "nvidia_geforce_rtx_3070",
+        "label": "NVIDIA GeForce RTX 3070",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_3080",
+        "label": "NVIDIA GeForce RTX 3080",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 180,
+        "id": "nvidia_geforce_rtx_3080_ti",
+        "label": "NVIDIA GeForce RTX 3080 ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "rtx_3090",
-        "label": "RTX 3090",
+        "id": "nvidia_geforce_rtx_4070_ti",
+        "label": "NVIDIA GeForce RTX 4070 Ti",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4070_ti",
-        "label": "RTX 4070 Ti",
+        "adj": 150,
+        "id": "nvidia_geforce_rtx_4080",
+        "label": "NVIDIA GeForce RTX 4080",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "rtx_4080",
-        "label": "RTX 4080",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "rtx_4080_super",
-        "label": "RTX 4080 Super",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "rtx_4090",
-        "label": "RTX 4090",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "rtx_5080",
-        "label": "RTX 5080",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "rtx_5090_gen10",
-        "label": "RTX 5090 (Gen10)",
+        "adj": 300,
+        "id": "nvidia_geforce_rtx_4090",
+        "label": "NVIDIA GeForce RTX 4090",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -47656,59 +48231,87 @@
     "memory": [
       {
         "adj": 0,
+        "id": "r8",
+        "label": "8GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 15,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 30,
         "id": "r32",
-        "label": "32GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 50,
         "id": "r64",
-        "label": "64GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r128",
-        "label": "128GB (Gen10 CUDIMM)",
+        "label": "64GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "i7_12700kf_i9_12900k_i9_12900kf",
-        "label": "i7-12700KF/i9-12900K/i9-12900KF",
+        "adj": 310,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_13700kf_i9_13900k_i9_13900kf",
-        "label": "i7-13700KF/i9-13900K/i9-13900KF",
+        "adj": 390,
+        "id": "intel_core_i7_11th_gen",
+        "label": "Intel Core i7 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_14700kf_i9_14900k_i9_14900kf",
-        "label": "i7-14700KF/i9-14900K/i9-14900KF",
+        "adj": 460,
+        "id": "intel_core_i7_12th_gen",
+        "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "core_ultra_7_265k_ultra_9_285k",
-        "label": "Core Ultra 7 265K / Ultra 9 285K",
+        "adj": 560,
+        "id": "intel_core_i7_13th_gen",
+        "label": "Intel Core i7 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 400,
+        "id": "intel_core_i9_10th_gen",
+        "label": "Intel Core i9 10th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 475,
+        "id": "intel_core_i9_11th_gen",
+        "label": "Intel Core i9 11th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 550,
+        "id": "intel_core_i9_12th_gen",
+        "label": "Intel Core i9 12th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 650,
+        "id": "intel_core_i9_13th_gen",
+        "label": "Intel Core i9 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -47717,35 +48320,35 @@
       {
         "adj": 0,
         "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 30,
+        "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
+        "id": "256",
+        "label": "256GB SSD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 50,
         "id": "2tb",
         "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "1tb_plus_2tb",
-        "label": "1TB SSD + 2TB HDD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "2tb_plus_2tb",
-        "label": "2TB SSD + 2TB HDD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "4tbnvme",
-        "label": "4TB NVMe",
+        "adj": 15,
+        "id": "512",
+        "label": "512GB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
@@ -47924,179 +48527,110 @@
     ]
   },
   "lnthinkm90q": {
-    "_form_factor": "Tiny (~1L)",
-    "_inquiry_only": true,
-    "_market_value_usd": "200-700",
-    "base_price": 0,
+    "base_price": 115,
     "battery_adj": {},
-    "charger_adj": {},
-    "condition_adj": {},
-    "graphics": [
-      {
-        "adj": 0,
-        "id": "integrated_uhd_630_uhd_750_uhd_770",
-        "label": "Integrated (UHD 630 / UHD 750 / UHD 770)",
-        "multiplier": 1.0,
-        "sub": ""
-      }
-    ],
+    "charger_adj": {
+      "hdmi": 1,
+      "keyboard": 5,
+      "mouse": 5,
+      "power cord": 1
+    },
+    "condition_adj": {
+      "broken": 0,
+      "fair": -80,
+      "good": -30,
+      "mint": 0,
+      "sealed": 20
+    },
+    "display": [],
+    "graphics": [],
     "hasNanoGlass": false,
     "memory": [
       {
         "adj": 0,
+        "id": "r4",
+        "label": "4GB RAM",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 10,
         "id": "r8",
-        "label": "8GB",
+        "label": "8GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 20,
         "id": "r16",
-        "label": "16GB",
+        "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
+        "adj": 30,
         "id": "r32",
-        "label": "32GB",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "r64",
-        "label": "64GB",
+        "label": "32GB RAM",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "processors": [
       {
-        "adj": 0,
-        "id": "core_i3_10100t_10300t",
-        "label": "Core i3-10100T/10300T",
+        "adj": 115,
+        "id": "intel_core_i5_10th_gen",
+        "label": "Intel Core i5 10th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i5_10400t_10500t_10600",
-        "label": "i5-10400T/10500T/10600",
+        "adj": 135,
+        "id": "intel_core_i7_10th_gen",
+        "label": "Intel Core i7 10th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "i7_10700_10700t",
-        "label": "i7-10700/10700T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_10900_10900t",
-        "label": "i9-10900/10900T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "core_i3_10105t_11100",
-        "label": "Core i3-10105T/11100",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_11400t_11500_11500t",
-        "label": "i5-11400T/11500/11500T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i7_11700_11700t",
-        "label": "i7-11700/11700T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_11900",
-        "label": "i9-11900",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "core_i3_12100_12100t",
-        "label": "Core i3-12100/12100T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i5_12400_12500_12500t",
-        "label": "i5-12400/12500/12500T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i7_12700_12700t",
-        "label": "i7-12700/12700T",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "i9_12900_some_skus",
-        "label": "i9-12900 (some SKUs)",
+        "adj": 170,
+        "id": "intel_core_i9_10th_gen",
+        "label": "Intel Core i9 10th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
     ],
     "storage": [
       {
-        "adj": 0,
-        "id": "128gb",
+        "adj": -10,
+        "id": "128",
         "label": "128GB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
         "adj": 0,
-        "id": "256gb",
+        "id": "1tb",
+        "label": "1TB HDD",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 0,
+        "id": "256",
         "label": "256GB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 0,
-        "id": "512gb",
+        "adj": 10,
+        "id": "512",
         "label": "512GB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "1tb",
-        "label": "1TB SSD",
-        "multiplier": 1.0,
-        "sub": ""
-      },
-      {
-        "adj": 0,
-        "id": "2tb",
-        "label": "2TB SSD",
         "multiplier": 1.0,
         "sub": ""
       }
     ]
   },
   "msicodex5": {
-    "base_price": 100,
+    "base_price": 125,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -48184,91 +48718,91 @@
     ],
     "processors": [
       {
-        "adj": 100,
+        "adj": 125,
         "id": "intel_core_i5_11th_gen",
         "label": "Intel Core i5 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 250,
+        "adj": 270,
         "id": "intel_core_i5_12th_gen",
         "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 300,
+        "adj": 320,
         "id": "intel_core_i5_13th_gen",
         "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 340,
+        "adj": 350,
         "id": "intel_core_i5_14th_gen",
         "label": "Intel Core i5 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 335,
+        "adj": 350,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 380,
+        "adj": 390,
         "id": "intel_core_i7_14th_gen",
         "label": "Intel Core i7 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 160,
+        "adj": 175,
         "id": "intel_core_i5_12th_gen",
         "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 185,
+        "adj": 200,
         "id": "intel_core_i5_13th_gen",
         "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 250,
+        "adj": 275,
         "id": "intel_core_i5_14th_gen",
         "label": "Intel Core i5 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 150,
+        "adj": 180,
         "id": "intel_core_i7_11th_gen",
         "label": "Intel Core i7 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 175,
+        "adj": 210,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 240,
+        "adj": 275,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 300,
+        "adj": 340,
         "id": "intel_core_i7_14th_gen",
         "label": "Intel Core i7 14th Gen.",
         "multiplier": 1.0,
@@ -48314,7 +48848,7 @@
     ]
   },
   "msiinfinity": {
-    "base_price": 375,
+    "base_price": 460,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -48437,7 +48971,7 @@
     ],
     "processors": [
       {
-        "adj": 375,
+        "adj": 460,
         "id": "intel_core_i7_11th_gen",
         "label": "Intel Core i7 11th Gen.",
         "multiplier": 1.0,
@@ -48486,14 +49020,14 @@
         "sub": ""
       },
       {
-        "adj": 450,
+        "adj": 520,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 440,
+        "adj": 540,
         "id": "intel_core_i9_11th_gen",
         "label": "Intel Core i9 11th Gen.",
         "multiplier": 1.0,
@@ -48525,7 +49059,7 @@
     ]
   },
   "msinightblade": {
-    "base_price": 250,
+    "base_price": 270,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -48592,35 +49126,35 @@
     ],
     "processors": [
       {
-        "adj": 250,
+        "adj": 270,
         "id": "intel_core_i5_12th_gen",
         "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 300,
+        "adj": 320,
         "id": "intel_core_i5_13th_gen",
         "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 340,
+        "adj": 350,
         "id": "intel_core_i5_14th_gen",
         "label": "Intel Core i5 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 335,
+        "adj": 350,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 380,
+        "adj": 390,
         "id": "intel_core_i7_14th_gen",
         "label": "Intel Core i7 14th Gen.",
         "multiplier": 1.0,
@@ -48877,7 +49411,7 @@
     ]
   },
   "msitrident": {
-    "base_price": 150,
+    "base_price": 155,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -48965,7 +49499,7 @@
     ],
     "processors": [
       {
-        "adj": 150,
+        "adj": 155,
         "id": "intel_core_i5_11th_gen",
         "label": "Intel Core i5 11th Gen.",
         "multiplier": 1.0,
@@ -49014,35 +49548,35 @@
         "sub": ""
       },
       {
-        "adj": 200,
+        "adj": 210,
         "id": "intel_core_i5_12th_gen",
         "label": "Intel Core i5 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 245,
+        "adj": 250,
         "id": "intel_core_i5_13th_gen",
         "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 200,
+        "adj": 220,
         "id": "intel_core_i7_11th_gen",
         "label": "Intel Core i7 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 240,
+        "adj": 260,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 275,
+        "adj": 300,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,

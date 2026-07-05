@@ -65,7 +65,11 @@ SERIES_RE = re.compile(r"""^(
     (zenbook|proart|expert|tuf|the-ultimate-force|republic-of-gamers)-laptop |
     vivobook(-1[4-6])?-laptop | msi-laptop |
     acer-(nitro|predator|aspire-laptop|swift) |
-    lg-laptop | samsung-laptop | razer-(blade-laptop|book)
+    lg-laptop | samsung-laptop | razer-(blade-laptop|book) |
+    alienware-(aurora-series|area-series)-desktop |
+    dell-optiplex-desktop | xps-desktop | precision-\d+-series-desktop |
+    hp-desktop | hp-omen-desktop | hp-omnistudio-desktop |
+    lenovo-(thinkcentre|yoga-desktop) | msi-desktop
 )$""", re.X)
 
 COND_MAP = {

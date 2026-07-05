@@ -47,7 +47,9 @@ def fetch_html(url: str) -> str:
 def extract_quiz_blob(html: str):
     """Find the largest base64 blob in the HTML that decodes to the
     questions-tree JSON. Returns the decoded JSON or None."""
-    candidates = re.findall(r'"([A-Za-z0-9+/=]{500,})"', html)
+    # 200+ chars: small consoles (PS4, Xbox One) embed grids well under the
+    # old 500-char floor. The JSON+questions-key check below screens noise.
+    candidates = re.findall(r'"([A-Za-z0-9+/=]{200,})"', html)
     best = None
     for s in candidates:
         try:
@@ -111,10 +113,60 @@ def grid_new_format(quiz, url: str):
         base = _cur(a)
         branch = branches.get(str(a.get("go_to", "")).split(",")[0].strip())
         if not branch:
+            # Consoles / VR: many condition answers carry the full payout
+            # on the answer itself with no storage sub-branch. Emit the
+            # condition at storage "-" instead of dropping it — dropping
+            # left PS5/Vision Pro grids with only a Brand New row.
+            grid.setdefault("-", {})[a["text"]] = base
             continue
         for s_lbl, s_delta in storage_deltas(branch):
             grid.setdefault(s_lbl, {})[a["text"]] = base + s_delta
     return {model: grid} if grid else None
+
+
+def grid_flat(quiz, url: str):
+    """Flat single-branch layout (consoles / VR): quiz[0] carries BOTH a
+    storage question and a condition question; payout = storage.val +
+    condition.val (operational / accessory questions are 0 for a clean
+    working device). PS4 Pro: storage 1TB=0/2TB=+25, Flawless=90 →
+    1TB Flawless = $90. Vision Pro M5: storage carries absolutes
+    (256GB=1950), condition carries deltas (Flawless=0, VG=-200)."""
+    if not quiz:
+        return None
+    qs = quiz[0].get("questions", [])
+    storage_q = next((q for q in qs if "storage" in (q.get("text") or "").lower()
+                      and "secondary" not in (q.get("text") or "").lower()), None)
+    cond_q = next((q for q in qs if "condition" in (q.get("text") or "").lower()), None)
+    if not cond_q:
+        return None
+    storages = ([(a["text"], _cur(a)) for a in storage_q.get("answers", [])]
+                if storage_q else [("-", 0)])
+    model = _model_name_from_url(url)
+    grid = {}
+    for s_lbl, s_val in storages:
+        for a in cond_q.get("answers", []):
+            grid.setdefault(s_lbl, {})[a["text"]] = s_val + _cur(a)
+    return {model: grid} if grid else None
+
+
+def extract_grid(quiz, url: str):
+    """Pick the right extractor for whichever of IWM's three page shapes
+    this quiz uses: condition-first (phones), flat single-branch
+    (consoles/VR), or legacy model-picker."""
+    if not quiz:
+        return None
+    q0_qs = quiz[0].get("questions") or [{}]
+    q0_text = (q0_qs[0].get("text") or "").lower()
+    if "condition" in q0_text:
+        grid = grid_new_format(quiz, url)
+        if grid:
+            return grid
+    texts = " | ".join((q.get("text") or "").lower() for q in q0_qs)
+    if "condition" in texts:
+        grid = grid_flat(quiz, url)
+        if grid:
+            return grid
+    return grid_per_model(quiz)
 
 
 def grid_per_model(quiz):
@@ -172,12 +224,7 @@ def main():
     if not quiz:
         print(f"No quiz blob found on {url}")
         sys.exit(2)
-    # Detect layout: new format leads with a 'Conditions' picker; legacy leads
-    # with a 'Models' picker. Try new first, fall back to legacy.
-    q0_text = ((quiz[0].get("questions") or [{}])[0].get("text") or "").lower()
-    grid = grid_new_format(quiz, url) if "condition" in q0_text else None
-    if not grid:
-        grid = grid_per_model(quiz)
+    grid = extract_grid(quiz, url)
     if want_json:
         print(json.dumps(grid, indent=2))
         return

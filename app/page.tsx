@@ -1118,27 +1118,27 @@ const APPLE_DESKTOP_SERIES = [
 ];
 
 const DELL_DESKTOP_MODELS = [
-  { id: "doptiplex7010", label: "OptiPlex 7010", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-tower.webp" },
+  { id: "doptiplex7010", label: "OptiPlex 7010", base: 297, inquiryOnly: false, image: "/devices/dell-optiplex-tower.webp" },
   { id: "doptiplex5000", label: "OptiPlex 5000", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-sff.webp" },
-  { id: "dxps8960", label: "XPS Desktop 8960", base: 0, inquiryOnly: true, image: "/devices/dell-xps-8960.webp" },
-  { id: "dxps8950", label: "XPS Desktop 8950", base: 0, inquiryOnly: true, image: "/devices/dell-xps-8950.webp" },
+  { id: "dxps8960", label: "XPS Desktop 8960", base: 90, inquiryOnly: false, image: "/devices/dell-xps-8960.webp" },
+  { id: "dxps8950", label: "XPS Desktop 8950", base: 68, inquiryOnly: false, image: "/devices/dell-xps-8950.webp" },
   { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 0, inquiryOnly: true },
   { id: "dprecision3680", label: "Precision 3680", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-tower.webp" },
 ];
 
 const LENOVO_DESKTOP_MODELS = [
   { id: "lnthinkm", label: "ThinkCentre M920", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-tiny.webp" },
-  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 342, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 558, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 328, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tiny.webp" },
+  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 410, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 428, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
   { id: "lnideactower", label: "IdeaCentre 5i", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-sff.webp" },
 ];
 
 const HP_DESKTOP_MODELS = [
   { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 0, inquiryOnly: true, image: "/devices/hp-elitedesk-800.webp" },
   { id: "hpprodesk", label: "ProDesk 400 G9", base: 0, inquiryOnly: true, image: "/devices/hp-prodesk-400.webp" },
-  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 800, inquiryOnly: false, image: "/devices/hp-omen-45l.webp" },
-  { id: "hpomen40", label: "OMEN 40L Desktop", base: 0, inquiryOnly: true, image: "/devices/hp-omen-35l.webp" },
+  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 747, inquiryOnly: false, image: "/devices/hp-omen-45l.webp" },
+  { id: "hpomen40", label: "OMEN 40L Desktop", base: 220, inquiryOnly: false, image: "/devices/hp-omen-35l.webp" },
   { id: "hpenvy34", label: "Envy 34 All-in-One", base: 0, inquiryOnly: true, image: "/devices/lenovo-ideacentre.webp" },
   { id: "hppav32", label: "Pavilion 32 All-in-One", base: 0, inquiryOnly: true, image: "/devices/lenovo-ideacentre.webp" },
 ];
@@ -1528,18 +1528,18 @@ const DELL_PC_ALL_SUB_SERIES = [
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
-  { id: "awaurorar16", label: "Aurora R16", base: 340, image: "/devices/alienware-aurora-r16.webp" },
+  { id: "awaurorar16", label: "Aurora R16", base: 1089, image: "/devices/alienware-aurora-r16.webp" },
   // R15 / R13 prices scraped from IWM via head scraper 2026-05-17.
   // Base = i7 / 1TB SSD / Flawless × 0.90 (mid-tier chip + storage):
   //   R15 i7 1TB Flawless $785 → $706
   //   R13 i7 1TB Flawless $340 → $306
   // Higher-spec configs scale up via storage multipliers downstream.
-  { id: "awaurorar15", label: "Aurora R15", base: 706, inquiryOnly: false, image: "/devices/alienware-aurora-r15.webp" },
-  { id: "awaurorar14", label: "Aurora R14", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r14.webp" },
-  { id: "awaurorar13", label: "Aurora R13", base: 306, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
-  { id: "awaurorar12", label: "Aurora R12", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r12.webp" },
-  { id: "awaurorar10", label: "Aurora R10", base: 0, inquiryOnly: true, image: "/devices/alienware-aurora-r10.webp" },
-  { id: "awarea51desktop", label: "Area-51 Desktop", base: 0, inquiryOnly: true, image: "/devices/alienware-area-51-desktop.webp" },
+  { id: "awaurorar15", label: "Aurora R15", base: 864, inquiryOnly: false, image: "/devices/alienware-aurora-r15.webp" },
+  { id: "awaurorar14", label: "Aurora R14", base: 472, inquiryOnly: false, image: "/devices/alienware-aurora-r14.webp" },
+  { id: "awaurorar13", label: "Aurora R13", base: 324, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
+  { id: "awaurorar12", label: "Aurora R12", base: 526, inquiryOnly: false, image: "/devices/alienware-aurora-r12.webp" },
+  { id: "awaurorar10", label: "Aurora R10", base: 202, inquiryOnly: false, image: "/devices/alienware-aurora-r10.webp" },
+  { id: "awarea51desktop", label: "Area-51 Desktop", base: 180, inquiryOnly: false, image: "/devices/alienware-area-51-desktop.webp" },
 ];
 
 // MSI desktops — prices and SKUs from IWM web-head scrape 2026-05-17.
@@ -1609,31 +1609,31 @@ const PS5_VARIANTS = [
   // Storage is implicit by variant — Pro ships 2 TB, Slim ships 1 TB,
   // original ships 825 GB. No storage step or extras question for
   // consoles per Skywalker (2026-05-12).
-  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 450, image: "/devices/ps5pro.webp" },
-  { id: "ps5slim", label: "PlayStation 5 Slim",   base: 225, image: "/devices/ps5-slim-disc.webp" },
-  { id: "ps5",     label: "PlayStation 5",        base: 238, image: "/devices/ps5.webp" },
+  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 405, image: "/devices/ps5pro.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim",   base: 270, image: "/devices/ps5-slim-disc.webp" },
+  { id: "ps5",     label: "PlayStation 5",        base: 292, image: "/devices/ps5.webp" },
 ];
 const PS4_VARIANTS = [
-  { id: "ps4pro", label: "PlayStation 4 Pro", base: 150, image: "/devices/ps4-pro.webp" },
-  { id: "ps4", label: "PlayStation 4 (Standard)", base: 100, image: "/devices/ps4.webp" },
-  { id: "ps4slim", label: "PlayStation 4 Slim", base: 0, inquiryOnly: true, image: "/devices/ps4-slim.webp" },
+  { id: "ps4pro", label: "PlayStation 4 Pro", base: 104, image: "/devices/ps4-pro.webp" },
+  { id: "ps4", label: "PlayStation 4 (Standard)", base: 72, image: "/devices/ps4.webp" },
+  { id: "ps4slim", label: "PlayStation 4 Slim", base: 81, inquiryOnly: false, image: "/devices/ps4-slim.webp" },
 ];
 const SONY_SERIES = [
-  { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 450, image: "/ps5-series.webp", variants: PS5_VARIANTS },
-  { id: "ps4_family", label: "PlayStation 4", year: "Pro · Std · Slim", topPrice: 150, image: "/ps4-series.webp", variants: PS4_VARIANTS },
+  { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 405, image: "/ps5-series.webp", variants: PS5_VARIANTS },
+  { id: "ps4_family", label: "PlayStation 4", year: "Pro · Std · Slim", topPrice: 104, image: "/ps4-series.webp", variants: PS4_VARIANTS },
 ];
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
 const MICROSOFT_MODELS = [
-  { id: "xsx",  label: "Xbox Series X", base: 180, image: "/devices/xbox-series-x.webp" },
-  { id: "xss",  label: "Xbox Series S", base: 80, image: "/devices/xbox-series-s.webp" },
-  { id: "xone", label: "Xbox One",      base: 80,  image: "/devices/xbox-one.webp" },
+  { id: "xsx",  label: "Xbox Series X", base: 292, image: "/devices/xbox-series-x.webp" },
+  { id: "xss",  label: "Xbox Series S", base: 149, image: "/devices/xbox-series-s.webp" },
+  { id: "xone", label: "Xbox One",      base: 81,  image: "/devices/xbox-one.webp" },
 ];
 
 const NINTENDO_MODELS = [
-  { id: "switch", label: "Nintendo Switch OLED", base: 180, image: "/devices/switch-oled.webp" },
-  { id: "switchv2", label: "Nintendo Switch V2", base: 130, image: "/devices/switch-oled.webp" },
-  { id: "switchlite", label: "Nintendo Switch Lite", base: 90, image: "/devices/switch-lite.webp" },
+  { id: "switch", label: "Nintendo Switch OLED", base: 108, image: "/devices/switch-oled.webp" },
+  { id: "switchv2", label: "Nintendo Switch V2", base: 68, image: "/devices/switch-oled.webp" },
+  { id: "switchlite", label: "Nintendo Switch Lite", base: 27, image: "/devices/switch-lite.webp" },
 ];
 
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
@@ -1854,8 +1854,8 @@ const GARMIN_EDITIONS: Record<string, Array<{id: string; label: string; adj: num
 // Apple does NOT offer trade-in for Vision Pro (confirmed Oct 22, 2025),
 // so no first-party comp.
 const APPLE_VR_MODELS = [
-  { id: "avp_m5", label: "Apple Vision Pro (M5, 2025)",   base: 1755, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
-  { id: "avp_m2", label: "Apple Vision Pro (M2, 2024)",   base: 1305, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp_m5", label: "Apple Vision Pro (M5, 2025)",   base: 1980, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp_m2", label: "Apple Vision Pro (M2, 2024)",   base: 1530, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
 ];
 
 // Photos: Swappa per-model 2026-05-17.
@@ -1866,13 +1866,13 @@ const APPLE_VR_MODELS = [
 // (Skywalker's reference tier), × 0.90 per "10 off IWM" directive.
 // IWM source: /sell/meta-quest-vr/meta-vr decoded blob, scraped 2026-05-17.
 const META_VR_MODELS = [
-  { id: "mq3s256", label: "Meta Quest 3S (256GB)", base: 81,  inquiryOnly: false, image: "/devices/meta-quest-3s.png" },
-  { id: "mq3128",  label: "Meta Quest 3S (128GB)", base: 54,  inquiryOnly: false, image: "/devices/meta-quest-3s.png" },
-  { id: "mq3",     label: "Meta Quest 3 (512GB)",  base: 180, inquiryOnly: false, image: "/devices/meta-quest-3.png" },
-  { id: "mq3b",    label: "Meta Quest 3 (128GB)",  base: 117, inquiryOnly: false, image: "/devices/meta-quest-3.png" },
-  { id: "mq2256",  label: "Meta Quest 2 (256GB)",  base: 81,  inquiryOnly: false, image: "/devices/meta-quest-2.png" },
-  { id: "mq2128",  label: "Meta Quest 2 (128GB)",  base: 45,  inquiryOnly: false, image: "/devices/meta-quest-2.png" },
-  { id: "mqpro",   label: "Meta Quest Pro",        base: 297, inquiryOnly: false, image: "/devices/meta-quest-pro.png" },
+  { id: "mq3s256", label: "Meta Quest 3S (256GB)", base: 104, inquiryOnly: false, image: "/devices/meta-quest-3s.png" },
+  { id: "mq3128",  label: "Meta Quest 3S (128GB)", base: 76, inquiryOnly: false, image: "/devices/meta-quest-3s.png" },
+  { id: "mq3",     label: "Meta Quest 3 (512GB)",  base: 202, inquiryOnly: false, image: "/devices/meta-quest-3.png" },
+  { id: "mq3b",    label: "Meta Quest 3 (128GB)",  base: 140, inquiryOnly: false, image: "/devices/meta-quest-3.png" },
+  { id: "mq2256",  label: "Meta Quest 2 (256GB)",  base: 76, inquiryOnly: false, image: "/devices/meta-quest-2.png" },
+  { id: "mq2128",  label: "Meta Quest 2 (128GB)",  base: 40, inquiryOnly: false, image: "/devices/meta-quest-2.png" },
+  { id: "mqpro",   label: "Meta Quest Pro",        base: 292, inquiryOnly: false, image: "/devices/meta-quest-pro.png" },
 ];
 
 const VALVE_VR_MODELS = [
