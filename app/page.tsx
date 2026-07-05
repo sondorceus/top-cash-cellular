@@ -7948,38 +7948,42 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              {/* BROKEN EXAMPLES — Skywalker 2026-05-17. When the
-                  customer is reading the Broken tier description, show
-                  two photo cards (Front cracked vs Back cracked) so
-                  they can visually match their device. The funnels
-                  separate broken-glass step (Front / Back / Both) is
-                  upstream of this; the example images make that earlier
-                  question easier to answer correctly. */}
-              {c.id === "broken" && (
-                <div className="px-5 pb-5">
-                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853] mb-2.5">Examples — pick what your device looks like</p>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
-                      <div className="aspect-square w-full bg-black flex items-center justify-center">
-                        <NextImage src="/condition-examples/broken-front.png" alt="Cracked front screen / display" width={896} height={598} className="w-full h-full object-cover" loading="lazy" />
-                      </div>
-                      <figcaption className="px-2.5 py-1.5 text-center">
-                        <span className="text-[10px] uppercase tracking-wider text-[#00c853] font-extrabold">Front</span>
-                        <p className="text-[10px] text-[#c5c5c5] leading-tight">Display / screen cracked</p>
-                      </figcaption>
-                    </figure>
-                    <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
-                      <div className="aspect-square w-full bg-black flex items-center justify-center">
-                        <NextImage src="/condition-examples/broken-back.png" alt="Cracked back glass" width={896} height={597} className="w-full h-full object-cover" loading="lazy" />
-                      </div>
-                      <figcaption className="px-2.5 py-1.5 text-center">
-                        <span className="text-[10px] uppercase tracking-wider text-[#00c853] font-extrabold">Back</span>
-                        <p className="text-[10px] text-[#c5c5c5] leading-tight">Rear glass / housing cracked</p>
-                      </figcaption>
-                    </figure>
+              {/* CONDITION PHOTO EXAMPLES — real close-up shots for EVERY
+                  tier (was Broken-only). Front (screen) + Back (body) at
+                  the tier's wear level so customers grade by eye instead
+                  of guessing from words. Sealed keeps illustration only —
+                  a sealed box needs no wear photo. Skywalker 2026-07-05. */}
+              {(() => {
+                const tier = ({ mint: 1, good: 2, fair: 3, broken: 4 } as Record<string, number>)[c.id];
+                if (!tier) return null;
+                const capFront = { 1: "Flawless glass — zero scratches", 2: "Micro-marks you barely see", 3: "Clear visible scratches", 4: "Cracked / shattered glass" }[tier];
+                const capBack = { 1: "Body looks brand new", 2: "Faint wear on the frame", 3: "Scratches or small dents", 4: "Cracked back or housing" }[tier];
+                return (
+                  <div className="px-5 pb-5">
+                    <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853] mb-2.5">Examples — what {c.label} looks like</p>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
+                        <div className="aspect-square w-full bg-[#eef0f3] flex items-center justify-center">
+                          <NextImage src={`/condition-examples/screen-${tier}.png`} alt={`${c.label} — front example`} width={640} height={640} className="w-full h-full object-contain" loading="lazy" />
+                        </div>
+                        <figcaption className="px-2.5 py-1.5 text-center">
+                          <span className="text-[10px] uppercase tracking-wider text-[#00c853] font-extrabold">Front</span>
+                          <p className="text-[10px] text-[#c5c5c5] leading-tight">{capFront}</p>
+                        </figcaption>
+                      </figure>
+                      <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
+                        <div className="aspect-square w-full bg-[#eef0f3] flex items-center justify-center">
+                          <NextImage src={`/condition-examples/body-${tier}.png`} alt={`${c.label} — back example`} width={640} height={640} className="w-full h-full object-contain" loading="lazy" />
+                        </div>
+                        <figcaption className="px-2.5 py-1.5 text-center">
+                          <span className="text-[10px] uppercase tracking-wider text-[#00c853] font-extrabold">Back</span>
+                          <p className="text-[10px] text-[#c5c5c5] leading-tight">{capBack}</p>
+                        </figcaption>
+                      </figure>
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
             </div>
           </div>
         );
