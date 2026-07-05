@@ -292,7 +292,7 @@ ${img ? `<td width="46" style="width:46px;padding:14px 12px 6px 0;vertical-align
       cardInner,
       extraBlock: `<tr><td style="padding:14px 28px 0;font-size:12px;color:#8a8a8a;line-height:1.6">One approval pays out the whole order. Questions on any line? Just reply — a real person reads it.</td></tr>`,
       offerUrl,
-      ctaLabel: "Approve &amp; get paid →",
+      ctaLabel: "Approve & get paid →",
       ctaSub: "Approve the itemized offer and we pay you within 24 hours. Not right? Decline and we return your devices free — no questions asked.",
     });
   }
@@ -326,7 +326,7 @@ ${rows}
       cardInner: invoiceTable,
       extraBlock: `<tr><td style="padding:14px 28px 0;font-size:12px;color:#8a8a8a;line-height:1.6">Total deductions: <strong style="color:#ff8a80">−$${dedTotal}</strong> off the $${originalQuote} quote. Questions on any line? Just reply — a real person reads it.</td></tr>`,
       offerUrl,
-      ctaLabel: "Approve &amp; get paid →",
+      ctaLabel: "Approve & get paid →",
       ctaSub: "Approve the itemized offer and we pay you within 24 hours. Not right? Decline and we return your device free — no questions asked.",
     });
   }
@@ -354,7 +354,7 @@ ${rows}
 </td></tr>
 </table>
 </td></tr>`;
-  const ctaLabel = isFinal ? "Approve &amp; get paid →" : "Review & respond →";
+  const ctaLabel = isFinal ? "Approve & get paid →" : "Review & respond →";
   const ctaSub = isFinal
     ? "Approve and we pay you within 24 hours. Not right? Decline and we return your device free — no questions asked."
     : "No pressure. Accept the revised offer and we pay you within 24 hours. Decline and we return your device free — no questions asked.";
