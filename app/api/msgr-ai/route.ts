@@ -257,7 +257,19 @@ const TOOLS = [
 
 // ManyChat Dynamic Block v2 render — the AI's text plus optional quick replies
 // that hand structured closes back to the deterministic /api/msgr funnel.
-function render(texts: string[], quickReplies: { caption: string; state: ConvoState }[], origin: string, secret: string, ctx?: string) {
+// The quoted-followup tag arms/disarms the ManyChat "Quote follow-up" automation
+// (tag applied → smart delay → tag-still-there condition → nudge callback here).
+// Every quote arms it; every other reply disarms it, so a customer who answered
+// never gets nudged. Tag actions only go out on the ManyChat path (psid known).
+const FOLLOWUP_TAG = "quoted-followup";
+function render(
+  texts: string[],
+  quickReplies: { caption: string; state: ConvoState }[],
+  origin: string,
+  secret: string,
+  ctx?: string,
+  tagAction?: "arm" | "disarm",
+) {
   const clip = (s: string) => (Array.from(s).length > 20 ? Array.from(s).slice(0, 20).join("") : s);
   const cb = `${origin}/api/msgr?s=${encodeURIComponent(secret)}`;
   const messages = texts.filter(Boolean).map((t) => ({ type: "text", text: t }));
@@ -278,9 +290,10 @@ function render(texts: string[], quickReplies: { caption: string; state: ConvoSt
   // next Default-Reply hit carries the transcript back in. The action only fires
   // when the request round-tripped a ctx — a request without one means the caller
   // isn't wired for memory, and set_field_value on an unwired account would be noise.
-  if (ctx) {
-    content.actions = [{ action: "set_field_value", field_name: "ai_ctx", value: ctx }];
-  }
+  const actions: Record<string, unknown>[] = [];
+  if (ctx) actions.push({ action: "set_field_value", field_name: "ai_ctx", value: ctx });
+  if (tagAction) actions.push({ action: tagAction === "arm" ? "add_tag" : "remove_tag", tag_name: FOLLOWUP_TAG });
+  if (actions.length) content.actions = actions;
   return NextResponse.json({ version: "v2", content, ...(ctx ? { ctx } : {}) });
 }
 
@@ -387,6 +400,38 @@ export async function POST(req: NextRequest) {
   // chip, literal field name) means "no id" and the burst dedupe simply stays off.
   const psidRaw = typeof body.psid === "string" ? body.psid.trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
   const psid = /^\d{3,20}$/.test(psidRaw) ? psidRaw : "";
+
+  // ---- follow-up nudge callback ---------------------------------------------
+  // The "Quote follow-up" automation (tag applied → smart delay → tag-check)
+  // calls back with {nudge:true, ctx, psid}. One short nudge in the convo's
+  // language, appended to memory, and the tag is disarmed either way. No AI
+  // call — deterministic, free, and it can't ramble.
+  if ((body as { nudge?: unknown }).nudge === true || (body as { nudge?: unknown }).nudge === "true") {
+    const turns = decodeCtx(body.ctx);
+    const disarmOnly = {
+      version: "v2",
+      content: { messages: [], actions: [{ action: "remove_tag", tag_name: FOLLOWUP_TAG }] },
+    };
+    if (!turns.length) return NextResponse.json(disarmOnly); // no memory → don't nudge blind
+    const hrN =
+      Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
+    if (hrN < 8 || hrN >= 22) return NextResponse.json(disarmOnly); // no 2am nudges
+    const esN = /[áéíóúñ¿¡]|\b(hola|cu[aá]nto|cuesta|vend[eo]|vender|tel[eé]fono|celular|precio|comprar|quiero|gracias|ofrec|me\s+das|por\s+mi|tienes|est[aá]\s)\b/i.test(
+      turns.filter((t) => t.role === "user").map((t) => t.content).join(" "),
+    );
+    const nudgeText = esN ? "¿sigues interesado? puedo verte hoy con el efectivo 💵" : "still want that cash offer? can meet up today 💵";
+    const newCtxN = encodeCtx([...turns, { role: "assistant", content: nudgeText }]);
+    return NextResponse.json({
+      version: "v2",
+      content: {
+        messages: [{ type: "text", text: nudgeText }],
+        actions: [
+          { action: "remove_tag", tag_name: FOLLOWUP_TAG },
+          { action: "set_field_value", field_name: "ai_ctx", value: newCtxN },
+        ],
+      },
+    });
+  }
   // TEMP DEBUG: log every inbound hit to Mission Control (survives across serverless instances)
   // so we can see exactly which messages reach the AI. Remove after diagnosis.
   after(() => {
@@ -550,7 +595,7 @@ export async function POST(req: NextRequest) {
     body.ctx !== undefined
       ? encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }])
       : undefined;
-  return render([replyText], quickReplies, origin, secret, newCtx);
+  return render([replyText], quickReplies, origin, secret, newCtx, psid ? (lastQuote ? "arm" : "disarm") : undefined);
 }
 
 export async function GET(req: NextRequest) {
