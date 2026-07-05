@@ -4540,6 +4540,10 @@ export default function Home() {
   // Handoff method picked on the contact step (NOT after submit) — keeps the
   // funnel one-pass and the done page purely a confirmation, no second fork.
   const [handoffMethod, setHandoffMethod] = useState<"ship" | "local" | null>(null);
+  // Attention flash on the cart's handoff picker when someone hits
+  // "Continue — Get Paid" without picking Ship/Local. Replaces a native
+  // alert() — a system modal mid-money-path read as jarring, especially on iOS.
+  const [handoffNudge, setHandoffNudge] = useState(false);
   const [shipStreet, setShipStreet] = useState("");
   const [shipUnit, setShipUnit] = useState("");
   const [shipCity, setShipCity] = useState("");
@@ -14839,10 +14843,10 @@ export default function Home() {
                   the commit upfront makes the badges accurate right
                   away and shaves a click off the checkout flow. */}
               {cartItems.length > 0 && handoffMethod === null && (
-                <div className="mx-6 mt-4 rounded-2xl bg-white/[0.04] border border-white/12 p-3">
+                <div id="handoff-picker" className={`mx-6 mt-4 rounded-2xl bg-white/[0.04] border p-3 transition ${handoffNudge ? "handoff-nudge border-[#00c853]" : "border-white/12"}`}>
                   <p className="text-white text-[12px] font-extrabold mb-2 flex items-center gap-1.5">
                     <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#00c853] animate-pulse"></span>
-                    How are you handing off?
+                    {handoffNudge ? "Pick one to continue 👇" : "How are you handing off?"}
                   </p>
                   <div className="grid grid-cols-2 gap-2">
                     <button
@@ -15061,7 +15065,11 @@ export default function Home() {
                       // handing off?" picker is shown right above when
                       // undecided. Skywalker 2026-05-29.
                       if (!handoffMethod) {
-                        alert("Please choose Ship It or Local Meetup first — the checkout is different for each.");
+                        // Flash the picker instead of a native alert() — the
+                        // system dialog was jarring mid-money-path (worst on iOS).
+                        setHandoffNudge(true);
+                        document.getElementById("handoff-picker")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                        window.setTimeout(() => setHandoffNudge(false), 2600);
                         return;
                       }
                       // Close the cart with a slide-out, then enter checkout.
@@ -15113,7 +15121,10 @@ export default function Home() {
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111]/95 backdrop-blur-sm border-t border-white/10 px-3 pt-2 consent-bar-ios animate-[fadeIn_0.27s_ease-out]">
           <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto flex flex-wrap items-center gap-x-3 gap-y-2">
             <p className="text-white/80 text-[11px] flex-1 min-w-[180px]">
-              We use essential cookies to run the site. With your OK we also use analytics cookies to measure traffic and improve it.{" "}
+              {/* One-liner on phones — the full sentence wrapped to 3-4 lines and
+                  ate a big slice of the first mobile screen ad visitors land on. */}
+              <span className="sm:hidden">Essential cookies run the site; analytics only with your OK.{" "}</span>
+              <span className="hidden sm:inline">We use essential cookies to run the site. With your OK we also use analytics cookies to measure traffic and improve it.{" "}</span>
               <button onClick={() => { setPage("cookies"); window.scrollTo({ top: 0 }); }} className="underline hover:text-white transition cursor-pointer">Cookie Policy</button>
             </p>
             <div className="flex items-center gap-2 shrink-0">

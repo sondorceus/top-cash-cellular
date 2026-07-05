@@ -942,3 +942,17 @@ gmp-place-autocomplete {
    only the backdrop on/off: dark = solid #0a0a0a, light = the SAME dark
    glassy UI with the iPhone backdrop showing through (clear glass). All
    handled by the html[data-theme="light"] body::before rule above. */
+
+/* Handoff-picker attention flash — replaces the native alert() when the user
+   tries to continue without choosing Ship/Local. Crisp 2px ring (no blur —
+   green stays a crisp accent, never a glow) + a short shake. */
+@keyframes tcc-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+.handoff-nudge {
+  animation: tcc-shake 0.5s ease-in-out;
+  box-shadow: 0 0 0 2px rgba(0, 200, 83, 0.55);
+}
