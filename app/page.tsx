@@ -9257,7 +9257,7 @@ export default function Home() {
                           const imgSrc = (m as { image?: string }).image || fallbackImgs[m.id] || null;
                           return (
                             <button key={m.id} onClick={() => { selectModel(m); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
-                              {imgSrc && <Pic src={imgSrc} alt={m.label} className="w-10 h-10 object-contain flex-shrink-0" />}
+                              {imgSrc && <span className="w-12 h-12 rounded-xl bg-white/[0.07] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] flex items-center justify-center flex-shrink-0 overflow-hidden"><Pic src={imgSrc} alt={m.label} className="w-9 h-9 object-contain" /></span>}
                               <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                               <div className="flex items-center gap-2">
                                 <span className="text-[#00c853] font-bold text-sm">Up to ${getMaxPrice(m, deviceType)}</span>
@@ -9350,9 +9350,9 @@ export default function Home() {
                             return (
                               <button key={m.id} onClick={() => { selectModel(m); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                                 {mImage ? (
-                                  <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                  <span className="w-12 h-12 rounded-xl bg-white/[0.07] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] flex items-center justify-center shrink-0 overflow-hidden"><Pic src={mImage} alt={m.label} loading="lazy" className="w-9 h-9 object-contain" /></span>
                                 ) : (
-                                  <div className="w-10 h-10 shrink-0" />
+                                  <div className="w-12 h-12 shrink-0" />
                                 )}
                                 <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                                 <div className="flex items-center gap-2">
@@ -9403,9 +9403,9 @@ export default function Home() {
                           return (
                             <button key={m.id} onClick={() => { selectModel(m); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                               {mImage ? (
-                                <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                <span className="w-12 h-12 rounded-xl bg-white/[0.07] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] flex items-center justify-center shrink-0 overflow-hidden"><Pic src={mImage} alt={m.label} loading="lazy" className="w-9 h-9 object-contain" /></span>
                               ) : (
-                                <div className="w-10 h-10 shrink-0" />
+                                <div className="w-12 h-12 shrink-0" />
                               )}
                               <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                               <div className="flex items-center gap-2">
@@ -10053,9 +10053,9 @@ export default function Home() {
                             return (
                               <button key={m.id} onClick={() => { selectModel(m); }} className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 cursor-pointer transition text-left tap-press ${funnelPop === `model-${m.id}` ? "tap-confirm" : ""}`}>
                                 {mImage ? (
-                                  <Pic src={mImage} alt={m.label} loading="lazy" className="w-10 h-10 object-contain shrink-0" />
+                                  <span className="w-12 h-12 rounded-xl bg-white/[0.07] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] flex items-center justify-center shrink-0 overflow-hidden"><Pic src={mImage} alt={m.label} loading="lazy" className="w-9 h-9 object-contain" /></span>
                                 ) : (
-                                  <div className="w-10 h-10 shrink-0" />
+                                  <div className="w-12 h-12 shrink-0" />
                                 )}
                                 <p className="font-semibold text-[15px] flex-1">{m.label}</p>
                                 <div className="flex items-center gap-2">
