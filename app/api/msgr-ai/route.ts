@@ -347,8 +347,12 @@ export async function POST(req: NextRequest) {
   quickReplies.push({ caption: es ? "💬 Hablar con equipo" : "💬 Talk to our team", state: { step: "team", lang: es ? "es" : "en" } });
   quickReplies.push({ caption: es ? "📱 Menú de venta" : "📱 Sell menu", state: { step: "start", lang: es ? "es" : "en" } });
 
-  // Updated memory: append this turn + the reply, hand it back for ManyChat to store.
-  const newCtx = encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }]);
+  // Updated memory: only echo it back once ManyChat is wired to round-trip it (request
+  // carries a ctx field). Until then the response stays byte-for-byte the old format — no risk.
+  const newCtx =
+    body.ctx !== undefined
+      ? encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }])
+      : undefined;
   return render([replyText], quickReplies, origin, secret, newCtx);
 }
 
