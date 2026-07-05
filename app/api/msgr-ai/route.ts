@@ -12,6 +12,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
+import { createHmac } from "crypto";
 import { put, list, del } from "@vercel/blob";
 import { type ConvoState } from "../../lib/msgr-brain";
 import { quoteDevice, type QuoteSpec } from "../../lib/quote";
@@ -382,6 +383,43 @@ async function sweepMarkers(entries: { mark: Marker; url: string }[]) {
 }
 const EMPTY = () => NextResponse.json({ version: "v2", content: { messages: [] } });
 
+// ---- owner mute (ManyChat path) ---------------------------------------------
+// The one reliable human-takeover signal for PUBLIC conversations: Sonny taps
+// the mute link in his lead SMS and the bot goes silent for that contact.
+// (ManyChat's own pause only engages for ManyChat-inbox replies; he usually
+// replies from Business Suite, which ManyChat and the bot can't see — and the
+// owned webhook's echo detection can't cover public convos until App Review.)
+// Marker: msgr-mute/{contactId}/{ts13}-{hours} — newest wins, hours=0 unmutes.
+function muteToken(psid: string): string {
+  return createHmac("sha256", process.env.MSGR_BOT_SECRET || "").update(`mute:${psid}`).digest("hex").slice(0, 16);
+}
+async function setMute(psid: string, hours: number) {
+  try {
+    await put(`msgr-mute/${psid}/${String(Date.now()).padStart(13, "0")}-${hours}`, ".", {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: "text/plain",
+    });
+  } catch {
+    /* best-effort */
+  }
+}
+async function isMuted(psid: string): Promise<boolean> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-mute/${psid}/`, limit: 100 });
+    const marks = blobs
+      .map((b) => b.pathname.match(/\/(\d{13})-(\d{1,3})$/))
+      .filter(Boolean)
+      .map((m) => ({ ts: Number((m as RegExpMatchArray)[1]), hours: Number((m as RegExpMatchArray)[2]) }));
+    if (!marks.length) return false;
+    const newest = marks.reduce((a, b) => (b.ts >= a.ts ? b : a));
+    return Date.now() < newest.ts + newest.hours * 3_600_000;
+  } catch {
+    return false; // fail open — better an extra reply than a silent bot on infra errors
+  }
+}
+
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const secret = process.env.MSGR_BOT_SECRET as string;
@@ -413,6 +451,7 @@ export async function POST(req: NextRequest) {
       content: { messages: [], actions: [{ action: "remove_tag", tag_name: FOLLOWUP_TAG }] },
     };
     if (!turns.length) return NextResponse.json(disarmOnly); // no memory → don't nudge blind
+    if (psid && (await isMuted(psid))) return NextResponse.json(disarmOnly); // owner took over — never nudge into his convo
     const hrN =
       Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
     if (hrN < 8 || hrN >= 22) return NextResponse.json(disarmOnly); // no 2am nudges
@@ -498,6 +537,7 @@ export async function POST(req: NextRequest) {
   const myHash = textHash(text);
   const myTs = Date.now();
   if (psid) {
+    if (await isMuted(psid)) return EMPTY(); // owner is working this convo — stay silent
     const entries = await listMarkers(psid);
     if (entries.some(({ mark: m }) => m.kind === "a" && m.hash === myHash && myTs - m.ts < 90_000)) return EMPTY();
     await putMarker(psid, "q", myHash, myRand, myTs);
@@ -573,7 +613,11 @@ export async function POST(req: NextRequest) {
   if (teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei) {
     const isHot = sig.hot || sig.intent || (!!lastQuote && (!!contact || !!teamNotified));
     const what = teamNotified?.summary || (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : "active chat");
-    const sms = `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | "${text.slice(0, 55)}". Reply in ManyChat.`;
+    // One-tap mute link: Sonny replies from Business Suite (which neither
+    // ManyChat's pause nor the bot can see), so his takeover signal is this
+    // link in the alert — tap it and the bot goes silent for this customer.
+    const muteLink = psid ? ` 🤫 Take over (mutes bot 24h): https://topcashcellular.com/api/msgr-ai?mute=${psid}&t=${muteToken(psid)}` : "";
+    const sms = `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | "${text.slice(0, 55)}".${muteLink}`;
     after(() => notifyOwnerSms(sms));
   }
 
@@ -617,5 +661,27 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: String(e) });
     }
   }
+  // Owner mute link (from the lead SMS): ?mute=<contactId>&t=<hmac>[&h=hours]
+  // h=24 default; h=0 unmutes. Token is an HMAC of the contact id, so the link
+  // only works for that conversation and carries no secrets.
+  const mutePsid = req.nextUrl.searchParams.get("mute");
+  if (mutePsid && /^\d{3,20}$/.test(mutePsid)) {
+    if (req.nextUrl.searchParams.get("t") !== muteToken(mutePsid)) {
+      return new NextResponse("forbidden", { status: 403 });
+    }
+    const hours = Math.max(0, Math.min(168, Number(req.nextUrl.searchParams.get("h") ?? 24) || 0));
+    await setMute(mutePsid, hours);
+    const on = hours > 0;
+    const toggle = `/api/msgr-ai?mute=${mutePsid}&t=${muteToken(mutePsid)}&h=${on ? 0 : 24}`;
+    const html =
+      `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>TCC bot</title></head>` +
+      `<body style="margin:0;background:#13142b;color:#fff;font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;">` +
+      `<div style="padding:32px;"><div style="font-size:52px;">${on ? "🤫" : "🤖"}</div>` +
+      `<h1 style="font-size:22px;margin:12px 0 6px;">${on ? `Bot muted for ${hours}h` : "Bot resumed"}</h1>` +
+      `<p style="color:#a9adc4;font-size:14px;line-height:1.6;margin:0 0 20px;">${on ? "This conversation is all yours — the AI won't reply or nudge this customer." : "The AI will handle this customer's next message again."}</p>` +
+      `<a href="${toggle}" style="display:inline-block;background:${on ? "#00c853" : "#ffb400"};color:#0a0a0a;font-weight:800;text-decoration:none;padding:12px 26px;border-radius:999px;font-size:14px;">${on ? "Hand back to the bot" : "Mute again (24h)"}</a></div></body></html>`;
+    return new NextResponse(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+  }
+
   return NextResponse.json({ ok: true, service: "tcc-msgr-ai", configured: !!process.env.MSGR_BOT_SECRET && !!process.env.ANTHROPIC_API_KEY });
 }
