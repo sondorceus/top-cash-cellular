@@ -119,7 +119,7 @@ async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: n
 
 const SYSTEM = (lang: string) =>
   [
-    "You are the Top Cash Cellular assistant in Facebook Messenger — a LOCAL (Austin, TX) phone, tablet & MacBook buyback. You help people who typed a message instead of tapping the menu buttons. Keep replies SHORT (1-3 sentences), warm, and human — like a real small-business owner texting back. Light emoji ok, never cheesy or over-hyped.",
+    "You are the Top Cash Cellular assistant in Facebook Messenger — a LOCAL (Austin, TX) phone, tablet & MacBook buyback. You help people who typed instead of tapping the menu. LENGTH IS CRITICAL: text like a busy human, not a bot. Keep EVERY reply to ONE short sentence (two max, and ONLY when giving a quote). No lists, no numbered points, no multi-line walls — people will not read them. If you need storage + condition + carrier, ask for all three in ONE short casual line (e.g. \"What's the storage, condition, and is it unlocked?\"). A little emoji is fine; never cheesy.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
@@ -210,6 +210,31 @@ export async function POST(req: NextRequest) {
     return render(["Hey! 👋 Tell me what you're selling (model + condition) and I'll get you a cash offer."], [], origin, secret);
   }
   const lang = body.lang === "es" || /[áéíóúñ¿¡]|hola|cuánto|vender|teléfono|precio|gracias/i.test(text) ? "es" : "en";
+
+  // ── Master on/off + business-hours schedule (server-side; runs 24/7 with the site) ──
+  if (process.env.MSGR_AI_ENABLED === "0") {
+    // Kill switch ON → bot stays silent; the lead still lands in the ManyChat inbox for a human.
+    return NextResponse.json({ version: "v2", content: { messages: [] } });
+  }
+  const openH = Number(process.env.MSGR_AI_START ?? 8); // default 8am
+  const closeH = Number(process.env.MSGR_AI_END ?? 21); // default 9pm  (times are Austin/US-Central)
+  const austinHr =
+    Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
+  const openNow = openH >= closeH ? true : austinHr >= openH && austinHr < closeH; // start>=end ⇒ always on
+  if (!openNow) {
+    // After hours: one short holding line + ping the owner so no overnight lead is lost.
+    after(() => notifyOwnerSms(`🌙 After-hours TCC lead: "${text.slice(0, 80)}" — follow up in ManyChat.`));
+    return render(
+      [
+        lang === "es"
+          ? "¡Hola! Ya cerramos por hoy 🌙 dime qué vendes y te paso precio a primera hora 👍"
+          : "Hey! We're closed for tonight 🌙 tell me what you're selling and I'll have a cash number for you first thing 👍",
+      ],
+      [],
+      origin,
+      secret,
+    );
+  }
 
   const rawHistory = Array.isArray(body.history) ? body.history : [];
   const history = rawHistory
