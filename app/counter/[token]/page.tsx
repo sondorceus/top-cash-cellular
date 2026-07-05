@@ -106,7 +106,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <p className="text-[11px] text-[#888] mb-4">Tokens expire after 14 days. If you need help, reach out below.</p>
           <a
             href="mailto:support@topcashcellular.com"
-            className="inline-flex items-center justify-center w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition"
+            className="inline-flex items-center justify-center w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm px-4 py-3 rounded-full transition-colors"
           >
             Email CustomerService
           </a>
@@ -289,14 +289,14 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <button
             onClick={() => respond("accept")}
             disabled={submitting}
-            className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-base px-4 py-4 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-base px-4 py-4 rounded-full transition-colors disabled:bg-[#00c853]/60 disabled:cursor-not-allowed cursor-pointer"
           >
             {submitting ? "Submitting…" : `Accept $${decoded.offer.toLocaleString()} →`}
           </button>
           <button
             onClick={() => respond("decline")}
             disabled={submitting}
-            className="w-full bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold text-sm px-4 py-3 rounded-full transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full bg-white/5 hover:bg-white/10 border border-white/15 text-white font-semibold text-sm px-4 py-3 rounded-full transition-colors disabled:text-white/40 disabled:cursor-not-allowed cursor-pointer"
           >
             Decline — return my device free
           </button>
