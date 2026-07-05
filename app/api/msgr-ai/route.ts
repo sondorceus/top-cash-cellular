@@ -210,7 +210,9 @@ const SYSTEM = (lang: string) =>
     "GRAB THE CLOSE: the moment someone sounds ready ('let's do it', 'where do we meet', gives a number), close like the owner does — qualify the area ('Are you in the Austin area?'), then MEET-ME FIRST (see below), and call notify_team. Don't leave a hot lead hanging.",
     "MEETUPS — HINT THEM TOWARD COMING TO YOU, NEVER FORCE IT: the owner meets a lot of sellers every day, and deals close fastest when they come to him. When the meetup comes up, drop the hint the way he does — his own words: 'I can meet you but I have a lot of people I'm meeting today — if you can come to me it would be best, we can get it done today'. Frame it as THEIR win (get paid today, no waiting on a route slot). It's a hint, said ONCE: if they hesitate, can't travel, or just don't bite, drop it instantly and go 'No worries, what area are you in? I can swing by'. Never make it a condition — a done deal beats a perfect route.",
     "MULTIPLE DEVICES: if they list more than one, handle the instant-catalog phone first (ask its specs, quote it), and note any others (MacBook, iPad, older phone, console) for a manual quote via notify_team — one thing at a time so it's not overwhelming.",
-    "PRICE PUSHBACK / COMPETITOR OFFERS: never invent a higher number and never badmouth another buyer. If they say it's too low or someone offered more, say our number's solid but you'll have a teammate take a look to see if there's any room — then call notify_team. Our price is honest; the team handles exceptions.",
+    "PRICE PUSHBACK — REAL REBUTTALS IN THE OWNER'S VOICE (each said ONCE, never beg, NEVER raise the number yourself): 'that's way too low' → 'I get it might not seem high but it's right under what these actually resell for — you could get more selling it yourself but you'd be waiting weeks, I pay cash same day'. 'can you add 100/200' → 'I would love to but I only make like 40 to 70 a device after I resell it, and I have to wait for it to sell'. someone else offered more → never badmouth: 'If they can really do that take it — most of those quotes drop when they see the phone. My number is what I actually hand you'. carrier/trade-in pays more → 'trade-in is store credit spread out over months, this is cash in your hand today'. The honest frame behind all of these: margins are thin (40-70 a device), money is fronted, resale takes time — we pay for it with speed and convenience. If they keep pushing after two rebuttals or a real deal is dying over the gap, say 'let me see if there's any room, one sec' and call notify_team — the owner decides exceptions, you never do.",
+    "OFF-TOPIC / WEIRD QUESTIONS: you're a busy guy who buys phones, not a chatbot assistant. Unrelated stuff (news, jokes, homework, 'write me a poem', random links) gets ONE short dry line max — 'lol i just buy phones man. got one to sell?' — and nothing more. 'are you a bot?' → 'nah lol. you selling or what'. Never lecture, never explain yourself, never play along past one line.",
+    "DON'T CHASE — HARD RULE: if you already asked what they're selling (or any question) and they keep coming back with nothing real — nonsense, one-word dodges, games — NEVER ask the same thing again and never re-open with another 'what do you have'. Say ONCE, firm but cool: 'Let me know when you're ready, I run a real business'. If they STILL send nothing real after that, reply with exactly [NO_REPLY] and nothing else — a real person just stops answering. [NO_REPLY] is also the right reply to obvious spam or trolling. Silence reads human; repeating yourself reads bot.",
     "AFTER A QUOTE OR GOOD ANSWER: just ask casually if they wanna meet up (e.g. 'wanna link up this week?'). Never push, never pitch, never list benefits. If they're in or drop a number, call notify_team.",
     "QUICK ANSWERS (keep them SHORT + casual, like texting): broken? → 'yeah i take broken, just less for it.' how long? → 'like 5 min, cash on the spot.' not sure on condition? → 'just tell me the screen/battery/any cracks, we sort it when we meet.' vs trade-in? → 'usually way more than trade-in, and real cash.' is it legit / a scam? → 'nah, look us up on google 👍'. where are you? → 'Austin area — I'm out meeting people today, if you can come to me we can get it done today'.",
     "CONDITION COACHING (stay honest): if someone underrates their own phone (says 'fair' or 'broken' for what sounds like minor wear), gently double-check — 'is the screen actually cracked, or just light scratches? Good condition pays more' — so they get their best HONEST number. NEVER coach anyone to misrepresent; we verify at the meetup anyway.",
@@ -615,6 +617,13 @@ export async function POST(req: NextRequest) {
       : (lang === "es" ? "dime qué tienes y te doy una oferta en efectivo 💵" : "tell me what you have and i'll get you a cash offer 💵");
   }
 
+  // The model can choose silence ([NO_REPLY]) for spam/trolls/dead threads —
+  // a real person just stops answering instead of re-pitching. If the sentinel
+  // leaked into an otherwise-real reply, strip it and send the reply.
+  const strippedReply = replyText.replace(/\[NO_?REPLY\]/gi, "").trim();
+  const noReply = !strippedReply && /\[NO_?REPLY\]/i.test(replyText);
+  if (!noReply && strippedReply !== replyText) replyText = strippedReply || replyText;
+
   // Stale? A newer request claimed the slot while the AI was running — that newer
   // request answers (it carries the newest {{Last Text Input}}); this one goes silent.
   if (psid) {
@@ -624,21 +633,86 @@ export async function POST(req: NextRequest) {
     after(() => sweepMarkers(entries));
   }
 
-  // ---- owner SMS: fire on ANY real lead signal (AI flagged a handoff, gave a quote,
-  // contact info appeared, or hot-buying language) — flag the hot ones and always pass
-  // the contact + the customer's own words so the owner can jump in with context ----
+  // ---- owner alerts + Spanish translation ------------------------------------
+  // Owner SMS fires on ANY real lead signal (AI flagged a handoff, gave a quote,
+  // contact info appeared, or hot-buying language). Spanish conversations ALSO
+  // get every exchange translated to English and posted to Mission Control —
+  // the owner doesn't read Spanish, so without this he can't follow or take
+  // over an es convo. One shared after(): translate once, use it in both.
   const sig = detectSignals(text);
   const contact =
     (teamNotified?.contact && teamNotified.contact.replace(/\D/g, "").length >= 5 ? teamNotified.contact : "") || sig.contact;
-  if (teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei) {
+  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei);
+  if (alertNeeded || lang === "es") {
     const isHot = sig.hot || sig.intent || (!!lastQuote && (!!contact || !!teamNotified));
     const what = teamNotified?.summary || (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : "active chat");
     // One-tap mute link: Sonny replies from Business Suite (which neither
     // ManyChat's pause nor the bot can see), so his takeover signal is this
     // link in the alert — tap it and the bot goes silent for this customer.
     const muteLink = psid ? ` 🤫 Take over (mutes bot 24h): https://topcashcellular.com/api/msgr-ai?mute=${psid}&t=${muteToken(psid)}` : "";
-    const sms = `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | "${text.slice(0, 55)}".${muteLink}`;
-    after(() => notifyOwnerSms(sms));
+    const customerText = text;
+    const botText = noReply ? "" : replyText;
+    after(async () => {
+      // ES → EN translation (one cheap call, reused for MC + the SMS quote).
+      let enCust = "";
+      let enBot = "";
+      if (lang === "es") {
+        try {
+          const Anthropic = (await import("@anthropic-ai/sdk")).default;
+          const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+          const t = await client.messages.create({
+            model: "claude-haiku-4-5-20251001",
+            max_tokens: 300,
+            system:
+              'Translate this Spanish Messenger exchange between a seller (CUSTOMER) and a phone buyer (BOT) into natural English. Output EXACTLY two lines and nothing else:\nCUSTOMER: <english>\nBOT: <english, or "(no reply)" if empty>',
+            messages: [{ role: "user", content: `CUSTOMER: ${customerText}\nBOT: ${botText || "(no reply)"}` }],
+          });
+          const flat = (t.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+          enCust = flat.match(/CUSTOMER:\s*([^\n]+)/i)?.[1]?.trim() || "";
+          enBot = flat.match(/BOT:\s*([^\n]+)/i)?.[1]?.trim() || "";
+        } catch {
+          /* translation is best-effort — alerts still go out untranslated */
+        }
+        // Every Spanish exchange lands in Mission Control readable in English.
+        const convoTag = psid ? ` #${psid.slice(-6)}` : "";
+        await fetch("https://missioncontrolsdjg-production.up.railway.app/api/comms", {
+          method: "POST",
+          headers: { "x-api-key": process.env.MC_API_KEY || "", "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: "tcc-msgr-bot",
+            fromName: "TCC Messenger Bot",
+            role: "bot",
+            tags: ["tcc-msgr-es"],
+            body:
+              `[ES convo${convoTag}] Customer: "${customerText.slice(0, 300)}"` +
+              (enCust ? `\n→ EN: "${enCust.slice(0, 300)}"` : "") +
+              `\nBot: ${botText ? `"${botText.slice(0, 300)}"` : "(stayed silent)"}` +
+              (enBot && botText ? `\n→ EN: "${enBot.slice(0, 300)}"` : ""),
+          }),
+        }).catch(() => {});
+      }
+      if (alertNeeded) {
+        const quoted = `"${customerText.slice(0, 55)}"${enCust ? ` (EN: "${enCust.slice(0, 70)}")` : ""}`;
+        await notifyOwnerSms(
+          `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | ${quoted}.${muteLink}`,
+        );
+      }
+    });
+  }
+
+  // Silent turn: no message, no quick replies — but memory still records what
+  // they said (so a later real message picks the thread back up) and the
+  // follow-up tag disarms (never nudge someone the bot chose to ignore).
+  if (noReply) {
+    const silentCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: text }]) : undefined;
+    const actions: Record<string, unknown>[] = [];
+    if (silentCtx) actions.push({ action: "set_field_value", field_name: "ai_ctx", value: silentCtx });
+    if (psid) actions.push({ action: "remove_tag", tag_name: FOLLOWUP_TAG });
+    return NextResponse.json({
+      version: "v2",
+      content: { messages: [], ...(actions.length ? { actions } : {}) },
+      ...(silentCtx ? { ctx: silentCtx } : {}),
+    });
   }
 
   // ---- quick replies hand structured closes back to the deterministic funnel ----
