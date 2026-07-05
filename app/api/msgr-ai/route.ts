@@ -67,6 +67,15 @@ function nameToSlug(raw: string): { slug: string; label: string } | null {
       const v = ultra ? "u" : plus ? "p" : fe ? "fe" : "";
       if (have("gs" + g2[1] + v)) return { slug: "gs" + g2[1] + v, label: slugToDisplay("gs" + g2[1] + v) };
     }
+    // Word-order tolerance: "Samsung Ultra 26" / "galaxy 26 ultra" — people put
+    // the variant before the number and skip the S. A real lead typed exactly
+    // this on 2026-07-05 and got no quote. Two-digit bound keeps it in the
+    // S20-S26 range; have() gates it to real catalog rows either way.
+    g2 = n.match(/\b(2\d)\b/);
+    if (g2) {
+      const v = ultra ? "u" : plus ? "p" : fe ? "fe" : "";
+      if (have("gs" + g2[1] + v)) return { slug: "gs" + g2[1] + v, label: slugToDisplay("gs" + g2[1] + v) };
+    }
   }
   // Google Pixel
   m = n.match(/pixel\s*(\d+)/);
@@ -181,10 +190,17 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   const phone = scrubbed.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/)?.[0]?.trim();
   const email = scrubbed.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i)?.[0];
   const contact = phone || email || "";
+  // Bulk / multi-device = big money and the easiest lead to fumble — a real
+  // one ("two Samsung ultra 26 ... two iPhones 17") slipped past every regex
+  // on 2026-07-05. Quantity words + a device noun, or bulk vocabulary.
+  const bulk =
+    /\b(?:two|three|four|five|six|\d{1,2})\s+(?:iphones?|samsungs?|galaxys?|pixels?|phones?|devices?|macbooks?|laptops?|ipads?|tablets?|consoles?)\b/i.test(text) ||
+    /\b(?:bulk|wholesale|a lot of (?:phones|devices)|several (?:phones|devices))\b/i.test(text);
   const hot =
+    bulk ||
     /\b(today|tonight|asap|right now|need\s+(the\s+)?cash|how soon|urgent|this (morning|afternoon|evening)|meet ?up|can we meet|cash today|where.*(meet|located|you at))\b/i.test(text);
   const intent =
-    /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it)\b/i.test(text);
+    /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it|tell me how much|how much (?:can|do|will|would)?\s*(?:you|u)?\s*(?:offer|give|pay))\b/i.test(text);
   return { contact, hot, intent, imei };
 }
 
@@ -209,7 +225,7 @@ const SYSTEM = (lang: string) =>
     "NEVER RE-QUOTE: once you've given a price in this conversation, do NOT repeat it or call get_quote again for the same device unless they ask for the number or change the specs. While they're deciding, just answer what they asked or line up the meetup — repeating the price reads pushy and bot-like.",
     "GRAB THE CLOSE: the moment someone sounds ready ('let's do it', 'where do we meet', gives a number), close like the owner does — qualify the area ('Are you in the Austin area?'), then MEET-ME FIRST (see below), and call notify_team. Don't leave a hot lead hanging.",
     "MEETUPS — HINT THEM TOWARD COMING TO YOU, NEVER FORCE IT: the owner meets a lot of sellers every day, and deals close fastest when they come to him. When the meetup comes up, drop the hint the way he does — his own words: 'I can meet you but I have a lot of people I'm meeting today — if you can come to me it would be best, we can get it done today'. Frame it as THEIR win (get paid today, no waiting on a route slot). It's a hint, said ONCE: if they hesitate, can't travel, or just don't bite, drop it instantly and go 'No worries, what area are you in? I can swing by'. Never make it a condition — a done deal beats a perfect route.",
-    "MULTIPLE DEVICES: if they list more than one, handle the instant-catalog phone first (ask its specs, quote it), and note any others (MacBook, iPad, older phone, console) for a manual quote via notify_team — one thing at a time so it's not overwhelming.",
+    "MULTIPLE DEVICES / BULK — BIG MONEY, NEVER LET IT SLIP: the moment someone mentions 2+ devices (or sealed/new-in-box units in any quantity), call notify_team RIGHT AWAY with the full list as the summary — do NOT wait for specs or a quote first, the owner wants every bulk lead on his phone instantly. Then keep the convo normal: work the instant-catalog phone first (ask its specs, quote it), note the rest for the manual quote — one thing at a time so it's not overwhelming. Never price a whole lot yourself.",
     "PRICE PUSHBACK — REAL REBUTTALS IN THE OWNER'S VOICE (each said ONCE, never beg, NEVER raise the number yourself): 'that's way too low' → 'I get it might not seem high but it's right under what these actually resell for — you could get more selling it yourself but you'd be waiting weeks, I pay cash same day'. 'can you add 100/200' → 'I would love to but I only make like 40 to 70 a device after I resell it, and I have to wait for it to sell'. someone else offered more → never badmouth: 'If they can really do that take it — most of those quotes drop when they see the phone. My number is what I actually hand you'. carrier/trade-in pays more → 'trade-in is store credit spread out over months, this is cash in your hand today'. The honest frame behind all of these: margins are thin (40-70 a device), money is fronted, resale takes time — we pay for it with speed and convenience. If they keep pushing after two rebuttals or a real deal is dying over the gap, say 'let me see if there's any room, one sec' and call notify_team — the owner decides exceptions, you never do.",
     "OFF-TOPIC / WEIRD QUESTIONS: you're a busy guy who buys phones, not a chatbot assistant. Unrelated stuff (news, jokes, homework, 'write me a poem', random links) gets ONE short dry line max — 'lol i just buy phones man. got one to sell?' — and nothing more. 'are you a bot?' → 'nah lol. you selling or what'. Never lecture, never explain yourself, never play along past one line.",
     "DON'T CHASE — HARD RULE: if you already asked what they're selling (or any question) and they keep coming back with nothing real — nonsense, one-word dodges, games — NEVER ask the same thing again and never re-open with another 'what do you have'. Say ONCE, firm but cool: 'Let me know when you're ready, I run a real business'. If they STILL send nothing real after that, reply with exactly [NO_REPLY] and nothing else — a real person just stops answering. [NO_REPLY] is also the right reply to obvious spam or trolling. Silence reads human; repeating yourself reads bot.",
@@ -476,15 +492,6 @@ export async function POST(req: NextRequest) {
       },
     });
   }
-  // TEMP DEBUG: log every inbound hit to Mission Control (survives across serverless instances)
-  // so we can see exactly which messages reach the AI. Remove after diagnosis.
-  after(() => {
-    fetch("https://missioncontrolsdjg-production.up.railway.app/api/comms", {
-      method: "POST",
-      headers: { "x-api-key": process.env.MC_API_KEY || "", "Content-Type": "application/json" },
-      body: JSON.stringify({ from: "msgr-ai-debug", fromName: "MSGR-AI Debug", role: "system", body: `[MSGR-AI HIT${body.ctx !== undefined ? " +ctx" : ""}] "${text.slice(0, 120)}"`, tags: ["msgr-ai-debug"], priority: "low" }),
-    }).catch(() => {});
-  });
   if (!text) {
     return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret);
   }
@@ -737,24 +744,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  // TEMP DEBUG: ?peek=1 reads the MC hit-log server-side (where MC_API_KEY works) so we can
-  // see exactly which messages reached the AI, from anywhere. Remove after diagnosis.
-  if (req.nextUrl.searchParams.get("peek")) {
-    try {
-      const r = await fetch("https://missioncontrolsdjg-production.up.railway.app/api/comms?limit=60", {
-        headers: { "x-api-key": process.env.MC_API_KEY || "" },
-        cache: "no-store",
-      });
-      const d = (await r.json()) as { messages?: { body?: string; timestamp?: string }[] };
-      const hits = (d.messages || [])
-        .filter((m) => (m.body || "").includes("MSGR-AI HIT"))
-        .slice(0, 15)
-        .map((m) => ({ at: m.timestamp, body: m.body }));
-      return NextResponse.json({ hitCount: hits.length, hits });
-    } catch (e) {
-      return NextResponse.json({ error: String(e) });
-    }
-  }
   // Owner mute link (from the lead SMS): ?mute=<contactId>&t=<hmac>[&h=hours]
   // h=24 default; h=0 unmutes. Token is an HMAC of the contact id, so the link
   // only works for that conversation and carries no secrets.
