@@ -207,8 +207,11 @@ type Turn = { role: "user" | "assistant"; content: string };
 // Decode the base64 transcript ManyChat round-trips through the ai_ctx custom field.
 function decodeCtx(s: unknown): Turn[] {
   if (typeof s !== "string" || !s.trim()) return [];
+  // ManyChat's field chip can wrap the value in literal { } — strip them before decoding.
+  const clean = s.trim().replace(/^\{([\s\S]*)\}$/, "$1").trim();
+  if (!clean || clean === "ai_ctx") return [];
   try {
-    const arr = JSON.parse(Buffer.from(s, "base64").toString("utf8"));
+    const arr = JSON.parse(Buffer.from(clean, "base64").toString("utf8"));
     if (!Array.isArray(arr)) return [];
     return (arr as { r?: string; t?: string }[])
       .map((m) => ({ role: (m.r === "a" ? "assistant" : "user") as "user" | "assistant", content: String(m.t || "").slice(0, 500) }))
