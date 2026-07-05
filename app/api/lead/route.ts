@@ -145,8 +145,13 @@ const REVIEW_KEYWORDS = [
   "MacBook Pro 14\" M5", "MacBook Air M5", "Z TriFold",
   "Mac Mini M4",
 ];
-function needsManualReview(modelName: string, quoteAmt: number): boolean {
-  if (quoteAmt >= 1000) return true;
+function needsManualReview(modelName: string, _quoteAmt: number): boolean {
+  // Manual review ONLY for the explicitly-listed high-touch models
+  // (REVIEW_KEYWORDS). The old `quoteAmt >= 1000` blanket flagged every
+  // high-value PRICED device (sealed iPhones, MacBooks) as "needs review"
+  // even though we have a firm price. Skywalker 2026-07-05: don't review
+  // devices we've priced — only the ones I list. (Quote-tamper + missing
+  // 18+/ownership attestation are still flagged separately in reviewRequired.)
   return REVIEW_KEYWORDS.some(kw => modelName?.includes(kw));
 }
 

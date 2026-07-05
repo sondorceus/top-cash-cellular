@@ -9,7 +9,11 @@
 
 export const RESELL_ESTIMATES: Record<string, number> = {
   // iPhones — Swappa mid price (actual listings)
-  "iPhone 17 Pro Max": 1081, "iPhone 17 Pro": 949, "iPhone 17": 695,
+  // iPhone 17 Pro Max intentionally OMITTED (2026-07-05): it's a manually-
+  // priced SKU whose sealed offers run a deliberate ~$250 flat profit (sub-25%
+  // margin) to stay competitive — a resell entry here would let the margin cap
+  // claw those sealed offers back to resell × 0.75. See [[resell-cap-footgun]].
+  "iPhone 17 Pro": 949, "iPhone 17": 695,
   "iPhone 16 Pro Max": 721, "iPhone 16 Pro": 638, "iPhone 16 Plus": 428, "iPhone 16": 520,
   "iPhone 15 Pro Max": 525, "iPhone 15 Pro": 528, "iPhone 15": 349,
   "iPhone 14 Pro Max": 417, "iPhone 14 Pro": 358, "iPhone 14": 268,

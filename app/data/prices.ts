@@ -268,13 +268,18 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 350, fair: 515, good: 535, mint: 555, sealed: 585 },
     "512": { broken: 385, fair: 570, good: 590, mint: 610, sealed: 640 } },
   ip17pm: {
-    // Custom flat pricing (Skywalker, 2026-06): excellent OFFER $620 = base 595 + $25
-    // popular-phone bonus; ladder sealed/good/fair 650/600/580; +$55 per storage tier;
-    // NO carrier penalty (deductions zeroed above). Broken left unchanged.
-    "1tb": { broken: 527, fair: 665, good: 685, mint: 705, sealed: 735 },
-    "256": { broken: 434, fair: 555, good: 575, mint: 595, sealed: 625 },
-    "2tb": { broken: 566, fair: 720, good: 740, mint: 760, sealed: 790 },
-    "512": { broken: 472, fair: 610, good: 630, mint: 650, sealed: 680 } },
+    // Custom flat pricing (Skywalker). Excellent OFFER $620 = base 595 + $25
+    // popular-phone bonus; mint/good/fair/broken unchanged.
+    // SEALED re-priced 2026-07-05 to Atlas NIB-sealed minus a flat $250 profit
+    // (unlocked): 256/512/1TB/2TB Atlas 1000/1110/1300/1500 -> offer
+    // 750/860/1050/1250. base = Atlas - 275, and the +$25 popular bonus at
+    // quote time restores the target offer. ip17pm is intentionally OUT of
+    // RESELL_ESTIMATES so these sub-25%-margin sealed offers aren't clawed
+    // back by the margin cap. NO carrier penalty (deductions zeroed above).
+    "1tb": { broken: 527, fair: 665, good: 685, mint: 705, sealed: 1025 },
+    "256": { broken: 434, fair: 555, good: 575, mint: 595, sealed: 725 },
+    "2tb": { broken: 566, fair: 720, good: 740, mint: 760, sealed: 1225 },
+    "512": { broken: 472, fair: 610, good: 630, mint: 650, sealed: 835 } },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
     "128": { broken: 13, fair: 39, good: 128, mint: 137, sealed: 187 },
