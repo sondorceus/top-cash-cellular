@@ -588,14 +588,31 @@ export async function POST(req: NextRequest) {
       break;
     }
   } catch {
-    replyText = lang === "es"
-      ? "dime qué tienes y te doy una oferta en efectivo 💵"
-      : "tell me what you have and i'll get you a cash offer 💵";
+    replyText = "";
   }
   if (!replyText) {
-    replyText = lang === "es"
-      ? "¿qué modelo es y en qué condición está? te paso el número 💵"
-      : "what model + condition? i'll get you a number 💵";
+    // Rare: the model returned no text (API blip / tool-only turn). One plain
+    // retry without tools — a real answer beats any canned line.
+    try {
+      const Anthropic = (await import("@anthropic-ai/sdk")).default;
+      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const retry = await client.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 150,
+        system: SYSTEM(lang),
+        messages: [...priorTurns, { role: "user", content: text }] as never,
+      });
+      replyText = (retry.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+    } catch {
+      /* fall through to the canned lines */
+    }
+  }
+  if (!replyText) {
+    // Context-aware last resort: mid-conversation, re-asking specs they already
+    // gave reads as a broken bot — a human "one sec" holds the thread instead.
+    replyText = priorTurns.length
+      ? (lang === "es" ? "un momento 👍" : "one sec 👍")
+      : (lang === "es" ? "dime qué tienes y te doy una oferta en efectivo 💵" : "tell me what you have and i'll get you a cash offer 💵");
   }
 
   // Stale? A newer request claimed the slot while the AI was running — that newer
