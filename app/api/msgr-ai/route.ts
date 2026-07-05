@@ -200,7 +200,15 @@ function render(texts: string[], quickReplies: { caption: string; state: ConvoSt
       payload: { state: qr.state },
     }));
   }
-  // ctx = compact base64 conversation memory, mapped back to the ManyChat ai_ctx field.
+  // ctx = compact base64 conversation memory. Returned two ways: top-level `ctx`
+  // (consumed by the owned /api/messenger webhook) AND a ManyChat set_field_value
+  // action that writes it to the `ai_ctx` user field (created 2026-07-05), so the
+  // next Default-Reply hit carries the transcript back in. The action only fires
+  // when the request round-tripped a ctx — a request without one means the caller
+  // isn't wired for memory, and set_field_value on an unwired account would be noise.
+  if (ctx) {
+    content.actions = [{ action: "set_field_value", field_name: "ai_ctx", value: ctx }];
+  }
   return NextResponse.json({ version: "v2", content, ...(ctx ? { ctx } : {}) });
 }
 
@@ -255,7 +263,7 @@ export async function POST(req: NextRequest) {
     fetch("https://missioncontrolsdjg-production.up.railway.app/api/comms", {
       method: "POST",
       headers: { "x-api-key": process.env.MC_API_KEY || "", "Content-Type": "application/json" },
-      body: JSON.stringify({ from: "msgr-ai-debug", fromName: "MSGR-AI Debug", role: "system", body: `[MSGR-AI HIT] "${text.slice(0, 120)}"`, tags: ["msgr-ai-debug"], priority: "low" }),
+      body: JSON.stringify({ from: "msgr-ai-debug", fromName: "MSGR-AI Debug", role: "system", body: `[MSGR-AI HIT${body.ctx !== undefined ? " +ctx" : ""}] "${text.slice(0, 120)}"`, tags: ["msgr-ai-debug"], priority: "low" }),
     }).catch(() => {});
   });
   if (!text) {
