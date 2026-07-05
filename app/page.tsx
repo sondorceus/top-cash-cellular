@@ -4242,7 +4242,10 @@ export default function Home() {
             text: r.body || "",
             stars: Math.min(5, Math.max(1, r.rating || 5)),
             verified: r.verified === true,
-          }));
+          }))
+          // Best foot forward: every review still shows, but 5-star leads the
+          // carousel — a 3-star was landing in the first visible slot.
+          .sort((a: { stars: number }, b: { stars: number }) => b.stars - a.stars);
         setRealReviews(mapped);
       })
       .catch(() => {});
@@ -6987,7 +6990,7 @@ export default function Home() {
             <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[rgba(15,15,15,0.92)] backdrop-blur-[14px]" style={{ border: `1px solid ${accentRgba}0.4)`, boxShadow: `0 18px 45px rgba(0,0,0,0.6), 0 0 18px ${accentRgba}0.18)` }}>
               <span className="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-sm shrink-0 text-[#0a0a0a]" style={{ background: accent, boxShadow: `0 0 12px ${accentRgba}0.55)` }}>{isRemove ? "×" : "✓"}</span>
               <div className="min-w-0">
-                <p className="text-white text-[13px] font-extrabold leading-tight">{isRemove ? "Removed from cart" : "Added to cart"}</p>
+                <p className="text-white text-[13px] font-extrabold leading-tight">{isRemove ? "Removed from your offer" : "Added to your offer"}</p>
                 <p className="text-[#e6e6e6] text-[12px] leading-snug truncate max-w-[220px]">{cartToast.model}{cartToast.price ? <> — <span className="font-bold" style={{ color: accent }}>${cartToast.price}</span></> : null}</p>
               </div>
             </div>
@@ -11367,7 +11370,11 @@ export default function Home() {
                     {showOemNoTradeBadge && (
                       <div className="flex items-center justify-between py-3 px-2">
                         <span className="text-sm font-bold text-[#e6e6e6]">{oemName} Trade-In</span>
-                        <span className="text-sm font-bold text-[#ff6b6b]">Won&apos;t accept this model</span>
+                        {/* Honest fallback: a missing scrape value means WE don't
+                            have their number — claiming they "won't accept" a
+                            current flagship reads false to savvy sellers and
+                            burns trust at the decision moment. */}
+                        <span className="text-sm font-bold text-[#b8b8b8]">No trade-in price listed</span>
                       </div>
                     )}
                     {showRow && (
@@ -11384,7 +11391,7 @@ export default function Home() {
                     )}
                   </div>
                   {showOemNoTradeBadge && (
-                    <p className="text-[#00c853] text-xs font-extrabold mt-3">{oemName} won&apos;t trade this in — we will.</p>
+                    <p className="text-[#00c853] text-xs font-extrabold mt-3">{oemName} doesn&apos;t publish a trade-in price for this model — ours is real, in cash, locked for 14 days.</p>
                   )}
                   {showRow && weBeatThem && (
                     <p className="text-[#00c853] text-xs font-extrabold mt-3">You make up to ${savings} more with us</p>
@@ -11527,7 +11534,7 @@ export default function Home() {
                 }}
                 className="tcc-button-primary flex-[2] py-5 text-base lg:text-lg font-extrabold"
               >
-                Add to Cart →
+                Lock In My Offer →
               </button>
               )}
             </div>
@@ -11709,7 +11716,9 @@ export default function Home() {
             </button>
             {checkoutSummaryMobile}
 
-            <h2 className="text-2xl font-bold mb-1">Checkout</h2>
+            {/* Seller-framed heading — this is where THEY get paid, not a
+                purchase. "Checkout" was buyer-speak from the cart metaphor. */}
+            <h2 className="text-2xl font-bold mb-1">Get Paid</h2>
 
             {/* CHECKOUT PROGRESS BANNER — Skywalker 2026-05-19: customers
                 were stopping at "Continue As Guest" expecting their
@@ -14811,7 +14820,7 @@ export default function Home() {
               {/* HEADER */}
               <div className="px-6 py-5 border-b border-white/10 flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853]">Your Box</p>
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853]">Your Offer</p>
                   <h2 className="text-white text-2xl font-extrabold leading-tight mt-0.5">{itemCount === 0 ? "Empty" : `${itemCount} ${itemCount === 1 ? "device" : "devices"}`}</h2>
                 </div>
                 <button onClick={() => closeCart()} aria-label="Close cart" className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center cursor-pointer tap-press shrink-0">
@@ -14865,7 +14874,7 @@ export default function Home() {
                   className="block mx-6 mt-4 rounded-2xl bg-[#00c853]/15 border border-[#00c853]/40 px-4 py-3 transition hover:bg-[#00c853]/22"
                 >
                   <p className="text-[#00c853] text-[10px] font-extrabold uppercase tracking-[0.18em]">Looks like a bulk sell</p>
-                  <p className="text-white text-sm font-extrabold leading-tight mt-1">{itemCount} devices in your box — consider our bulk program</p>
+                  <p className="text-white text-sm font-extrabold leading-tight mt-1">{itemCount} devices in your offer — consider our bulk program</p>
                   <p className="text-[#e6e6e6] text-xs mt-1 leading-snug">Higher volume can mean expedited processing and a dedicated rep. Tap to explore →</p>
                 </a>
               )}
@@ -14877,7 +14886,7 @@ export default function Home() {
                     <div className="w-20 h-20 rounded-full bg-[#00c853]/10 border border-[#00c853]/30 flex items-center justify-center mb-4">
                       <svg className="w-10 h-10 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
                     </div>
-                    <p className="text-white text-lg font-extrabold mb-1">Your box is empty</p>
+                    <p className="text-white text-lg font-extrabold mb-1">No devices yet</p>
                     <p className="text-[#c8c8c8] text-sm leading-snug mb-5">Add a device to lock in your quote — you can stack multiple devices in one box.</p>
                     <button onClick={() => { setCartOpen(false); startFunnel(); }} className="tcc-button-primary px-6 py-3 text-sm font-extrabold">
                       Sell a device →
@@ -15040,7 +15049,9 @@ export default function Home() {
                       <p className="text-[#b8b8b8] text-[10px] font-bold uppercase tracking-wider">Total payout</p>
                       <p className="text-[#00c853] font-extrabold text-[28px] leading-none mt-0.5">${total}</p>
                     </div>
-                    <p className="text-[#c8c8c8] text-xs text-right">{itemCount} {itemCount === 1 ? "device" : "devices"} · Free shipping</p>
+                    {/* Trailing perk matches the chosen handoff — "Free shipping"
+                        was showing on local-meetup carts where it's meaningless. */}
+                    <p className="text-[#c8c8c8] text-xs text-right">{itemCount} {itemCount === 1 ? "device" : "devices"} · {handoffMethod === "local" ? "Cash on the spot" : "Free shipping"}</p>
                   </div>
                   <button
                     onClick={() => {
@@ -15066,7 +15077,7 @@ export default function Home() {
                     }}
                     className="tcc-button-primary w-full py-3 text-base font-extrabold"
                   >
-                    Proceed to Checkout →
+                    Continue — Get Paid →
                   </button>
                   {/* Reassurance badges under "Proceed to Checkout".
                       Two of the three used to be hardcoded for the LOCAL
