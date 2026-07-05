@@ -269,13 +269,29 @@ export async function POST(req: NextRequest) {
   if (!text) {
     return render(["Hey! 👋 Tell me what you're selling (model + condition) and I'll get you a cash offer."], [], origin, secret);
   }
+  const rawHistory = Array.isArray(body.history) ? body.history : [];
+  const history = rawHistory
+    .slice(-10)
+    .map((m) => {
+      const o = (m || {}) as { role?: string; from?: string; text?: string };
+      const role = o.role === "assistant" || o.from === "bot" || o.from === "assistant" ? "assistant" : "user";
+      return o.text ? { role: role as "user" | "assistant", content: String(o.text).slice(0, 1000) } : null;
+    })
+    .filter(Boolean) as { role: "user" | "assistant"; content: string }[];
+
+  // Conversation memory: prefer the base64 ctx round-tripped through the ai_ctx field.
+  const ctxHistory = decodeCtx(body.ctx);
+  const priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
+
   // Spanish detection must catch accent-LESS typing (most people skip accents on a phone):
-  // "cuanto", "telefono", "vendo", etc. — not just the accented forms.
-  const lang =
-    body.lang === "es" ||
-    /[áéíóúñ¿¡]|\b(hola|cu[aá]nto|cuesta|vend[eo]|vender|tel[eé]fono|celular|precio|comprar|quiero|gracias|ofrec|me\s+das|por\s+mi|tienes|est[aá]\s)\b/i.test(text)
-      ? "es"
-      : "en";
+  // "cuanto", "telefono", "vendo", etc. — not just the accented forms. STICKY across the
+  // conversation: mid-convo Spanish answers are often neutral ("128", "si", "esta bueno"),
+  // so once any user turn reads Spanish the whole convo stays Spanish — otherwise the
+  // quick-reply captions and fallback lines flip to English right in the middle of a chat.
+  const esRe =
+    /[áéíóúñ¿¡]|\b(hola|cu[aá]nto|cuesta|vend[eo]|vender|tel[eé]fono|celular|precio|comprar|quiero|gracias|ofrec|me\s+das|por\s+mi|tienes|est[aá]\s)\b/i;
+  const userText = [text, ...priorTurns.filter((t) => t.role === "user").map((t) => t.content)].join(" \n ");
+  const lang = body.lang === "es" || esRe.test(userText) ? "es" : "en";
 
   // ── Master on/off + business-hours schedule (server-side; runs 24/7 with the site) ──
   if (process.env.MSGR_AI_ENABLED === "0") {
@@ -301,20 +317,6 @@ export async function POST(req: NextRequest) {
       secret,
     );
   }
-
-  const rawHistory = Array.isArray(body.history) ? body.history : [];
-  const history = rawHistory
-    .slice(-10)
-    .map((m) => {
-      const o = (m || {}) as { role?: string; from?: string; text?: string };
-      const role = o.role === "assistant" || o.from === "bot" || o.from === "assistant" ? "assistant" : "user";
-      return o.text ? { role: role as "user" | "assistant", content: String(o.text).slice(0, 1000) } : null;
-    })
-    .filter(Boolean) as { role: "user" | "assistant"; content: string }[];
-
-  // Conversation memory: prefer the base64 ctx round-tripped through the ai_ctx field.
-  const ctxHistory = decodeCtx(body.ctx);
-  const priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
 
   // ---- run Claude with the quote engine as a tool ----
   let replyText = "";
