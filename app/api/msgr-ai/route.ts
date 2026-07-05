@@ -155,12 +155,16 @@ async function runImeiCheck(input: { imei?: string }): Promise<Record<string, un
     const model = get("Model") || get("Model Description");
     const fmiRaw = get("Find My iPhone") || get("FMI Status") || get("iCloud Lock") || get("iCloud Status");
     const blacklistRaw = get("Blacklist Status") || get("Blacklist") || get("GSMA Blacklist");
-    return {
-      ok: true,
-      model,
-      findMyOn: !!fmiRaw && /on|locked|active/i.test(fmiRaw),
-      blacklisted: !!blacklistRaw && /black|locked|reported|stolen/i.test(blacklistRaw),
-    };
+    const findMyOn = !!fmiRaw && /on|locked|active/i.test(fmiRaw);
+    const blacklisted = !!blacklistRaw && /black|locked|reported|stolen/i.test(blacklistRaw);
+    // Flags go to the OWNER only — the bot makes no buy/pass decisions and never
+    // mentions locks or blacklists to the customer. Sonny decides.
+    if (blacklisted || findMyOn) {
+      const flags = [blacklisted ? "BLACKLISTED" : "", findMyOn ? "Find My ON" : ""].filter(Boolean).join(" + ");
+      after(() => notifyOwnerSms(`⚠️ TCC IMEI flag: ${model || "unknown model"} (${clean}) — ${flags}. Bot is quoting normally; your call.`));
+    }
+    // The model only learns WHAT the device is.
+    return { ok: true, model };
   } catch {
     return { ok: false, reason: "lookup failed — take the IMEI and notify_team" };
   }
@@ -188,7 +192,7 @@ const SYSTEM = (lang: string) =>
     "You're a real person who works at Top Cash Cellular — a LOCAL Austin phone/tablet/MacBook buyer — texting leads back on Messenger. TALK LIKE A REAL HUMAN TEXTING: short, casual, chill. Almost every reply is ONE line, usually under 12 words. Contractions always; lowercase is fine. NEVER sound like a bot or an ad: no 'Great question', no 'Perfect!', no 'Totally fair', no feature lists, and NEVER volunteer the 'no fees / no obligation / safe public spot / free shipping' spiel — that reads exactly like a scam and kills leads. Just be a normal guy who buys phones: quick, friendly, straight to the point. Skip emojis mostly (one occasionally is fine). To quote you still need storage + condition + carrier — ask casually in one line, e.g. 'what storage + condition? unlocked?'.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
     "SIMPLE REPLIES — HARD RULE: ONE short message, UNDER 12 WORDS whenever possible, never more than one sentence plus a question. The gold standard is literally: 'hey whats the storage + condition?'. ONE question max. NEVER a numbered list (no 1) 2) 3)), never a paragraph. People skim on their phone — anything long doesn't get read. If your draft is over 15 words, cut it down before sending.",
-    "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up'. The moment they send a 15-digit number, call check_imei: it gives you the exact model (often storage too), so just confirm condition and quote. If check_imei says blacklisted → politely pass (we can't buy reported lost/stolen devices). If Find My/iCloud is ON → still quote, just add they'll need to turn it off before payout. If they only have an Apple serial (Settings > General > About), take it and call notify_team — team decodes it.",
+    "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up, just to confirm'. The moment they send a 15-digit number, call check_imei: it confirms the exact model (often storage too) — then just confirm condition and quote as normal. check_imei is ONLY for confirming what the device is; you make NO buy/pass decisions off it and NEVER mention locks or blacklists — the owner sees the details and makes every call. If they only have an Apple serial (Settings > General > About), take it and call notify_team — team decodes it.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
       : "Reply in the user's language (if they write Spanish, answer in Spanish).",
@@ -239,7 +243,7 @@ const TOOLS = [
   {
     name: "check_imei",
     description:
-      "Identify a device from its 15-digit IMEI (customer dials *#06#). Returns the exact model (often with storage), whether Find My/iCloud lock is on, and whether it's blacklisted. Call the moment a customer sends a 15-digit number.",
+      "Confirm what a device is from its 15-digit IMEI (customer dials *#06#). Returns the exact model, often with storage. Call the moment a customer sends a 15-digit number.",
     input_schema: {
       type: "object" as const,
       properties: {
