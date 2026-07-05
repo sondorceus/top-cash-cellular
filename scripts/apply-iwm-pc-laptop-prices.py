@@ -13,7 +13,7 @@ Idempotent — run after each scrape refresh. Writes a report to
 /tmp/iwm-pc-laptop-apply-report.txt listing matched, missing, and skipped.
 """
 from __future__ import annotations
-import json, re, sys
+import json, re, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -30,7 +30,12 @@ BRIDGES = {
     "samsung_pc": ROOT / "scripts" / "samsung_pc-models.json",
 }
 DISCOUNT = 0.10
-REPORT = Path("/tmp/iwm-pc-laptop-apply-report.txt")
+REPORT = Path(tempfile.gettempdir()) / "iwm-pc-laptop-apply-report.txt"
+
+# vid → last real per-model image, captured before the 2026-05-16 swap to
+# generic SVGs (see comment in the file). Fallback for image bridging.
+_HIST_PATH = ROOT / "scripts" / "pc-vid-image-history.json"
+VID_HIST = json.loads(_HIST_PATH.read_text(encoding="utf-8")) if _HIST_PATH.exists() else {}
 
 
 # Manual overrides for page.tsx variants whose image filename doesn't
@@ -148,6 +153,10 @@ def fuzzy_acer_lg_samsung_match(variant_label, catalog_models):
     return best[2], best[3]
 
 
+# Variant-id prefixes allowed to use the fuzzy label matcher (brands
+# without real bridge slugs). Keep tight — see the gate comment in main().
+FUZZY_VID_RE = re.compile(r"^(ac_|sgbk_|lg_|aw[mx]?|aw_|razer|msi)")
+
 # Regex captures a single variant object on one line:
 #   { id: "...", label: "...", base: N, inquiryOnly: true|false, image: "..." }
 # Field order is roughly stable in page.tsx.
@@ -162,25 +171,24 @@ VARIANT_RE = re.compile(
 
 
 def page_text():
-    return PAGE.read_text()
+    return PAGE.read_text(encoding="utf-8")
 
 
 def find_non_apple_variants(text):
-    """Yield (start, end, fields) for every PC laptop variant in page.tsx.
-    Bounded to lines 1260..2245 covering all non-Apple laptop arrays.
-    Some Apple desktop / Dell desktop arrays fall in the range but their
-    images aren't in any bridge, so they fall through unchanged.
-    """
-    lines = text.splitlines(keepends=True)
-    line_starts = []
-    pos = 0
-    for ln in lines:
-        line_starts.append(pos)
-        pos += len(ln)
-    span_start = line_starts[1259] if len(line_starts) > 1259 else 0
-    span_end = line_starts[2245] if len(line_starts) > 2245 else len(text)
+    """Yield regex matches for every PC laptop variant in page.tsx.
 
-    for m in VARIANT_RE.finditer(text, span_start, span_end):
+    Scans the WHOLE file. This used to be pinned to lines 1260..2245, but
+    page.tsx grew past 15k lines and the laptop arrays now live at lines
+    ~668..1963 — the window silently skipped everything before 1260, so a
+    large slice of laptop variants stopped receiving price updates (same
+    bug class fixed in build-pc-laptop-specs.py on 2026-06-22).
+
+    A full scan is safe: resolution below is slug-gated (bridge images /
+    fuzzy label match against the IWM laptop catalog), so phone / tablet /
+    MacBook / console variants that share the {id,label,base,image} shape
+    simply don't resolve and are left untouched.
+    """
+    for m in VARIANT_RE.finditer(text):
         yield m
 
 
@@ -207,35 +215,66 @@ def main(dry_run=False):
         cur_base = int(m.group("base"))
         cur_inquiry = m.group("inquiry") == "true"
 
-        # Try bridge
-        slug = img_to_slug.get(image)
-        series = None
+        # Try bridge — live image first, then the pre-SVG-swap historical
+        # image (2026-05-16 replaced 137 per-model PNGs with one generic
+        # SVG, which broke image-keyed bridging for those variants).
+        slug = img_to_slug.get(image) or img_to_slug.get(VID_HIST.get(vid, ""))
         source = "bridge"
 
         if slug:
-            # Look up series in catalog
-            entries = catalog.get(slug)
-            if entries:
-                series = entries[0]["series"]
-            else:
+            if slug not in catalog:
                 in_bridge_no_catalog.append((vid, label, slug))
                 continue
         else:
-            # Fuzzy by label for non-bridge brands
+            # Fuzzy by label for non-bridge brands. Gated by variant-id
+            # prefix (acer / samsung book / LG gram / alienware / razer /
+            # msi) — with the whole-file scan, an ungated fuzzy match
+            # could price a Galaxy S-series PHONE from a galaxy-book
+            # laptop SKU on shared tokens.
+            if not FUZZY_VID_RE.match(vid):
+                missing_in_bridge.append((vid, label, image))
+                continue
+            # Desktops must never fuzzy-price off laptop SKUs ("Area-51
+            # Desktop" token-matches the Alienware 16 Area-51 laptop).
+            # The scrape only covers laptop series, so any desktop label
+            # reaching this point has no legitimate match.
+            if re.search(r"desktop|tower", label, re.I):
+                missing_in_bridge.append((vid, label, image))
+                continue
             slug2, series2 = fuzzy_acer_lg_samsung_match(label, catalog)
             if slug2:
                 slug = slug2
-                series = series2
                 source = "fuzzy"
                 fuzzy_matched.append((vid, label, slug))
             else:
                 missing_in_bridge.append((vid, label, image))
                 continue
 
-        key = f"{series}/{slug}"
-        entry = prices.get(key)
-        if not entry or not entry.get("iwm_flawless"):
-            in_catalog_no_price.append((vid, label, key))
+        # Label-derived submodel keys FIRST: umbrella bridge slugs
+        # (latitude-7000-13) price at the page max — the 2024 Core Ultra
+        # sibling — while "Latitude 7300 Series" names the exact submodel
+        # the prices file carries per-submodel ("…/latitude-7300").
+        label_slug = re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+        label_cands = [label_slug]
+        if label_slug.endswith("-series"):
+            label_cands.append(label_slug[: -len("-series")])
+
+        # A slug can also resolve to several series — typically its
+        # pre-June-2026 IWM URL (dead, stale price) plus its restructured
+        # one (fresh). Across all candidate keys, take the NEWEST priced.
+        key = None
+        entry = None
+        series_cands = {c["series"] for c in catalog.get(slug, [])}
+        lookup_keys = [f"{s}/{c}" for s in series_cands for c in label_cands]
+        lookup_keys += [f"{s}/{slug}" for s in series_cands]
+        for k in lookup_keys:
+            e = prices.get(k)
+            if not e or not e.get("iwm_flawless"):
+                continue
+            if entry is None or (e.get("scraped_at") or "") > (entry.get("scraped_at") or ""):
+                key, entry = k, e
+        if not entry:
+            in_catalog_no_price.append((vid, label, f"{catalog[slug][0]['series']}/{slug}"))
             continue
 
         iwm = entry["iwm_flawless"]
@@ -258,7 +297,7 @@ def main(dry_run=False):
         new_page = new_page[:start] + replacement + new_page[end:]
 
     if not dry_run:
-        PAGE.write_text(new_page)
+        PAGE.write_text(new_page, encoding="utf-8")
 
     # Report
     lines = [
@@ -296,7 +335,7 @@ def main(dry_run=False):
     if len(in_bridge_no_catalog) > 40:
         lines.append(f"  ... +{len(in_bridge_no_catalog)-40} more")
 
-    REPORT.write_text("\n".join(lines))
+    REPORT.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines[:14]))
     print(f"\nFull report: {REPORT}")
     if dry_run:

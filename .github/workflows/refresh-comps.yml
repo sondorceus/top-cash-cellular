@@ -101,31 +101,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install playwright + chromium
-        run: |
-          pip install playwright
-          playwright install chromium --with-deps
-      - name: Scrape IWM Flawless prices for ~470 PC laptops
-        # Runs single-threaded inside the runner. Originally ~40 min, but IWM
-        # got slower / added models and it began timing out at 90 (stale PC
-        # laptop prices for 5+ weeks). Bumped to 180; GH job cap is 6h so
-        # there's headroom alongside the 60-min specs scrape below.
-        run: python scripts/scrape-iwm-pc-laptop-prices.py
-        timeout-minutes: 180
-      - name: Apply IWM × 0.90 to page.tsx
+      # Sitemap-driven HTTP scrape — no playwright. Discovers the live IWM
+      # laptop catalog from sitemap.xml (their June-2026 URL restructure
+      # killed the old bridge/catalog-derived target list: 3h of quiz-walks
+      # against 404s, and the price file was never even written back).
+      # Pulls the embedded pricing blob per page (~10 min total), MERGES
+      # into pc-laptop-iwm-adjustments.json (never wholesale-replaces it),
+      # and writes public/comps/iwm-pc-laptop-prices.json directly.
+      - name: Scrape IWM laptop prices + additive specs (sitemap-driven)
+        run: python scripts/scrape-iwm-sitemap.py
+        timeout-minutes: 45
+      - name: Apply IWM × 0.90 base prices to page.tsx
         run: python scripts/apply-iwm-pc-laptop-prices.py
-      - name: Scrape IWM additive specs (chip / RAM / storage / GPU / display)
-        # Walks the embedded pricingData tree per URL — fast since no quiz
-        # walk needed. ~15 min for the full pass.
-        run: python scripts/scrape-iwm-laptop-specs.py
-        timeout-minutes: 60
-      - name: Merge spec shards + rebuild pc-laptop-specs.json
+      - name: Rebuild pc-laptop-specs.json
         run: |
-          # The single-process scrape writes to /tmp/iwm_laptop_specs_progress.json;
-          # copy it to where the build script expects.
-          cp /tmp/iwm_laptop_specs_progress.json pc-laptop-iwm-adjustments.json || true
           python scripts/build-pc-laptop-specs.py
           python scripts/build-lenovo-desktop-specs.py
+      - name: Sync series topPrice ("Up to $X") with refreshed bases
+        run: python scripts/fix-toppirce.py
       - name: Run verifier
         run: python scripts/verifier.py || true
       - name: Detect changes

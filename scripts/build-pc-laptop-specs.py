@@ -155,7 +155,25 @@ def to_macspec(entry):
     # options on a Gen 13 X1 Carbon page (delta -$610 on $725 base);
     # those chips don't physically exist on the modern chassis and
     # showing them as quiz options confuses the user.
+    #
+    # Also drop the INVERSE contamination: the scraper's go_to walk can
+    # bleed answers across submodel branches on multi-model pages, e.g.
+    # a 2016 XPS 13 9360 (base $45) listing "Intel Core Ultra 9
+    # Series 2" at +$730 — picking it would overpay by ~$650. Real chip
+    # ladders climb in small steps; a gap over max($150, base) between
+    # consecutive sorted deltas marks where foreign-branch chips start.
     floor_delta = -int(base * 0.5)
+    kept = sorted(
+        (c for c in chips if int(c.get("adj", 0)) >= floor_delta),
+        key=lambda c: int(c.get("adj", 0)),
+    )
+    gap_thresh = max(150, int(base))
+    cut = len(kept)
+    for i in range(1, len(kept)):
+        if int(kept[i].get("adj", 0)) - int(kept[i - 1].get("adj", 0)) > gap_thresh:
+            cut = i
+            break
+    plausible = {id(c) for c in kept[:cut]}
     processors = [
         {
             "id": chip_id(c["label"]),
@@ -165,7 +183,7 @@ def to_macspec(entry):
             "adj": int(base) + int(c.get("adj", 0)),
         }
         for c in chips
-        if int(c.get("adj", 0)) >= floor_delta
+        if id(c) in plausible
     ]
     memory = [
         {
@@ -337,13 +355,54 @@ MANUAL_ID_TO_DESKTOP_SLUG = {
 }
 
 
-def pick_submodel(v: dict, page_vid: str, target_slug=None):
+def label_slug_candidates(label: str):
+    """Derive IWM submodel-slug candidates from a page variant label.
+    "Latitude 7300 Series" → ["latitude-7300-series", "latitude-7300"].
+    Used to pin a variant to ITS submodel on umbrella pages — without
+    this, d_lat_7300 (a 2019 8th-gen machine) fell through to the
+    highest-priced submodel on latitude-7000-13, i.e. the 2024 Core
+    Ultra Latitude 7350 — the exact mis-bridge behind the $473 Amber
+    overquote / the 104-model Core Ultra audit.
+    """
+    s = re.sub(r"[^a-z0-9]+", "-", (label or "").lower()).strip("-")
+    if not s:
+        return []
+    cands = [s]
+    if s.endswith("-series"):
+        cands.append(s[: -len("-series")])
+    return cands
+
+
+def match_submodel_by_label(subs: dict, label: str):
+    """Find the submodel whose slug matches the variant label — exact
+    first, then boundary prefix/suffix (sub "latitude-7300" matches
+    label-slug "latitude-7300"; sub "inspiron-7300-2-in-1" matches
+    "inspiron-7300"). Ambiguity resolves to the highest-priced match."""
+    cands = label_slug_candidates(label)
+    for c in cands:
+        if c in subs and subs[c].get("base_price", 0) > 0:
+            return subs[c]
+    hits = []
+    for c in cands:
+        for sk, sv in subs.items():
+            if not sk or sv.get("base_price", 0) <= 0:
+                continue
+            if sk.startswith(c + "-") or c.startswith(sk + "-") or c.endswith("-" + sk):
+                hits.append(sv)
+    if hits:
+        return max(hits, key=lambda s: s.get("base_price") or 0)
+    return None
+
+
+def pick_submodel(v: dict, page_vid: str, target_slug=None, label=None):
     """Given a v2 adjustments entry (has 'submodels' dict), return the
     submodel dict the build should use for this page variant. Priority:
     1) MANUAL_ID_TO_SUBMODEL exact slug match
     2) target_slug from the page variant (e.g. d_xps_13_7390 → xps-13-7390)
-    3) Highest-priced submodel as "newest" proxy
-    4) None if no submodels
+    3) Submodel matching the variant LABEL (umbrella pages: "Latitude
+       7300 Series" → latitude-7300)
+    4) Highest-priced submodel as "newest" proxy
+    5) None if no submodels
     """
     subs = v.get("submodels") or {}
     if not subs:
@@ -367,6 +426,12 @@ def pick_submodel(v: dict, page_vid: str, target_slug=None):
     if target_slug and target_slug in subs:
         candidate = subs[target_slug]
         if candidate.get("base_price", 0) > 0:
+            return candidate
+    # Label match — umbrella bridge slugs (latitude-7000-13) cover many
+    # submodels; the variant label names the right one.
+    if label:
+        candidate = match_submodel_by_label(subs, label)
+        if candidate:
             return candidate
     # Default: highest-priced submodel. For multi-gen URLs (X1 Carbon
     # Gen 6..13, Razer Blade by year, etc.) the newest gen reliably
@@ -409,9 +474,13 @@ def main():
             if PLACEHOLDER.search(subkey):
                 continue
             by_slug.setdefault(subkey, []).append(v)
+    # A slug often resolves through BOTH its pre-June-2026 IWM URL (dead,
+    # stale data) and its restructured one (fresh). Try newest first.
+    for entries in by_slug.values():
+        entries.sort(key=lambda v: v.get("scraped_at") or "", reverse=True)
 
     # Read page.tsx variants to extract id ↔ image.
-    src = PAGE.read_text()
+    src = PAGE.read_text(encoding="utf-8")
     # Scan the WHOLE file, not a hardcoded line window. This used to be
     # pinned to lines ~1260..2280, but page.tsx grew past 15k lines and the
     # PC-laptop variant arrays drifted out of that window — so the build
@@ -427,13 +496,22 @@ def main():
         r'\{\s*id:\s*"(?P<id>[^"]+)",\s*label:\s*"(?P<label>[^"]+)",\s*base:\s*\d+'
         r'(?:,\s*inquiryOnly:\s*(?:true|false))?\s*,\s*image:\s*"(?P<image>/devices/[^"]+)"\s*\}'
     )
+    # vid → last real per-model image. On 2026-05-16 (9cf5c34) 137 Lenovo
+    # variants swapped their per-model PNGs for one shared generic SVG —
+    # which silently broke this image-keyed bridge for all of them (the
+    # committed specs file kept serving a stale 451-variant build). Look
+    # up the live image first, then fall back to the historical one.
+    hist_path = ROOT / "scripts" / "pc-vid-image-history.json"
+    vid_hist = json.load(open(hist_path)) if hist_path.exists() else {}
+
     out = {}
     matched = 0
     for m in vre.finditer(src, span_start, span_end):
         vid, label, image = m.group("id"), m.group("label"), m.group("image")
         slug = (MANUAL_ID_TO_SLUG.get(vid) or
                 MANUAL_ID_TO_DESKTOP_SLUG.get(vid) or
-                img_to_slug.get(image))
+                img_to_slug.get(image) or
+                img_to_slug.get(vid_hist.get(vid, "")))
         if not slug:
             continue
         entries = by_slug.get(slug)
@@ -448,7 +526,7 @@ def main():
         # lives under xps-laptop/xps-13-laptop submodel xps-13-7390).
         sub = None
         for entry in entries:
-            sub = pick_submodel(entry, vid, target_slug=slug)
+            sub = pick_submodel(entry, vid, target_slug=slug, label=label)
             if sub and sub.get("base_price"):
                 break
         if not sub or not sub.get("base_price"):
@@ -461,7 +539,7 @@ def main():
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(out, indent=2, sort_keys=True))
-    print(f"Built specs for {matched} page.tsx variants → {OUT}")
+    print(f"Built specs for {matched} page.tsx variants -> {OUT}")
     print(f"Total adj entries: {len(adj)}, with specs: {sum(1 for v in adj.values() if v.get('base_price'))}")
 
 

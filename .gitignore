@@ -50,6 +50,7 @@ next-env.d.ts
 
 # locally-generated data outputs from scripts/ (scrape + audit pipelines).
 # Kept on disk for the scripts, never part of the app build/deploy.
+/.iwm-sitemap-progress.json
 /iwm-all-prices.json
 /iwm-audit-flagged.csv
 /iwm-audit-raw.json
