@@ -7806,6 +7806,7 @@ export default function Home() {
                   />
                   <input
                     type="email"
+                    autoComplete="email"
                     value={partsEmail}
                     onChange={(e) => setPartsEmail(e.target.value)}
                     placeholder="Email (so we can send the quote)"
@@ -7814,6 +7815,7 @@ export default function Home() {
                   />
                   <input
                     type="tel"
+                    autoComplete="tel"
                     value={partsPhone}
                     onChange={(e) => {
                       // Inline format → "(123) 456-7890" — matches the
@@ -8912,11 +8914,11 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Name</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                    <input type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Phone</label>
-                    <input type="tel" value={phone} onChange={(e) => {
+                    <input type="tel" autoComplete="tel" value={phone} onChange={(e) => {
                       const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
                       if (!digits) { setPhone(""); return; }
                       const isDeleting = e.target.value.length < phone.length;
@@ -8940,7 +8942,7 @@ export default function Home() {
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Email</label>
-                    <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                    <input type="email" autoComplete="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="you@email.com" className="w-full px-4 py-3.5 tcc-input text-sm" />
                     {emailErr && <p className="text-[12px] mt-1 text-amber-300">{emailErr.message}{emailErr.suggestion && <> <button type="button" onClick={applyEmailSuggestion} className="underline font-semibold text-[#00c853] cursor-pointer">Use it</button></>}</p>}
                   </div>
                   <div>
@@ -11222,6 +11224,7 @@ export default function Home() {
                         />
                         <input
                           type="email"
+                          autoComplete="email"
                           value={recycleEmail}
                           onChange={(e) => setRecycleEmail(e.target.value)}
                           required
@@ -11677,7 +11680,7 @@ export default function Home() {
               <div className="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[#e6e6e6] text-xs font-medium mb-3">Not ready yet? Save this quote for later.</p>
                 <div className="flex gap-2">
-                  <input type="email" value={quoteEmail} onChange={(e) => { setQuoteEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition" />
+                  <input type="email" autoComplete="email" value={quoteEmail} onChange={(e) => { setQuoteEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} placeholder="your@email.com" aria-label="Email for quote" className="flex-1 px-3 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition" />
                   <button onClick={async () => {
                     if (!quoteEmail) return;
                     const err = emailFieldError(quoteEmail);
@@ -11769,7 +11772,7 @@ export default function Home() {
                 fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
-                <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                <input type="email" autoComplete="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 {emailErr && <p className="text-[12px] mt-1 text-amber-300">{emailErr.message}{emailErr.suggestion && <> <button type="button" onClick={applyEmailSuggestion} className="underline font-semibold text-[#00c853] cursor-pointer">Use it</button></>}</p>}
                 <button type="submit" data-primary-cta className="tcc-button-primary w-full py-4 text-base font-extrabold">Continue As Guest →</button>
                 <p className="text-[11px] text-[#888] text-center mt-1">{!cartNeedsShip ? "Next: choose how you'd like to be paid, then book a meetup window" : <>Next: pick payment method, then enter shipping address for your free <FedExMark /> label</>}</p>
@@ -11806,7 +11809,7 @@ export default function Home() {
                   setLoginLoading(false);
                 }
               }} className="space-y-3 mb-2">
-                <input type="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="Email from past trade" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                <input type="email" autoComplete="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="Email from past trade" className="w-full px-4 py-3.5 tcc-input text-sm" />
                 {emailErr && <p className="text-[12px] mt-1 text-amber-300">{emailErr.message}{emailErr.suggestion && <> <button type="button" onClick={applyEmailSuggestion} className="underline font-semibold text-[#00c853] cursor-pointer">Use it</button></>}</p>}
                 {loginError && <p className="text-[#ff5566] text-xs font-semibold">{loginError}</p>}
                 <button type="submit" disabled={loginLoading} className="w-full bg-white/10 text-white py-4 rounded-2xl text-base font-semibold cursor-pointer hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed transition tap-press">
@@ -12824,7 +12827,7 @@ export default function Home() {
 
               <div>
                 <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Name</label>
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
+                <input type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={50} placeholder="Your name" className="w-full px-4 py-3.5 tcc-input text-sm" />
               </div>
               {/* Phone — collapsed into a tap-to-open menu, same style as
                   Device photos. Collapsed for every handoff type; the
@@ -12883,7 +12886,7 @@ export default function Home() {
                     )}
                   </div>
                 )}
-                <input type="tel" value={phone} onChange={(e) => {
+                <input type="tel" autoComplete="tel" value={phone} onChange={(e) => {
                   const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
                   if (!digits) { setPhone(""); return; }
                   // Detect deletion — if the raw value got shorter, set
@@ -14512,6 +14515,7 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <input
                   type="email"
+                  autoComplete="email"
                   required
                   placeholder="Email address"
                   className="flex-1 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs placeholder:text-[#888] focus:outline-none focus:border-[#00c853]/50"
