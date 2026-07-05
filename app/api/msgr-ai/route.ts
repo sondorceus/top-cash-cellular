@@ -118,25 +118,77 @@ async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: n
   return { ok: true, offer: r.offer, device: hit.label, slug: hit.slug };
 }
 
+// ---- IMEI lookup (same Sickw plumbing as /api/imei/check) -------------------
+// Lets the AI identify a device when the customer doesn't know their model or
+// storage: they dial *#06#, text the 15 digits, and Sickw's Apple/GSMA basic
+// info (~$0.05/lookup) returns the model (often with storage) plus Find My and
+// blacklist signals. Luhn runs first so typos never reach the paid API.
+function luhnValid(num: string): boolean {
+  const digits = num.replace(/\D/g, "");
+  if (digits.length !== 15) return false;
+  let sum = 0;
+  for (let i = 0; i < 15; i++) {
+    let d = parseInt(digits[i], 10);
+    if (i % 2 === 1) {
+      d *= 2;
+      if (d > 9) d -= 9;
+    }
+    sum += d;
+  }
+  return sum % 10 === 0;
+}
+async function runImeiCheck(input: { imei?: string }): Promise<Record<string, unknown>> {
+  const clean = String(input.imei || "").replace(/\D/g, "");
+  if (clean.length !== 15 || !luhnValid(clean)) {
+    return { ok: false, reason: "not a valid 15-digit IMEI — have them dial *#06# and re-send it" };
+  }
+  const key = process.env.SICKW_API_KEY || "";
+  if (!key) return { ok: false, reason: "lookup unavailable — take the IMEI and notify_team" };
+  try {
+    const r = await fetch(`https://sickw.com/api.php?format=json&key=${key}&imei=${clean}&service=0`, { cache: "no-store" });
+    const data = await r.json();
+    if (data.status !== "success" || !data.result) {
+      return { ok: false, reason: "lookup failed — take the IMEI and notify_team" };
+    }
+    const text = String(data.result);
+    const get = (label: string) => text.match(new RegExp(`${label}:\\s*([^\\r\\n<]+)`, "i"))?.[1]?.trim() || null;
+    const model = get("Model") || get("Model Description");
+    const fmiRaw = get("Find My iPhone") || get("FMI Status") || get("iCloud Lock") || get("iCloud Status");
+    const blacklistRaw = get("Blacklist Status") || get("Blacklist") || get("GSMA Blacklist");
+    return {
+      ok: true,
+      model,
+      findMyOn: !!fmiRaw && /on|locked|active/i.test(fmiRaw),
+      blacklisted: !!blacklistRaw && /black|locked|reported|stolen/i.test(blacklistRaw),
+    };
+  } catch {
+    return { ok: false, reason: "lookup failed — take the IMEI and notify_team" };
+  }
+}
+
 // Server-side lead intelligence: catch contact info + hot-buying signals in the raw
 // message even when the model doesn't call notify_team — so no lead ever slips past
 // the owner, and the truly-ready ones get flagged HOT for a fast follow-up.
-function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean } {
-  const phone = text.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/)?.[0]?.trim();
-  const email = text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i)?.[0];
+function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean; imei: string } {
+  // IMEI first — a bare 15-digit number is an IMEI, not a phone number.
+  const imei = text.match(/\b\d{15}\b/)?.[0] || "";
+  const scrubbed = imei ? text.replace(imei, " ") : text;
+  const phone = scrubbed.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/)?.[0]?.trim();
+  const email = scrubbed.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i)?.[0];
   const contact = phone || email || "";
   const hot =
     /\b(today|tonight|asap|right now|need\s+(the\s+)?cash|how soon|urgent|this (morning|afternoon|evening)|meet ?up|can we meet|cash today|where.*(meet|located|you at))\b/i.test(text);
   const intent =
     /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it)\b/i.test(text);
-  return { contact, hot, intent };
+  return { contact, hot, intent, imei };
 }
 
 const SYSTEM = (lang: string) =>
   [
     "You're a real person who works at Top Cash Cellular — a LOCAL Austin phone/tablet/MacBook buyer — texting leads back on Messenger. TALK LIKE A REAL HUMAN TEXTING: short, casual, chill. Almost every reply is ONE line, usually under 12 words. Contractions always; lowercase is fine. NEVER sound like a bot or an ad: no 'Great question', no 'Perfect!', no 'Totally fair', no feature lists, and NEVER volunteer the 'no fees / no obligation / safe public spot / free shipping' spiel — that reads exactly like a scam and kills leads. Just be a normal guy who buys phones: quick, friendly, straight to the point. Skip emojis mostly (one occasionally is fine). To quote you still need storage + condition + carrier — ask casually in one line, e.g. 'what storage + condition? unlocked?'.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
-    "SIMPLE REPLIES — HARD RULE: ONE short message per turn, ideally one sentence, never more than two. ONE question max. NEVER a numbered list (no 1) 2) 3)) — if you need several details, fold them into one casual line ('what storage + condition? unlocked?'). If your draft is over ~20 words, cut it down.",
+    "SIMPLE REPLIES — HARD RULE: ONE short message, UNDER 12 WORDS whenever possible, never more than one sentence plus a question. The gold standard is literally: 'hey whats the storage + condition?'. ONE question max. NEVER a numbered list (no 1) 2) 3)), never a paragraph. People skim on their phone — anything long doesn't get read. If your draft is over 15 words, cut it down before sending.",
+    "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up'. The moment they send a 15-digit number, call check_imei: it gives you the exact model (often storage too), so just confirm condition and quote. If check_imei says blacklisted → politely pass (we can't buy reported lost/stolen devices). If Find My/iCloud is ON → still quote, just add they'll need to turn it off before payout. If they only have an Apple serial (Settings > General > About), take it and call notify_team — team decodes it.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
       : "Reply in the user's language (if they write Spanish, answer in Spanish).",
@@ -182,6 +234,18 @@ const TOOLS = [
         contact: { type: "string", description: "Phone or email if given, else empty." },
       },
       required: ["summary"],
+    },
+  },
+  {
+    name: "check_imei",
+    description:
+      "Identify a device from its 15-digit IMEI (customer dials *#06#). Returns the exact model (often with storage), whether Find My/iCloud lock is on, and whether it's blacklisted. Call the moment a customer sends a 15-digit number.",
+    input_schema: {
+      type: "object" as const,
+      properties: {
+        imei: { type: "string", description: "The 15-digit IMEI exactly as the customer sent it." },
+      },
+      required: ["imei"],
     },
   },
 ];
@@ -401,7 +465,7 @@ export async function POST(req: NextRequest) {
     for (let round = 0; round < 4; round++) {
       const resp = await client.messages.create({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 200,
+        max_tokens: 150,
         system: SYSTEM(lang),
         tools: TOOLS as never,
         messages: messages as never,
@@ -419,6 +483,9 @@ export async function POST(req: NextRequest) {
           } else if (b.name === "notify_team") {
             teamNotified = (b.input || {}) as { summary: string; contact?: string };
             results.push({ type: "tool_result", tool_use_id: b.id, content: JSON.stringify({ ok: true }) });
+          } else if (b.name === "check_imei") {
+            const chk = await runImeiCheck((b.input || {}) as { imei?: string });
+            results.push({ type: "tool_result", tool_use_id: b.id, content: JSON.stringify(chk) });
           }
         }
         messages.push({ role: "user", content: results });
@@ -453,10 +520,10 @@ export async function POST(req: NextRequest) {
   const sig = detectSignals(text);
   const contact =
     (teamNotified?.contact && teamNotified.contact.replace(/\D/g, "").length >= 5 ? teamNotified.contact : "") || sig.contact;
-  if (teamNotified || lastQuote || contact || sig.hot || sig.intent) {
+  if (teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei) {
     const isHot = sig.hot || sig.intent || (!!lastQuote && (!!contact || !!teamNotified));
     const what = teamNotified?.summary || (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : "active chat");
-    const sms = `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""} | "${text.slice(0, 55)}". Reply in ManyChat.`;
+    const sms = `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | "${text.slice(0, 55)}". Reply in ManyChat.`;
     after(() => notifyOwnerSms(sms));
   }
 
