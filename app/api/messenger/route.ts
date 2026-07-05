@@ -23,6 +23,9 @@ import { put, list } from "@vercel/blob";
 import { advance, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 
 export const dynamic = "force-dynamic";
+// Human-pace delay (30s) + AI rounds happen in after(); keep the function alive
+// long enough for a multi-sender batch (delays run sequentially per sender).
+export const maxDuration = 300;
 
 const GRAPH = "https://graph.facebook.com/v21.0/me/messages";
 // Meta caps quick-reply and button titles at 20 chars.
@@ -153,6 +156,39 @@ async function saveCtx(psid: string, ctx: string) {
   }
 }
 
+// Human pacing: a real person doesn't answer in 2 seconds (customers literally
+// called it out — "how are you replying so damn fast"). Each typed message waits
+// ~30s before the reply: quiet pause, then a typing bubble. The newest-message
+// marker makes bursts collapse — if the user says more during the wait, the stale
+// reply is dropped and only the final message gets answered.
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+async function typingOn(recipientId: string, token: string) {
+  await fetch(`${GRAPH}?access_token=${encodeURIComponent(token)}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ recipient: { id: recipientId }, sender_action: "typing_on" }),
+  }).catch(() => {});
+}
+
+async function markLatest(psid: string, mid: string) {
+  try {
+    await put(`msgr-latest/${psid}.txt`, mid, { access: "public", addRandomSuffix: false, allowOverwrite: true, contentType: "text/plain" });
+  } catch {
+    /* best-effort */
+  }
+}
+async function readLatest(psid: string): Promise<string> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-latest/${psid}.txt`, limit: 1 });
+    if (!blobs.length) return "";
+    const r = await fetch(blobs[0].url, { cache: "no-store" });
+    return r.ok ? (await r.text()).trim() : "";
+  } catch {
+    return "";
+  }
+}
+
 // Route a typed message to the SAME conversational AI the ManyChat pipe uses
 // (/api/msgr-ai) — with per-user memory — then Send-API each reply line. This is
 // the continuous back-and-forth ManyChat's one-shot Default Reply couldn't do.
@@ -197,6 +233,10 @@ export async function POST(req: NextRequest) {
   // Meta demands a fast 200 (it retries + disables slow webhooks). The AI brain
   // takes a few seconds, so ACK immediately and do all the work in after().
   after(async () => {
+    // Pass 1: taps answer instantly (menus must be snappy); typed messages are
+    // collected last-one-wins per sender and their newest-marker is written NOW,
+    // so any earlier in-flight delayed reply for this sender knows it's stale.
+    const typedBySender = new Map<string, { text: string; mid: string }>();
     for (const entry of data.entry || []) {
       for (const event of entry.messaging || []) {
         const senderId = event?.sender?.id;
@@ -217,8 +257,23 @@ export async function POST(req: NextRequest) {
 
         // Free-typed text → conversational AI brain (continuous back-and-forth).
         const typed = typeof event?.message?.text === "string" ? event.message.text.trim() : "";
-        if (typed) await aiReply(origin, senderId, typed, token);
+        if (typed) {
+          const mid = String(event?.message?.mid || typed).slice(0, 120);
+          typedBySender.set(senderId, { text: typed, mid });
+          await markLatest(senderId, mid);
+        }
       }
+    }
+
+    // Pass 2: human-paced AI replies — ~20s quiet, ~10s typing bubble, then send.
+    // If the user said something newer during the wait, drop this one (the newer
+    // webhook delivery owns the reply).
+    for (const [senderId, { text, mid }] of typedBySender) {
+      await sleep(20_000);
+      await typingOn(senderId, token as string);
+      await sleep(10_000);
+      if ((await readLatest(senderId)) !== mid) continue;
+      await aiReply(origin, senderId, text, token as string);
     }
   });
 

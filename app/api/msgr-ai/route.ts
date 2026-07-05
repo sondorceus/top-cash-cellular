@@ -12,6 +12,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
+import { put, list } from "@vercel/blob";
 import { type ConvoState } from "../../lib/msgr-brain";
 import { quoteDevice, type QuoteSpec } from "../../lib/quote";
 import { PRICE_TABLE } from "../../data/prices";
@@ -135,6 +136,7 @@ const SYSTEM = (lang: string) =>
   [
     "You're a real person who works at Top Cash Cellular — a LOCAL Austin phone/tablet/MacBook buyer — texting leads back on Messenger. TALK LIKE A REAL HUMAN TEXTING: short, casual, chill. Almost every reply is ONE line, usually under 12 words. Contractions always; lowercase is fine. NEVER sound like a bot or an ad: no 'Great question', no 'Perfect!', no 'Totally fair', no feature lists, and NEVER volunteer the 'no fees / no obligation / safe public spot / free shipping' spiel — that reads exactly like a scam and kills leads. Just be a normal guy who buys phones: quick, friendly, straight to the point. Skip emojis mostly (one occasionally is fine). To quote you still need storage + condition + carrier — ask casually in one line, e.g. 'what storage + condition? unlocked?'.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
+    "SIMPLE REPLIES — HARD RULE: ONE short message per turn, ideally one sentence, never more than two. ONE question max. NEVER a numbered list (no 1) 2) 3)) — if you need several details, fold them into one casual line ('what storage + condition? unlocked?'). If your draft is over ~20 words, cut it down.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
       : "Reply in the user's language (if they write Spanish, answer in Spanish).",
@@ -243,6 +245,34 @@ function encodeCtx(turns: Turn[]): string {
 
 type AnyBlock = { type: string; text?: string; id?: string; name?: string; input?: unknown };
 
+// ---- burst dedupe (ManyChat path) ------------------------------------------
+// ManyChat's 30s reply delay means a burst of messages piles up N delayed
+// dynamic-block calls — and every one of them carries the SAME {{Last Text
+// Input}} (the newest message), so without a guard the customer gets N copies
+// of the same answer. Keyed by {{Contact Id}} round-tripped as `psid`:
+//  - marker is written when a request starts; re-checked after the AI runs —
+//    if a newer request arrived meanwhile, this reply is stale → send nothing.
+//  - a text already answered <90s ago is not answered again.
+type BurstMark = { t: string; id: string; done?: boolean; at?: number };
+async function readMark(psid: string): Promise<BurstMark | null> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-mc/${psid}.json`, limit: 1 });
+    if (!blobs.length) return null;
+    const r = await fetch(blobs[0].url, { cache: "no-store" });
+    return r.ok ? ((await r.json()) as BurstMark) : null;
+  } catch {
+    return null;
+  }
+}
+async function writeMark(psid: string, m: BurstMark) {
+  try {
+    await put(`msgr-mc/${psid}.json`, JSON.stringify(m), { access: "public", addRandomSuffix: false, allowOverwrite: true, contentType: "application/json" });
+  } catch {
+    /* best-effort */
+  }
+}
+const EMPTY = () => NextResponse.json({ version: "v2", content: { messages: [] } });
+
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const secret = process.env.MSGR_BOT_SECRET as string;
@@ -251,12 +281,16 @@ export async function POST(req: NextRequest) {
   // ManyChat's Default Reply dynamic block passes the typed message as a JSON body
   // ({"text":"{{Last Text Input}}"}); read it raw (spaces would break a URL query).
   const rawBody = await req.text().catch(() => "");
-  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown } = {};
+  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown; psid?: unknown } = {};
   try { body = JSON.parse(rawBody); } catch { /* not json */ }
   let text = (typeof body.text === "string" ? body.text : req.nextUrl.searchParams.get("text") || "").slice(0, 1500).trim();
   // ManyChat's field chip wraps the message in literal curly braces (e.g. "{hello}").
   // Strip a single enclosing { } so the AI (and the customer) never see raw brackets.
   text = text.replace(/^\{([\s\S]*)\}$/, "$1").trim();
+  // {{Contact Id}} (numeric), chip-brace-stripped; anything non-numeric (unresolved
+  // chip, literal field name) means "no id" and the burst dedupe simply stays off.
+  const psidRaw = typeof body.psid === "string" ? body.psid.trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
+  const psid = /^\d{3,20}$/.test(psidRaw) ? psidRaw : "";
   // TEMP DEBUG: log every inbound hit to Mission Control (survives across serverless instances)
   // so we can see exactly which messages reach the AI. Remove after diagnosis.
   after(() => {
@@ -318,6 +352,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Burst dedupe: skip a text we just answered; claim the reply slot for this request.
+  const reqId = crypto.randomUUID();
+  if (psid) {
+    const prev = await readMark(psid);
+    if (prev?.done && prev.t === text && prev.at && Date.now() - prev.at < 90_000) return EMPTY();
+    await writeMark(psid, { t: text, id: reqId });
+  }
+
   // ---- run Claude with the quote engine as a tool ----
   let replyText = "";
   let lastQuote: { offer: number; device: string; slug: string } | null = null;
@@ -330,7 +372,7 @@ export async function POST(req: NextRequest) {
     for (let round = 0; round < 4; round++) {
       const resp = await client.messages.create({
         model: "claude-haiku-4-5-20251001",
-        max_tokens: 400,
+        max_tokens: 200,
         system: SYSTEM(lang),
         tools: TOOLS as never,
         messages: messages as never,
@@ -365,6 +407,14 @@ export async function POST(req: NextRequest) {
     replyText = lang === "es"
       ? "¿Qué modelo es y en qué condición está? Te doy la oferta en efectivo. 💵"
       : "What model is it and what condition? I'll get you the cash offer. 💵";
+  }
+
+  // Stale? A newer message claimed the slot while the AI was running — that newer
+  // request answers (it carries the newest {{Last Text Input}}); this one goes silent.
+  if (psid) {
+    const cur = await readMark(psid);
+    if (cur && cur.id !== reqId) return EMPTY();
+    await writeMark(psid, { t: text, id: reqId, done: true, at: Date.now() });
   }
 
   // ---- owner SMS: fire on ANY real lead signal (AI flagged a handoff, gave a quote,
