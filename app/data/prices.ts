@@ -607,12 +607,20 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "base": { broken: 21, fair: 54, good: 81, mint: 99, sealed: 117 } },
 
   // === MACBOOKS + WATCHES + REMAINING ===
+  // Apple Watch — IWM Flawless × 0.85 (watches run at 85%, tighter margin
+  // than the 90% used elsewhere — Skywalker 2026-07-05). Base = aluminum /
+  // GPS / smallest-case config; titanium / cellular / 46mm / band adds live
+  // in APPLE_WATCH_SPECS (also × 0.85). Series 11 / SE 3 added 2026-07-05.
   awu1: {
-    "base": { fair: 36, good: 86, mint: 126, sealed: 144 } },
+    "base": { fair: 34, good: 81, mint: 119, sealed: 136 } },
   awu2: {
-    "base": { fair: 90, good: 135, mint: 180, sealed: 216 } },
+    "base": { fair: 85, good: 128, mint: 170, sealed: 204 } },
   awu3: {
-    "base": { broken: 45, fair: 171, good: 252, mint: 302, sealed: 338 } },
+    "base": { broken: 43, fair: 162, good: 238, mint: 285, sealed: 319 } },
+  aws11: {
+    "base": { fair: 30, good: 68, mint: 106, sealed: 123 } },
+  awse3: {
+    "base": { fair: 13, good: 34, mint: 51, sealed: 72 } },
   mba13m3: {
     "1tb": { fair: 432, good: 540, mint: 648, sealed: 693 },
     "2tb": { fair: 544, good: 652, mint: 760, sealed: 806 } },
@@ -653,16 +661,17 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   xss: {
     "base": { broken: 21, fair: 54, good: 90, mint: 135, sealed: 158 },
     "carbonblack": { broken: 43, fair: 86, good: 148, mint: 184, sealed: 220 } },
+  // Apple Watch Series 7-10 / SE 2 — IWM Flawless × 0.85 (see Ultra note above).
   aws10: {
-    "base": { fair: 18, good: 54, mint: 90, sealed: 112 } },
+    "base": { fair: 17, good: 51, mint: 85, sealed: 106 } },
   aws7: {
-    "base": { good: 9, mint: 27, sealed: 40 } },
+    "base": { good: 9, mint: 26, sealed: 38 } },
   aws8: {
-    "base": { good: 18, mint: 40, sealed: 63 } },
+    "base": { good: 17, mint: 38, sealed: 60 } },
   aws9: {
-    "base": { fair: 14, good: 40, mint: 63, sealed: 81 } },
+    "base": { fair: 13, good: 38, mint: 60, sealed: 77 } },
   awse2: {
-    "base": { good: 9, mint: 18, sealed: 40 } },
+    "base": { good: 9, mint: 17, sealed: 38 } },
   mba13m2: {
     "1tb": { fair: 310, good: 387, mint: 446, sealed: 482 },
     "256": { fair: 198, good: 274, mint: 333, sealed: 369 },

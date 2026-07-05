@@ -1638,19 +1638,73 @@ const NINTENDO_MODELS = [
 
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
 
+// Apple Watch — display `base` is the "up to" figure = the SEALED (Brand
+// New) price for the base config, straight from PRICE_TABLE (which is IWM
+// Flawless/New × 0.85 — watches run at 85%). Premium material / size /
+// cellular / band / box adds live in APPLE_WATCH_SPECS below and stack on
+// top per the IWM tree. (aws11 / awse3 reuse closest art until real renders.)
 const APPLEWATCH_MODELS = [
-  // Ultra 3 base is a placeholder — ClaudeMX's IWM scraper picks up
-  // exact pricing on the weekly Monday refresh.
-  { id: "awu3", label: "Apple Watch Ultra 3", base: 302, image: "/devices/apple-watch-ultra-3.webp" },
-  { id: "awu2", label: "Apple Watch Ultra 2", base: 180, image: "/devices/apple-watch-ultra-2.webp" },
-  { id: "awu1", label: "Apple Watch Ultra", base: 126, image: "/devices/apple-watch-ultra.webp" },
-  { id: "aws10", label: "Apple Watch Series 10", base: 158, image: "/devices/apple-watch-series-10.webp" },
-  { id: "aws9", label: "Apple Watch Series 9", base: 104, image: "/devices/apple-watch-series-9.webp" },
-  { id: "aws8", label: "Apple Watch Series 8", base: 59, image: "/devices/apple-watch-series-8.webp" },
-  { id: "aws7", label: "Apple Watch Series 7", base: 46, image: "/devices/apple-watch-series-7.webp" },
-  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 34, image: "/devices/apple-watch-se-2.webp" },
+  { id: "awu3", label: "Apple Watch Ultra 3", base: 285, image: "/devices/apple-watch-ultra-3.webp" },
+  { id: "awu2", label: "Apple Watch Ultra 2", base: 170, image: "/devices/apple-watch-ultra-2.webp" },
+  { id: "awu1", label: "Apple Watch Ultra", base: 119, image: "/devices/apple-watch-ultra.webp" },
+  { id: "aws11", label: "Apple Watch Series 11", base: 123, image: "/devices/apple-watch-series-10.webp" },
+  { id: "aws10", label: "Apple Watch Series 10", base: 106, image: "/devices/apple-watch-series-10.webp" },
+  { id: "aws9", label: "Apple Watch Series 9", base: 77, image: "/devices/apple-watch-series-9.webp" },
+  { id: "aws8", label: "Apple Watch Series 8", base: 60, image: "/devices/apple-watch-series-8.webp" },
+  { id: "aws7", label: "Apple Watch Series 7", base: 38, image: "/devices/apple-watch-series-7.webp" },
+  { id: "awse3", label: "Apple Watch SE 3", base: 72, image: "/devices/apple-watch-se-2.webp" },
+  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 38, image: "/devices/apple-watch-se-2.webp" },
   { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, inquiryOnly: true, image: "/devices/apple-watch-se-1.webp" },
 ];
+
+// Per-model Apple Watch adjustments — flat dollars, IWM Flawless × 0.85
+// (watches run at 85%). The base price (aluminum / GPS / smallest size)
+// lives in PRICE_TABLE; these are the ADDS for premium material, larger
+// case, GPS+Cellular, premium bands and original accessories, mirroring
+// itsworthmore.com's per-model quote tree so a titanium 46mm cellular quote
+// matches IWM × 0.85 instead of the old ×1.4-style multipliers. noBandAdj =
+// penalty for no OEM band; accAdj = bonus for original charger + box. Ultra
+// models are single-config (49mm titanium cellular) so they carry no
+// material/size/connectivity — only band + accessories. Regen: gen-watch-specs.
+type AppleWatchSpec = {
+  materials?: { id: string; label: string; adj: number }[];
+  sizes?: { id: string; label: string; adj: number }[];
+  cellularAdj?: number;
+  noBandAdj?: number;
+  ultraBands?: { id: string; label: string; adj: number }[];
+  accAdj?: number;
+};
+const APPLE_WATCH_SPECS: Record<string, AppleWatchSpec> = {
+  awu3: { noBandAdj: -21, accAdj: 8, ultraBands: [
+    { id: "alpine", label: "Alpine Loop", adj: 0 },
+    { id: "trail", label: "Trail Loop", adj: 0 },
+    { id: "ocean", label: "Ocean Band", adj: 0 },
+    { id: "titanium_milanese", label: "Titanium Milanese Loop", adj: 26 },
+  ]},
+  awu2: { noBandAdj: -21, accAdj: 5, ultraBands: [
+    { id: "alpine", label: "Alpine Loop", adj: 0 },
+    { id: "trail", label: "Trail Loop", adj: 0 },
+    { id: "ocean", label: "Ocean Band", adj: 0 },
+    { id: "titanium_milanese", label: "Titanium Milanese Loop", adj: 21 },
+  ]},
+  awu1: { noBandAdj: -21, accAdj: 8, ultraBands: [
+    { id: "alpine", label: "Alpine Loop", adj: 0 },
+    { id: "trail", label: "Trail Loop", adj: 0 },
+    { id: "ocean", label: "Ocean Band", adj: 0 },
+  ]},
+  aws11: { materials: [ { id: "aluminum", label: "Aluminum", adj: 0 }, { id: "titanium", label: "Titanium", adj: 64 } ],
+    sizes: [ { id: "42mm", label: "42mm", adj: 0 }, { id: "46mm", label: "46mm", adj: 9 } ], cellularAdj: 9, noBandAdj: -17, accAdj: 4 },
+  aws10: { materials: [ { id: "aluminum", label: "Aluminum", adj: 0 }, { id: "titanium", label: "Titanium", adj: 34 } ],
+    sizes: [ { id: "42mm", label: "42mm", adj: 0 }, { id: "46mm", label: "46mm", adj: 4 } ], cellularAdj: 9, noBandAdj: -17, accAdj: 4 },
+  aws9: { materials: [ { id: "aluminum", label: "Aluminum", adj: 0 }, { id: "stainless", label: "Stainless Steel", adj: 17 } ],
+    sizes: [ { id: "41mm", label: "41mm", adj: 0 }, { id: "45mm", label: "45mm", adj: 4 } ], cellularAdj: 4, noBandAdj: -17, accAdj: 4 },
+  aws8: { materials: [ { id: "aluminum", label: "Aluminum", adj: 0 }, { id: "stainless", label: "Stainless Steel", adj: 9 } ],
+    sizes: [ { id: "41mm", label: "41mm", adj: 0 }, { id: "45mm", label: "45mm", adj: 4 } ], cellularAdj: 9, noBandAdj: -13, accAdj: 1 },
+  aws7: { materials: [ { id: "aluminum", label: "Aluminum", adj: 0 }, { id: "stainless", label: "Stainless Steel", adj: 4 }, { id: "titanium", label: "Titanium", adj: 4 } ],
+    sizes: [ { id: "41mm", label: "41mm", adj: 0 }, { id: "45mm", label: "45mm", adj: 4 } ], cellularAdj: 4, noBandAdj: -13, accAdj: 1 },
+  awse3: { sizes: [ { id: "40mm", label: "40mm", adj: 0 }, { id: "44mm", label: "44mm", adj: 9 } ], cellularAdj: 9, noBandAdj: -17, accAdj: 1 },
+  awse2: { sizes: [ { id: "40mm", label: "40mm", adj: 0 }, { id: "44mm", label: "44mm", adj: 4 } ], cellularAdj: 4, noBandAdj: -13, accAdj: 1 },
+};
 
 const PIXELWATCH_MODELS = [
   { id: "pw3", label: "Pixel Watch 3", base: 200, image: "/devices/pixel-watch.jpg" },
@@ -3014,42 +3068,11 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
       { id: "one",     label: "Just the one in the drone",           multiplier: 1.00 },
     ]},
   ],
-  // Smartwatches — band makes a big resale difference
-  applewatch: [
-    // Functional check — only when condition isn't already "broken".
-    // The broken-functional step covers the broken case, so asking
-    // again here would be a double-ask. For non-broken conditions, the
-    // 0.02 multiplier on "no" drops the quote below MIN_OFFER and
-    // triggers the "Manual review needed" flow on the quote step
-    // (catch-all for a "mint" watch that doesn't actually power on).
-    { id: "functional", question: "Is the watch fully functional?", helper: "Powers on, touchscreen and buttons respond, all sensors work.", showIf: (_extras, cond) => cond?.id !== "broken", options: [
-      { id: "yes", label: "Yes — fully working", multiplier: 1.00 },
-      { id: "no",  label: "No — needs repair or won't power on", sub: "We'll text you a custom quote", multiplier: 0.02 },
-    ]},
-    { id: "material", question: "Case material?", helper: "Check the back of your watch or Settings > General > About.", options: [
-      { id: "aluminum",  label: "Aluminum",        multiplier: 1.00 },
-      { id: "stainless", label: "Stainless Steel",  multiplier: 1.15 },
-      { id: "titanium",  label: "Titanium",         multiplier: 1.40 },
-    ]},
-    { id: "connectivity", question: "GPS or GPS + Cellular?", helper: "Cellular models have a red ring on the Digital Crown (or orange on Ultra).", options: [
-      { id: "gps",      label: "GPS only",          multiplier: 1.00 },
-      { id: "cellular", label: "GPS + Cellular",    multiplier: 1.10 },
-    ]},
-    { id: "size", question: "Case size?", helper: "Check Settings > General > About, or measure the case height.", options: [
-      { id: "small", label: "Small (40-42mm)",       multiplier: 1.00 },
-      { id: "large", label: "Large (44-46mm)",       multiplier: 1.05 },
-    ]},
-    // Two-step band flow — yes/no first so users without a band don't
-    // have to scan the full list. If "yes", the follow-up "which band?"
-    // question fires via showIf.
-    { id: "bandIncluded", question: "Original Apple band included?", options: [
-      { id: "yes", label: "Yes",        multiplier: 1.00 },
-      { id: "no",  label: "No (no band or 3rd-party only)", multiplier: 0.90 },
-    ]},
-    { id: "band", question: "Which band shipped with it?", showIf: (extras) => extras.bandIncluded?.id === "yes", options: [
-      { id: "oem", label: "Original Apple band", multiplier: 1.05 },
-    ]},
-  ],
+  // Smartwatches — Apple Watch questions are built per-model from
+  // APPLE_WATCH_SPECS by buildAppleWatchExtras() (getBrandExtras returns
+  // early for "applewatch"). This stub keeps the key present for callers
+  // that probe BRAND_EXTRAS directly; it is intentionally empty.
+  applewatch: [],
   samsungwatch: [
     { id: "connectivity", question: "Bluetooth only or LTE?", helper: "LTE models can make calls without your phone nearby.",
       guide: { title: "How to check connectivity", steps: [
@@ -3374,44 +3397,83 @@ const BRAND_EXTRAS: Record<string, BrandExtra[]> = {
   ],
 };
 // Apple Watch Ultra ships in only one configuration each generation:
-// titanium case, 49mm, cellular. So the case-material, case-size, and
-// GPS-vs-Cellular questions are all meaningless for Ultras — skip them
-// and just ask which Ultra-specific band shipped with it. Non-Ultra
-// Apple Watches keep the standard 4-question flow because they really
-// do have material / size / GPS vs cellular variants.
+// titanium case, 49mm, cellular. So the material / size / GPS-vs-Cellular
+// questions are meaningless for Ultras (APPLE_WATCH_SPECS omits them) —
+// we just ask which Ultra band shipped. Non-Ultra Apple Watches carry
+// real material / size / cellular variants, so those questions surface
+// per-model with IWM's exact flat-dollar adds.
 //
-// Band lineup by year-of-release:
-//   Ultra 1 (Sept 2022): Alpine Loop, Trail Loop, Ocean Band
-//   Ultra 2 (Sept 2023): same three (Titanium Milanese didn't ship until
-//                        Sept 2024 — not an original-with-watch option)
-//   Ultra 3 (Sept 2025): all four including Titanium Milanese Loop
-//
-// All Ultra-original bands are $99 retail except Titanium Milanese Loop
-// at $199 (titanium construction), which is why it gets a higher
-// resale multiplier.
+// Ultra band lineup by year: Ultra 1 (2022) Alpine/Trail/Ocean; Ultra 2
+// (2023) same three; Ultra 3 (2025) adds Titanium Milanese Loop (+$27,
+// the only premium Ultra band on IWM). Non-Ultra premium bands are small
+// ($5–14) and hard for sellers to identify, so we don't itemise them —
+// bandIncluded (yes / no-penalty) covers the meaningful swing.
 const isAppleWatchUltra = (modelId?: string | null) => modelId === "awu1" || modelId === "awu2" || modelId === "awu3";
+// Build the Apple Watch question flow for one model from APPLE_WATCH_SPECS.
+// Every value question (material / size / cellular / band / accessories)
+// uses a flat `adj` so it ADDS to the PRICE_TABLE base exactly like IWM's
+// tree — no ×1.4-style multipliers. `functional` stays a multiplier: "no"
+// drops the quote below MIN_OFFER → manual review, and it gates every
+// downstream question (works()) so a non-working watch skips straight to
+// the review quote instead of banking band/accessory adds.
+const buildAppleWatchExtras = (modelId?: string | null): BrandExtra[] => {
+  const spec = (modelId && APPLE_WATCH_SPECS[modelId]) || {};
+  const isUltra = isAppleWatchUltra(modelId);
+  const works = (extras: Record<string, ExtraOption | undefined>) => extras.functional?.id !== "no";
+  const qs: BrandExtra[] = [];
+  qs.push({ id: "functional", question: "Is the watch fully functional?",
+    helper: "Powers on, touchscreen and buttons respond, all sensors work.",
+    showIf: (_extras, cond) => cond?.id !== "broken", options: [
+      { id: "yes", label: "Yes — fully working", multiplier: 1.00 },
+      { id: "no",  label: "No — needs repair or won't power on", sub: "We'll text you a custom quote", multiplier: 0.02 },
+    ]});
+  if (!isUltra && spec.materials?.length) {
+    qs.push({ id: "material", question: "Case material?",
+      helper: "Check the back of the watch or Settings → General → About.",
+      showIf: (extras) => works(extras),
+      options: spec.materials.map(m => ({ id: m.id, label: m.adj > 0 ? `${m.label} (+$${m.adj})` : m.label, multiplier: 1.00, adj: m.adj })) });
+  }
+  if (!isUltra && spec.cellularAdj) {
+    const cellAdj = spec.cellularAdj;
+    qs.push({ id: "connectivity", question: "GPS or GPS + Cellular?",
+      helper: "Cellular models have a coloured ring on the Digital Crown and are engraved with a carrier + IMEI.",
+      showIf: (extras) => works(extras), options: [
+        { id: "gps", label: "GPS only", multiplier: 1.00, adj: 0 },
+        { id: "cellular", label: `GPS + Cellular (+$${cellAdj})`, multiplier: 1.00, adj: cellAdj },
+      ]});
+  }
+  if (!isUltra && spec.sizes?.length) {
+    qs.push({ id: "size", question: "Case size?",
+      helper: "Printed on the back of the watch, or Settings → General → About.",
+      showIf: (extras) => works(extras),
+      options: spec.sizes.map(s => ({ id: s.id, label: s.adj > 0 ? `${s.label} (+$${s.adj})` : s.label, multiplier: 1.00, adj: s.adj })) });
+  }
+  qs.push({ id: "bandIncluded", question: "Original Apple band included?",
+    showIf: (extras) => works(extras), options: [
+      { id: "yes", label: "Yes", multiplier: 1.00, adj: 0 },
+      { id: "no",  label: "No (no band or 3rd-party only)", multiplier: 1.00, adj: spec.noBandAdj ?? -18 },
+    ]});
+  if (isUltra && spec.ultraBands?.length) {
+    qs.push({ id: "band", question: "Which band shipped with it?",
+      showIf: (extras) => extras.bandIncluded?.id === "yes" && works(extras),
+      options: spec.ultraBands.map(b => ({ id: b.id, label: b.adj > 0 ? `${b.label} (+$${b.adj})` : b.label, multiplier: 1.00, adj: b.adj })) });
+  }
+  if (spec.accAdj) {
+    const accAdj = spec.accAdj;
+    qs.push({ id: "accessories", question: "Original charger + box included?",
+      helper: "The magnetic charging cable and the original retail box.",
+      showIf: (extras) => works(extras), options: [
+        { id: "yes", label: `Yes (+$${accAdj})`, multiplier: 1.00, adj: accAdj },
+        { id: "no",  label: "No", multiplier: 1.00, adj: 0 },
+      ]});
+  }
+  return qs;
+};
 const getBrandExtras = (dt: string | null | undefined, modelId?: string | null | undefined): BrandExtra[] => {
   const base = (dt && BRAND_EXTRAS[dt]) || [];
-  if (dt === "applewatch" && isAppleWatchUltra(modelId)) {
-    // Ultras: titanium 49mm cellular always — drop material / connectivity /
-    // size. Replace the generic band question's options with the actual
-    // Ultra band lineup. Titanium Milanese only shipped from Sept 2024,
-    // so it's only an option for Ultra 3.
-    // IWM band pricing: Alpine/Trail/Ocean are base ($0 adj).
-    // Titanium Milanese Loop is +$25-30 premium. No band is -$25.
-    const ultraBandOptions = [
-      { id: "alpine", label: "Alpine Loop", multiplier: 1.00 },
-      { id: "trail",  label: "Trail Loop",  multiplier: 1.00 },
-      { id: "ocean",  label: "Ocean Band",  multiplier: 1.00 },
-      ...(modelId === "awu2" || modelId === "awu3" ? [{ id: "titanium_milanese", label: "Titanium Milanese Loop", multiplier: 1.08 }] : []),
-    ];
-    return base
-      .filter(q => q.id !== "connectivity" && q.id !== "material" && q.id !== "size")
-      .map(q => q.id === "band"
-        ? { ...q, options: ultraBandOptions }
-        : q
-      );
-  }
+  // Apple Watch questions are built per-model (material/size/cellular/band
+  // vary by model) with IWM flat-dollar adds — see buildAppleWatchExtras.
+  if (dt === "applewatch") return buildAppleWatchExtras(modelId);
   // Dell XPS 13 has integrated graphics only — skip the GPU question.
   // XPS 15 gets the full GPU picker. Other Dell models without additive
   // specs won't hit this because they have base=0 (inquiry-only).
@@ -3576,7 +3638,7 @@ const CHARGER_OPTIONS = [
 const SKIP_ON_SEALED_EXTRAS_IDS = new Set([
   "charger", "box", "spen", "stylus", "dock",
   "controllers", "kit",
-  "bandIncluded", "band",
+  "bandIncluded", "band", "accessories",
   "functional", "hours", "crashes",
 ]);
 // Mutable module-level cache for PC laptop additive specs loaded from
@@ -12373,6 +12435,18 @@ export default function Home() {
                 // Single device → standard single-lead POST with the
                 // full spec payload.
                 const isMultiCart = cartItems.length > 1;
+                // Route the submit through the CART data (real per-item
+                // prices) whenever it's a true multi-cart OR the shopper is
+                // checking out a single carted device on a stale/empty funnel
+                // — model reset via "add another device", or a returning
+                // session where the cart was restored from localStorage but
+                // the live funnel `quote` starts at $0. That $0 was flowing
+                // into /api/confirm and printing "Custom quote — coming within
+                // the hour" on a device we actually have a price for. Only
+                // kicks in when the live quote is empty, so normal
+                // straight-through checkouts (funnel = the device) are
+                // untouched and no carted device is ever dropped. (bug fix)
+                const submitViaCart = isMultiCart || (cartItems.length === 1 && (quote * quantity) <= 0);
                 // Capture the FedEx label info from /api/lead's response
                 // when a ship handoff was submitted. Plumbs through to
                 // /api/confirm (so the email shows the label) AND to the
@@ -12385,7 +12459,7 @@ export default function Home() {
                 // emailed offer number matches the done-screen / offer-page
                 // number (and is searchable in admin).
                 let leadIdLocal: string | null = null;
-                if (isMultiCart) {
+                if (submitViaCart) {
                   const devicesPayload = cartItems.map((it) => {
                     // Must match the photo-tab __key (incl. handoff) so each
                     // cart line's photos attach to the right device. (bug fix)
@@ -12436,8 +12510,10 @@ export default function Home() {
                       // Headline model is intentionally a summary string
                       // so the existing lead-table model column reads
                       // sensibly for multi-item submissions.
-                      model: `${cartItems.length} devices — ${cartItems[0].model}${cartItems.length > 1 ? ` + ${cartItems.length - 1} more` : ""}`,
-                      condition: "Multi-device",
+                      model: cartItems.length > 1
+                        ? `${cartItems.length} devices — ${cartItems[0].model} + ${cartItems.length - 1} more`
+                        : cartItems[0].model,
+                      condition: cartItems.length > 1 ? "Multi-device" : cartItems[0].condition,
                       carrier: carrier?.label,
                       quote: totalQuote,
                       payout: payoutValue,
@@ -12561,7 +12637,7 @@ export default function Home() {
                   const cartHandoffMode: "ship" | "local" | "mixed" = cartIsMixed
                     ? "mixed"
                     : cartNeedsShip ? "ship" : "local";
-                  const confirmBody = isMultiCart
+                  const confirmBody = submitViaCart
                     ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local" })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined }
                     : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined };
                   fetch("/api/confirm", {
@@ -12573,7 +12649,7 @@ export default function Home() {
                 // Snapshot the submitted cart for the "done" screen
                 // BEFORE clearing — the done screen needs to render
                 // every device, not just the current funnel state.
-                if (isMultiCart) {
+                if (submitViaCart) {
                   setSubmittedDevices(cartItems.map((it) => ({ ...it })));
                 } else if (model && condition) {
                   setSubmittedDevices([{

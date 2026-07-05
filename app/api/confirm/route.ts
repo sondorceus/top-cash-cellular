@@ -95,14 +95,27 @@ export async function POST(req: NextRequest) {
   const deviceArr: Array<{ model?: string; storage?: string; condition?: string; quote?: number; quantity?: number }> =
     Array.isArray(devices) ? devices : [];
   const isMulti = deviceArr.length > 1;
-  if (isMulti) {
-    // d.quote is already the line total (price × qty) — the funnel sends
-    // `quote: it.price * it.quantity`. Do NOT multiply by quantity again
-    // or the emailed grand total is inflated (e.g. 2× a $100 item → $400).
+  if (deviceArr.length >= 1) {
+    // When a devices[] array is present the emailed total ALWAYS comes from
+    // the device rows — never from a stale/absent top-level `quote`. A
+    // single-item cart submits devices[] with NO top-level quote; the old
+    // `if (isMulti)` (length > 1) skipped this for it, leaving quote
+    // undefined → $0 → a false "Custom quote — coming within the hour" on a
+    // device we actually priced. Now any non-empty devices[] is summed.
+    // d.quote is already the line total (price × qty); do NOT re-multiply.
     quote = deviceArr.reduce((s, d) => s + (Number(d.quote) || 0), 0);
-    model = `${deviceArr.length} devices`;
-    storage = "Multiple";
-    condition = "See list below";
+    if (isMulti) {
+      model = `${deviceArr.length} devices`;
+      storage = "Multiple";
+      condition = "See list below";
+    } else {
+      // Single carted device — hydrate the headline row from it, since the
+      // cart submit doesn't send top-level model/storage/condition.
+      const d0 = deviceArr[0];
+      model = model ?? d0.model;
+      storage = storage ?? d0.storage;
+      condition = condition ?? d0.condition;
+    }
   }
   // Device offer + coupon bonus = offer total. The big headline number
   // shows the TOTAL the customer walks away with; the breakdown rows

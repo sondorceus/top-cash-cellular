@@ -27,15 +27,19 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   "Pixel 9 Pro Fold": 585, "Pixel 9 Pro XL": 392, "Pixel 9 Pro": 375, "Pixel 9": 210,
   "Pixel 8 Pro": 225,
   "Pixel 6a": 45,
-  // Apple Watches — Atlas grade_a_hso. Skipped: Series 10/11, Ultra 2/3 (TCC
-  // pays above Atlas wholesale; would silently cap).
-  // Ultras refreshed 2026-05-19 — current Swappa/eBay sold sits around
-  // $245 for Ultra 2, $360 for Ultra 3. Old 200/138-ish estimates were
-  // flagging both as loss-risk when payouts are actually safely positive.
+  // Apple Watches — Atlas grade_a_hso. Skipped: Series 10/11, Ultra 2/3.
+  // These intentionally pay above Atlas wholesale to stay competitive with
+  // IWM, so listing a resell here would make the margin guard (resell ×
+  // 0.75) SILENTLY cap the quote below its own PRICE_TABLE value — e.g. a
+  // mint Ultra 3 ($302) capped to $270. (Ultra 2/3 carried 245/360 from a
+  // 2026-05-19 edit; removed 2026-07-05 after it re-broke the quote — a
+  // resell entry can't distinguish "show admin margin" from "cap the
+  // funnel", and the funnel underpay is the worse failure.) Series 7/8/9
+  // and SE stay listed: their PRICE_TABLE sits well under resell × 0.75,
+  // so the cap never bites and admin still gets a margin chip.
   "Apple Watch SE (2nd Gen)": 70,
   "Apple Watch Series 7": 80, "Apple Watch Series 8": 100, "Apple Watch Series 9": 115,
   "Apple Watch Ultra": 200,
-  "Apple Watch Ultra 2": 245, "Apple Watch Ultra 3": 360,
   // iPads — Skipped most (TCC pays above Atlas wholesale). Only the M3 13"
   // Air has enough margin headroom for a safe cap.
   "iPad Air 13\" (M3)": 515,
