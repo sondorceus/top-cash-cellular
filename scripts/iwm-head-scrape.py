@@ -141,11 +141,22 @@ def grid_flat(quiz, url: str):
         return None
     storages = ([(a["text"], _cur(a)) for a in storage_q.get("answers", [])]
                 if storage_q else [("-", 0)])
+    # Other value-carrying questions (watch type/size, bands, accessories)
+    # contribute their MAX — top-config convention. Galaxy Watch 7 puts the
+    # whole absolute on the type question (BT $20 / LTE $25) with condition
+    # as deltas; without this the grid reads $0.
+    extras_max = 0
+    for q in qs:
+        if q is storage_q or q is cond_q:
+            continue
+        vals = [_cur(a) for a in q.get("answers", [])]
+        if vals:
+            extras_max += max(0, max(vals))
     model = _model_name_from_url(url)
     grid = {}
     for s_lbl, s_val in storages:
         for a in cond_q.get("answers", []):
-            grid.setdefault(s_lbl, {})[a["text"]] = s_val + _cur(a)
+            grid.setdefault(s_lbl, {})[a["text"]] = extras_max + s_val + _cur(a)
     return {model: grid} if grid else None
 
 
@@ -177,10 +188,25 @@ def grid_per_model(quiz):
     Return {model_label: {storage_label: {condition_label: iwm_price}}}.
     SUMS the MAX value_current from every other question (processor, RAM,
     GPU, secondary drive, accessories...) so the reported price reflects
-    a TOP-configured device at the chosen storage + condition."""
+    a TOP-configured device at the chosen storage + condition.
+
+    The PICKER answer itself can carry the absolute (Apple Watch case
+    material: Aluminum=$100 / Titanium=$140, branches hold deltas) — add
+    it as the branch base. Console pickers carry 0 so they're unaffected."""
+    picker_base = {}
+    if quiz:
+        for q in quiz[0].get("questions", []):
+            for a in q.get("answers", []):
+                gt = str(a.get("go_to", ""))
+                if "," in gt:
+                    idx = gt.split(",")[0].strip()
+                    v = _cur(a)
+                    if v:
+                        picker_base[idx] = max(picker_base.get(idx, 0), v)
     out = {}
-    for entry in quiz[1:]:  # skip the "Models" picker
+    for branch_i, entry in enumerate(quiz[1:], start=2):  # skip the "Models" picker
         raw_name = entry.get("name", "?")
+        base_add = picker_base.get(str(branch_i), 0)
         # Skip metadata-only entries (Brand New Terms, etc.)
         if raw_name.lower().endswith("terms"):
             continue
@@ -202,11 +228,17 @@ def grid_per_model(quiz):
                 extras_max += max(vals)
         storages = [(a["text"], a.get("value_current") or 0) for a in (storage_q["answers"] if storage_q else [{"text": "-", "value_current": 0}])]
         conds = [(a["text"], a.get("value_current") or 0) for a in (cond_q["answers"] if cond_q else [])]
+        # Add the picker base ONLY when this branch's conditions are
+        # deltas (Flawless == 0, Apple Watch style). Branches whose
+        # Flawless carries the absolute (Aurora desktops) would double-
+        # count it.
+        flawless_val = next((v for l, v in conds if l.lower() in ("flawless", "excellent")), None)
+        add = base_add if flawless_val == 0 else 0
         out[name] = {}
         for s_lbl, s_val in storages:
             out[name][s_lbl] = {}
             for c_lbl, c_val in conds:
-                out[name][s_lbl][c_lbl] = s_val + c_val + extras_max
+                out[name][s_lbl][c_lbl] = add + s_val + c_val + extras_max
     return out
 
 

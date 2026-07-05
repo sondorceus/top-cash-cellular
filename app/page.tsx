@@ -1120,8 +1120,8 @@ const APPLE_DESKTOP_SERIES = [
 const DELL_DESKTOP_MODELS = [
   { id: "doptiplex7010", label: "OptiPlex 7010", base: 297, inquiryOnly: false, image: "/devices/dell-optiplex-tower.webp" },
   { id: "doptiplex5000", label: "OptiPlex 5000", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-sff.webp" },
-  { id: "dxps8960", label: "XPS Desktop 8960", base: 90, inquiryOnly: false, image: "/devices/dell-xps-8960.webp" },
-  { id: "dxps8950", label: "XPS Desktop 8950", base: 68, inquiryOnly: false, image: "/devices/dell-xps-8950.webp" },
+  { id: "dxps8960", label: "XPS Desktop 8960", base: 1454, inquiryOnly: false, image: "/devices/dell-xps-8960.webp" },
+  { id: "dxps8950", label: "XPS Desktop 8950", base: 806, inquiryOnly: false, image: "/devices/dell-xps-8950.webp" },
   { id: "dinsp3030", label: "Inspiron 3030 Desktop", base: 0, inquiryOnly: true },
   { id: "dprecision3680", label: "Precision 3680", base: 0, inquiryOnly: true, image: "/devices/dell-optiplex-tower.webp" },
 ];
@@ -1129,16 +1129,16 @@ const DELL_DESKTOP_MODELS = [
 const LENOVO_DESKTOP_MODELS = [
   { id: "lnthinkm", label: "ThinkCentre M920", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-tower.webp" },
   { id: "lnthinkm90q", label: "ThinkCentre M90q Tiny", base: 328, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tiny.webp" },
-  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 410, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
-  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 428, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnlegion5dtwr", label: "Legion Tower 5i", base: 770, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
+  { id: "lnlegion7dtwr", label: "Legion Tower 7i", base: 1012, inquiryOnly: false, image: "/devices/lenovo-thinkcentre-tower.webp" },
   { id: "lnideactower", label: "IdeaCentre 5i", base: 0, inquiryOnly: true, image: "/devices/lenovo-thinkcentre-sff.webp" },
 ];
 
 const HP_DESKTOP_MODELS = [
   { id: "hpelitedesk", label: "EliteDesk 800 G9", base: 0, inquiryOnly: true, image: "/devices/hp-elitedesk-800.webp" },
   { id: "hpprodesk", label: "ProDesk 400 G9", base: 0, inquiryOnly: true, image: "/devices/hp-prodesk-400.webp" },
-  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 747, inquiryOnly: false, image: "/devices/hp-omen-45l.webp" },
-  { id: "hpomen40", label: "OMEN 40L Desktop", base: 220, inquiryOnly: false, image: "/devices/hp-omen-35l.webp" },
+  { id: "hpomendsk", label: "OMEN 45L Desktop", base: 1557, inquiryOnly: false, image: "/devices/hp-omen-45l.webp" },
+  { id: "hpomen40", label: "OMEN 40L Desktop", base: 626, inquiryOnly: false, image: "/devices/hp-omen-35l.webp" },
   { id: "hpenvy34", label: "Envy 34 All-in-One", base: 0, inquiryOnly: true, image: "/devices/lenovo-ideacentre.webp" },
   { id: "hppav32", label: "Pavilion 32 All-in-One", base: 0, inquiryOnly: true, image: "/devices/lenovo-ideacentre.webp" },
 ];
@@ -1528,18 +1528,18 @@ const DELL_PC_ALL_SUB_SERIES = [
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
-  { id: "awaurorar16", label: "Aurora R16", base: 1089, image: "/devices/alienware-aurora-r16.webp" },
+  { id: "awaurorar16", label: "Aurora R16", base: 1575, image: "/devices/alienware-aurora-r16.webp" },
   // R15 / R13 prices scraped from IWM via head scraper 2026-05-17.
   // Base = i7 / 1TB SSD / Flawless × 0.90 (mid-tier chip + storage):
   //   R15 i7 1TB Flawless $785 → $706
   //   R13 i7 1TB Flawless $340 → $306
   // Higher-spec configs scale up via storage multipliers downstream.
-  { id: "awaurorar15", label: "Aurora R15", base: 864, inquiryOnly: false, image: "/devices/alienware-aurora-r15.webp" },
-  { id: "awaurorar14", label: "Aurora R14", base: 472, inquiryOnly: false, image: "/devices/alienware-aurora-r14.webp" },
-  { id: "awaurorar13", label: "Aurora R13", base: 324, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
-  { id: "awaurorar12", label: "Aurora R12", base: 526, inquiryOnly: false, image: "/devices/alienware-aurora-r12.webp" },
-  { id: "awaurorar10", label: "Aurora R10", base: 202, inquiryOnly: false, image: "/devices/alienware-aurora-r10.webp" },
-  { id: "awarea51desktop", label: "Area-51 Desktop", base: 180, inquiryOnly: false, image: "/devices/alienware-area-51-desktop.webp" },
+  { id: "awaurorar15", label: "Aurora R15", base: 1426, inquiryOnly: false, image: "/devices/alienware-aurora-r15.webp" },
+  { id: "awaurorar14", label: "Aurora R14", base: 783, inquiryOnly: false, image: "/devices/alienware-aurora-r14.webp" },
+  { id: "awaurorar13", label: "Aurora R13", base: 639, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
+  { id: "awaurorar12", label: "Aurora R12", base: 729, inquiryOnly: false, image: "/devices/alienware-aurora-r12.webp" },
+  { id: "awaurorar10", label: "Aurora R10", base: 405, inquiryOnly: false, image: "/devices/alienware-aurora-r10.webp" },
+  { id: "awarea51desktop", label: "Area-51 Desktop", base: 1647, inquiryOnly: false, image: "/devices/alienware-area-51-desktop.webp" },
 ];
 
 // MSI desktops — prices and SKUs from IWM web-head scrape 2026-05-17.
@@ -1642,13 +1642,13 @@ const APPLEWATCH_MODELS = [
   // Ultra 3 base is a placeholder — ClaudeMX's IWM scraper picks up
   // exact pricing on the weekly Monday refresh.
   { id: "awu3", label: "Apple Watch Ultra 3", base: 302, image: "/devices/apple-watch-ultra-3.webp" },
-  { id: "awu2", label: "Apple Watch Ultra 2", base: 450, image: "/devices/apple-watch-ultra-2.webp" },
-  { id: "awu1", label: "Apple Watch Ultra", base: 350, image: "/devices/apple-watch-ultra.webp" },
-  { id: "aws10", label: "Apple Watch Series 10", base: 280, image: "/devices/apple-watch-series-10.webp" },
-  { id: "aws9", label: "Apple Watch Series 9", base: 220, image: "/devices/apple-watch-series-9.webp" },
-  { id: "aws8", label: "Apple Watch Series 8", base: 170, image: "/devices/apple-watch-series-8.webp" },
-  { id: "aws7", label: "Apple Watch Series 7", base: 120, image: "/devices/apple-watch-series-7.webp" },
-  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 130, image: "/devices/apple-watch-se-2.webp" },
+  { id: "awu2", label: "Apple Watch Ultra 2", base: 180, image: "/devices/apple-watch-ultra-2.webp" },
+  { id: "awu1", label: "Apple Watch Ultra", base: 126, image: "/devices/apple-watch-ultra.webp" },
+  { id: "aws10", label: "Apple Watch Series 10", base: 158, image: "/devices/apple-watch-series-10.webp" },
+  { id: "aws9", label: "Apple Watch Series 9", base: 104, image: "/devices/apple-watch-series-9.webp" },
+  { id: "aws8", label: "Apple Watch Series 8", base: 59, image: "/devices/apple-watch-series-8.webp" },
+  { id: "aws7", label: "Apple Watch Series 7", base: 46, image: "/devices/apple-watch-series-7.webp" },
+  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 34, image: "/devices/apple-watch-se-2.webp" },
   { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, inquiryOnly: true, image: "/devices/apple-watch-se-1.webp" },
 ];
 
@@ -1733,11 +1733,11 @@ const GARMIN_MODELS = [
 ];
 
 const SAMSUNGWATCH_MODELS = [
-  { id: "sgwu25", label: "Galaxy Watch Ultra (2025)", base: 176, image: "/devices/samsung-watch-7.webp" },
-  { id: "sgwu", label: "Galaxy Watch Ultra", base: 112, image: "/devices/samsung-watch-7.webp" },
-  { id: "sgw8c", label: "Galaxy Watch 8 Classic", base: 99, image: "/devices/samsung-watch-7.webp" },
-  { id: "sgw8", label: "Galaxy Watch 8", base: 63, image: "/devices/samsung-watch-7.webp" },
-  { id: "sgw7", label: "Galaxy Watch 7", base: 18, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgwu25", label: "Galaxy Watch Ultra (2025)", base: 144, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgwu", label: "Galaxy Watch Ultra", base: 90, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw8c", label: "Galaxy Watch 8 Classic", base: 109, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw8", label: "Galaxy Watch 8", base: 77, image: "/devices/samsung-watch-7.webp" },
+  { id: "sgw7", label: "Galaxy Watch 7", base: 28, image: "/devices/samsung-watch-7.webp" },
 ];
 
 // DJI drones — 32 per-submodel variants priced from IWM scrape (x0.90).
@@ -1854,8 +1854,8 @@ const GARMIN_EDITIONS: Record<string, Array<{id: string; label: string; adj: num
 // Apple does NOT offer trade-in for Vision Pro (confirmed Oct 22, 2025),
 // so no first-party comp.
 const APPLE_VR_MODELS = [
-  { id: "avp_m5", label: "Apple Vision Pro (M5, 2025)",   base: 1980, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
-  { id: "avp_m2", label: "Apple Vision Pro (M2, 2024)",   base: 1530, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp_m5", label: "Apple Vision Pro (M5, 2025)",   base: 2025, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
+  { id: "avp_m2", label: "Apple Vision Pro (M2, 2024)",   base: 1575, inquiryOnly: false, image: "/devices/apple-vision-pro.png" },
 ];
 
 // Photos: Swappa per-model 2026-05-17.

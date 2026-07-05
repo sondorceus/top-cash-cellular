@@ -75,6 +75,23 @@ VID_MAP = {
     "lnthinkm90q": ("lenovo-thinkcentre/lenovo-thinkcentre-tiny-desktop", r"m90q", None),
     "lnlegion5dtwr": ("lenovo-legion/lenovo-legion-tower-5i", None, None),
     "lnlegion7dtwr": ("lenovo-legion/lenovo-legion-tower-7i", None, None),
+    # Watches — mixed page shapes: Ultras are flat condition-absolute
+    # pages; Series pages use a case-material picker whose answer carries
+    # the absolute (grid_per_model adds it as branch base).
+    "awu3":   ("apple-watch/apple-watch-ultra-3", None, None),
+    "awu2":   ("apple-watch/apple-watch-ultra-2", None, None),
+    "awu1":   ("apple-watch/apple-watch-ultra", None, None),
+    "aws10":  ("apple-watch/apple-watch-series-10", None, None),
+    "aws9":   ("apple-watch/apple-watch-series-9", None, None),
+    "aws8":   ("apple-watch/apple-watch-series-8", None, None),
+    "aws7":   ("apple-watch/apple-watch-series-7", None, None),
+    "awse2":  ("apple-watch/apple-watch-se-2nd-gen", None, None),
+    "awse1":  ("apple-watch/apple-watch-se", None, None),
+    "sgwu25": ("samsung-watch/samsung-galaxy-watch-ultra-2025", None, None),
+    "sgwu":   ("samsung-watch/samsung-galaxy-watch-ultra", None, None),
+    "sgw8c":  ("samsung-watch/samsung-galaxy-watch-8-classic", None, None),
+    "sgw8":   ("samsung-watch/samsung-galaxy-watch-8", None, None),
+    "sgw7":   ("samsung-watch/samsung-galaxy-watch-7", None, None),
 }
 
 FLAWLESS_LABELS = ("flawless", "excellent")
