@@ -12,13 +12,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyCounterToken } from "../../../lib/counter-token";
 import { reportError } from "../../../lib/error-report";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../lib/rate-limit";
+import { notifyOwnerSms } from "../../../lib/owner-sms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
-const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
-const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 export async function POST(req: NextRequest) {
   // Throttle — this drives a money decision (accept/decline) + owner SMS and,
@@ -119,24 +116,17 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Owner SMS so staff acts immediately (accepted = move toward paid;
-  // declined = arrange return shipping).
-  if (TWILIO_SID && TWILIO_AUTH) {
-    try {
-      const verb = response === "accept" ? "ACCEPTED" : "DECLINED";
-      const e164 = OWNER_PHONE.startsWith("+") ? OWNER_PHONE : `+1${OWNER_PHONE.replace(/\D/g, "")}`;
-      const smsBody = `TCC: Counter-offer ${verb} — Lead ${payload.leadId}, offer $${payload.offer} (was $${payload.originalQuote}). ${response === "accept" ? "Move to paid prep." : "Return device free."}${noteText ? ` Note: ${noteText.slice(0, 120)}` : ""}`;
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64")}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ To: e164, From: TWILIO_FROM, Body: smsBody.slice(0, 480) }),
-      });
-    } catch (err) {
-      reportError("counter-offer.response.owner-sms", err, { leadId: payload.leadId, critical: false });
-    }
+  // Owner alert so staff acts immediately (accepted = move toward paid;
+  // declined = arrange return shipping). Routed through the shared helper —
+  // this route used to roll its own Twilio call, which meant NO alert at all
+  // with Twilio dead; the helper emails via Resend (and still tries SMS).
+  try {
+    const verb = response === "accept" ? "ACCEPTED ✅" : "DECLINED ❌";
+    await notifyOwnerSms(
+      `TCC: Counter-offer ${verb} — Lead ${payload.leadId}, offer $${payload.offer} (was $${payload.originalQuote}). ${response === "accept" ? "Move to paid prep." : "Return device free."}${noteText ? ` Their note: "${noteText.slice(0, 200)}"` : ""}`,
+    );
+  } catch (err) {
+    reportError("counter-offer.response.owner-alert", err, { leadId: payload.leadId, critical: false });
   }
 
   return NextResponse.json({ ok: true, response, leadId: payload.leadId });

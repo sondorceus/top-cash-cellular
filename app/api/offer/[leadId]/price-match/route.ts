@@ -12,12 +12,12 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
+import { notifyOwnerSms } from "../../../../lib/owner-sms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 function field(body: string, key: string): string | undefined {
@@ -111,25 +111,17 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Couldn't record your request — try again shortly." }, { status: 502 });
   }
 
-  // Owner SMS — staff sees it land in real time and can act before the
+  // Owner alert — staff sees it land in real time and can act before the
   // customer goes elsewhere.
-  if (TWILIO_SID && TWILIO_AUTH) {
+  {
     try {
-      const e164 = OWNER_PHONE.startsWith("+") ? OWNER_PHONE : `+1${OWNER_PHONE.replace(/\D/g, "")}`;
       const customerName = field(leadMsg.body, "Name") || "Customer";
       const model = field(leadMsg.body, "Model") || field(leadMsg.body, "Device") || "device";
       const ourQuote = field(leadMsg.body, "Quote") || "";
       const text = isCounter
         ? `💬 COUNTER: ${customerName} (${model}) isn't happy — wants $${amount}${ourQuote ? ` (we quoted ${ourQuote})` : ""}.${note ? ` "${note}"` : ""} Offer ${leadId.slice(0, 10).toUpperCase()}.`
         : `🎯 PRICE-MATCH: ${customerName} (${model}) says ${competitor} quoted $${amount}${ourQuote ? ` — we quoted ${ourQuote}` : ""}. Offer ${leadId.slice(0, 10).toUpperCase()}.`;
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64")}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ To: e164, From: TWILIO_FROM, Body: text.slice(0, 480) }),
-      });
+      await notifyOwnerSms(text.slice(0, 480));
     } catch { /* SMS non-fatal */ }
   }
 

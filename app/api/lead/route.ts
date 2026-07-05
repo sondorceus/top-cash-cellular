@@ -11,12 +11,12 @@ import { formatOfferNumber } from "../../lib/offer-number";
 import { getResellEstimate, resellMultiplierForCondition } from "../../lib/resell-estimates";
 import { mailShell, mailDetails, MAIL, mailLogo } from "../../lib/email-shell";
 import { registerEasyPostTracker } from "../../lib/easypost";
+import { notifyOwnerSms } from "../../lib/owner-sms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 // Where new-lead alerts get emailed. Set this env to a personal inbox to
 // get pinged personally — or to a carrier email-to-SMS gateway (e.g.
@@ -1448,7 +1448,7 @@ Pick the best channel per device. Be concise.`;
     }
   }
 
-  if (TWILIO_SID && TWILIO_AUTH) {
+  {
     const photoNote = (photos as string[] | undefined)?.length ? ` Photos: ${(photos as string[])[0]}` : "";
     const reviewTag = reviewRequired ? "⚠️ REVIEW: " : "";
     // Surface the fulfillment method so staff can dispatch immediately
@@ -1469,14 +1469,7 @@ Pick the best channel per device. Be concise.`;
       : "";
     const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}${labelNote}`;
     try {
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-        method: "POST",
-        headers: {
-          "Authorization": "Basic " + Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64"),
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ To: OWNER_PHONE, From: TWILIO_FROM, Body: ownerSms }),
-      });
+      await notifyOwnerSms(ownerSms);
     } catch {}
   }
 

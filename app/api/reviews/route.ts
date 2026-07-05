@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mailLogo, mailButton, esc as shellEsc } from "../../lib/email-shell";
 import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
+import { notifyOwnerSms } from "../../lib/owner-sms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 const OWNER_EMAIL = process.env.OWNER_EMAIL || "support@topcashcellular.com";
 
@@ -57,16 +57,9 @@ async function notifyOwner(review: { name: string; rating: number; body: string;
 
   // SMS — wraps the Twilio call so a single bad call doesn't break the
   // email send. Owner phone is hardcoded fallback above.
-  if (TWILIO_SID && TWILIO_AUTH) {
+  {
     try {
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-        method: "POST",
-        headers: {
-          "Authorization": "Basic " + Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64"),
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ To: OWNER_PHONE, From: TWILIO_FROM, Body: ownerSms.slice(0, 480) }),
-      });
+      await notifyOwnerSms(ownerSms.slice(0, 480));
     } catch {}
   }
 

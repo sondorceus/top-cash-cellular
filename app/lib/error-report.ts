@@ -14,11 +14,12 @@
 //
 // Skywalker 2026-05-19 gap audit, item #6.
 
+import { notifyOwnerSms } from "./owner-sms";
+
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "";
 
 export type ReportOpts = {
@@ -84,18 +85,10 @@ export async function reportError(
 
   // Critical errors also SMS the owner so they don't wait for the
   // morning digest. Best-effort like the MC post.
-  if (opts.critical && OWNER_PHONE && TWILIO_SID && TWILIO_AUTH) {
+  if (opts.critical) {
     try {
-      const e164 = OWNER_PHONE.startsWith("+") ? OWNER_PHONE : `+1${OWNER_PHONE.replace(/\D/g, "")}`;
       const smsBody = `🚨 TCC CRITICAL: ${context}\n${errMsg.slice(0, 200)}${opts.leadId ? `\nLead: ${opts.leadId}` : ""}`;
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64")}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ To: e164, From: TWILIO_FROM, Body: smsBody.slice(0, 480) }),
-      });
+      await notifyOwnerSms(smsBody);
     } catch {
       // Swallow.
     }

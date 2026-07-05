@@ -22,6 +22,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
+import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import {
   field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES,
 } from "../../../../lib/lead-devices";
@@ -30,7 +31,6 @@ const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
@@ -174,21 +174,13 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Couldn't save your changes — try again shortly." }, { status: 502 });
   }
 
-  // Owner SMS — the re-quote is an estimate; staff confirm at inspection.
-  if (TWILIO_SID && TWILIO_AUTH) {
+  // Owner alert — the re-quote is an estimate; staff confirm at inspection.
+  {
     try {
-      const e164 = OWNER_PHONE.startsWith("+") ? OWNER_PHONE : `+1${OWNER_PHONE.replace(/\D/g, "")}`;
       const customerName = field(leadMsg.body, "Name") || "Customer";
       const summary = devices.map((d) => `${d.model} (${d.condition || "?"}${d.storage ? ", " + d.storage : ""})`).join("; ");
       const text = `${anyReview ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total}. ${summary}`;
-      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64")}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ To: e164, From: TWILIO_FROM, Body: text.slice(0, 480) }),
-      });
+      await notifyOwnerSms(text.slice(0, 480));
     } catch { /* SMS non-fatal */ }
   }
 
