@@ -178,7 +178,34 @@ function render(texts: string[], quickReplies: { caption: string; state: ConvoSt
       payload: { state: qr.state },
     }));
   }
-  return NextResponse.json({ version: "v2", content });
+  // ctx = compact base64 conversation memory, mapped back to the ManyChat ai_ctx field.
+  return NextResponse.json({ version: "v2", content, ...(ctx ? { ctx } : {}) });
+}
+
+type Turn = { role: "user" | "assistant"; content: string };
+// Decode the base64 transcript ManyChat round-trips through the ai_ctx custom field.
+function decodeCtx(s: unknown): Turn[] {
+  if (typeof s !== "string" || !s.trim()) return [];
+  try {
+    const arr = JSON.parse(Buffer.from(s, "base64").toString("utf8"));
+    if (!Array.isArray(arr)) return [];
+    return (arr as { r?: string; t?: string }[])
+      .map((m) => ({ role: (m.r === "a" ? "assistant" : "user") as "user" | "assistant", content: String(m.t || "").slice(0, 500) }))
+      .filter((m) => m.content)
+      .slice(-8);
+  } catch {
+    return [];
+  }
+}
+// Encode turns back to a compact base64 string (capped so the field + body JSON stay small).
+function encodeCtx(turns: Turn[]): string {
+  let compact = turns.slice(-8).map((m) => ({ r: m.role === "assistant" ? "a" : "u", t: m.content.slice(0, 400) }));
+  let json = JSON.stringify(compact);
+  while (json.length > 1400 && compact.length > 1) {
+    compact = compact.slice(1);
+    json = JSON.stringify(compact);
+  }
+  return Buffer.from(json, "utf8").toString("base64");
 }
 
 type AnyBlock = { type: string; text?: string; id?: string; name?: string; input?: unknown };
@@ -191,7 +218,7 @@ export async function POST(req: NextRequest) {
   // ManyChat's Default Reply dynamic block passes the typed message as a JSON body
   // ({"text":"{{Last Text Input}}"}); read it raw (spaces would break a URL query).
   const rawBody = await req.text().catch(() => "");
-  let body: { text?: string; history?: unknown; lang?: string } = {};
+  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown } = {};
   try { body = JSON.parse(rawBody); } catch { /* not json */ }
   let text = (typeof body.text === "string" ? body.text : req.nextUrl.searchParams.get("text") || "").slice(0, 1500).trim();
   // ManyChat's field chip wraps the message in literal curly braces (e.g. "{hello}").
@@ -246,6 +273,10 @@ export async function POST(req: NextRequest) {
     })
     .filter(Boolean) as { role: "user" | "assistant"; content: string }[];
 
+  // Conversation memory: prefer the base64 ctx round-tripped through the ai_ctx field.
+  const ctxHistory = decodeCtx(body.ctx);
+  const priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
+
   // ---- run Claude with the quote engine as a tool ----
   let replyText = "";
   let lastQuote: { offer: number; device: string; slug: string } | null = null;
@@ -253,7 +284,7 @@ export async function POST(req: NextRequest) {
   try {
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const messages: { role: "user" | "assistant"; content: unknown }[] = [...history, { role: "user", content: text }];
+    const messages: { role: "user" | "assistant"; content: unknown }[] = [...priorTurns, { role: "user", content: text }];
 
     for (let round = 0; round < 4; round++) {
       const resp = await client.messages.create({
@@ -316,7 +347,9 @@ export async function POST(req: NextRequest) {
   quickReplies.push({ caption: es ? "💬 Hablar con equipo" : "💬 Talk to our team", state: { step: "team", lang: es ? "es" : "en" } });
   quickReplies.push({ caption: es ? "📱 Menú de venta" : "📱 Sell menu", state: { step: "start", lang: es ? "es" : "en" } });
 
-  return render([replyText], quickReplies, origin, secret);
+  // Updated memory: append this turn + the reply, hand it back for ManyChat to store.
+  const newCtx = encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }]);
+  return render([replyText], quickReplies, origin, secret, newCtx);
 }
 
 export async function GET(req: NextRequest) {
