@@ -19,7 +19,7 @@
 
 import { NextRequest, NextResponse, after } from "next/server";
 import crypto from "crypto";
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 import { advance, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 
 export const dynamic = "force-dynamic";
@@ -171,21 +171,42 @@ async function typingOn(recipientId: string, token: string) {
   }).catch(() => {});
 }
 
+// Unique-pathname markers, newest wins. Overwriting one fixed blob pathname is
+// NOT safe here — Vercel Blob overwrites take up to ~60s to propagate through
+// the CDN, so a same-path re-read seconds later can return the stale copy.
+function midHash(s: string): string {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(16).padStart(8, "0");
+}
 async function markLatest(psid: string, mid: string) {
   try {
-    await put(`msgr-latest/${psid}.txt`, mid, { access: "public", addRandomSuffix: false, allowOverwrite: true, contentType: "text/plain" });
+    await put(`msgr-latest/${psid}/${String(Date.now()).padStart(13, "0")}-${midHash(mid)}`, ".", {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: "text/plain",
+    });
   } catch {
     /* best-effort */
   }
 }
-async function readLatest(psid: string): Promise<string> {
+// True when `mid` is still the newest message this user has sent. Also sweeps
+// markers older than 10 min so the ts-sorted (oldest-first) listing never
+// pushes the newest entries out of the window.
+async function latestIs(psid: string, mid: string): Promise<boolean> {
   try {
-    const { blobs } = await list({ prefix: `msgr-latest/${psid}.txt`, limit: 1 });
-    if (!blobs.length) return "";
-    const r = await fetch(blobs[0].url, { cache: "no-store" });
-    return r.ok ? (await r.text()).trim() : "";
+    const { blobs } = await list({ prefix: `msgr-latest/${psid}/`, limit: 100 });
+    const parsed = blobs
+      .map((b) => ({ m: b.pathname.match(/\/(\d{13})-([0-9a-f]{8})$/), url: b.url }))
+      .filter((x) => x.m) as { m: RegExpMatchArray; url: string }[];
+    if (!parsed.length) return true;
+    const old = parsed.filter((x) => Date.now() - Number(x.m[1]) > 600_000).map((x) => x.url);
+    if (old.length) del(old).catch(() => {});
+    const newest = parsed.reduce((a, b) => (Number(b.m[1]) >= Number(a.m[1]) ? b : a));
+    return newest.m[2] === midHash(mid);
   } catch {
-    return "";
+    return true; // fail open: better a possible duplicate than a silent bot
   }
 }
 
@@ -272,7 +293,7 @@ export async function POST(req: NextRequest) {
       await sleep(20_000);
       await typingOn(senderId, token as string);
       await sleep(10_000);
-      if ((await readLatest(senderId)) !== mid) continue;
+      if (!(await latestIs(senderId, mid))) continue;
       await aiReply(origin, senderId, text, token as string);
     }
   });

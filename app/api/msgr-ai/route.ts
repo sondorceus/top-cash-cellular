@@ -12,7 +12,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 import { type ConvoState } from "../../lib/msgr-brain";
 import { quoteDevice, type QuoteSpec } from "../../lib/quote";
 import { PRICE_TABLE } from "../../data/prices";
@@ -249,27 +249,51 @@ type AnyBlock = { type: string; text?: string; id?: string; name?: string; input
 // ManyChat's 30s reply delay means a burst of messages piles up N delayed
 // dynamic-block calls — and every one of them carries the SAME {{Last Text
 // Input}} (the newest message), so without a guard the customer gets N copies
-// of the same answer. Keyed by {{Contact Id}} round-tripped as `psid`:
-//  - marker is written when a request starts; re-checked after the AI runs —
-//    if a newer request arrived meanwhile, this reply is stale → send nothing.
-//  - a text already answered <90s ago is not answered again.
-type BurstMark = { t: string; id: string; done?: boolean; at?: number };
-async function readMark(psid: string): Promise<BurstMark | null> {
-  try {
-    const { blobs } = await list({ prefix: `msgr-mc/${psid}.json`, limit: 1 });
-    if (!blobs.length) return null;
-    const r = await fetch(blobs[0].url, { cache: "no-store" });
-    return r.ok ? ((await r.json()) as BurstMark) : null;
-  } catch {
-    return null;
-  }
+// of the same answer. Keyed by {{Contact Id}} round-tripped as `psid`.
+//
+// IMPORTANT: markers are UNIQUE pathnames read back via list(). Overwriting one
+// fixed blob pathname does NOT work here — Vercel Blob overwrites take up to
+// ~60s to propagate through the CDN, so a re-read seconds later returns the
+// stale copy (verified live: it made the bot drop legitimate replies).
+// Marker name: msgr-mc/{psid}/{ts13}-{q|a}-{textHash}-{rand} (empty content).
+//   q = request arrived/claimed   a = answered
+function textHash(s: string): string {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(16).padStart(8, "0");
 }
-async function writeMark(psid: string, m: BurstMark) {
+type Marker = { ts: number; kind: "q" | "a"; hash: string; rand: string };
+function parseMarker(pathname: string): Marker | null {
+  const m = pathname.match(/\/(\d{13})-(q|a)-([0-9a-f]{8})-([0-9a-z]+)$/);
+  return m ? { ts: Number(m[1]), kind: m[2] as "q" | "a", hash: m[3], rand: m[4] } : null;
+}
+async function putMarker(psid: string, kind: "q" | "a", hash: string, rand: string) {
   try {
-    await put(`msgr-mc/${psid}.json`, JSON.stringify(m), { access: "public", addRandomSuffix: false, allowOverwrite: true, contentType: "application/json" });
+    await put(`msgr-mc/${psid}/${String(Date.now()).padStart(13, "0")}-${kind}-${hash}-${rand}`, ".", {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: "text/plain",
+    });
   } catch {
     /* best-effort */
   }
+}
+async function listMarkers(psid: string): Promise<{ mark: Marker; url: string }[]> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-mc/${psid}/`, limit: 100 });
+    return blobs
+      .map((b) => ({ mark: parseMarker(b.pathname) as Marker, url: b.url }))
+      .filter((x) => x.mark);
+  } catch {
+    return [];
+  }
+}
+// Markers older than 10 min are noise — delete so list() stays small enough to
+// always include the newest ones (ts-prefixed names sort OLDEST first).
+async function sweepMarkers(entries: { mark: Marker; url: string }[]) {
+  const old = entries.filter((e) => Date.now() - e.mark.ts > 600_000).map((e) => e.url);
+  if (old.length) await del(old).catch(() => {});
 }
 const EMPTY = () => NextResponse.json({ version: "v2", content: { messages: [] } });
 
@@ -353,11 +377,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Burst dedupe: skip a text we just answered; claim the reply slot for this request.
-  const reqId = crypto.randomUUID();
+  const myRand = crypto.randomUUID().slice(0, 8).replace(/-/g, "");
+  const myHash = textHash(text);
+  const myTs = Date.now();
   if (psid) {
-    const prev = await readMark(psid);
-    if (prev?.done && prev.t === text && prev.at && Date.now() - prev.at < 90_000) return EMPTY();
-    await writeMark(psid, { t: text, id: reqId });
+    const entries = await listMarkers(psid);
+    if (entries.some(({ mark: m }) => m.kind === "a" && m.hash === myHash && myTs - m.ts < 90_000)) return EMPTY();
+    await putMarker(psid, "q", myHash, myRand);
   }
 
   // ---- run Claude with the quote engine as a tool ----
@@ -409,12 +435,13 @@ export async function POST(req: NextRequest) {
       : "What model is it and what condition? I'll get you the cash offer. 💵";
   }
 
-  // Stale? A newer message claimed the slot while the AI was running — that newer
+  // Stale? A newer request claimed the slot while the AI was running — that newer
   // request answers (it carries the newest {{Last Text Input}}); this one goes silent.
   if (psid) {
-    const cur = await readMark(psid);
-    if (cur && cur.id !== reqId) return EMPTY();
-    await writeMark(psid, { t: text, id: reqId, done: true, at: Date.now() });
+    const entries = await listMarkers(psid);
+    if (entries.some(({ mark: m }) => m.kind === "q" && (m.ts > myTs || (m.ts === myTs && m.rand !== myRand && m.rand > myRand)))) return EMPTY();
+    await putMarker(psid, "a", myHash, myRand);
+    after(() => sweepMarkers(entries));
   }
 
   // ---- owner SMS: fire on ANY real lead signal (AI flagged a handoff, gave a quote,
