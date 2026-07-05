@@ -163,7 +163,7 @@ const TOOLS = [
 
 // ManyChat Dynamic Block v2 render — the AI's text plus optional quick replies
 // that hand structured closes back to the deterministic /api/msgr funnel.
-function render(texts: string[], quickReplies: { caption: string; state: ConvoState }[], origin: string, secret: string) {
+function render(texts: string[], quickReplies: { caption: string; state: ConvoState }[], origin: string, secret: string, ctx?: string) {
   const clip = (s: string) => (Array.from(s).length > 20 ? Array.from(s).slice(0, 20).join("") : s);
   const cb = `${origin}/api/msgr?s=${encodeURIComponent(secret)}`;
   const messages = texts.filter(Boolean).map((t) => ({ type: "text", text: t }));
