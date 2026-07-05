@@ -267,9 +267,11 @@ function parseMarker(pathname: string): Marker | null {
   const m = pathname.match(/\/(\d{13})-(q|a)-([0-9a-f]{8})-([0-9a-z]+)$/);
   return m ? { ts: Number(m[1]), kind: m[2] as "q" | "a", hash: m[3], rand: m[4] } : null;
 }
-async function putMarker(psid: string, kind: "q" | "a", hash: string, rand: string) {
+// ts comes from the caller — the SAME value it compares against later; stamping
+// Date.now() here instead made every request see its own marker as newer.
+async function putMarker(psid: string, kind: "q" | "a", hash: string, rand: string, ts: number) {
   try {
-    await put(`msgr-mc/${psid}/${String(Date.now()).padStart(13, "0")}-${kind}-${hash}-${rand}`, ".", {
+    await put(`msgr-mc/${psid}/${String(ts).padStart(13, "0")}-${kind}-${hash}-${rand}`, ".", {
       access: "public",
       addRandomSuffix: false,
       allowOverwrite: true,
@@ -383,7 +385,7 @@ export async function POST(req: NextRequest) {
   if (psid) {
     const entries = await listMarkers(psid);
     if (entries.some(({ mark: m }) => m.kind === "a" && m.hash === myHash && myTs - m.ts < 90_000)) return EMPTY();
-    await putMarker(psid, "q", myHash, myRand);
+    await putMarker(psid, "q", myHash, myRand, myTs);
   }
 
   // ---- run Claude with the quote engine as a tool ----
@@ -440,7 +442,7 @@ export async function POST(req: NextRequest) {
   if (psid) {
     const entries = await listMarkers(psid);
     if (entries.some(({ mark: m }) => m.kind === "q" && (m.ts > myTs || (m.ts === myTs && m.rand !== myRand && m.rand > myRand)))) return EMPTY();
-    await putMarker(psid, "a", myHash, myRand);
+    await putMarker(psid, "a", myHash, myRand, Date.now());
     after(() => sweepMarkers(entries));
   }
 
