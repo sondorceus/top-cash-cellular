@@ -4361,6 +4361,9 @@ export default function Home() {
   // condition tile. Modal shows the tier's bullet list without expanding
   // the tile itself so all condition boxes stay the same height.
   const [conditionHelpId, setConditionHelpId] = useState<string | null>(null);
+  // Tap-to-zoom for the condition example photos — small figures are hard to
+  // judge wear from; the lightbox shows the shot near full-screen.
+  const [conditionZoom, setConditionZoom] = useState<{ src: string; label: string; cap: string } | null>(null);
   const [storageHelpId, setStorageHelpId] = useState<string | null>(null);
   const [connectivityHelpOpen, setConnectivityHelpOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
@@ -7962,7 +7965,8 @@ export default function Home() {
                   <div className="px-5 pb-5">
                     <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-[#00c853] mb-2.5">Examples — what {c.label} looks like</p>
                     <div className="grid grid-cols-2 gap-2.5">
-                      <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
+                      <figure onClick={() => setConditionZoom({ src: `/condition-examples/screen-${tier}.png`, label: `${c.label} — Front`, cap: capFront || "" })} className="bg-black/40 border border-white/10 rounded-xl overflow-hidden cursor-zoom-in relative group/zoom">
+                        <span className="absolute top-1.5 right-1.5 z-10 w-6 h-6 rounded-full bg-black/55 flex items-center justify-center pointer-events-none"><svg className="w-3.5 h-3.5 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 8v6m-3-3h6m4 0a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></span>
                         <div className="aspect-square w-full bg-[#eef0f3] flex items-center justify-center">
                           <NextImage src={`/condition-examples/screen-${tier}.png`} alt={`${c.label} — front example`} width={640} height={640} className="w-full h-full object-contain" loading="lazy" />
                         </div>
@@ -7971,7 +7975,8 @@ export default function Home() {
                           <p className="text-[10px] text-[#c5c5c5] leading-tight">{capFront}</p>
                         </figcaption>
                       </figure>
-                      <figure className="bg-black/40 border border-white/10 rounded-xl overflow-hidden">
+                      <figure onClick={() => setConditionZoom({ src: `/condition-examples/body-${tier}.png`, label: `${c.label} — Back`, cap: capBack || "" })} className="bg-black/40 border border-white/10 rounded-xl overflow-hidden cursor-zoom-in relative group/zoom">
+                        <span className="absolute top-1.5 right-1.5 z-10 w-6 h-6 rounded-full bg-black/55 flex items-center justify-center pointer-events-none"><svg className="w-3.5 h-3.5 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 8v6m-3-3h6m4 0a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></span>
                         <div className="aspect-square w-full bg-[#eef0f3] flex items-center justify-center">
                           <NextImage src={`/condition-examples/body-${tier}.png`} alt={`${c.label} — back example`} width={640} height={640} className="w-full h-full object-contain" loading="lazy" />
                         </div>
@@ -7988,6 +7993,24 @@ export default function Home() {
           </div>
         );
       })()}
+
+      {/* CONDITION PHOTO LIGHTBOX — tap a condition example to see it near
+          full-screen. Sits above the help modal (z-60 vs z-50); tapping
+          anywhere closes just the lightbox, the modal stays. */}
+      {conditionZoom && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 cursor-zoom-out" onClick={() => setConditionZoom(null)}>
+          <div className="w-full max-w-2xl">
+            <div className="bg-[#eef0f3] rounded-2xl overflow-hidden">
+              <NextImage src={conditionZoom.src} alt={conditionZoom.label} width={1280} height={1280} className="w-full h-auto max-h-[72vh] object-contain" />
+            </div>
+            <div className="mt-3 text-center">
+              <p className="text-[#00c853] text-[11px] font-extrabold uppercase tracking-[0.18em]">{conditionZoom.label}</p>
+              <p className="text-[#d6d6d6] text-sm mt-0.5">{conditionZoom.cap}</p>
+              <p className="text-[#777] text-[11px] mt-2">Tap anywhere to close</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* STORAGE HELP MODAL — 'What does this size hold?' details, triggered
           by the small "i" on each storage tile. Same modal pattern as the
@@ -10601,8 +10624,8 @@ export default function Home() {
                             type="button"
                             onClick={(e) => { e.stopPropagation(); setStorageHelpId(s.id); }}
                             aria-label={`What ${s.label} is good for`}
-                            className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
-                          >i</button>
+                            className="group/info relative p-3 -m-3 flex items-center justify-center shrink-0 cursor-pointer"
+                          ><span className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none group-hover/info:bg-[#00c853] group-hover/info:text-[#0a0a0a] transition">i</span></button>
                         )}
                       </div>
                       <svg className="w-4 h-4 text-[#e6e6e6] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -10719,8 +10742,8 @@ export default function Home() {
                           type="button"
                           onClick={(e) => { e.stopPropagation(); setConditionHelpId(c.id); }}
                           aria-label={`What qualifies as ${getConditionLabel(c, deviceType).label}`}
-                          className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none shrink-0 hover:bg-[#00c853] hover:text-[#0a0a0a] transition cursor-pointer"
-                        >i</button>
+                          className="group/info relative p-3 -m-3 flex items-center justify-center shrink-0 cursor-pointer"
+                        ><span className="w-3.5 h-3.5 rounded-full border border-[#00c853] text-[#00c853] text-[9px] font-bold flex items-center justify-center leading-none group-hover/info:bg-[#00c853] group-hover/info:text-[#0a0a0a] transition">i</span></button>
                       )}
                     </div>
                     <p className="text-[#c8c8c8] text-[12px] leading-snug mt-0.5">{getConditionLabel(c, deviceType).desc || c.desc}</p>
