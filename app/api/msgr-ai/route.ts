@@ -216,8 +216,8 @@ export async function POST(req: NextRequest) {
     // Kill switch ON → bot stays silent; the lead still lands in the ManyChat inbox for a human.
     return NextResponse.json({ version: "v2", content: { messages: [] } });
   }
-  const openH = Number(process.env.MSGR_AI_START ?? 8); // default 8am
-  const closeH = Number(process.env.MSGR_AI_END ?? 21); // default 9pm  (times are Austin/US-Central)
+  const openH = Number(process.env.MSGR_AI_START ?? 0); // default 24/7 (set MSGR_AI_START/END to add hours later)
+  const closeH = Number(process.env.MSGR_AI_END ?? 24); // default 24/7  (times are Austin/US-Central)
   const austinHr =
     Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
   const openNow = openH >= closeH ? true : austinHr >= openH && austinHr < closeH; // start>=end ⇒ always on
