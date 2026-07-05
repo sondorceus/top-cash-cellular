@@ -258,7 +258,13 @@ export async function POST(req: NextRequest) {
   if (!text) {
     return render(["Hey! 👋 Tell me what you're selling (model + condition) and I'll get you a cash offer."], [], origin, secret);
   }
-  const lang = body.lang === "es" || /[áéíóúñ¿¡]|hola|cuánto|vender|teléfono|precio|gracias/i.test(text) ? "es" : "en";
+  // Spanish detection must catch accent-LESS typing (most people skip accents on a phone):
+  // "cuanto", "telefono", "vendo", etc. — not just the accented forms.
+  const lang =
+    body.lang === "es" ||
+    /[áéíóúñ¿¡]|\b(hola|cu[aá]nto|cuesta|vend[eo]|vender|tel[eé]fono|celular|precio|comprar|quiero|gracias|ofrec|me\s+das|por\s+mi|tienes|est[aá]\s)\b/i.test(text)
+      ? "es"
+      : "en";
 
   // ── Master on/off + business-hours schedule (server-side; runs 24/7 with the site) ──
   if (process.env.MSGR_AI_ENABLED === "0") {
