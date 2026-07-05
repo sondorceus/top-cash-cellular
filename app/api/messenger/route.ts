@@ -32,8 +32,31 @@ const GRAPH = "https://graph.facebook.com/v21.0/me/messages";
 const clip = (s: string, n = 20) => (Array.from(s).length > n ? Array.from(s).slice(0, n).join("") : s);
 
 // ---- webhook verification (GET) -------------------------------------------
-export function GET(req: NextRequest) {
+export async function GET(req: NextRequest) {
   const p = req.nextUrl.searchParams;
+
+  // Maintenance (secret-gated): re-subscribe app + page with message_echoes so
+  // the webhook sees PAGE-sent messages — that's how human takeover is detected
+  // (a human reply makes the bot stand down instead of talking over the human).
+  if (p.get("admin") === "resubscribe" && process.env.MSGR_BOT_SECRET && p.get("s") === process.env.MSGR_BOT_SECRET) {
+    const fields = "messages,messaging_postbacks,message_echoes";
+    const appId = process.env.MESSENGER_APP_ID || "4405612649655084";
+    const appToken = `${appId}|${process.env.MESSENGER_APP_SECRET}`;
+    const pageToken = process.env.PAGE_ACCESS_TOKEN || "";
+    const cb = `${req.nextUrl.origin}/api/messenger`;
+    const appRes = await fetch(
+      `https://graph.facebook.com/v21.0/${appId}/subscriptions?object=page&callback_url=${encodeURIComponent(cb)}&fields=${encodeURIComponent(fields)}&verify_token=${encodeURIComponent(process.env.MESSENGER_VERIFY_TOKEN || "")}&access_token=${encodeURIComponent(appToken)}`,
+      { method: "POST" },
+    ).then((r) => r.json()).catch((e) => ({ error: String(e) }));
+    const pageRes = await fetch(
+      `https://graph.facebook.com/v21.0/me/subscribed_apps?subscribed_fields=${encodeURIComponent(fields)}&access_token=${encodeURIComponent(pageToken)}`,
+      { method: "POST" },
+    ).then((r) => r.json()).catch((e) => ({ error: String(e) }));
+    const now = await fetch(`https://graph.facebook.com/v21.0/me/subscribed_apps?access_token=${encodeURIComponent(pageToken)}`)
+      .then((r) => r.json()).catch((e) => ({ error: String(e) }));
+    return NextResponse.json({ app: appRes, page: pageRes, now });
+  }
+
   const mode = p.get("hub.mode");
   const token = p.get("hub.verify_token");
   const challenge = p.get("hub.challenge");
@@ -191,6 +214,41 @@ async function markLatest(psid: string, mid: string) {
     /* best-effort */
   }
 }
+// Human-takeover / other-sender standdown: any PAGE-sent message that did NOT
+// come from this app (Sonny replying from the ManyChat inbox or Business Suite,
+// or a ManyChat automation) writes a defer marker; the AI stays silent for that
+// customer for DEFER_MS afterwards. The bot can't see the human's words (they
+// never enter its memory), so "be smart around the human" is impossible — the
+// smart behavior is to stand down and resume once the human stops (or the
+// conversation is closed and the customer writes again after the window).
+const DEFER_MS = 60 * 60_000;
+async function markDefer(psid: string) {
+  try {
+    await put(`msgr-defer/${psid}/${String(Date.now()).padStart(13, "0")}`, ".", {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: "text/plain",
+    });
+  } catch {
+    /* best-effort */
+  }
+}
+async function deferActive(psid: string): Promise<boolean> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-defer/${psid}/`, limit: 100 });
+    const ts = blobs
+      .map((b) => ({ t: Number(b.pathname.match(/\/(\d{13})$/)?.[1] || 0), url: b.url }))
+      .filter((x) => x.t);
+    if (!ts.length) return false;
+    const old = ts.filter((x) => Date.now() - x.t > DEFER_MS * 2).map((x) => x.url);
+    if (old.length) del(old).catch(() => {});
+    return ts.some((x) => Date.now() - x.t < DEFER_MS);
+  } catch {
+    return false; // fail open: reply rather than go silent on infra errors
+  }
+}
+
 // True when `mid` is still the newest message this user has sent. Also sweeps
 // markers older than 10 min so the ts-sorted (oldest-first) listing never
 // pushes the newest entries out of the window.
@@ -261,7 +319,18 @@ export async function POST(req: NextRequest) {
     for (const entry of data.entry || []) {
       for (const event of entry.messaging || []) {
         const senderId = event?.sender?.id;
-        if (!senderId || event.message?.is_echo) continue;
+        if (event.message?.is_echo) {
+          // A message the PAGE sent. Ours carry our app_id; anything else means a
+          // human (ManyChat inbox / Business Suite) or ManyChat's automation is
+          // talking to this customer → the AI stands down for DEFER_MS.
+          const echoApp = String(event.message.app_id ?? "");
+          const customer = event?.recipient?.id;
+          if (customer && echoApp !== (process.env.MESSENGER_APP_ID || "4405612649655084")) {
+            await markDefer(customer);
+          }
+          continue;
+        }
+        if (!senderId) continue;
         if (!event.message && !event.postback) continue;
         if (!token) continue;
 
@@ -290,10 +359,12 @@ export async function POST(req: NextRequest) {
     // If the user said something newer during the wait, drop this one (the newer
     // webhook delivery owns the reply).
     for (const [senderId, { text, mid }] of typedBySender) {
+      if (await deferActive(senderId)) continue; // a human/other sender owns this convo
       await sleep(20_000);
       await typingOn(senderId, token as string);
       await sleep(10_000);
       if (!(await latestIs(senderId, mid))) continue;
+      if (await deferActive(senderId)) continue; // human jumped in during the wait
       await aiReply(origin, senderId, text, token as string);
     }
   });
