@@ -8400,7 +8400,7 @@ export default function Home() {
                       {/* Image stage — a subtly lighter surface so the product
                           photo reads as a clean catalog shot, not floating on
                           a flat tile. */}
-                      <div className="flex items-center justify-center pt-4 pb-2 px-3 bg-gradient-to-b from-white/[0.05] to-transparent">
+                      <div className="mx-2.5 mt-2.5 rounded-xl bg-white/[0.07] border border-white/[0.18] shadow-[inset_0_1px_0_rgba(255,255,255,0.07)] flex items-center justify-center pt-3 pb-2 px-3">
                         {isTight ? (
                           <div className={tightWrapCls}>
                             <Pic src={d.photo} alt={d.title} className="w-full h-full object-contain" loading="lazy" />
