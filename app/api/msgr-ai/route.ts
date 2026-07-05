@@ -117,6 +117,20 @@ async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: n
   return { ok: true, offer: r.offer, device: hit.label, slug: hit.slug };
 }
 
+// Server-side lead intelligence: catch contact info + hot-buying signals in the raw
+// message even when the model doesn't call notify_team — so no lead ever slips past
+// the owner, and the truly-ready ones get flagged HOT for a fast follow-up.
+function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean } {
+  const phone = text.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/)?.[0]?.trim();
+  const email = text.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i)?.[0];
+  const contact = phone || email || "";
+  const hot =
+    /\b(today|tonight|asap|right now|need\s+(the\s+)?cash|how soon|urgent|this (morning|afternoon|evening)|meet ?up|can we meet|cash today|where.*(meet|located|you at))\b/i.test(text);
+  const intent =
+    /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it)\b/i.test(text);
+  return { contact, hot, intent };
+}
+
 const SYSTEM = (lang: string) =>
   [
     "You are the Top Cash Cellular assistant in Facebook Messenger — a LOCAL (Austin, TX) phone, tablet & MacBook buyback. You help people who typed instead of tapping the menu. LENGTH IS CRITICAL — text like a busy human, not a bot: ONE or TWO short sentences, ALWAYS. Never a paragraph, never a list, never a multi-line wall — people will not read them. This applies to EVERYTHING, including trust / \"is this a scam\" / \"how does it work\" questions — answer those in one or two sentences too (e.g. scam → \"Totally fair — we're local, you meet us in person, watch the 2-min check, cash on the spot. Look us up on Google 👍\"). If you need storage + condition + carrier, ask for all three in ONE short line (e.g. \"What's the storage, condition, and is it unlocked?\"). A little emoji is fine; never cheesy.",
@@ -129,6 +143,9 @@ const SYSTEM = (lang: string) =>
     "WE BUY: iPhones (11+), Samsung Galaxy (S21+, Z Fold/Flip), Google Pixel, MacBooks, and consoles — ANY condition, even cracked (lower offer). Conditions: sealed (new in plastic), like-new, good, fair, broken.",
     "QUOTING — CRITICAL: NEVER make up or estimate a price. To quote, you MUST call the get_quote tool with the model, storage, condition, and carrier. Ask for whatever's missing FIRST (storage? condition? carrier? — unlocked usually pays most), then call the tool. If get_quote says the model isn't in the instant catalog (older/rare device, MacBook, bulk lot), DON'T guess — tell them a team member will price it by hand and call notify_team.",
     "AFTER A QUOTE: give the number plainly and invite them to lock it in for a local cash meetup. When someone wants to proceed, wants a human, gives a phone/email, or has a bulk lot / manual device, call notify_team so a real teammate follows up.",
+    "GRAB THE CLOSE: the moment someone sounds ready ('let's do it', 'where do we meet', gives a number), get them to a real handoff — ask their availability or best number for a quick local meetup and call notify_team. Don't leave a hot lead hanging.",
+    "MULTIPLE DEVICES: if they list more than one, handle the instant-catalog phone first (ask its specs, quote it), and note any others (MacBook, iPad, older phone, console) for a manual quote via notify_team — one thing at a time so it's not overwhelming.",
+    "PRICE PUSHBACK / COMPETITOR OFFERS: never invent a higher number and never badmouth another buyer. If they say it's too low or someone offered more, say our number's solid but you'll have a teammate take a look to see if there's any room — then call notify_team. Our price is honest; the team handles exceptions.",
     "INSTANT-QUOTE CATALOG (get_quote can price these): iPhone 11 through 17 (all Pro / Pro Max / Plus / mini / e / Air variants), Samsung Galaxy S20 through S26 (incl. +, Ultra, FE) and Galaxy Z Flip / Z Fold (4-7), and Google Pixel 5 through 10 (incl. Pro, a-series, Pro XL, Pro Fold). Anything else — iPads, MacBooks, consoles, watches, or older/other phones — is NOT instant: don't guess, call notify_team for a manual quote.",
   ].join(" ");
 
@@ -326,12 +343,16 @@ export async function POST(req: NextRequest) {
       : "What model is it and what condition? I'll get you the cash offer. 💵";
   }
 
-  // ---- owner SMS when the AI flags a real lead (mirrors the funnel's notifyLead) ----
-  if (teamNotified) {
-    const sms = `🙋 TCC AI chat: ${teamNotified.summary}${teamNotified.contact ? ` — reply to: ${teamNotified.contact}` : ""}. Jump into ManyChat.`;
-    after(() => notifyOwnerSms(sms));
-  } else if (lastQuote) {
-    const sms = `💰 TCC AI chat quoted ${lastQuote.device} → $${lastQuote.offer}. They're mid-chat in ManyChat 👀`;
+  // ---- owner SMS: fire on ANY real lead signal (AI flagged a handoff, gave a quote,
+  // contact info appeared, or hot-buying language) — flag the hot ones and always pass
+  // the contact + the customer's own words so the owner can jump in with context ----
+  const sig = detectSignals(text);
+  const contact =
+    (teamNotified?.contact && teamNotified.contact.replace(/\D/g, "").length >= 5 ? teamNotified.contact : "") || sig.contact;
+  if (teamNotified || lastQuote || contact || sig.hot || sig.intent) {
+    const isHot = sig.hot || sig.intent || (!!lastQuote && (!!contact || !!teamNotified));
+    const what = teamNotified?.summary || (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : "active chat");
+    const sms = `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""} | "${text.slice(0, 55)}". Reply in ManyChat.`;
     after(() => notifyOwnerSms(sms));
   }
 
