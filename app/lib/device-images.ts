@@ -438,7 +438,7 @@ export const DEVICE_IMAGES: Record<string, string> = {
   "iPhone 16 Pro Max": "/devices/iphone-16-pro-max-test.png",
   "iPhone 16E": "/devices/iphone-16e-test.png",
   "iPhone 17": "/iphone17.png",
-  "iPhone 17 Air": "/devices/iphone-17-air-test.png",
+  "iPhone 17 Air": "/devices/iphone-17-air.png",
   "iPhone 17 Pro": "/devices/iphone-17-pro-test.png",
   "iPhone 17 Pro Max": "/devices/iphone-17-pro-max-test.png",
   "iPhone 17E": "/iphone17e.png",
