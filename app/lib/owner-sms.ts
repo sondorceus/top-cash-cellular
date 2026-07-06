@@ -41,7 +41,16 @@ async function sendEmailAlert(body: string): Promise<boolean> {
   try {
     const url = body.match(/https?:\/\/\S+/)?.[0] || null;
     const isMute = !!url && url.includes("mute=");
-    const textOnly = url ? body.replace(url, "").replace(/\s+/g, " ").trim() : body;
+    const noUrl = url ? body.replace(url, "") : body;
+    // Multi-line alerts render organized: line 1 = subject + title, every
+    // other line its own row. The 🤫 link-label line is dropped — the button
+    // carries it. Single-line callers keep the legacy flow untouched.
+    const lines = noUrl
+      .split("\n")
+      .map((l) => l.replace(/\s+/g, " ").trim())
+      .filter((l) => l && !/^🤫/.test(l));
+    const multiline = lines.length > 1;
+    const textOnly = multiline ? lines[0] : noUrl.replace(/\s+/g, " ").trim();
     // Subject = the meat of the alert, minus link labels.
     const subject = textOnly.replace(/🤫.*$/,"").trim().slice(0, 90) || "TCC alert";
     const { Resend } = await import("resend");
@@ -56,7 +65,11 @@ async function sendEmailAlert(body: string): Promise<boolean> {
         eyebrowColor: MAIL.yellow,
         title: esc(textOnly.slice(0, 140)),
         titleSize: 17,
-        introHtml: textOnly.length > 140 ? `<span style="color:${MAIL.body}">${esc(textOnly.slice(140))}</span>` : undefined,
+        introHtml: multiline
+          ? `<span style="color:${MAIL.body}">${lines.slice(1).map(esc).join("<br>")}</span>`
+          : textOnly.length > 140
+            ? `<span style="color:${MAIL.body}">${esc(textOnly.slice(140))}</span>`
+            : undefined,
         buttonHref: url,
         buttonLabel: url ? (isMute ? "🤫 Take over — mute bot 24h" : "Open link") : undefined,
         afterButtonHtml: isMute

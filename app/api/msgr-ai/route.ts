@@ -561,6 +561,26 @@ async function markAlerted(psid: string) {
   }
 }
 
+// "Who is who" for owner alerts: resolve the sender's real profile name from
+// the page inbox. The direct /{psid} profile read is blocked while the Meta app
+// is in DEV mode, but the conversations lookup is page-owned data and works
+// today (verified live with a real PSID). Best-effort — alerts go out nameless
+// on any failure, never blocked.
+async function senderName(psid: string): Promise<string> {
+  const token = process.env.PAGE_ACCESS_TOKEN || "";
+  if (!token) return "";
+  try {
+    const r = await fetch(
+      `https://graph.facebook.com/v21.0/me/conversations?user_id=${encodeURIComponent(psid)}&fields=participants&access_token=${encodeURIComponent(token)}`,
+      { cache: "no-store" },
+    );
+    const j = (await r.json().catch(() => null)) as { data?: { participants?: { data?: { name?: string; id?: string }[] } }[] } | null;
+    return j?.data?.[0]?.participants?.data?.find((p) => p.id === psid)?.name || "";
+  } catch {
+    return "";
+  }
+}
+
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const secret = process.env.MSGR_BOT_SECRET as string;
@@ -655,7 +675,10 @@ export async function POST(req: NextRequest) {
   const openNow = openH >= closeH ? true : austinHr >= openH && austinHr < closeH; // start>=end ⇒ always on
   if (!openNow) {
     // After hours: one short holding line + ping the owner so no overnight lead is lost.
-    after(() => notifyOwnerSms(`🌙 After-hours TCC lead: "${text.slice(0, 80)}" — follow up in ManyChat.`));
+    after(async () => {
+      const who = psid ? await senderName(psid) : "";
+      return notifyOwnerSms(`🌙 After-hours TCC lead${who ? ` — ${who}` : ""}: "${text.slice(0, 80)}" — follow up in ManyChat.`);
+    });
     return render(
       [
         lang === "es"
@@ -848,8 +871,23 @@ export async function POST(req: NextRequest) {
         if (teamNotified?.summary && !lastQuote) {
           intel = await withTimeout(marketCheck(teamNotified.summary), 25000);
         }
+        // Organized alert: seller's name on top (subject line), then one fact
+        // per line — Sonny reads a dozen of these a day and needs to know who
+        // is who at a glance.
+        const name = psid ? await senderName(psid) : "";
+        const who = name || (psid ? `contact #${psid.slice(-6)}` : "Messenger contact");
         await notifyOwnerSms(
-          `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | ${quoted}.${intel ? ` 🔎 MARKET: ${intel}` : ""}${muteLink}`,
+          [
+            `${isHot ? "🔥 HOT" : "💬"} TCC AI lead — ${who}`,
+            what,
+            contact ? `📞 ${contact}` : "",
+            sig.imei ? `🔢 IMEI ${sig.imei}` : "",
+            `💬 ${quoted}`,
+            intel ? `🔎 MARKET: ${intel}` : "",
+            muteLink.trim(),
+          ]
+            .filter(Boolean)
+            .join("\n"),
         );
         if (psid) await markAlerted(psid);
       }
