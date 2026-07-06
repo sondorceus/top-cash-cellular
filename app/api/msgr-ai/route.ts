@@ -299,7 +299,9 @@ function render(
   const clip = (s: string) => (Array.from(s).length > 20 ? Array.from(s).slice(0, 20).join("") : s);
   const cb = `${origin}/api/msgr?s=${encodeURIComponent(secret)}`;
   const messages = texts.filter(Boolean).map((t) => ({ type: "text", text: t }));
-  const content: Record<string, unknown> = { messages: messages.length ? messages : [{ type: "text", text: "…" }] };
+  // No filler "…" when there is nothing to say — an empty send reads as a
+  // stray "." to the customer (seen live 2026-07-05); silence is better.
+  const content: Record<string, unknown> = { messages };
   if (quickReplies.length) {
     content.quick_replies = quickReplies.map((qr) => ({
       type: "dynamic_block_callback",
