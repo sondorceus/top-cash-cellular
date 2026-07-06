@@ -605,6 +605,46 @@ export async function POST(req: NextRequest) {
   const psidRaw = typeof body.psid === "string" ? body.psid.trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
   const psid = /^\d{3,20}$/.test(psidRaw) ? psidRaw : "";
 
+  // ---- funnel captions arriving as TEXT -------------------------------------
+  // ManyChat sometimes drops a quick-reply's dynamic_block_callback and the tap
+  // lands here as the caption text via Default Reply instead (live 2026-07-06:
+  // Mia tapped "\ud83d\udcf1 iPhone" on the menu, the model picker never came, and the
+  // AI brushed her off with "let me know when you're ready"). A tapped button
+  // must ALWAYS advance the funnel, whichever pipe it arrives through — match
+  // the exact caption set and proxy the corresponding state into /api/msgr,
+  // which runs the real brain step with all its side effects (owner alerts too).
+  const CAPTION_STATES: Record<string, ConvoState> = {
+    "\ud83d\udcf1 iPhone": { step: "model", brand: "apple" },
+    "\ud83d\udcf1 Samsung": { step: "model", brand: "samsung" },
+    "\ud83d\udd35 Pixel": { step: "model", brand: "google" },
+    "\ud83d\udcbb MacBook": { step: "macbook" },
+    "\ud83d\udce6 A bunch (bulk)": { step: "bulk" },
+    "\ud83d\udce6 Varios (mayoreo)": { step: "bulk", lang: "es" },
+    "Something else": { step: "start", device_slug: "__other__" },
+    "Otra cosa": { step: "start", device_slug: "__other__", lang: "es" },
+    "\ud83d\udcf1 Sell menu": { step: "start" },
+    "\ud83d\udcf1 Men\u00fa de venta": { step: "start", lang: "es" },
+    "\ud83d\udcac Talk to our team": { step: "team" },
+    "\ud83d\udcac Hablar con equipo": { step: "team", lang: "es" },
+    "\ud83c\uddfa\ud83c\uddf8 English": { step: "start", lang: "en" },
+    "\ud83c\udf0e Espa\u00f1ol": { step: "start", lang: "es" },
+    "\u2795 Sell another": { step: "start" },
+    "\u2795 Vender otro": { step: "start", lang: "es" },
+  };
+  const capState = CAPTION_STATES[text];
+  if (capState) {
+    try {
+      const r = await fetch(`${origin}/api/msgr?s=${encodeURIComponent(secret)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Bot-Secret": secret },
+        body: JSON.stringify({ state: capState }),
+      });
+      if (r.ok) return NextResponse.json(await r.json());
+    } catch {
+      /* proxy failed — fall through to the AI, which is better than silence */
+    }
+  }
+
   // ---- follow-up nudge callback ---------------------------------------------
   // The "Quote follow-up" automation (tag applied → smart delay → tag-check)
   // calls back with {nudge:true, ctx, psid}. One short nudge in the convo's
