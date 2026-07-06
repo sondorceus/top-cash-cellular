@@ -61,7 +61,13 @@ export async function GET(req: NextRequest) {
   // straight from Graph — ground truth for "did they even send a chat?" when
   // ManyChat forwarding is in doubt. PAGE_ACCESS_TOKEN is sensitive/write-only
   // in Vercel, so this is the only way to use it: server-side.
-  if (p.get("admin") === "inbox" && process.env.MSGR_BOT_SECRET && p.get("s") === process.env.MSGR_BOT_SECRET) {
+  // Accepts MSGR_BOT_SECRET or CRON_SECRET: both are server-tier secrets, but
+  // only CRON_SECRET survives `vercel env pull` (MSGR_BOT_SECRET is sensitive/
+  // write-only) — without this, nobody can operate the read-only inbox peek.
+  const inboxSecretOk =
+    (!!process.env.MSGR_BOT_SECRET && p.get("s") === process.env.MSGR_BOT_SECRET) ||
+    (!!process.env.CRON_SECRET && p.get("s") === process.env.CRON_SECRET);
+  if (p.get("admin") === "inbox" && inboxSecretOk) {
     const pageToken = process.env.PAGE_ACCESS_TOKEN || "";
     const limit = Math.min(25, Math.max(1, Number(p.get("n") || 8)));
     const r = await fetch(
