@@ -47,16 +47,19 @@ export async function GET(req: NextRequest) {
   const token = process.env.PAGE_ACCESS_TOKEN || "";
   if (!token) return NextResponse.json({ ok: false, reason: "no PAGE_ACCESS_TOKEN" });
 
-  const me = await fetch(`https://graph.facebook.com/v21.0/me?fields=id&access_token=${encodeURIComponent(token)}`, { cache: "no-store" })
-    .then((r) => r.json()).catch(() => null);
-  const pageId = String(me?.id || "");
-  if (!pageId) return NextResponse.json({ ok: false, reason: "page id lookup failed" });
-
   const inbox = await fetch(
     `https://graph.facebook.com/v21.0/me/conversations?fields=updated_time,participants,messages.limit(4){message,from,created_time}&limit=20&access_token=${encodeURIComponent(token)}`,
     { cache: "no-store" },
   ).then((r) => r.json()).catch(() => null);
   const convos: GraphConvo[] = Array.isArray(inbox?.data) ? inbox.data : [];
+
+  // The page is the one participant present in EVERY conversation (a /me id
+  // lookup is unreliable on this token — it failed live while conversations
+  // worked). Count participant ids across threads; the max-count id = page.
+  const seen = new Map<string, number>();
+  for (const c of convos) for (const p of c.participants?.data || []) if (p.id) seen.set(p.id, (seen.get(p.id) || 0) + 1);
+  const pageId = convos.length >= 2 ? [...seen.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "" : "";
+  if (!pageId) return NextResponse.json({ ok: false, reason: "page id derivation failed", convos: convos.length });
 
   const waiting: { name: string; text: string; ageMin: number }[] = [];
   for (const c of convos) {
