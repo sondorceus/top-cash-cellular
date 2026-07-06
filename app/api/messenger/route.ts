@@ -175,11 +175,31 @@ async function sendText(recipientId: string, text: string, token: string) {
 // in Vercel Blob keyed by PSID so the bot remembers the device/quote across
 // messages. Public blob w/ unguessable store URL (same pattern as the FedEx
 // labels) — fine for launch; migrate to private blob when hardening.
+//
+// UNIQUE ts-prefixed pathnames, newest wins — NOT a fixed-path overwrite. A
+// fixed path is CDN-stale for ~60s after a write, and with the ~30s human-paced
+// reply delay a quick customer answer reads the PREVIOUS turn's memory: the bot
+// re-asks what was just answered (live failure 2026-07-05: "wanna lock it in?"
+// → "Yes" → bot restated the offer and asked again → "I said yes fuck").
 async function loadCtx(psid: string): Promise<string> {
   try {
-    const { blobs } = await list({ prefix: `msgr-ctx/${psid}.txt`, limit: 1 });
-    if (!blobs.length) return "";
-    const r = await fetch(blobs[0].url, { cache: "no-store" });
+    const { blobs } = await list({ prefix: `msgr-ctx/${psid}/`, limit: 100 });
+    const entries = blobs
+      .map((b) => ({ ts: Number(b.pathname.match(/\/(\d{13})\.txt$/)?.[1] || 0), url: b.url }))
+      .filter((x) => x.ts)
+      .sort((a, b) => b.ts - a.ts);
+    if (entries.length) {
+      // Sweep all but the newest 3 so the ts-sorted (oldest-first) listing never
+      // pushes the newest entry out of the 100-item window.
+      const old = entries.slice(3).map((x) => x.url);
+      if (old.length) del(old).catch(() => {});
+      const r = await fetch(entries[0].url, { cache: "no-store" });
+      if (r.ok) return await r.text();
+    }
+    // Legacy fixed-path blob (pre unique-pathname migration) — read-only fallback.
+    const legacy = await list({ prefix: `msgr-ctx/${psid}.txt`, limit: 1 });
+    if (!legacy.blobs.length) return "";
+    const r = await fetch(legacy.blobs[0].url, { cache: "no-store" });
     return r.ok ? await r.text() : "";
   } catch {
     return "";
@@ -187,7 +207,12 @@ async function loadCtx(psid: string): Promise<string> {
 }
 async function saveCtx(psid: string, ctx: string) {
   try {
-    await put(`msgr-ctx/${psid}.txt`, ctx, { access: "public", addRandomSuffix: false, allowOverwrite: true, contentType: "text/plain" });
+    await put(`msgr-ctx/${psid}/${String(Date.now()).padStart(13, "0")}.txt`, ctx, {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: "text/plain",
+    });
   } catch {
     /* best-effort memory */
   }
@@ -294,7 +319,9 @@ async function aiReply(origin: string, senderId: string, text: string, token: st
     const r = await fetch(`${origin}/api/msgr-ai?s=${encodeURIComponent(secret)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, ctx }),
+      // deep: blob-backed memory has no ManyChat field-size limit — the brain
+      // keeps a longer transcript window (device/quote stay in view all convo).
+      body: JSON.stringify({ text, ctx, deep: true }),
     });
     out = (await r.json()) as BrainOut;
   } catch {

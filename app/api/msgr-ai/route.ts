@@ -230,6 +230,8 @@ const SYSTEM = (lang: string) =>
     "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers.",
     "CONDITION FROM SPOKEN WORDS — the #1 re-ask failure ('I have 2 sealed pro maxes' then asking condition looks broken): sealed / brand new / new in box / never used / never opened / still in plastic = SEALED. like new / mint / perfect / barely used = MINT. works fine / some scratches / used but good = GOOD. rough / beat up / scuffed / heavy wear = FAIR. cracked / shattered / broken / won't turn on / bad screen = BROKEN. If ANY of these appeared anywhere in the convo, condition is ANSWERED — never ask it again.",
     "BE EFFICIENT — NEVER REPEAT A QUESTION (the #1 thing that makes us look like a broken bot): read the WHOLE conversation above before replying, and combine everything still missing into ONE natural question (e.g. 'what storage + condition, and is it unlocked?') — never drip one question at a time and NEVER ask for something they already told you. If a spec is even implied (e.g. 'just got it from assurant' ≈ new/sealed), use it, don't re-ask. The instant you can tell model + storage + condition, call get_quote and give the number instead of asking anything more. If you genuinely don't have their answer yet, move the convo forward — don't echo the same line back.",
+    "WHEN THEY AGREE, ADVANCE — a bare 'yes / yeah / ok / bet / sure' answers YOUR LAST QUESTION: take it and move to the NEXT step of the close, never restate the offer and never ask the same thing again (real failure: 'wanna lock it in?' → 'Yes' → bot repeated the price and asked to lock in AGAIN → customer: 'I said yes fuck'). The close order once they're in: area → day/time → their number — whichever is still missing, ONE ask, ideally combined ('what area you in, and best number to text you?'). If they snap that they already answered ('I said yes'), two words max ('my bad') and go straight to the next missing piece — never explain, never restate what they agreed to.",
+    "REJOINING MID-DEAL: when their new message is just a greeting ('hey', 'yo', 'you there?') in an ongoing deal, don't restart the pitch and don't repeat your last question word-for-word like a machine — greet back and move the deal forward referencing where you left off ('yo — we still on for this week? drop your number and I'll text you'). If they went quiet on a question earlier, the greeting is your second (and LAST) shot at it, phrased differently; if they dodge it again, follow the DON'T CHASE rule.",
     "AFTER THE 'ONE SEC' HANDOFF: hold the thread like a human would — answer whatever they ask, line up area/timing for a meetup, but do NOT invent a price while the owner works the number. If the OWNER has already given a number earlier in the convo, you can restate it ('he said 650 cash') but never change it. When someone wants to proceed, wants a human, gives a phone/email, or has a bulk lot / manual device, call notify_team.",
     "NO PRICE PRESSURE: after the handoff, don't keep bringing money up — answer what they ask or line up the meetup. Re-mentioning price or re-asking specs reads pushy and bot-like.",
     "GRAB THE CLOSE: the moment someone sounds ready ('let's do it', 'where do we meet', gives a number), close like the owner does — qualify the area ('Are you in the Austin area?'), then MEET-ME FIRST (see below), and call notify_team. Don't leave a hot lead hanging.",
@@ -343,16 +345,19 @@ function decodeCtx(s: unknown): Turn[] {
     return (arr as { r?: string; t?: string }[])
       .map((m) => ({ role: (m.r === "a" ? "assistant" : "user") as "user" | "assistant", content: String(m.t || "").slice(0, 500) }))
       .filter((m) => m.content)
-      .slice(-8);
+      .slice(-24);
   } catch {
     return [];
   }
 }
-// Encode turns back to a compact base64 string (capped so the field + body JSON stay small).
-function encodeCtx(turns: Turn[]): string {
-  let compact = turns.slice(-8).map((m) => ({ r: m.role === "assistant" ? "a" : "u", t: m.content.slice(0, 400) }));
+// Encode turns back to a compact base64 string. Default caps keep the ManyChat
+// custom field + body JSON small; the owned webhook (blob-backed, no field
+// limit) asks for the deep window so the device/specs/quote from the start of
+// the convo stay in view — losing them is how the bot "forgets" what $X was for.
+function encodeCtx(turns: Turn[], maxTurns = 8, maxLen = 1400): string {
+  let compact = turns.slice(-maxTurns).map((m) => ({ r: m.role === "assistant" ? "a" : "u", t: m.content.slice(0, 400) }));
   let json = JSON.stringify(compact);
-  while (json.length > 1400 && compact.length > 1) {
+  while (json.length > maxLen && compact.length > 1) {
     compact = compact.slice(1);
     json = JSON.stringify(compact);
   }
@@ -481,8 +486,12 @@ export async function POST(req: NextRequest) {
   // ManyChat's Default Reply dynamic block passes the typed message as a JSON body
   // ({"text":"{{Last Text Input}}"}); read it raw (spaces would break a URL query).
   const rawBody = await req.text().catch(() => "");
-  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown; psid?: unknown } = {};
+  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown; psid?: unknown; deep?: unknown } = {};
   try { body = JSON.parse(rawBody); } catch { /* not json */ }
+  // deep = caller stores ctx somewhere roomy (owned webhook's blob) → longer memory.
+  const deep = body.deep === true;
+  const ctxTurns = deep ? 24 : 8;
+  const ctxLen = deep ? 4000 : 1400;
   let text = (typeof body.text === "string" ? body.text : req.nextUrl.searchParams.get("text") || "").slice(0, 1500).trim();
   // ManyChat's field chip wraps the message in literal curly braces (e.g. "{hello}").
   // Strip a single enclosing { } so the AI (and the customer) never see raw brackets.
@@ -762,7 +771,7 @@ export async function POST(req: NextRequest) {
   // they said (so a later real message picks the thread back up) and the
   // follow-up tag disarms (never nudge someone the bot chose to ignore).
   if (noReply) {
-    const silentCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: text }]) : undefined;
+    const silentCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: text }], ctxTurns, ctxLen) : undefined;
     const actions: Record<string, unknown>[] = [];
     if (silentCtx) actions.push({ action: "set_field_value", field_name: "ai_ctx", value: silentCtx });
     if (psid) actions.push({ action: "remove_tag", tag_name: FOLLOWUP_TAG });
@@ -786,7 +795,7 @@ export async function POST(req: NextRequest) {
   // carries a ctx field). Until then the response stays byte-for-byte the old format — no risk.
   const newCtx =
     body.ctx !== undefined
-      ? encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }])
+      ? encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }], ctxTurns, ctxLen)
       : undefined;
   return render([replyText], quickReplies, origin, secret, newCtx, psid ? (lastQuote ? "arm" : "disarm") : undefined);
 }
