@@ -57,6 +57,20 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ app: appRes, page: pageRes, now });
   }
 
+  // Inbox peek (secret-gated, read-only): the page's real Messenger threads
+  // straight from Graph — ground truth for "did they even send a chat?" when
+  // ManyChat forwarding is in doubt. PAGE_ACCESS_TOKEN is sensitive/write-only
+  // in Vercel, so this is the only way to use it: server-side.
+  if (p.get("admin") === "inbox" && process.env.MSGR_BOT_SECRET && p.get("s") === process.env.MSGR_BOT_SECRET) {
+    const pageToken = process.env.PAGE_ACCESS_TOKEN || "";
+    const limit = Math.min(25, Math.max(1, Number(p.get("n") || 8)));
+    const r = await fetch(
+      `https://graph.facebook.com/v21.0/me/conversations?fields=updated_time,participants,messages.limit(8){message,from,created_time}&limit=${limit}&access_token=${encodeURIComponent(pageToken)}`,
+      { cache: "no-store" },
+    ).then((x) => x.json()).catch((e) => ({ error: String(e) }));
+    return NextResponse.json(r);
+  }
+
   const mode = p.get("hub.mode");
   const token = p.get("hub.verify_token");
   const challenge = p.get("hub.challenge");
