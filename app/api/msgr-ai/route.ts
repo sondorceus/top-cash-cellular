@@ -445,6 +445,27 @@ async function isMuted(psid: string): Promise<boolean> {
   }
 }
 
+// One mute email per conversation, guaranteed: a fixed marker records that the
+// owner has been intro-alerted for this contact. Any convo without the marker
+// alerts on its NEXT message regardless of content — this back-fills contacts
+// whose first message predated the first-contact alert (or got lost). A fixed
+// pathname is fine here: CDN staleness at worst duplicates one alert.
+async function everAlerted(psid: string): Promise<boolean> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-alerted/${psid}`, limit: 1 });
+    return blobs.length > 0;
+  } catch {
+    return true; // infra error → assume alerted (avoid alert spam on flaky list())
+  }
+}
+async function markAlerted(psid: string) {
+  try {
+    await put(`msgr-alerted/${psid}`, ".", { access: "public", addRandomSuffix: false, allowOverwrite: true, contentType: "text/plain" });
+  } catch {
+    /* best-effort */
+  }
+}
+
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const secret = process.env.MSGR_BOT_SECRET as string;
@@ -653,10 +674,12 @@ export async function POST(req: NextRequest) {
   const sig = detectSignals(text);
   const contact =
     (teamNotified?.contact && teamNotified.contact.replace(/\D/g, "").length >= 5 ? teamNotified.contact : "") || sig.contact;
-  // First contact = no prior turns. Every NEW conversation alerts the owner
-  // once (with the mute/takeover link) even with zero lead signals — "I got a
-  // new client but didn't get the mute email" must never happen again.
-  const firstContact = priorTurns.length === 0;
+  // First contact = the owner has never been intro-alerted for this contact
+  // (marker-based when we know the psid; prior-turns heuristic otherwise).
+  // Every NEW conversation alerts once (with the mute/takeover link) even with
+  // zero lead signals — "I got a new client but didn't get the mute email"
+  // must never happen again.
+  const firstContact = psid ? !(await everAlerted(psid)) : priorTurns.length === 0;
   const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || firstContact);
   if (alertNeeded || lang === "es") {
     const isHot = sig.hot || sig.intent || (!!lastQuote && (!!contact || !!teamNotified));
@@ -713,6 +736,7 @@ export async function POST(req: NextRequest) {
         await notifyOwnerSms(
           `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | ${quoted}.${muteLink}`,
         );
+        if (psid) await markAlerted(psid);
       }
     });
   }
