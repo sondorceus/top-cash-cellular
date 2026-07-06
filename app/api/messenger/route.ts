@@ -23,8 +23,8 @@ import { put, list, del } from "@vercel/blob";
 import { advance, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 
 export const dynamic = "force-dynamic";
-// Human-pace delay (30s) + AI rounds happen in after(); keep the function alive
-// long enough for a multi-sender batch (delays run sequentially per sender).
+// Human-pace delay (up to ~2 min) + AI rounds happen in after(); keep the
+// function alive through the longest per-sender wait (senders run concurrently).
 export const maxDuration = 300;
 
 const GRAPH = "https://graph.facebook.com/v21.0/me/messages";
@@ -226,10 +226,20 @@ async function saveCtx(psid: string, ctx: string) {
 
 // Human pacing: a real person doesn't answer in 2 seconds (customers literally
 // called it out — "how are you replying so damn fast"). Each typed message waits
-// ~30s before the reply: quiet pause, then a typing bubble. The newest-message
-// marker makes bursts collapse — if the user says more during the wait, the stale
-// reply is dropped and only the final message gets answered.
+// before the reply: quiet pause, then a typing bubble. The newest-message marker
+// makes bursts collapse — if the user says more during the wait, the stale reply
+// is dropped and only the final message gets answered.
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+// Total pre-reply delay, varied so answers never feel metronomic: usually ~45s,
+// sometimes a minute, occasionally ~2 min — like someone who's mid-something.
+// (The last ~10s of this is the typing bubble.)
+function replyDelayMs(): number {
+  const r = Math.random();
+  if (r < 0.65) return 40_000 + Math.random() * 12_000; // ~40–52s  — most replies
+  if (r < 0.88) return 55_000 + Math.random() * 20_000; // ~55–75s  — about a minute
+  return 100_000 + Math.random() * 35_000; //               ~100–135s — occasionally ~2 min
+}
 
 async function typingOn(recipientId: string, token: string) {
   await fetch(`${GRAPH}?access_token=${encodeURIComponent(token)}`, {
@@ -452,17 +462,23 @@ export async function POST(req: NextRequest) {
     // Pass 2: human-paced AI replies — ~20s quiet, ~10s typing bubble, then send.
     // If the user said something newer during the wait, drop this one (the newer
     // webhook delivery owns the reply).
-    for (const [senderId, { text, mid }] of typedBySender) {
-      if (await isMuted(senderId)) continue; // owner muted this convo via the takeover link
-      if (await deferActive(senderId)) continue; // a human/other sender owns this convo
-      await sleep(20_000);
-      await typingOn(senderId, token as string);
-      await sleep(10_000);
-      if (!(await latestIs(senderId, mid))) continue;
-      if (await isMuted(senderId)) continue; // owner tapped mute during the reply delay
-      if (await deferActive(senderId)) continue; // human jumped in during the wait
-      await aiReply(origin, senderId, text, token as string);
-    }
+    // Each sender waits independently (concurrently) so one contact's ~2 min
+    // delay never eats another's — and a multi-sender burst can't run the 300s
+    // function budget dry the way sequential long delays would.
+    await Promise.all(
+      [...typedBySender].map(async ([senderId, { text, mid }]) => {
+        if (await isMuted(senderId)) return; // owner muted this convo via the takeover link
+        if (await deferActive(senderId)) return; // a human/other sender owns this convo
+        const total = replyDelayMs();
+        await sleep(Math.max(0, total - 10_000)); // quiet pause...
+        await typingOn(senderId, token as string);
+        await sleep(10_000); // ...then a ~10s typing bubble
+        if (!(await latestIs(senderId, mid))) return;
+        if (await isMuted(senderId)) return; // owner tapped mute during the reply delay
+        if (await deferActive(senderId)) return; // human jumped in during the wait
+        await aiReply(origin, senderId, text, token as string);
+      }),
+    );
   });
 
   return new NextResponse("ok", { status: 200 });
