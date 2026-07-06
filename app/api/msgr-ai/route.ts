@@ -732,6 +732,25 @@ export async function POST(req: NextRequest) {
   const ctxHistory = decodeCtx(body.ctx);
   const priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
 
+  // Bare acknowledgment right after the "one sec" handoff: a human doesn't
+  // answer "Ok" with the same line again (real failure 2026-07-06: "Ok" got a
+  // second "One sec, let me see what I can do"). Deterministic silence — the
+  // model kept repeating itself despite prompt rules. Memory still records
+  // their turn so the thread picks up cleanly when the owner steps in.
+  const BARE_ACK = /^(ok(ay)?|k|kk|bet|alright|all right|sounds good|got it|cool|thanks?|thank you|ty|sure|yes sir|dale|va|listo|gracias|de acuerdo|esta bien|👍|🙏)[.!\s]*$/i;
+  const lastAssistant = [...priorTurns].reverse().find((t) => t.role === "assistant");
+  if (BARE_ACK.test(text) && lastAssistant && /one sec|let me see what i can do|un momento|d[eé]jame ver/i.test(lastAssistant.content)) {
+    const ackCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: text }], ctxTurns, ctxLen) : undefined;
+    const ackActions: Record<string, unknown>[] = [];
+    if (ackCtx) ackActions.push({ action: "set_field_value", field_name: "ai_ctx", value: ackCtx });
+    if (psid) ackActions.push({ action: "remove_tag", tag_name: FOLLOWUP_TAG });
+    return NextResponse.json({
+      version: "v2",
+      content: { messages: [], ...(ackActions.length ? { actions: ackActions } : {}) },
+      ...(ackCtx ? { ctx: ackCtx } : {}),
+    });
+  }
+
   // Spanish detection must catch accent-LESS typing (most people skip accents on a phone):
   // "cuanto", "telefono", "vendo", etc. — not just the accented forms. STICKY across the
   // conversation: mid-convo Spanish answers are often neutral ("128", "si", "esta bueno"),
