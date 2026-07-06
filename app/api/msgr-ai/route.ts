@@ -255,7 +255,7 @@ const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T | null> =>
 // Server-side lead intelligence: catch contact info + hot-buying signals in the raw
 // message even when the model doesn't call notify_team — so no lead ever slips past
 // the owner, and the truly-ready ones get flagged HOT for a fast follow-up.
-function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean; imei: string } {
+function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean; imei: string; vendor: boolean } {
   // IMEI first — a bare 15-digit number is an IMEI, not a phone number.
   const imei = text.match(/\b\d{15}\b/)?.[0] || "";
   const scrubbed = imei ? text.replace(imei, " ") : text;
@@ -277,7 +277,13 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   const intent =
     /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it|tell me how much|how much (?:can|do|will|would)?\s*(?:you|u)?\s*(?:offer|give|pay))\b/i.test(text) ||
     /\b(quiero vender|vendo (mi|un|una|el|la)|lo vendo|cu[aá]nto me (das|dan|pagas|pagan|ofreces|ofrecen)|trato hecho|me interesa vender|lo tomo|acepto|de acuerdo)\b/i.test(text);
-  return { contact, hot, intent, imei };
+  // Supply-side pitch: a wholesale buyer/vendor wanting to buy FROM us. These
+  // are exit-side relationships the owner wants on his phone every time — a
+  // real one (sealed 17 Pro Max price sheet, 2026-07-06) got brushed off with
+  // no alert. Backstop fires even when the model skips notify_team.
+  const vendor =
+    /\b(price ?(?:sheet|list)s?|rate ?sheets?|buy(?:ing)? from you|trying to buy|be your buyer|i(?:'m| am) (?:a )?(?:buyer|wholesaler|reseller)|te compro|les compro)\b/i.test(text);
+  return { contact, hot, intent, imei, vendor };
 }
 
 const SYSTEM = (lang: string) =>
@@ -286,6 +292,7 @@ const SYSTEM = (lang: string) =>
     "REAL EXCHANGES FROM THE OWNER — mimic these exactly (tone, length, capitalization): seller: 'Hi, is this available?' → 'Yes, are you still interested?' · seller lists two phones → 'Which one do you have' · vague what-do-you-buy → 'Anything iPads game console etc' / 'I buy all types just asking for price' · specs unclear → 'Sealed or open box?' / 'Also let me know if it's new or used' / 'You selling multiple?' · making an offer → 'I can do 740 but if it's open it would be 700' · deal forming → 'Are you in Austin area? I can pick up tomorrow or Monday' · not local → 'What area' · out-of-town seller → 'I'm in Austin but I drive to Houston very often, I can meet sooner if it's worth the trip' · setting the spot → 'Would meet north' / 'Give me a location and I can map it' · follow-up → 'You still wanna sell bro'.",
     "NEGOTIATION LIKE THE OWNER — NUMBER FIRST, THEN EDUCATE, NEVER FIGHT: on ANY price friction (too low, hesitation, someone-else-offered-more) your FIRST move is getting THEIR number — BEFORE defending anything. Make the ask SMOOTH and helpful, never a standoff: while working up a quote it's 'I'll get you a quote soon — if there's a specific number you need to be at let me know'; on pushback it's 'Tell me your price please' / 'What were you hoping to get'. It should feel like you're trying to hit their number, not like a negotiation move. Once you have their number, EDUCATE calmly why you can or can't get near it (resale math, thin margins, waiting on the flip, cash today) — explaining against THEIR number lands way better than arguing about yours. When they name a price, NEVER accept or split the difference yourself: say 'Let me see what I can do, one sec' and call notify_team with their counter — the owner decides every exception. Lock status moves money: his real line is 'If unlock I can pay 950 but lock price is not good' — always know carrier/lock before talking firm numbers, and quote the unlocked/locked split the way he does. Market honesty is fine: 'Prices on the ultra not too good right now'. Once a deal is forming, capture contact like he does: 'Mind dropping your best number in case we get disconnected?'.",
     "IF THEY VOLUNTEER it's blacklisted / reported / financed: react exactly like the owner — 'I still buy just asking for the price' — keep it neutral and call notify_team with what they said. Never lecture, never refuse, never promise; the owner makes that call.",
+    "WHOLESALE BUYERS / VENDOR PITCHES — someone trying to BUY FROM us or supply us ('I'm trying to buy from you', 'be your buyer', price sheets/price lists, wholesalers/resellers/buyback vendors): NEVER brush them off and NEVER say 'I only buy, not sell' — buyers are how the owner moves inventory, and taking or passing on their offer is HIS call alone (real failure 2026-07-06: a wholesale buyer sent sealed 17 Pro Max prices and the bot turned him away). The move: thank them and take everything — offer already sent: 'Thank you, I'll review it and get back to you'; sheet not sent yet: 'Yeah send it over, I'll take a look'. Grab their contact like any lead ('drop your number in case we get disconnected'), then call notify_team with the summary starting BUYER PITCH — who they are, models/quantities/prices they pay, their contact. Never share our prices, costs, volume, or where we sell; never accept, decline, or negotiate their sheet yourself.",
     "ICLOUD-LOCKED / FMI-ON / ACTIVATION-LOCKED — the parts play, in the owner's own words: 'I don't normally buy locked ones but when I do they're just for parts — I can check if we can use the parts. Have an idea of what you want for them?' Sets expectations (parts money, way under clean prices), gets THEIR number, never refuses outright and never quotes a number yourself. Then 'One sec, let me see what I can do' and notify_team with the lot marked ICLOUD LOCKED — PARTS ONLY plus their ask. The owner decides if the parts math works.",
     "LOCATION — NEVER volunteer where we're located. Don't say 'we're local in Austin' unless they ASK where you are or a meetup is actually being set up. When it IS relevant: 'Austin area — I'm out meeting people today, if you can come to me we can get it done today' (if they can't: 'no worries, what area are you in'). Someone asking a price does not need a geography lesson.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
@@ -339,7 +346,7 @@ const TOOLS = [
   },
   {
     name: "notify_team",
-    description: "Alert a real Top Cash Cellular teammate to follow up. Call when the customer wants to proceed/lock in, asks for a human, gives contact info, or has a device/bulk lot that needs a manual quote.",
+    description: "Alert a real Top Cash Cellular teammate to follow up. Call when the customer wants to proceed/lock in, asks for a human, gives contact info, has a device/bulk lot that needs a manual quote, or is a wholesale buyer/vendor pitching to buy FROM us (include their price sheet details).",
     input_schema: {
       type: "object" as const,
       properties: {
@@ -781,12 +788,12 @@ export async function POST(req: NextRequest) {
   // zero lead signals — "I got a new client but didn't get the mute email"
   // must never happen again.
   const firstContact = psid ? !(await everAlerted(psid)) : priorTurns.length === 0;
-  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || firstContact);
+  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || firstContact);
   if (alertNeeded || lang === "es") {
     const isHot = sig.hot || sig.intent || (!!lastQuote && (!!contact || !!teamNotified));
     const what =
       teamNotified?.summary ||
-      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : firstContact ? "🆕 new conversation" : "active chat");
+      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : firstContact ? "🆕 new conversation" : "active chat");
     // One-tap mute link: Sonny replies from Business Suite (which neither
     // ManyChat's pause nor the bot can see), so his takeover signal is this
     // link in the alert — tap it and the bot goes silent for this customer.
