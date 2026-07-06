@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import { track as vercelTrack } from "@vercel/analytics";
-import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT } from "./lib/resell-estimates";
+import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT } from "./lib/resell-estimates";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
 import { formatOfferNumber } from "./lib/offer-number";
@@ -5955,7 +5955,8 @@ export default function Home() {
   const workingResell = model ? getResellEstimate(model.label) : null;
   const condMult = resellMultiplierForCondition(condition?.id, brokenGlass);
   const estResellNow = workingResell != null ? Math.round(workingResell * condMult) : null;
-  const marginCap = estResellNow != null ? Math.round(estResellNow * MARGIN_FLOOR_MULT) : null;
+  // resell × eBay-net (−13% FVF) × margin floor — never quote over what eBay nets us.
+  const marginCap = estResellNow != null ? Math.round(estResellNow * EBAY_FEE_MULT * MARGIN_FLOOR_MULT) : null;
   // Apply cap silently if base quote exceeds it.
   const quoteAfterCap = (marginCap != null && rawQuote > marginCap) ? marginCap : rawQuote;
   // Force manual review ONLY when we have a resell comp AND that comp's

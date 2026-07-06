@@ -26,6 +26,7 @@ import {
   getResellEstimate,
   resellMultiplierForCondition,
   MARGIN_FLOOR_MULT,
+  EBAY_FEE_MULT,
 } from "./resell-estimates";
 
 const BLOB_KEY = "prices/overrides.json";
@@ -179,7 +180,8 @@ export async function quoteDevice(
     const resell = getResellEstimate(spec.modelLabel);
     const condMult = resellMultiplierForCondition(cond, spec.brokenGlass);
     const estResellNow = resell != null ? Math.round(resell * condMult) : null;
-    const marginCap = estResellNow != null ? Math.round(estResellNow * MARGIN_FLOOR_MULT) : null;
+    // resell × eBay-net (−13% FVF) × margin floor — mirror of the funnel cap.
+    const marginCap = estResellNow != null ? Math.round(estResellNow * EBAY_FEE_MULT * MARGIN_FLOOR_MULT) : null;
     const capped = marginCap != null && rawQuote > marginCap;
     const finalQuote = capped ? marginCap! : rawQuote;
 

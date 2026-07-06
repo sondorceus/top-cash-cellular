@@ -121,3 +121,14 @@ export function resellMultiplierForCondition(condition: string | undefined, brok
 
 /** Target margin floor — we don't pay more than resell × MARGIN_FLOOR */
 export const MARGIN_FLOOR_MULT = 0.75; // 25% margin target
+
+/**
+ * eBay final-value-fee haircut. TCC resells on eBay, so the resell comps
+ * (Swappa/retail-ish gross) overstate what we actually NET — eBay takes 13%.
+ * We apply this to the resell value BEFORE the margin floor so the cap is
+ * "25% margin on the eBay-NET price" and we can never quote over what eBay
+ * would net us. Skywalker 2026-07-05 — interim flat 13% buffer until the
+ * eBay-sold scraper is fixed and we can cap against live eBay-net directly.
+ * (Simplified to the 13% FVF only — no per-order fixed fee / shipping.)
+ */
+export const EBAY_FEE_MULT = 0.87; // 1 − 0.13 eBay FVF
