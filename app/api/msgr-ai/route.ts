@@ -196,11 +196,15 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   const bulk =
     /\b(?:two|three|four|five|six|\d{1,2})\s+(?:iphones?|samsungs?|galaxys?|pixels?|phones?|devices?|macbooks?|laptops?|ipads?|tablets?|consoles?)\b/i.test(text) ||
     /\b(?:bulk|wholesale|a lot of (?:phones|devices)|several (?:phones|devices))\b/i.test(text);
+  // Signals are bilingual — the bot sells in Spanish, so the alert triggers
+  // must too (a 2026-07-05 ES lead fired nothing: every regex was English).
   const hot =
     bulk ||
-    /\b(today|tonight|asap|right now|need\s+(the\s+)?cash|how soon|urgent|this (morning|afternoon|evening)|meet ?up|can we meet|cash today|where.*(meet|located|you at))\b/i.test(text);
+    /\b(today|tonight|asap|right now|need\s+(the\s+)?cash|how soon|urgent|this (morning|afternoon|evening)|meet ?up|can we meet|cash today|where.*(meet|located|you at))\b/i.test(text) ||
+    /\b(hoy mismo|ahorita|ya mismo|urgente|necesito (dinero|efectivo|cash)|nos vemos|d[oó]nde (est[aá]n|te veo|los encuentro)|puedo ir hoy)\b/i.test(text);
   const intent =
-    /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it|tell me how much|how much (?:can|do|will|would)?\s*(?:you|u)?\s*(?:offer|give|pay))\b/i.test(text);
+    /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it|tell me how much|how much (?:can|do|will|would)?\s*(?:you|u)?\s*(?:offer|give|pay))\b/i.test(text) ||
+    /\b(quiero vender|vendo (mi|un|una|el|la)|lo vendo|cu[aá]nto me (das|dan|pagas|pagan|ofreces|ofrecen)|trato hecho|me interesa vender|lo tomo|acepto|de acuerdo)\b/i.test(text);
   return { contact, hot, intent, imei };
 }
 
@@ -649,10 +653,16 @@ export async function POST(req: NextRequest) {
   const sig = detectSignals(text);
   const contact =
     (teamNotified?.contact && teamNotified.contact.replace(/\D/g, "").length >= 5 ? teamNotified.contact : "") || sig.contact;
-  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei);
+  // First contact = no prior turns. Every NEW conversation alerts the owner
+  // once (with the mute/takeover link) even with zero lead signals — "I got a
+  // new client but didn't get the mute email" must never happen again.
+  const firstContact = priorTurns.length === 0;
+  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || firstContact);
   if (alertNeeded || lang === "es") {
     const isHot = sig.hot || sig.intent || (!!lastQuote && (!!contact || !!teamNotified));
-    const what = teamNotified?.summary || (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : "active chat");
+    const what =
+      teamNotified?.summary ||
+      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : firstContact ? "🆕 new conversation" : "active chat");
     // One-tap mute link: Sonny replies from Business Suite (which neither
     // ManyChat's pause nor the bot can see), so his takeover signal is this
     // link in the alert — tap it and the bot goes silent for this customer.
