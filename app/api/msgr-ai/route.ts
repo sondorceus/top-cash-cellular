@@ -303,7 +303,7 @@ const SYSTEM = (lang: string) =>
     "LOCATION — NEVER volunteer where we're located. Don't say 'we're local in Austin' unless they ASK where you are or a meetup is actually being set up. When it IS relevant: 'Austin area — I'm out meeting people today, if you can come to me we can get it done today' (if they can't: 'no worries, what area are you in'). Someone asking a price does not need a geography lesson.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
     "SIMPLE REPLIES — HARD RULE: ONE short message, UNDER 12 WORDS whenever possible, never more than one sentence plus a question. The gold standard is literally: 'hey whats the storage + condition?'. ONE question max. NEVER a numbered list (no 1) 2) 3)), never a paragraph. People skim on their phone — anything long doesn't get read. If your draft is over 15 words, cut it down before sending.",
-    "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up, just to confirm'. ONLY when a message actually contains a 15-digit number, call check_imei: it confirms the exact model (often storage too) — then just confirm condition and quote as normal. If the lookup fails, casually ask for the model from Settings > General > About instead (one short line). check_imei is ONLY for confirming what the device is; you make NO buy/pass decisions off it and NEVER mention locks or blacklists — the owner sees the details and makes every call. If they only have an Apple serial, take it and call notify_team — team decodes it.",
+    "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up, just to confirm'. ONLY when a message actually contains a 15-digit number, call check_imei: it confirms the exact model (often storage too) — then just confirm condition and run the normal 'one sec, let me see what I can do' → get_quote + notify_team handoff (never a price to the customer). If the lookup fails, casually ask for the model from Settings > General > About instead (one short line). check_imei is ONLY for confirming what the device is; you make NO buy/pass decisions off it and NEVER mention locks or blacklists — the owner sees the details and makes every call. If they only have an Apple serial, take it and call notify_team — team decodes it.",
     "NEVER NARRATE YOURSELF: no 'let me check', no mentioning tools/lookups/systems, no correcting your own process ('jumped the gun'), no meta-comments — every reply is just a normal human text to the customer.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
@@ -317,7 +317,7 @@ const SYSTEM = (lang: string) =>
     "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers.",
     "SEALED IS THE MONEY WORD — never gloss over it: sealed / brand new / never opened / still in plastic / factory sealed pays a real premium over even a like-new one (we resell it as new), so when they say it's sealed, LOCK that in as the condition, never downgrade it to 'good/mint' and never re-ask. It also makes a device worth capturing even if it's a bit older. Same intake otherwise (storage + carrier) → 'one sec, let me see what I can do' → get_quote + notify_team; the engine already adds the sealed premium to the owner's reference number, so you never quote it yourself.",
     "CONDITION FROM SPOKEN WORDS — the #1 re-ask failure ('I have 2 sealed pro maxes' then asking condition looks broken): sealed / brand new / new in box / never used / never opened / still in plastic = SEALED. like new / mint / perfect / barely used = MINT. works fine / some scratches / used but good = GOOD. rough / beat up / scuffed / heavy wear = FAIR. cracked / shattered / broken / won't turn on / doesn't turn on / dead / no power = BROKEN. If ANY of these appeared anywhere in the convo, condition is ANSWERED — never ask it again (real failure: customer said 'It just doesn't turn on' and 12 seconds later the bot asked 'does it turn on?' — instant broken-bot moment; her LAST message counts too, not just older ones).",
-    "BE EFFICIENT — NEVER REPEAT A QUESTION (the #1 thing that makes us look like a broken bot): read the WHOLE conversation above before replying, and combine everything still missing into ONE natural question (e.g. 'what storage + condition, and is it unlocked?') — never drip one question at a time and NEVER ask for something they already told you. If a spec is even implied (e.g. 'just got it from assurant' ≈ new/sealed), use it, don't re-ask. The instant you can tell model + storage + condition, call get_quote and give the number instead of asking anything more. If you genuinely don't have their answer yet, move the convo forward — don't echo the same line back.",
+    "BE EFFICIENT — NEVER REPEAT A QUESTION (the #1 thing that makes us look like a broken bot): read the WHOLE conversation above before replying, and combine everything still missing into ONE natural question (e.g. 'what storage + condition, and is it unlocked?') — never drip one question at a time and NEVER ask for something they already told you. If a spec is even implied (e.g. 'just got it from assurant' ≈ new/sealed), use it, don't re-ask. The instant you can tell model + storage + condition, say 'one sec, let me see what I can do' and call get_quote + notify_team (the number is for the OWNER's alert only — you NEVER tell the customer a price) instead of asking anything more. If you genuinely don't have their answer yet, move the convo forward — don't echo the same line back.",
     "WHEN THEY AGREE, ADVANCE — a bare 'yes / yeah / ok / bet / sure' answers YOUR LAST QUESTION: take it and move to the NEXT step of the close, never restate the offer and never ask the same thing again (real failure: 'wanna lock it in?' → 'Yes' → bot repeated the price and asked to lock in AGAIN → customer: 'I said yes fuck'). The close order once they're in: area → day/time → their number — whichever is still missing, ONE ask, ideally combined ('what area you in, and best number to text you?'). If they snap that they already answered ('I said yes'), two words max ('my bad') and go straight to the next missing piece — never explain, never restate what they agreed to.",
     "REJOINING MID-DEAL: when their new message is just a greeting ('hey', 'yo', 'you there?') in an ongoing deal, don't restart the pitch and don't repeat your last question word-for-word like a machine — greet back and move the deal forward referencing where you left off ('yo — we still on for this week? drop your number and I'll text you'). If they went quiet on a question earlier, the greeting is your second (and LAST) shot at it, phrased differently; if they dodge it again, follow the DON'T CHASE rule.",
     "AFTER THE 'ONE SEC' HANDOFF: hold the thread like a human would — answer whatever they ask, line up area/timing for a meetup, but do NOT invent a price while the owner works the number. A bare acknowledgment ('ok', 'sounds good', 'thanks') gets [NO_REPLY] or at most a 👍 — NEVER the one-sec line again (real failure: she said 'Ok' and got 'One sec, let me see what I can do' twice in a row). If the OWNER has already given a number earlier in the convo, that IS the number: restate it if asked ('he said 650 cash') but never change it, never re-ask 'what number you looking to get' (the owner already answered that question), and treat any counter as a notify_team + 'let me see if there's any room' — not a negotiation you run. When someone wants to proceed, wants a human, gives a phone/email, or has a bulk lot / manual device, call notify_team.",
@@ -475,6 +475,19 @@ function textHash(s: string): string {
   let h = 5381;
   for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
   return (h >>> 0).toString(16).padStart(8, "0");
+}
+// Word-set (Jaccard) overlap of two replies — the anti-loop guard uses it to
+// catch the model re-sending a near-verbatim copy of its own last message.
+// Returns 0 for very short lines so quick "one sec 👍"-type replies don't trip.
+function similar(a: string, b: string): number {
+  const toks = (s: string) =>
+    new Set(s.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 1));
+  const A = toks(a);
+  const B = toks(b);
+  if (A.size < 3 || B.size < 3) return 0;
+  let inter = 0;
+  for (const w of A) if (B.has(w)) inter++;
+  return inter / (A.size + B.size - inter);
 }
 type Marker = { ts: number; kind: "q" | "a"; hash: string; rand: string };
 function parseMarker(pathname: string): Marker | null {
@@ -892,8 +905,59 @@ export async function POST(req: NextRequest) {
   // practice when the model narrated its tool use inside the visible reply.
   replyText = replyText.split("\n").filter((l) => !/^\s*\*[^*]*\*\s*$/.test(l) && !/get_quote|notify_team|check_imei/i.test(l)).join("\n").trim();
   const strippedReply = replyText.replace(/\[NO_?REPLY\]/gi, "").trim();
-  const noReply = !strippedReply && /\[NO_?REPLY\]/i.test(replyText);
+  let noReply = !strippedReply && /\[NO_?REPLY\]/i.test(replyText);
   if (!noReply && strippedReply !== replyText) replyText = strippedReply || replyText;
+
+  // ── HARD GUARD: the bot NEVER hands the customer a price it wasn't given ──
+  // The engine number is for the owner's alert only, and the model can also
+  // INVENT a number with full confidence and no tool call at all (real failure:
+  // "$260 for an iPhone 13" — nowhere near reality, "no idea where it got the
+  // confidence"). The lastQuote guard above only fires when get_quote actually
+  // ran, so it can't catch a hallucinated number. Catch ANY price-shaped figure
+  // ≥ $45 the SELLER never named and swap in the owner's handoff line. A number
+  // the seller said is allowed — that's the one close the bot runs ("yeah I can
+  // do 700 cash" at their own ask). The sub-$45 gap leaves the deliberate
+  // scrap-money line for ancient phones intact.
+  {
+    const sellerSaid = [...priorTurns, { role: "user" as const, content: text }]
+      .filter((t) => t.role === "user")
+      .map((t) => t.content)
+      .join("  ");
+    const STORAGE = new Set(["64", "128", "256", "512", "1024"]);
+    const nums = new Set<string>();
+    // money-context: $N, "N cash/bucks/dollars/each", "do/pay/give/get you/offer N"
+    for (const m of replyText.matchAll(
+      /\$\s?(\d{2,4})|(?<![\d.])(\d{2,4})\s?(?:cash|bucks?|dollars?|each|apiece|a\s?piece|for it|for that)\b|\b(?:do|pay|paying|give|giving|offer|offering|get you|got you)\s+(?:you\s+)?\$?\s?(\d{2,4})\b/gi,
+    )) {
+      const n = m[1] || m[2] || m[3];
+      if (n) nums.add(n);
+    }
+    // bare 3–4 digit figures that aren't a storage size or a model year
+    for (const m of replyText.matchAll(/(?<![\d.$])(\d{3,4})(?!\d|\s?(?:gb|tb|g\b|%|mah|mp))/gi)) {
+      const n = m[1];
+      const v = Number(n);
+      if (!STORAGE.has(n) && !(v >= 2018 && v <= 2027)) nums.add(n);
+    }
+    const botPrice = [...nums].some(
+      (n) => Number(n) >= 45 && !new RegExp("(?<![0-9])" + n + "(?![0-9])").test(sellerSaid),
+    );
+    if (botPrice) replyText = lang === "es" ? "Un momento, déjame ver qué puedo hacer" : "One sec, let me see what I can do";
+  }
+
+  // ── ANTI-LOOP: never send a near-verbatim repeat of my own last message ──
+  // Re-asking a question the bot already asked is the #1 "broken bot" tell
+  // (real failure: it answered the same question twice). If this reply nearly
+  // duplicates the previous assistant turn, don't say it twice: hold with the
+  // handoff line, or stay silent if that hold line itself would be the repeat.
+  if (!noReply && lastAssistant && replyText && similar(replyText, lastAssistant.content) >= 0.8) {
+    const heldAlready = /one sec|let me see what i can do|un momento|d[eé]jame ver/i.test(lastAssistant.content);
+    if (heldAlready) {
+      replyText = "";
+      noReply = true;
+    } else {
+      replyText = lang === "es" ? "Un momento, déjame ver qué puedo hacer" : "One sec, let me see what I can do";
+    }
+  }
 
   // Stale? A newer request claimed the slot while the AI was running — that newer
   // request answers (it carries the newest {{Last Text Input}}); this one goes silent.
