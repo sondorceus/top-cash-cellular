@@ -294,6 +294,27 @@ async function deferActive(psid: string): Promise<boolean> {
   }
 }
 
+// Owner mute (the takeover link in the lead alert → /api/msgr-ai?mute=): the
+// bot goes fully silent for that contact until the mute window expires. The link
+// writes msgr-mute/{psid}/{ts13}-{hours}; newest wins, hours=0 unmutes. The
+// owned webhook MUST read it here — otherwise the alert page says "Bot muted"
+// while this path keeps replying: the msgr-ai brain's own mute guards are gated
+// on a psid, and aiReply() calls the brain without one, so they never fire.
+async function isMuted(psid: string): Promise<boolean> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-mute/${psid}/`, limit: 100 });
+    const marks = blobs
+      .map((b) => b.pathname.match(/\/(\d{13})-(\d{1,3})$/))
+      .filter(Boolean)
+      .map((m) => ({ ts: Number((m as RegExpMatchArray)[1]), hours: Number((m as RegExpMatchArray)[2]) }));
+    if (!marks.length) return false;
+    const newest = marks.reduce((a, b) => (b.ts >= a.ts ? b : a));
+    return Date.now() < newest.ts + newest.hours * 3_600_000;
+  } catch {
+    return false; // fail open — better an extra reply than a silent bot on infra errors
+  }
+}
+
 // True when `mid` is still the newest message this user has sent. Also sweeps
 // markers older than 10 min so the ts-sorted (oldest-first) listing never
 // pushes the newest entries out of the window.
@@ -410,6 +431,7 @@ export async function POST(req: NextRequest) {
         // funnel brain (lock-in, team handoff, sell menu).
         const tapPayload = event?.message?.quick_reply?.payload ?? event?.postback?.payload;
         if (tapPayload && tapPayload !== "GET_STARTED") {
+          if (await isMuted(senderId)) continue; // owner took over — don't talk over him
           const reply = await advance(stateFrom(event), origin);
           if (reply.handoff) notify(reply.handoff.bulk ? "bulk" : "handoff", senderId, reply);
           else if (reply.offer?.hot) notify("hot_lead", senderId, reply);
@@ -431,11 +453,13 @@ export async function POST(req: NextRequest) {
     // If the user said something newer during the wait, drop this one (the newer
     // webhook delivery owns the reply).
     for (const [senderId, { text, mid }] of typedBySender) {
+      if (await isMuted(senderId)) continue; // owner muted this convo via the takeover link
       if (await deferActive(senderId)) continue; // a human/other sender owns this convo
       await sleep(20_000);
       await typingOn(senderId, token as string);
       await sleep(10_000);
       if (!(await latestIs(senderId, mid))) continue;
+      if (await isMuted(senderId)) continue; // owner tapped mute during the reply delay
       if (await deferActive(senderId)) continue; // human jumped in during the wait
       await aiReply(origin, senderId, text, token as string);
     }
