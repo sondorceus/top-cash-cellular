@@ -184,26 +184,66 @@ async function runImeiCheck(input: { imei?: string }): Promise<Record<string, un
 }
 
 // ---- market intel (OWNER-ALERT ONLY — the customer never sees these numbers) ----
-// Off-catalog leads (watches, tablets, consoles, bulk lots) get a quick web
-// lookup of real resale comps (eBay sold listings / Swappa) so the owner can
-// price from the alert alone instead of researching by hand. Runs inside
-// after(), hard-capped, and a failed/slow lookup never blocks the alert.
+// Off-catalog leads (watches, tablets, consoles, bulk lots) get resale comps
+// scraped FREE from Swappa's public pages (no API, no per-search fees):
+// search → best product match → its listings page embeds every active
+// listing's price in page JSON → min/median/max ride the owner alert.
+// Runs inside after(), hard-capped; a failed scrape never blocks the alert.
+const SWAPPA_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
+
+async function swappaComps(query: string): Promise<string | null> {
+  try {
+    const sr = await fetch(`https://swappa.com/search?q=${encodeURIComponent(query)}`, {
+      headers: { "User-Agent": SWAPPA_UA, "Accept-Language": "en-US" }, cache: "no-store",
+    });
+    if (!sr.ok) return null;
+    const sh = await sr.text();
+    // first product cell: /listings/<slug> + display title
+    const cell = sh.match(/href="(\/listings\/[a-z0-9-]+)"[^>]*class="title">\s*([^<]+?)\s*</);
+    if (!cell) return null;
+    const [, slug, title] = cell;
+    const lr = await fetch(`https://swappa.com${slug}`, {
+      headers: { "User-Agent": SWAPPA_UA, "Accept-Language": "en-US" }, cache: "no-store",
+    });
+    if (!lr.ok) return null;
+    const lh = await lr.text();
+    // active listings ride a GA items array: {"item_id": "...", ..., "price": "209.09"}
+    const prices = [...lh.matchAll(/"item_id":\s*"[^"]+"[^}]*?"price":\s*"?([\d.]+)/g)]
+      .map((m) => Math.round(parseFloat(m[1])))
+      .filter((p) => p > 5 && p < 20000)
+      .sort((a, b) => a - b);
+    if (!prices.length) return null;
+    const med = prices[Math.floor(prices.length / 2)];
+    const weak = med < 40 ? " — weak resale, likely pass" : "";
+    return `${title}: Swappa $${prices[0]}–$${prices[prices.length - 1]}, median $${med} (${prices.length} live)${weak}`;
+  } catch (e) {
+    console.error("[market-check] swappa error:", (e as Error).message);
+    return null;
+  }
+}
+
 async function marketCheck(summary: string): Promise<string | null> {
   try {
+    // one cheap no-tools call turns a messy lead summary into clean queries
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const r = await client.messages.create({
+    const norm = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 700,
-      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 3 } as never],
+      max_tokens: 120,
       system:
-        "You research USED resale prices for a phone/electronics buyback business. Search eBay SOLD listings and Swappa for each item in the lead. Output ONLY final result lines, one per item: '<item>: resells ~$LOW-$HIGH, likely $MID (basis)'. Weak-resale items (fitness bands, old TVs, soundbars, keyboards): '<item>: weak resale ~$X, likely pass'. No preamble, no prose between lines.",
-      messages: [{ role: "user", content: summary.slice(0, 800) }],
+        "Turn a device-buyback lead summary into up to 3 product search queries for a used-device marketplace, one per line, most valuable items first. Just the product name + key spec (e.g. 'Apple Watch Series 9 45mm', 'iPad Air 5th gen', 'Galaxy Watch 3'). Skip chargers/cables/junk. Output ONLY the queries.",
+      messages: [{ role: "user", content: summary.slice(0, 600) }],
     });
-    const txt = (r.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
-    // The model sometimes narrates between searches — keep only result lines.
-    const lines = txt.split("\n").map((s) => s.trim()).filter((l) => /resells|weak resale|likely/i.test(l));
-    return lines.length ? lines.slice(0, 6).join(" | ").slice(0, 500) : null;
+    const queries = (norm.content as unknown as AnyBlock[])
+      .filter((b) => b.type === "text").map((b) => b.text).join("\n")
+      .split("\n").map((s) => s.trim().replace(/^[-*\d.]+\s*/, "")).filter((s) => s.length > 2).slice(0, 3);
+    if (!queries.length) return null;
+    const results: string[] = [];
+    for (const q of queries) {
+      const line = await swappaComps(q);
+      if (line) results.push(line);
+    }
+    return results.length ? results.join(" | ").slice(0, 500) : null;
   } catch (e) {
     console.error("[market-check] failed:", (e as Error).message);
     return null;
@@ -862,6 +902,18 @@ export async function GET(req: NextRequest) {
       `<p style="color:#a9adc4;font-size:14px;line-height:1.6;margin:0 0 20px;">${on ? "This conversation is all yours — the AI won't reply or nudge this customer." : "The AI will handle this customer's next message again."}</p>` +
       `<a href="${toggle}" style="display:inline-block;background:${on ? "#00c853" : "#ffb400"};color:#0a0a0a;font-weight:800;text-decoration:none;padding:12px 26px;border-radius:999px;font-size:14px;">${on ? "Hand back to the bot" : "Mute again (24h)"}</a></div></body></html>`;
     return new NextResponse(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+  }
+
+  // Market-check spot test: ?market=<query>&s=<MSGR_BOT_SECRET|CRON_SECRET>.
+  // Lets the owner (and deploy verification) pull live Swappa comps directly.
+  const marketQ = req.nextUrl.searchParams.get("market");
+  if (marketQ) {
+    const s = req.nextUrl.searchParams.get("s");
+    const okSecret = (!!process.env.MSGR_BOT_SECRET && s === process.env.MSGR_BOT_SECRET) ||
+      (!!process.env.CRON_SECRET && s === process.env.CRON_SECRET);
+    if (!okSecret) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    const intel = await marketCheck(marketQ.slice(0, 300));
+    return NextResponse.json({ ok: true, query: marketQ, intel });
   }
 
   return NextResponse.json({ ok: true, service: "tcc-msgr-ai", configured: !!process.env.MSGR_BOT_SECRET && !!process.env.ANTHROPIC_API_KEY });
