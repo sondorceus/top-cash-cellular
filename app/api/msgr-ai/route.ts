@@ -875,9 +875,17 @@ export async function POST(req: NextRequest) {
   // HARD GUARD: the engine price is for the OWNER's alert only. If the model
   // leaked get_quote's number into the visible reply (seen in practice —
   // "I can do 343 each"), replace the whole reply with the handoff line.
-  const sellerAskedNum = new RegExp("\\$?\\s*" + lastQuote?.offer + "(?![0-9])").test([...priorTurns, { role: "user" as const, content: text }].filter((t) => t.role === "user").map((t) => t.content).join(" "));
-  if (lastQuote && !sellerAskedNum && new RegExp("\\$?\\s*" + lastQuote.offer + "(?![0-9])").test(replyText)) {
-    replyText = lang === "es" ? "Un momento, déjame ver qué puedo hacer" : "One sec, let me see what I can do";
+  if (lastQuote) {
+    // Match the engine number as a WHOLE number only — boundaries on both sides
+    // so an offer of 650 doesn't match the "650" inside a seller's "1650" (which
+    // would wrongly disable the guard) or the bot's "1650".
+    const offerRe = new RegExp("(?<![0-9])\\$?\\s*" + lastQuote.offer + "(?![0-9])");
+    const sellerAskedNum = offerRe.test(
+      [...priorTurns, { role: "user" as const, content: text }].filter((t) => t.role === "user").map((t) => t.content).join(" "),
+    );
+    if (!sellerAskedNum && offerRe.test(replyText)) {
+      replyText = lang === "es" ? "Un momento, déjame ver qué puedo hacer" : "One sec, let me see what I can do";
+    }
   }
   // Scrub any leaked stage directions (*calling get_quote...*) — seen once in
   // practice when the model narrated its tool use inside the visible reply.
