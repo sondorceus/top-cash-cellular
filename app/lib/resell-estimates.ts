@@ -132,3 +132,21 @@ export const MARGIN_FLOOR_MULT = 0.75; // 25% margin target
  * (Simplified to the 13% FVF only — no per-order fixed fee / shipping.)
  */
 export const EBAY_FEE_MULT = 0.87; // 1 − 0.13 eBay FVF
+
+/**
+ * Galaxy S23-and-up blanket price cut. Skywalker 2026-07-05: "Atlas doesn't
+ * really buy Galaxy" — so trim the whole S23+ lineup by a flat $75 off the
+ * LIVE offer (applied after the margin cap, since these SKUs are cap-bound
+ * and a price-table cut alone wouldn't move the offer). Covers Galaxy
+ * S23–S26 (all variants: base / +/ Ultra / FE / Edge) and Z Flip/Fold 5–7.
+ * Returns the dollars to subtract, floored to MIN_OFFER by the caller.
+ */
+export const galaxyPriceDrop = (modelId?: string | null): number =>
+  (!!modelId && (/^gs2[3-6]/.test(modelId) || /^gz(flip|fold)[5-7]$/.test(modelId))) ? 75 : 0;
+
+/**
+ * "Pricey only" floor for the Galaxy −$75: only apply the drop when the
+ * offer is at least this much, so cheap S23 / FE / Flip5 (a ~$100-160 offer)
+ * don't crater to the $25 minimum. Skywalker 2026-07-05.
+ */
+export const GALAXY_DROP_MIN_OFFER = 250;

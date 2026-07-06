@@ -27,6 +27,8 @@ import {
   resellMultiplierForCondition,
   MARGIN_FLOOR_MULT,
   EBAY_FEE_MULT,
+  galaxyPriceDrop,
+  GALAXY_DROP_MIN_OFFER,
 } from "./resell-estimates";
 
 const BLOB_KEY = "prices/overrides.json";
@@ -183,7 +185,13 @@ export async function quoteDevice(
     // resell × eBay-net (−13% FVF) × margin floor — mirror of the funnel cap.
     const marginCap = estResellNow != null ? Math.round(estResellNow * EBAY_FEE_MULT * MARGIN_FLOOR_MULT) : null;
     const capped = marginCap != null && rawQuote > marginCap;
-    const finalQuote = capped ? marginCap! : rawQuote;
+    const cappedQuote = capped ? marginCap! : rawQuote;
+    // Galaxy S23+ blanket −$75 (mirror of the funnel). After the cap, floored
+    // at MIN_OFFER so it only trims real offers. Skywalker 2026-07-05.
+    const galaxyDrop = galaxyPriceDrop(id);
+    const finalQuote = (galaxyDrop > 0 && cappedQuote >= GALAXY_DROP_MIN_OFFER)
+      ? Math.max(MIN_OFFER, cappedQuote - galaxyDrop)
+      : cappedQuote;
 
     // Below MIN_OFFER (or cap forces it there) → manual review, no auto-offer.
     const needsReview = finalQuote < MIN_OFFER || (marginCap != null && marginCap < MIN_OFFER);

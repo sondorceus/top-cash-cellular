@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import { track as vercelTrack } from "@vercel/analytics";
-import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT } from "./lib/resell-estimates";
+import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT, galaxyPriceDrop, GALAXY_DROP_MIN_OFFER } from "./lib/resell-estimates";
+import SKU_LABELS from "./data/sku-labels.json";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
 import { formatOfferNumber } from "./lib/offer-number";
@@ -2729,21 +2730,40 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   // (a used MacBook 14 M3 read "up to $2955" off the raw ceiling). Models
   // not in the catalog (consoles, Dell, desktops, Surface, DJI) fall through
   // to the computed ceiling below.
-  const catalogPrice = CATALOG_PRICE_BY_MODEL_ID[m.id];
-  if (typeof catalogPrice === "number" && catalogPrice > 0) return catalogPrice;
-  const table = PRICE_TABLE[m.id];
-  if (table) {
-    let topPrice = 0;
-    for (const storageEntry of Object.values(table)) {
-      for (const price of Object.values(storageEntry)) {
-        if (price > topPrice) topPrice = price;
+  const rawMax = (): number => {
+    const catalogPrice = CATALOG_PRICE_BY_MODEL_ID[m.id];
+    if (typeof catalogPrice === "number" && catalogPrice > 0) return catalogPrice;
+    const table = PRICE_TABLE[m.id];
+    if (table) {
+      let topPrice = 0;
+      for (const storageEntry of Object.values(table)) {
+        for (const price of Object.values(storageEntry)) {
+          if (price > topPrice) topPrice = price;
+        }
       }
+      if (topPrice > 0) return topPrice + maxAccessoryBonus(dt) + maxPopularDeviceBonus(dt);
     }
-    if (topPrice > 0) return topPrice + maxAccessoryBonus(dt) + maxPopularDeviceBonus(dt);
+    if (!m.base) return 0;
+    const computed = Math.round(m.base * getMaxStorageMult(m.id) * getTopConditionMult(dt) * TOP_CARRIER_MULT);
+    return computed + maxAccessoryBonus(dt) + maxPopularDeviceBonus(dt);
+  };
+  let val = rawMax();
+  if (val <= 0) return val;
+  // Cap the advertised "up to $X" at what the funnel would ACTUALLY pay for
+  // the best config — otherwise the card promises more than the customer
+  // gets. Folding the eBay 13% fee into the live cap (2026-07-05) dropped it
+  // ~13% below the catalog headline; re-sync so there's no bait-and-switch.
+  // Best config → sealed, condMult 1.0. Exempt SKUs (no resell entry:
+  // sealed iPhone 17 PM, Ultra 2/3, consoles, …) aren't capped in the funnel
+  // either, so they keep the raw headline.
+  const label = (SKU_LABELS as Record<string, string>)[m.id];
+  const resell = label ? getResellEstimate(label) : null;
+  if (resell != null) {
+    val = Math.min(val, Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT));
   }
-  if (!m.base) return 0;
-  const computed = Math.round(m.base * getMaxStorageMult(m.id) * getTopConditionMult(dt) * TOP_CARRIER_MULT);
-  return computed + maxAccessoryBonus(dt) + maxPopularDeviceBonus(dt);
+  const gd = galaxyPriceDrop(m.id);
+  if (gd > 0 && val >= GALAXY_DROP_MIN_OFFER) val = Math.max(MIN_OFFER, val - gd);
+  return val;
 };
 
 const PAYOUTS = [
@@ -5826,9 +5846,23 @@ export default function Home() {
   const displayGlassMultiplier = displayGlass?.multiplier ?? 1;
   const batteryHealthMultiplier = batteryHealth?.multiplier ?? 1;
   const chargerMultiplier = charger?.multiplier ?? 1;
+  // Only price EXTRAS whose question is still VISIBLE under the current
+  // answers + condition. When a user edits an earlier answer (e.g. an Apple
+  // Watch "functional" yes→no via the edit chip), showIf hides the downstream
+  // questions in the UI — but their banked adj/multiplier used to stay in
+  // `extras` and keep pricing, letting a non-working watch dodge manual review
+  // and a "no band" Ultra keep the band premium. Filtering by the live showIf
+  // (and dropping any answer whose question isn't in the current model's set,
+  // e.g. stale answers from a prior model) fixes both. (bug fix)
+  const _visibleExtras: Record<string, ExtraOption | undefined> = {};
+  for (const _q of getBrandExtras(deviceType, model?.id)) {
+    if (extras[_q.id] !== undefined && (!_q.showIf || _q.showIf(extras, condition ?? null))) {
+      _visibleExtras[_q.id] = extras[_q.id];
+    }
+  }
   // Compound multiplier from all brand-specific extras the user has
   // picked so far (1.0x for anything they haven't answered).
-  const extrasMultiplier = Object.values(extras).reduce((acc, opt) => acc * (opt?.multiplier ?? 1), 1);
+  const extrasMultiplier = Object.values(_visibleExtras).reduce((acc, opt) => acc * (opt?.multiplier ?? 1), 1);
   // Direct price lookup — if the table has an exact price for this
   // device × storage × condition, use it instead of multiplier math.
   // Carrier deductions are flat $ amounts from CARRIER_DEDUCTIONS, not multipliers.
@@ -5871,8 +5905,8 @@ export default function Home() {
   // contribute multiplicatively. This lets tablet brand_extras (storage,
   // S Pen, Type Cover, etc.) work without forcing them into the full
   // additive-spec flow used for laptops.
-  const extrasAdjSum = Object.values(extras).reduce((acc, opt) => acc + ((opt as ExtraOption | undefined)?.adj ?? 0), 0);
-  const extrasMultOnly = Object.values(extras).reduce((acc, opt) => {
+  const extrasAdjSum = Object.values(_visibleExtras).reduce((acc, opt) => acc + ((opt as ExtraOption | undefined)?.adj ?? 0), 0);
+  const extrasMultOnly = Object.values(_visibleExtras).reduce((acc, opt) => {
     const o = opt as ExtraOption | undefined;
     return acc * ((o?.adj != null) ? 1 : (o?.multiplier ?? 1));
   }, 1);
@@ -5968,7 +6002,14 @@ export default function Home() {
   // after the prior `workingResell == null` trigger was flagging
   // basically every non-iPhone device for manual review.
   const needsMarginReview = marginCap != null && marginCap < MIN_OFFER;
-  const quote = quoteAfterCap;
+  // Galaxy S23+ blanket −$75 (Atlas doesn't really buy Galaxy). Applied after
+  // the cap so it lands on the live offer; only trims real priced offers
+  // (above MIN_OFFER) and floors at MIN_OFFER so it never manufactures a
+  // manual-review on a cheap tier. Skywalker 2026-07-05.
+  const _galaxyDrop = galaxyPriceDrop(model?.id);
+  const quote = (_galaxyDrop > 0 && quoteAfterCap >= GALAXY_DROP_MIN_OFFER)
+    ? Math.max(MIN_OFFER, quoteAfterCap - _galaxyDrop)
+    : quoteAfterCap;
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.

@@ -27,19 +27,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
-import { getResellEstimate, resellMultiplierForCondition } from "../../../../lib/resell-estimates";
+import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../../../lib/resell-estimates";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
 
 // Server-side quote ceiling per added device — mirrors /api/lead's anti-tamper
 // guard so a tampered offer link can't inflate the order total (which flows into
-// the admin payout figure + analytics). resell × condition × margin-floor.
+// the admin payout figure + analytics). resell × condition × eBay-net × margin-floor.
 const SERVER_MARGIN_FLOOR_MULT = 0.75;
 const SERVER_QUOTE_TOLERANCE = 5;
 function computeUnitCap(model: unknown, condition: unknown): number | null {
   const r = getResellEstimate(typeof model === "string" ? model : "");
   if (r == null) return null;
   const cm = resellMultiplierForCondition(typeof condition === "string" ? condition : "", null);
-  return Math.round(r * cm * SERVER_MARGIN_FLOOR_MULT);
+  // Mirror the funnel cap incl. the eBay 13% FVF (see /api/lead). (bug fix)
+  return Math.round(r * cm * EBAY_FEE_MULT * SERVER_MARGIN_FLOOR_MULT);
 }
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";

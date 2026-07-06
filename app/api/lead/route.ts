@@ -8,7 +8,7 @@ import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle
 import { validateEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from "../../lib/email-validate";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
-import { getResellEstimate, resellMultiplierForCondition } from "../../lib/resell-estimates";
+import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../lib/resell-estimates";
 import { mailShell, mailDetails, MAIL, mailLogo } from "../../lib/email-shell";
 import { registerEasyPostTracker } from "../../lib/easypost";
 import { notifyOwnerSms } from "../../lib/owner-sms";
@@ -457,23 +457,34 @@ export async function POST(req: NextRequest) {
     if (r == null) return null;
     const glass = bg === "front" || bg === "back" || bg === "both" ? bg : null;
     const cm = resellMultiplierForCondition(typeof c === "string" ? c : "", glass);
-    return Math.round(r * cm * SERVER_MARGIN_FLOOR_MULT);
+    // Mirror the funnel cap exactly: resell × condMult × eBay-net (0.87) ×
+    // margin floor (0.75). The eBay 13% FVF was folded into the live cap on
+    // 2026-07-05 but this server anti-tamper ceiling was left at the old
+    // ×0.75, leaving it ~13% loose. (bug fix)
+    return Math.round(r * cm * EBAY_FEE_MULT * SERVER_MARGIN_FLOOR_MULT);
   };
   let serverQuoteCap: number | null;
   if (isMultiDeviceCart) {
     const devs = (data as { devices: { model?: string; condition?: string; quantity?: number; brokenGlass?: unknown }[] }).devices;
     let acc = 0;
     let anyKnown = false;
+    let allKnown = true;
     for (const d of devs) {
       const cap = computeCap(d.model, d.condition, d.brokenGlass);
       if (cap != null) {
         anyKnown = true;
         acc += cap * (Number(d.quantity) || 1);
+      } else {
+        allKnown = false;
       }
     }
-    // If NO device in the cart is recognized we can't cap — leave null
-    // so the lead saves; manual review will catch it via other guards.
-    serverQuoteCap = anyKnown ? acc : null;
+    // Only clamp when EVERY device is priceable. If ANY device is a
+    // resell-exempt SKU (sealed iPhone 17 PM, Ultra 2/3, etc.), its $0
+    // contribution to `acc` would make a partial cap that a legit full-cart
+    // total blows past — false-flagging an honest customer as a fraudster
+    // and gutting their offer. Better to skip the clamp (inspection is the
+    // backstop) than clamp against an undercount. (bug fix)
+    serverQuoteCap = (anyKnown && allKnown) ? acc : null;
   } else {
     serverQuoteCap = computeCap(model, condition, brokenGlass);
   }
