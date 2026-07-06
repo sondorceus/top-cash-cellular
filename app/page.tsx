@@ -8563,11 +8563,14 @@ export default function Home() {
                   // built-in green→amber→red wear signal so the tier reads at a
                   // glance; the big payout % is the one number that matters.
                   // Tap a tier for a compact detail (chips, not paragraphs).
+                  // img → /condition-examples/screen-{n}.png (real close-up front
+                  // shots, same crop the "What qualifies?" modal uses): 1 flawless
+                  // → 4 cracked, so the tile photo carries the wear signal itself.
                   const tiers = [
-                    { id: "sealed" as const, t: "Like new",      payout: "100%",   level: 4, headline: "Flawless — top tier",        chips: ["Zero wear", "Battery ≥80%", "Powers on clean"] },
-                    { id: "good" as const,   t: "Light wear",    payout: "85–95%", level: 3, headline: "Lived-in, still clean",      chips: ["Faint micro-scratches", "No cracks or dents", "Screen clean"] },
-                    { id: "fair" as const,   t: "Visible wear",  payout: "60–75%", level: 2, headline: "Honest wear, honest quote",  chips: ["Scuffs & dents OK", "Scratched, not cracked", "Screen still works"] },
-                    { id: "broken" as const, t: "Bigger issues", payout: "Fair",   level: 1, headline: "Cracked or dead — still buy", chips: ["Cracked screen OK", "Dead battery OK", "Water damage OK", "Paid on the spot"] },
+                    { id: "sealed" as const, t: "Like new",      payout: "100%",   level: 4, img: 1, headline: "Flawless — top tier",        chips: ["Zero wear", "Battery ≥80%", "Powers on clean"] },
+                    { id: "good" as const,   t: "Light wear",    payout: "85–95%", level: 3, img: 2, headline: "Lived-in, still clean",      chips: ["Faint micro-scratches", "No cracks or dents", "Screen clean"] },
+                    { id: "fair" as const,   t: "Visible wear",  payout: "60–75%", level: 2, img: 3, headline: "Honest wear, honest quote",  chips: ["Scuffs & dents OK", "Scratched, not cracked", "Screen still works"] },
+                    { id: "broken" as const, t: "Bigger issues", payout: "Fair",   level: 1, img: 4, headline: "Cracked or dead — still buy", chips: ["Cracked screen OK", "Dead battery OK", "Water damage OK", "Paid on the spot"] },
                   ];
                   return (
                     <>
@@ -8584,7 +8587,9 @@ export default function Home() {
                                 ? "bg-[#00c853]/12 border-[#00c853]/55"
                                 : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"}`}
                             >
-                              <ConditionIllustration id={item.id} className="w-8 h-12 mb-1.5 text-white/55" />
+                              <span className="w-full aspect-[3/2] rounded-lg overflow-hidden bg-[#eef0f3] mb-2 block">
+                                <NextImage src={`/condition-examples/screen-${item.img}.png`} alt={`${item.t} example`} width={480} height={320} className="w-full h-full object-cover" loading="lazy" />
+                              </span>
                               <p className="text-[11px] font-semibold text-white leading-tight">{item.t}</p>
                               <p className="text-base font-extrabold text-[#00c853] leading-none mt-1">{item.payout}</p>
                               {/* payout level bar — visual stand-in for the % */}
@@ -8599,7 +8604,9 @@ export default function Home() {
                         const t = tiers[expandedConditionTier];
                         return (
                           <div className="mb-4 bg-[rgba(15,15,15,0.55)] backdrop-blur-[10px] border border-[#00c853]/30 rounded-2xl p-4 flex items-center gap-4 animate-[fadeIn_0.225s_ease-out]">
-                            <ConditionIllustration id={t.id} className="w-12 h-[72px] shrink-0 text-white/60" />
+                            <span className="w-24 aspect-[3/2] rounded-xl overflow-hidden bg-[#eef0f3] shrink-0 block">
+                              <NextImage src={`/condition-examples/screen-${t.img}.png`} alt={`${t.t} example`} width={480} height={320} className="w-full h-full object-cover" loading="lazy" />
+                            </span>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-baseline gap-2 flex-wrap">
                                 <p className="text-white text-sm font-extrabold leading-tight">{t.headline}</p>
