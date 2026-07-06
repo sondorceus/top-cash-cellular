@@ -19,6 +19,7 @@ import {
   PRICE_TABLE,
   CARRIER_DEDUCTIONS,
   MIN_OFFER,
+  SEALED_PREMIUM,
   BASE_PRICED_MODELS,
   MANUAL_REVIEW_DEVICES,
 } from "../data/prices";
@@ -105,6 +106,7 @@ export type QuoteResult = {
     carrierDeduction: number;
     popularBonus: number;
     bothGlassPenalty: number;
+    sealedPremium: number;
     rawQuote: number;
     resellEstimate: number | null;
     marginCap: number | null;
@@ -149,8 +151,13 @@ export async function quoteDevice(
   }
 
   // --- PRICE-TABLE PATH (phones, tablets) — fully computed ---
+  // Sealed derives from the MINT price + a flat guaranteed premium (see
+  // SEALED_PREMIUM): the per-cell `sealed` column is inconsistent, and the
+  // owner always pays the same extra for an unopened unit over a like-new one.
+  const isSealed = cond === "sealed";
+  const priceCond = isSealed ? "mint" : cond;
   const cellPrice =
-    ov.priceTable?.[id]?.[storage]?.[cond] ?? PRICE_TABLE[id]?.[storage]?.[cond];
+    ov.priceTable?.[id]?.[storage]?.[priceCond] ?? PRICE_TABLE[id]?.[storage]?.[priceCond];
 
   if (cellPrice != null) {
     // Carrier gap (flat $). Verizon is the only carrier with a lock question:
@@ -189,9 +196,14 @@ export async function quoteDevice(
     // Galaxy S23+ blanket −$75 (mirror of the funnel). After the cap, floored
     // at MIN_OFFER so it only trims real offers. Skywalker 2026-07-05.
     const galaxyDrop = galaxyPriceDrop(id);
-    const finalQuote = (galaxyDrop > 0 && cappedQuote >= GALAXY_DROP_MIN_OFFER)
+    const postGalaxy = (galaxyDrop > 0 && cappedQuote >= GALAXY_DROP_MIN_OFFER)
       ? Math.max(MIN_OFFER, cappedQuote - galaxyDrop)
       : cappedQuote;
+    // Sealed premium is added LAST — guaranteed past the resell margin cap,
+    // because an unopened unit genuinely resells above the mint comp the cap is
+    // built on. Only on real offers (a $0 base stays $0, not a lone $45).
+    const sealedPremium = isSealed && postGalaxy > 0 ? SEALED_PREMIUM : 0;
+    const finalQuote = postGalaxy + sealedPremium;
 
     // Below MIN_OFFER (or cap forces it there) → manual review, no auto-offer.
     const needsReview = finalQuote < MIN_OFFER || (marginCap != null && marginCap < MIN_OFFER);
@@ -208,6 +220,7 @@ export async function quoteDevice(
         carrierDeduction,
         popularBonus,
         bothGlassPenalty,
+        sealedPremium,
         rawQuote,
         resellEstimate: estResellNow,
         marginCap,

@@ -127,6 +127,14 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
 // Devices below this get "Manual review & custom quote" instead of a dollar amount.
 export const MIN_OFFER = 25;
 
+// Sealed (brand-new, unopened) devices resell as new and TCC always pays a flat
+// premium over a like-new (mint) unit for them (owner rule 2026-07-06: "always
+// an extra 40-50 for sealed"). The per-cell `sealed` column in PRICE_TABLE is
+// inconsistent (deltas over mint ranged −7 to +465), so the engine ignores it
+// and derives sealed = mint price + SEALED_PREMIUM, guaranteed past the resell
+// margin cap. Midpoint of the owner's 40-50 range.
+export const SEALED_PREMIUM = 45;
+
 // High-value devices that require manual review before payout.
 // Quote is shown to customer but backend flags the lead for owner approval.
 export const MANUAL_REVIEW_DEVICES = new Set([
