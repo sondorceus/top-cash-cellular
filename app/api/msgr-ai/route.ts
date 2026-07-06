@@ -678,6 +678,19 @@ export async function POST(req: NextRequest) {
     });
   }
   if (!text) {
+    // Empty input = a Get Started tap / fresh open with nothing typed. Serve
+    // the REAL funnel menu (brand buttons), not a bare one-liner — this is the
+    // menu funnel's front door for brand-new conversations.
+    try {
+      const r = await fetch(`${origin}/api/msgr?s=${encodeURIComponent(secret)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Bot-Secret": secret },
+        body: JSON.stringify({ state: { step: "start" } }),
+      });
+      if (r.ok) return NextResponse.json(await r.json());
+    } catch {
+      /* fall through to the plain line */
+    }
     return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret);
   }
   const rawHistory = Array.isArray(body.history) ? body.history : [];
