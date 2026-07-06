@@ -14,6 +14,10 @@
       "schedule": "*/30 * * * *"
     },
     {
+      "path": "/api/cron/inbox-watch",
+      "schedule": "20 * * * *"
+    },
+    {
       "path": "/api/cron/daily-summary",
       "schedule": "0 14 * * *"
     },
