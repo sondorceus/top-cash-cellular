@@ -20,6 +20,9 @@ import { PRICE_TABLE } from "../../data/prices";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 
 export const dynamic = "force-dynamic";
+// after() runs owner alerts + (for off-catalog leads) a web market-check —
+// give the function room so a slow search can never kill the alert.
+export const maxDuration = 60;
 
 function authed(req: NextRequest): boolean {
   const expected = process.env.MSGR_BOT_SECRET;
@@ -180,6 +183,35 @@ async function runImeiCheck(input: { imei?: string }): Promise<Record<string, un
   }
 }
 
+// ---- market intel (OWNER-ALERT ONLY — the customer never sees these numbers) ----
+// Off-catalog leads (watches, tablets, consoles, bulk lots) get a quick web
+// lookup of real resale comps (eBay sold listings / Swappa) so the owner can
+// price from the alert alone instead of researching by hand. Runs inside
+// after(), hard-capped, and a failed/slow lookup never blocks the alert.
+async function marketCheck(summary: string): Promise<string | null> {
+  try {
+    const Anthropic = (await import("@anthropic-ai/sdk")).default;
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const r = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 700,
+      tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 3 } as never],
+      system:
+        "You research USED resale prices for a phone/electronics buyback business. Search eBay SOLD listings and Swappa for each item in the lead. Output ONLY final result lines, one per item: '<item>: resells ~$LOW-$HIGH, likely $MID (basis)'. Weak-resale items (fitness bands, old TVs, soundbars, keyboards): '<item>: weak resale ~$X, likely pass'. No preamble, no prose between lines.",
+      messages: [{ role: "user", content: summary.slice(0, 800) }],
+    });
+    const txt = (r.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
+    // The model sometimes narrates between searches — keep only result lines.
+    const lines = txt.split("\n").map((s) => s.trim()).filter((l) => /resells|weak resale|likely/i.test(l));
+    return lines.length ? lines.slice(0, 6).join(" | ").slice(0, 500) : null;
+  } catch (e) {
+    console.error("[market-check] failed:", (e as Error).message);
+    return null;
+  }
+}
+const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T | null> =>
+  Promise.race([p, new Promise<null>((r) => setTimeout(() => r(null), ms))]);
+
 // Server-side lead intelligence: catch contact info + hot-buying signals in the raw
 // message even when the model doesn't call notify_team — so no lead ever slips past
 // the owner, and the truly-ready ones get flagged HOT for a fast follow-up.
@@ -226,6 +258,7 @@ const SYSTEM = (lang: string) =>
     // ---- facts (mirror the button funnel exactly) ----
     "HOW IT WORKS (only if they ASK — answer in UNDER 12 words, like: 'you tell me what you got, we meet up and I pay you — whole thing is usually super quick 👍 let me know what you have, carrier, condition and all that'): do NOT explain the whole process or mention shipping unless they say they're out of town (then: 'no worries, we ship free — topcashcellular.com'). No walk-in store, never say 'come to the store'.",
     "WE BUY: iPhones (11+), Samsung Galaxy (S21+, Z Fold/Flip), Google Pixel, MacBooks, and consoles — ANY condition, even cracked (lower offer). Conditions: sealed (new in plastic), like-new, good, fair, broken. That list is what gets an INSTANT number — it is NOT a refusal list: for anything else (watches, tablets, other electronics) the owner's real line is 'I buy all types just asking for price' — take the item + their ask and notify_team, NEVER turn a category away yourself. The ONE exception you may decline solo is an obvious single junk item with no lot attached.",
+    "KNOW THE DEVICE CATEGORY — ask the RIGHT specs and never mix categories up: phones → model + storage + carrier/lock + condition. Apple Watch / Galaxy Watch = SMARTWATCH with real resale → series/gen + case size (41/45mm) + GPS or cellular + condition. Fitbits and no-name fitness bands = very low resale — stay neutral, take the info + their ask, team decides. iPads/tablets → which model + generation, storage, wifi-only or cellular. MacBooks/laptops → chip (M1/M2/M3 or Intel), year, RAM, storage. Consoles → exact model (PS5 disc vs digital, Series X vs S), storage, controllers included. AirPods/earbuds → model + generation + which case. TVs/soundbars/keyboards/monitors → usually not worth shipping, but on a LOT take the list + asks and let the team decide. If you don't recognize a product name, ask plainly ('what is that — a watch, a tablet, or something else?') — never guess the category.",
     "READ MODELS CAREFULLY — quantity + product line + category (real failure: '10 Samsung Galaxy 3 watches' got answered as 'so 10 Galaxy S3 phones? and what about the 3 watches' — wrong on both). 'Samsung Galaxy N watch(es)' / 'Galaxy watch N' = Galaxy WATCH N, a smartwatch, never an S-series phone. The number right before a category noun is usually the QUANTITY ('10 TVs', '10 Fitbits'), the number inside a product name is the generation ('Watch 3', 'S24'). If quantity vs model is ambiguous, ask ONE clean confirm ('the watches — Galaxy Watch 3, and you have 10 of them?') instead of guessing.",
     "QUOTING — CRITICAL: you NEVER tell the customer a price. Work the order smoothly — model → storage → condition → carrier — ONE combined question for whatever's still missing, never re-asking anything they already said or implied. Once you have the specs (and ideally the number they need to be at), say exactly the owner's move: 'One sec, let me see what I can do' — then call the get_quote and notify_team TOOLS (tool calls are invisible system actions — the customer must NEVER see tool names, asterisk stage directions like *calling...*, or any mention of checking systems; the engine number goes to the team, NOT the customer — repeating get_quote's number to the customer is the single worst mistake you can make) and call notify_team with device + specs + their target number. If they push for an instant number: 'give me a minute, I'm seeing what I can do'. Never make up or estimate a price under any circumstances.",
     "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers.",
@@ -761,8 +794,14 @@ export async function POST(req: NextRequest) {
       }
       if (alertNeeded) {
         const quoted = `"${customerText.slice(0, 55)}"${enCust ? ` (EN: "${enCust.slice(0, 70)}")` : ""}`;
+        // Off-catalog / manual leads: fetch resale comps so the owner can
+        // price straight from the alert. 25s cap — the alert always goes out.
+        let intel: string | null = null;
+        if (teamNotified?.summary && !lastQuote) {
+          intel = await withTimeout(marketCheck(teamNotified.summary), 25000);
+        }
         await notifyOwnerSms(
-          `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | ${quoted}.${muteLink}`,
+          `${isHot ? "🔥 HOT" : "💬"} TCC AI lead: ${what}${contact ? ` | 📞 ${contact}` : ""}${sig.imei ? ` | IMEI ${sig.imei}` : ""} | ${quoted}.${intel ? ` 🔎 MARKET: ${intel}` : ""}${muteLink}`,
         );
         if (psid) await markAlerted(psid);
       }
