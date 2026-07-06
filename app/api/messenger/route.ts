@@ -317,7 +317,10 @@ async function latestIs(psid: string, mid: string): Promise<boolean> {
 // (/api/msgr-ai) — with per-user memory — then Send-API each reply line. This is
 // the continuous back-and-forth ManyChat's one-shot Default Reply couldn't do.
 async function aiReply(origin: string, senderId: string, text: string, token: string) {
-  type BrainOut = { content?: { messages?: { text?: string }[] }; ctx?: string };
+  type BrainOut = {
+    content?: { messages?: { text?: string }[]; quick_replies?: { caption?: string; payload?: { state?: unknown } }[] };
+    ctx?: string;
+  };
   const secret = process.env.MSGR_BOT_SECRET || "";
   const ctx = await loadCtx(senderId);
   let out: BrainOut | null = null;
@@ -333,8 +336,30 @@ async function aiReply(origin: string, senderId: string, text: string, token: st
   } catch {
     return;
   }
-  for (const m of out?.content?.messages ?? []) {
-    if (m?.text) await sendText(senderId, m.text, token);
+  const texts = (out?.content?.messages ?? []).map((m) => m?.text).filter(Boolean) as string[];
+  // The brain can answer with a FUNNEL step (menu/model picker) whose buttons
+  // ride as ManyChat-style quick replies carrying ConvoState payloads. Convert
+  // them to native Messenger quick replies on the last message — the tap comes
+  // back as message.quick_reply.payload, which stateFrom() already parses.
+  const qrs = (out?.content?.quick_replies ?? [])
+    .filter((q) => q && q.caption)
+    .slice(0, 13)
+    .map((q) => ({
+      content_type: "text",
+      title: String(q.caption).slice(0, 20),
+      payload: JSON.stringify((q.payload && q.payload.state) || { step: "start" }),
+    }));
+  for (let i = 0; i < texts.length; i++) {
+    const isLast = i === texts.length - 1;
+    if (isLast && qrs.length) {
+      await fetch(`${GRAPH}?access_token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ recipient: { id: senderId }, messaging_type: "RESPONSE", message: { text: texts[i], quick_replies: qrs } }),
+      }).catch(() => {});
+    } else {
+      await sendText(senderId, texts[i], token);
+    }
   }
   if (out?.ctx) await saveCtx(senderId, out.ctx);
 }

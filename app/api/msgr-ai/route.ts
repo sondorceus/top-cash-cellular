@@ -282,7 +282,7 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   // real one (sealed 17 Pro Max price sheet, 2026-07-06) got brushed off with
   // no alert. Backstop fires even when the model skips notify_team.
   const vendor =
-    /\b(price ?(?:sheet|list)s?|rate ?sheets?|buy(?:ing)? from you|trying to buy|be your buyer|i(?:'m| am) (?:a )?(?:buyer|wholesaler|reseller)|te compro|les compro)\b/i.test(text);
+    /\b(price ?(?:sheet|list)s?|rate ?sheets?|buy(?:ing)? from you|trying to buy from|be your buyer|i(?:'m| am) (?:a )?(?:buyer|wholesaler|reseller)|te compro|les compro)\b/i.test(text);
   return { contact, hot, intent, imei, vendor };
 }
 
@@ -631,18 +631,28 @@ export async function POST(req: NextRequest) {
     "\u2795 Sell another": { step: "start" },
     "\u2795 Vender otro": { step: "start", lang: "es" },
   };
-  const capState = CAPTION_STATES[text];
-  if (capState) {
+  const proxyFunnel = async (state: ConvoState) => {
     try {
       const r = await fetch(`${origin}/api/msgr?s=${encodeURIComponent(secret)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Bot-Secret": secret },
-        body: JSON.stringify({ state: capState }),
+        body: JSON.stringify({ state }),
       });
       if (r.ok) return NextResponse.json(await r.json());
     } catch {
-      /* proxy failed — fall through to the AI, which is better than silence */
+      /* proxy failed — caller falls through, which is better than silence */
     }
+    return null;
+  };
+  const capState = CAPTION_STATES[text];
+  if (capState) {
+    // Same silence contract as the AI path: the kill switch and the owner's
+    // per-contact mute apply to proxied funnel steps too — a tapped button must
+    // never talk over Sonny mid-takeover.
+    if (process.env.MSGR_AI_ENABLED === "0") return EMPTY();
+    if (psid && (await isMuted(psid))) return EMPTY();
+    const out = await proxyFunnel(capState);
+    if (out) return out;
   }
 
   // ---- follow-up nudge callback ---------------------------------------------
@@ -678,20 +688,27 @@ export async function POST(req: NextRequest) {
     });
   }
   if (!text) {
-    // Empty input = a Get Started tap / fresh open with nothing typed. Serve
-    // the REAL funnel menu (brand buttons), not a bare one-liner — this is the
-    // menu funnel's front door for brand-new conversations.
-    try {
-      const r = await fetch(`${origin}/api/msgr?s=${encodeURIComponent(secret)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Bot-Secret": secret },
-        body: JSON.stringify({ state: { step: "start" } }),
-      });
-      if (r.ok) return NextResponse.json(await r.json());
-    } catch {
-      /* fall through to the plain line */
+    if (process.env.MSGR_AI_ENABLED === "0") return EMPTY();
+    if (psid && (await isMuted(psid))) return EMPTY();
+    const priorEmpty = decodeCtx(body.ctx);
+    if (!priorEmpty.length) {
+      // Fresh conversation with nothing typed (a Get Started tap): serve the
+      // REAL funnel menu — this is the menu funnel's front door.
+      const out = await proxyFunnel({ step: "start" });
+      if (out) return out;
+      return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret);
     }
-    return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret);
+    // MID-conversation empty input is almost always a photo/attachment (sellers
+    // send device pics constantly). Restarting the menu here reads as a broken
+    // bot — acknowledge the pic and keep the thread moving instead.
+    const esPic = /[áéíóúñ¿¡]|\b(hola|cu[aá]nto|vend[eo]|tel[eé]fono|celular|precio|quiero|gracias)\b/i.test(
+      priorEmpty.filter((t) => t.role === "user").map((t) => t.content).join(" "),
+    );
+    const picLine = esPic
+      ? "No puedo ver fotos por aquí — dime qué es y en qué condición está 👍"
+      : "Can't see pics on here — just tell me what it is and the condition 👍";
+    const picCtx = body.ctx !== undefined ? encodeCtx([...priorEmpty, { role: "assistant", content: picLine }], ctxTurns, ctxLen) : undefined;
+    return render([picLine], [], origin, secret, picCtx);
   }
   const rawHistory = Array.isArray(body.history) ? body.history : [];
   const history = rawHistory
