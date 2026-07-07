@@ -20,9 +20,6 @@
   --tadm-bad: #ef4444;
   --tadm-info: #38bdf8;
   --tadm-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
-  /* Height of the shell's sticky bars — page-level sticky headers
-     (the .top-0.z-20 pattern shared by the sub-pages) offset by this. */
-  --tadm-stack: 92px;
 }
 
 /* Admin is dark-only: the root paints a solid floor so the customer
@@ -32,18 +29,23 @@
   min-height: 100dvh;
 }
 
-/* ---------- topbar ---------- */
-.tadm-topbar {
+/* ---------- chrome (topbar + nav pin as ONE block) ---------- */
+/* A single sticky container — no per-bar offset math, so the bars can
+   never drift apart or show scroll-through seams ("moving menu"). */
+.tadm-chrome {
   position: sticky;
   top: 0;
   z-index: 50;
+  background: rgba(10, 10, 10, 0.92);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.tadm-topbar {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 9px 16px;
-  background: rgba(10, 10, 10, 0.88);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--tadm-border);
 }
 .tadm-brand {
@@ -91,24 +93,15 @@
 .tadm-sitelink:hover { color: var(--tadm-text); background: var(--tadm-panel2); }
 
 /* ---------- tab nav ---------- */
+/* Tabs WRAP on desktop — never a horizontal scroller (a scrolling /
+   center-clipped tab bar reads as a "moving menu"). */
 .tadm-nav {
-  position: sticky;
-  top: 46px;
-  z-index: 49;
   display: flex;
-  justify-content: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 3px;
   padding: 7px 12px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  background: rgba(10, 10, 10, 0.88);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--tadm-border);
-}
-.tadm-nav::-webkit-scrollbar { display: none; }
-@media (min-width: 1000px) {
-  .tadm-nav { justify-content: center; }
 }
 .tadm-nav a,
 .tadm-nav button {
@@ -151,10 +144,10 @@
   from { opacity: 0; transform: translateY(4px); }
 }
 
-/* Sub-page sticky headers (`sticky top-0 z-20` pattern) must stick
-   BELOW the shell bars instead of sliding behind them. Modal headers
-   use z-10 / no z and are untouched. */
-.tcc-admin .sticky.top-0.z-20 { top: var(--tadm-stack); }
+/* Sub-page sticky headers (`sticky top-0 z-20` pattern) scroll away
+   with their page — a second pinned bar under the shell chrome reads
+   as a "moving menu". Modal headers use z-10 / no z and are untouched. */
+.tcc-admin .sticky.top-0.z-20 { position: static; }
 
 /* ---------- cards / tiles ---------- */
 .tadm-card {
@@ -573,21 +566,23 @@ a.tadm-row:hover { background: rgba(255, 255, 255, 0.03); }
   .tadm-links { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 700px) {
-  .tcc-admin { --tadm-stack: 46px; }
   .tadm-clock { display: none; }
 
   .tadm-nav {
     position: fixed;
-    top: auto;
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 50;
+    flex-wrap: nowrap;
     justify-content: space-around;
     gap: 0;
     padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--tadm-border);
     border-bottom: none;
     background: rgba(10, 10, 10, 0.94);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
   }
   .tadm-nav a,
   .tadm-nav button {

@@ -46,6 +46,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="tadm-root">
+      <div className="tadm-chrome">
       <header className="tadm-topbar">
         <Link href="/admin/home" className="tadm-brand">
           <span className="mark">▲</span>
@@ -75,6 +76,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           <span>More</span>
         </button>
       </nav>
+      </div>
 
       {moreOpen && (
         <div className="tadm-sheet-wrap" onClick={() => setMoreOpen(false)}>
