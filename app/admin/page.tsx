@@ -2547,7 +2547,9 @@ export default function AdminPage() {
                           these. Shown as a dense key:value list right under
                           the basic device line so it's all visible at glance. */}
                       {(lead.processor || lead.memory || lead.graphics || lead.displayResolution || lead.displayGlass || lead.batteryHealth || lead.charger || lead.connectivity || (lead.extras && lead.extras.length > 0)) && (
-                        <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 text-[11px]">
+                        <div className="mt-1.5 rounded-md bg-white/[0.03] border border-white/[0.07] p-2">
+                          <p className="text-[9px] font-bold uppercase tracking-wider text-[#8a8a8a] mb-1">Specs</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-0.5 text-[11px]">
                           {lead.processor         && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Chip:</span> <span className="text-white font-medium">{lead.processor}</span></p>}
                           {lead.memory            && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">RAM:</span> <span className="text-white font-medium">{lead.memory}</span></p>}
                           {lead.graphics          && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">GPU:</span> <span className="text-white font-medium">{lead.graphics}</span></p>}
@@ -2557,6 +2559,7 @@ export default function AdminPage() {
                           {lead.charger           && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Charger:</span> <span className="text-white font-medium">{lead.charger}</span></p>}
                           {lead.connectivity      && <p className="text-[#c5c5c5]"><span className="text-[#8a8a8a]">Connectivity:</span> <span className="text-white font-medium">{lead.connectivity}</span></p>}
                           {lead.extras && lead.extras.length > 0 && <p className="text-[#c5c5c5] sm:col-span-2"><span className="text-[#8a8a8a]">Extras:</span> <span className="text-white font-medium">{lead.extras.join(", ")}</span></p>}
+                          </div>
                         </div>
                       )}
                       {/* Carrier-balance badge — surfaces the paid-off
@@ -2932,7 +2935,7 @@ export default function AdminPage() {
                         </div>
                       )}
                       {/* Notes */}
-                      <div className="mt-1.5">
+                      <div className="mt-2 pt-2 border-t border-white/[0.06]">
                         {lead.latestNote && (
                           <div className="text-[11px] text-[#d4d4d4] bg-white/[0.03] border-l-2 border-[#00c853]/40 pl-2 py-1 rounded-sm" title={lead.latestNote}>
                             <span className="text-[9px] uppercase tracking-wider text-[#c5c5c5] font-bold">Note{lead.noteCount && lead.noteCount > 1 ? ` (${lead.noteCount})` : ""}: </span>
@@ -2959,7 +2962,8 @@ export default function AdminPage() {
                           <button type="button" onClick={() => { setNoteOpenId(lead.id); setNoteDraft(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] transition mt-1 cursor-pointer">+ {lead.latestNote ? "Add another note" : "Add internal note"}</button>
                         )}
                       </div>
-                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                      <p className="mt-2 pt-2 border-t border-white/[0.06] text-[9px] font-bold uppercase tracking-wider text-[#8a8a8a]">Quick actions</p>
+                      <div className="mt-1 flex flex-wrap gap-1.5">
                         {/* Review-link grab — one click puts the per-customer
                             review URL on the clipboard so Skywalker can text
                             or hand it to them after the meetup. */}
@@ -3083,7 +3087,8 @@ export default function AdminPage() {
                       )}
                     </div>
                     <div className="text-sm">
-                      <p className="font-semibold text-[#00c853]">{lead.quote || "—"}</p>
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-[#8a8a8a]">Offer</p>
+                      <p className="text-lg leading-tight font-extrabold text-[#00c853]">{lead.quote || "—"}</p>
                       {(() => {
                         // Headline margin = NET after fees + shipping, matching what
                         // /admin/profit records as actual realized profit. Use the
@@ -3180,7 +3185,7 @@ export default function AdminPage() {
                           return null;
                         })()}
                       </p>
-                      <div className="flex items-center gap-3 mt-1 flex-wrap">
+                      <div className="flex items-center gap-3 mt-2 pt-2 border-t border-white/[0.06] flex-wrap">
                         {adjustingId !== lead.id && (
                           <button type="button" onClick={() => { setAdjustingId(lead.id); setAdjustQuote(""); setAdjustReason(""); }} className="text-[10px] text-[#c5c5c5] hover:text-[#d4d4d4] cursor-pointer">✏️ Adjust quote</button>
                         )}
