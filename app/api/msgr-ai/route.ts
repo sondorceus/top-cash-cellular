@@ -332,6 +332,7 @@ const SYSTEM = (lang: string) =>
     "WHAT DO YOU DO WITH THE PHONES — NEVER EXPOSE THE BUSINESS: if they ask what happens to the phones ('you resell them?', 'what do you do with all these'), the answer is casual and vague, one line: 'depends — some we refurbish and sell, some go for parts to fix other devices'. NEVER mention wholesale, buyers, flipping, margins, where we sell, or how much we make — same discretion for any probing question (who buys from you, how do you make money, where do they end up): keep it light, no specifics, and steer back to their device.",
     "OFF-TOPIC / WEIRD QUESTIONS: you're a busy guy who buys phones, not a chatbot assistant. Unrelated stuff (news, jokes, homework, 'write me a poem', random links) gets ONE short dry line max — 'lol i just buy phones man. let me know what you have — model, carrier, condition' — and nothing more. 'are you a bot?' → 'nah lol. let me know what you have and I'll take care of you'. Never lecture, never explain yourself, never play along past one line.",
     "DON'T CHASE — HARD RULE: if you already asked what they're selling (or any question) and they keep coming back with nothing real — nonsense, one-word dodges, games — NEVER ask the same thing again and never re-open with another 'what do you have'. Say ONCE, firm but cool: 'Let me know when you're ready, I run a real business'. If they STILL send nothing real after that, reply with exactly [NO_REPLY] and nothing else — a real person just stops answering. [NO_REPLY] is also the right reply to obvious spam or trolling. Silence reads human; repeating yourself reads bot.",
+    "NATURAL STOPPING POINT — LET THE THREAD REST: when they signal they're stepping away to go check something ('let me look at the storage and text you', 'gotta ask my wife', 'I'll get back to you', 'I have to run') give ONE warm no-pressure line — 'sounds good, just text me when you've got it 👍' — and STOP. Do NOT quiz them, re-pitch, or fire more questions while they're walking away; it resumes when they're back. Same for a satisfied 'ok sounds good / I understand / makes sense' that lands on something that WASN'T a question — that's a natural pause, not a cue to add another line: a 👍 or [NO_REPLY] is the whole reply. Never turn a calm ending into more bot chatter.",
     "AFTER A QUOTE OR GOOD ANSWER: just ask casually if they wanna meet up (e.g. 'wanna link up this week?'). Never push, never pitch, never list benefits. If they're in or drop a number, call notify_team.",
     "QUICK ANSWERS — FIRST PERSON ALWAYS, 'usually I can…' beats slogan-speak ('cash on the spot' sounds like an ad): broken? → 'yeah I take broken, just less for it'. how long? → 'usually super quick, like 5 min when we meet and you get paid same time'. not sure on condition? → 'just tell me the screen, battery, any cracks — I sort the rest when we meet'. vs trade-in? → 'I usually pay way more than trade-in, and it's real cash not store credit'. is it legit / a scam? → 'nah lol, look us up on google 👍'. where are you? → 'Austin area — I'm out meeting people today, if you can come to me I can get it done today'.",
     "CONDITION COACHING (stay honest): if someone underrates their own phone (says 'fair' or 'broken' for what sounds like minor wear), gently double-check — 'is the screen actually cracked, or just light scratches? Good condition pays more' — so they get their best HONEST number. NEVER coach anyone to misrepresent; we verify at the meetup anyway.",
@@ -746,24 +747,9 @@ export async function POST(req: NextRequest) {
   const ctxHistory = decodeCtx(body.ctx);
   const priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
 
-  // Bare acknowledgment right after the "one sec" handoff: a human doesn't
-  // answer "Ok" with the same line again (real failure 2026-07-06: "Ok" got a
-  // second "One sec, let me see what I can do"). Deterministic silence — the
-  // model kept repeating itself despite prompt rules. Memory still records
-  // their turn so the thread picks up cleanly when the owner steps in.
-  const BARE_ACK = /^(ok(ay)?|k|kk|bet|alright|all right|sounds good|got it|cool|thanks?|thank you|ty|sure|yes sir|dale|va|listo|gracias|de acuerdo|esta bien|👍|🙏)[.!\s]*$/i;
+  // Newest assistant turn — used by the natural-stop guards (below the
+  // kill-switch/hours/mute gates) and the anti-loop guard further down.
   const lastAssistant = [...priorTurns].reverse().find((t) => t.role === "assistant");
-  if (BARE_ACK.test(text) && lastAssistant && /one sec|let me see what i can do|un momento|d[eé]jame ver/i.test(lastAssistant.content)) {
-    const ackCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: text }], ctxTurns, ctxLen) : undefined;
-    const ackActions: Record<string, unknown>[] = [];
-    if (ackCtx) ackActions.push({ action: "set_field_value", field_name: "ai_ctx", value: ackCtx });
-    if (psid) ackActions.push({ action: "remove_tag", tag_name: FOLLOWUP_TAG });
-    return NextResponse.json({
-      version: "v2",
-      content: { messages: [], ...(ackActions.length ? { actions: ackActions } : {}) },
-      ...(ackCtx ? { ctx: ackCtx } : {}),
-    });
-  }
 
   // Spanish detection must catch accent-LESS typing (most people skip accents on a phone):
   // "cuanto", "telefono", "vendo", etc. — not just the accented forms. STICKY across the
@@ -812,6 +798,60 @@ export async function POST(req: NextRequest) {
     const entries = await listMarkers(psid);
     if (entries.some(({ mark: m }) => m.kind === "a" && m.hash === myHash && myTs - m.ts < 90_000)) return EMPTY();
     await putMarker(psid, "q", myHash, myRand, myTs);
+  }
+
+  // ── NATURAL STOPPING POINT — let the thread rest, never chase ──
+  // Two human moments where firing another line reads as a bot: (1) they say
+  // they'll step away and follow up ("I'll text you later once I find the
+  // storage", "let me check the box", "gimme a sec") — a warm no-pressure line,
+  // then quiet; (2) a pure acknowledgment ("okay sounds good, I understand",
+  // "cool thanks") that ISN'T answering an open question — the conversation
+  // reached a natural pause, so stay silent like a person would. Both record the
+  // turn (a later message resumes cleanly) and disarm the follow-up nudge. The
+  // model kept re-asking / re-pitching here despite prompt rules → hard guard.
+  // Sits AFTER the kill-switch/hours/mute gates so nothing fires when the bot
+  // is meant to be silent.
+  const stopHere = (line: string) => {
+    const turns = [
+      ...priorTurns,
+      { role: "user" as const, content: text },
+      ...(line ? [{ role: "assistant" as const, content: line }] : []),
+    ];
+    const stopCtx = body.ctx !== undefined ? encodeCtx(turns, ctxTurns, ctxLen) : undefined;
+    const actions: Record<string, unknown>[] = [];
+    if (stopCtx) actions.push({ action: "set_field_value", field_name: "ai_ctx", value: stopCtx });
+    if (psid) {
+      actions.push({ action: "remove_tag", tag_name: FOLLOWUP_TAG });
+      putMarker(psid, "a", myHash, myRand, Date.now()).catch(() => {}); // burst-dedupe a repeat
+    }
+    return NextResponse.json({
+      version: "v2",
+      content: { messages: line ? [{ type: "text", text: line }] : [], ...(actions.length ? { actions } : {}) },
+      ...(stopCtx ? { ctx: stopCtx } : {}),
+    });
+  };
+  const lastAskedQuestion = !!lastAssistant && /\?/.test(lastAssistant.content);
+
+  // (1) Step-away / "I'll get back to you". A digit in the message usually means
+  // they actually ANSWERED (e.g. "128"), so skip then and let the model handle it.
+  const STEP_AWAY =
+    /\b(i'?ll|i will|let me|lemme|imma|i'?m gonna|i'?m going to|i gotta|gotta|i need to|i have to|i'?ll have to|gimme a|give me a)\b[^?!.]*\b(check|find|look|grab|see|get back|text|message|hit you|dm|ask|confirm|double ?check|figure out|verify|minute|min|sec|moment)\b|\b(text|message|hit) you (back|later)\b|\bget back to (you|ya)\b|\btalk (to you )?later\b|\bi'?ll let you know\b/i;
+  if (lastAssistant && STEP_AWAY.test(text) && !/\d/.test(text)) {
+    return stopHere(lang === "es" ? "va, mándame mensaje cuando lo tengas 👍" : "sounds good — just text me when you've got it 👍");
+  }
+
+  // (2) Pure acknowledgment (single- OR multi-phrase) that isn't answering an
+  // open question → the natural end; go quiet. Strips all ack/filler words; if
+  // nothing meaningful is left (and it wasn't just a bare number/punctuation),
+  // it's an acknowledgment. The no-open-question gate keeps a real answer like
+  // "yeah" (to "is it unlocked?") flowing to the model instead of dead-ending.
+  const ACK_FILLER =
+    /\b(ok(ay)?|k+|bet+|alright|all ?right|sounds? good|got ?it|cool+|thx|thanks?|thank you|ty|sure|yes ?sir|yessir|yep|yup|ya|yeah|word|gotcha|understood|i understand|understand|makes sense|will do|no problem|np|for sure|fasho|facts|appreciate (it|you|that)|man|bro|dude|homie|bud(dy)?|sir|boss|fam|my (friend|guy)|dale|va+|listo|gracias|de acuerdo|est[aá] bien|perfecto|vale|[óo]ra?le|sale)\b/gi;
+  const pureAck =
+    text.replace(ACK_FILLER, " ").replace(/[^\p{L}\p{N}]/gu, "").length === 0 &&
+    /[a-zÀ-ɏ👍🙏🙌👌💯]/i.test(text);
+  if (pureAck && lastAssistant && !lastAskedQuestion) {
+    return stopHere("");
   }
 
   // ---- run Claude with the quote engine as a tool ----
