@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 
 type Step = { position: number; delayDays: number; cumulativeDays: number; subject: string };
 type Seq = { slug: string; name: string; isActive: boolean; enabled: boolean; steps: Step[] };
@@ -50,85 +49,100 @@ export default function SequencesAdminPage() {
 
   if (!token) {
     return (
-      <main style={{ minHeight: "100vh", background: "#0b0d13", color: "#e8eaf0", padding: "2rem 1rem" }}>
-        <div style={{ maxWidth: 420, margin: "4rem auto" }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 12 }}>Sequences · Admin</h1>
-          <input value={tokenInput} onChange={(e) => setTokenInput(e.target.value)} placeholder="Admin token" type="password"
-            style={{ width: "100%", padding: "0.6rem 0.8rem", borderRadius: 10, background: "rgba(0,0,0,0.4)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", marginBottom: 10 }} />
-          <button onClick={saveToken} style={{ width: "100%", padding: "0.6rem", borderRadius: 10, background: "rgba(212,175,55,0.22)", border: "1px solid rgba(212,175,55,0.45)", color: "#ecd07a", fontWeight: 700 }}>Unlock</button>
-          {authError && <p style={{ color: "#fda4af", fontSize: 13, marginTop: 10 }}>{authError}</p>}
+      <div className="tadm-wrap">
+        <div className="tadm-page-head">
+          <h1>Sequences</h1>
+          <p>Enter the admin token to view email drips.</p>
         </div>
-      </main>
+        <div className="tadm-card" style={{ maxWidth: 420 }}>
+          <h3>Unlock</h3>
+          <input value={tokenInput} onChange={(e) => setTokenInput(e.target.value)} placeholder="Admin token" type="password"
+            className="tadm-input" style={{ width: "100%", marginBottom: 10 }} />
+          <button onClick={saveToken} className="tadm-btn primary" style={{ width: "100%" }}>Unlock</button>
+          {authError && <p style={{ color: "var(--tadm-bad)", fontSize: 12.5, margin: "10px 0 0" }}>{authError}</p>}
+        </div>
+      </div>
     );
   }
 
   return (
-    <main style={{ minHeight: "100vh", background: "#0b0d13", color: "#e8eaf0", padding: "1.5rem 1rem 4rem" }}>
-      <div style={{ maxWidth: 860, margin: "0 auto" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 6 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800 }}>Email sequences</h1>
-          <Link href="/admin" style={{ fontSize: 13, color: "#9aa3b2" }}>← Back to admin</Link>
-        </div>
-        <p style={{ fontSize: 13, color: "#9aa3b2", marginBottom: 18 }}>
+    <div className="tadm-wrap">
+      <div className="tadm-page-head">
+        <h1>Sequences</h1>
+        <p>
           Automated multi-touch drips. Edited in <code>app/lib/email-sequences.ts</code> and run by the daily{" "}
           <code>/api/cron/sequences</code>. Enrollment is implicit (no subscriber list).
         </p>
-
-        {authError && <p style={{ color: "#fda4af", fontSize: 13 }}>{authError}</p>}
-        {loading && !data && <p style={{ color: "#9aa3b2" }}>Loading…</p>}
-
-        {data?.ok && (
-          <>
-            <div style={{ display: "flex", gap: 18, flexWrap: "wrap", marginBottom: 20, fontSize: 13, color: "#9aa3b2" }}>
-              <span><strong style={{ color: "#fff" }}>{data.sequences.length}</strong> sequences</span>
-              <span><strong style={{ color: "#fff" }}>{data.leadsReached}</strong> people reached (90d)</span>
-              <span><strong style={{ color: "#fff" }}>{data.totalSends}</strong> sends (90d)</span>
-            </div>
-
-            {data.sequences.map((s) => (
-              <div key={s.slug} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.10)", borderRadius: 14, padding: 18, marginBottom: 16 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{ fontWeight: 800, fontSize: 16 }}>{s.name}</span>
-                  <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", padding: "2px 8px", borderRadius: 6, background: s.isActive && s.enabled ? "rgba(34,197,94,0.14)" : "rgba(245,158,11,0.14)", color: s.isActive && s.enabled ? "#86efac" : "#fcd34d", border: `1px solid ${s.isActive && s.enabled ? "rgba(34,197,94,0.35)" : "rgba(245,158,11,0.35)"}` }}>
-                    {s.isActive && s.enabled ? "Live" : s.isActive ? "Ready (cron off)" : "Paused"}
-                  </span>
-                  <span style={{ fontFamily: "monospace", fontSize: 11, color: "#6b7280", marginLeft: "auto" }}>{s.slug}</span>
-                </div>
-                <ol style={{ listStyle: "none", padding: 0, margin: "14px 0 0" }}>
-                  {s.steps.map((st) => (
-                    <li key={st.position} style={{ display: "flex", gap: 12, alignItems: "baseline", padding: "8px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                      <span style={{ fontFamily: "monospace", fontSize: 12, color: "#ecd07a", minWidth: 24 }}>{String(st.position).padStart(2, "0")}</span>
-                      <span style={{ fontSize: 11, color: "#9aa3b2", minWidth: 64 }}>day {st.cumulativeDays} <span style={{ color: "#6b7280" }}>(+{st.delayDays}d)</span></span>
-                      <span style={{ fontSize: 14, color: "#e8eaf0", flex: 1 }}>{st.subject}</span>
-                      <span style={{ fontSize: 12, color: "#9aa3b2" }}>{data.stepCounts[`${s.slug}:${st.position}`] || 0} sent</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            ))}
-
-            {!data.mcConfigured && (
-              <p style={{ fontSize: 12, color: "#fcd34d" }}>Send history unavailable (MC_API_KEY not set) — showing config only.</p>
-            )}
-
-            {data.recent.length > 0 && (
-              <div style={{ marginTop: 8 }}>
-                <h2 style={{ fontSize: 13, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "#9aa3b2", marginBottom: 8 }}>Recent sends</h2>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {data.recent.map((r, i) => (
-                    <li key={i} style={{ display: "flex", gap: 12, fontSize: 12, color: "#9aa3b2", padding: "5px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                      <span style={{ color: "#6b7280", minWidth: 130 }}>{r.at ? new Date(r.at).toLocaleString() : "—"}</span>
-                      <span style={{ color: "#e8eaf0" }}>{r.seq}</span>
-                      <span>step {r.step}</span>
-                      <span style={{ fontFamily: "monospace", color: "#6b7280", marginLeft: "auto" }}>{r.leadId}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </>
-        )}
       </div>
-    </main>
+
+      {authError && <p style={{ color: "var(--tadm-bad)", fontSize: 12.5 }}>{authError}</p>}
+      {loading && !data && <div className="tadm-empty pulse">Loading…</div>}
+
+      {data?.ok && (
+        <>
+          <div className="tadm-tiles">
+            <div className="tadm-tile">
+              <div className="num">{data.sequences.length}</div>
+              <div className="lbl">sequences</div>
+              <div className="sub">configured drips</div>
+            </div>
+            <div className="tadm-tile">
+              <div className="num">{data.leadsReached}</div>
+              <div className="lbl">people reached</div>
+              <div className="sub">last 90 days</div>
+            </div>
+            <div className="tadm-tile">
+              <div className="num">{data.totalSends}</div>
+              <div className="lbl">sends</div>
+              <div className="sub">last 90 days</div>
+            </div>
+            <div className="tadm-tile">
+              <div className={`num ${data.mcConfigured ? "green" : ""}`}>{data.mcConfigured ? "live" : "off"}</div>
+              <div className="lbl">send history</div>
+              <div className="sub">{data.mcConfigured ? "MC feed connected" : "MC_API_KEY not set — config only"}</div>
+            </div>
+          </div>
+
+          {data.sequences.map((s) => (
+            <div key={s.slug} className="tadm-card" style={{ marginTop: 10 }}>
+              <h3>
+                {s.name}
+                <span className={`tadm-pill ${s.isActive && s.enabled ? "on" : s.isActive ? "info" : "warn"}`}>
+                  {s.isActive && s.enabled ? "Live" : s.isActive ? "Ready (cron off)" : "Paused"}
+                </span>
+                <span className="right">{s.slug}</span>
+              </h3>
+              <div className="tadm-rows">
+                {s.steps.map((st) => (
+                  <div key={st.position} className="tadm-row">
+                    <span className="meta" style={{ minWidth: 20 }}>{String(st.position).padStart(2, "0")}</span>
+                    <span className="meta" style={{ minWidth: 86 }}>day {st.cumulativeDays} (+{st.delayDays}d)</span>
+                    <span className="main">{st.subject}</span>
+                    <span className="meta">{data.stepCounts[`${s.slug}:${st.position}`] || 0} sent</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {data.recent.length > 0 && (
+            <div className="tadm-card" style={{ marginTop: 10 }}>
+              <h3>Recent sends</h3>
+              <div className="tadm-rows">
+                {data.recent.map((r, i) => (
+                  <div key={i} className="tadm-row">
+                    <span className="meta" style={{ minWidth: 130 }}>{r.at ? new Date(r.at).toLocaleString() : "—"}</span>
+                    <span className="main">
+                      {r.seq} <span className="dim">· step {r.step}</span>
+                    </span>
+                    <span className="meta">{r.leadId}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
   );
 }

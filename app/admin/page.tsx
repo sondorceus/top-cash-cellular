@@ -1874,18 +1874,8 @@ export default function AdminPage() {
                       left of a narrow row — that was the "menu doesn't work on
                       mobile" bug. Desktop: an attached right-aligned dropdown. */}
                   <div className="fixed top-16 left-3 right-3 sm:absolute sm:top-auto sm:left-auto sm:right-0 sm:mt-2 sm:w-60 bg-[#0f0f0f] border border-white/15 rounded-xl shadow-2xl shadow-black/60 z-50 py-2 text-sm" role="menu">
-                    <p className="px-3 pt-1 pb-1.5 text-[10px] uppercase tracking-wider text-[#666] font-bold">Pages</p>
-                    <a href="/admin/prices" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💲 Prices</a>
-                    <a href="/admin/analytics" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">📊 Analytics</a>
-                    <a href="/admin/profit" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💰 Profit</a>
-                    <a href="/admin/customers" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">👥 Customers</a>
-                    <a href="/admin/saved-quotes" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">💾 Saved Quotes</a>
-                    <a href="/admin/referrals" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">🎁 Referrals</a>
-                    <a href="/admin/newsletter" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">📬 Newsletter</a>
-                    <a href="/admin/sequences" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">✉️ Sequences</a>
-                    <a href="/admin/slots" className="block px-3 py-1.5 text-[#dcdcdc] hover:bg-white/10 hover:text-white transition cursor-pointer">🗓️ Slots</a>
-                    <div className="border-t border-white/10 my-1.5" />
-                    <p className="px-3 pb-1.5 text-[10px] uppercase tracking-wider text-[#666] font-bold">Tools</p>
+                    {/* Page links live in the shared AdminShell tab nav now. */}
+                    <p className="px-3 pt-1 pb-1.5 text-[10px] uppercase tracking-wider text-[#666] font-bold">Tools</p>
                     <button
                       onClick={() => {
                         const exportView = displayedLeads.filter((l) => {

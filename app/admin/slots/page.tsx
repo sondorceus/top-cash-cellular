@@ -9,7 +9,7 @@
 // subsequent visits don't re-prompt.
 
 import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
+import type { CSSProperties } from "react";
 import { listSlots, addSlot, removeSlot, backendLabel, slotBookedCount, type Slot } from "../../lib/slots-store";
 
 const STORED_TOKEN_KEY = "tcc-admin-token-v1";
@@ -37,6 +37,16 @@ function formatTime(hhmm: string): string {
   const h12 = h % 12 || 12;
   return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
 }
+
+// Shared field-label style for the add-slot form (design-system vars only).
+const fieldLbl: CSSProperties = {
+  display: "block",
+  font: "600 10.5px var(--tadm-mono)",
+  textTransform: "uppercase",
+  letterSpacing: "0.8px",
+  color: "var(--tadm-faint)",
+  marginBottom: 5,
+};
 
 export default function AdminSlotsPage() {
   const [token, setToken] = useState("");
@@ -128,138 +138,176 @@ export default function AdminSlotsPage() {
   // -------------- AUTH SCREEN --------------
   if (!token) {
     return (
-      <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4">
-        <form onSubmit={handleAuth} className="w-full max-w-sm space-y-4">
-          <h1 className="text-2xl font-bold">Slot manager</h1>
-          <p className="text-[#a0a0a0] text-sm">Enter the admin token to manage local-meetup time slots.</p>
+      <div className="tadm-wrap" style={{ maxWidth: 440 }}>
+        <div className="tadm-page-head">
+          <h1>Meetup slots</h1>
+          <p>Enter the admin token to manage local-meetup time slots.</p>
+        </div>
+        <form onSubmit={handleAuth} className="tadm-card">
+          <h3>Unlock</h3>
           <input
             type="password"
             value={tokenInput}
             onChange={(e) => setTokenInput(e.target.value)}
             placeholder="Admin token"
             autoFocus
-            className="w-full px-4 py-3 bg-white/[0.07] border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-[#00c853]"
+            className="tadm-input"
+            style={{ width: "100%" }}
           />
-          <button
-            type="submit"
-            className="w-full px-4 py-3 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-bold rounded-xl transition cursor-pointer"
-          >
+          <button type="submit" className="tadm-btn primary" style={{ width: "100%", marginTop: 10 }}>
             Unlock
           </button>
-          <p className="text-[#666] text-xs text-center">Use the value of <span className="font-mono">TCC_ADMIN_TOKEN</span> from Vercel env.</p>
+          <p style={{ margin: "10px 0 0", textAlign: "center", fontSize: 11, color: "var(--tadm-faint)" }}>
+            Use the value of <span style={{ fontFamily: "var(--tadm-mono)" }}>TCC_ADMIN_TOKEN</span> from Vercel env.
+          </p>
         </form>
-      </main>
+      </div>
     );
   }
 
   // -------------- MAIN MANAGER --------------
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+    <div className="tadm-wrap">
+      <div className="tadm-page-head">
+        <h1>Meetup slots</h1>
+        <p>
+          Local Austin meetup times customers can book — backend:{" "}
+          <span style={{ color: "var(--tadm-green)", fontWeight: 700 }}>{backendLabel()}</span>
+        </p>
+      </div>
+
+      {/* ADD SLOT FORM */}
+      <form onSubmit={handleAdd} className="tadm-card">
+        <h3>Add a slot</h3>
+        <div className="tadm-cols2" style={{ marginTop: 0 }}>
           <div>
-            <h1 className="text-2xl font-bold">Slot manager</h1>
-            <p className="text-[#888] text-xs mt-1">
-              Backend: <span className="text-[#00c853] font-semibold">{backendLabel()}</span>
-            </p>
+            <label style={fieldLbl}>Date</label>
+            <input
+              type="date"
+              value={date}
+              min={todayLocalISO()}
+              onChange={(e) => setDate(e.target.value)}
+              required
+              className="tadm-input"
+              style={{ width: "100%", colorScheme: "dark" }}
+            />
           </div>
-          <Link href="/admin" className="text-xs text-[#00c853] hover:text-[#00e676] underline">Leads →</Link>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
+              <label style={{ ...fieldLbl, marginBottom: 0 }}>Time</label>
+              <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10.5, fontWeight: 600, color: "var(--tadm-dim)", cursor: "pointer", userSelect: "none" }}>
+                <input
+                  type="checkbox"
+                  checked={allDay}
+                  onChange={(e) => setAllDay(e.target.checked)}
+                  style={{ accentColor: "var(--tadm-green)", cursor: "pointer" }}
+                />
+                All day (any time)
+              </label>
+            </div>
+            <input
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              required={!allDay}
+              disabled={allDay}
+              step={900}
+              className="tadm-input"
+              style={{ width: "100%", colorScheme: "dark", opacity: allDay ? 0.4 : 1 }}
+            />
+            {allDay && (
+              <p style={{ margin: "5px 0 0", fontSize: 10.5, fontWeight: 500, color: "var(--tadm-faint)" }}>
+                Open day — customer picks any time that works.
+              </p>
+            )}
+          </div>
         </div>
+        <div className="tadm-cols2">
+          <div>
+            <label style={fieldLbl}>Label (optional)</label>
+            <input
+              type="text"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="e.g. South Austin · Downtown · Mueller HEB"
+              className="tadm-input"
+              style={{ width: "100%" }}
+            />
+          </div>
+          <div>
+            <label style={fieldLbl}>Capacity</label>
+            <input
+              type="number"
+              value={capacity}
+              min={1}
+              max={10}
+              onChange={(e) => setCapacity(parseInt(e.target.value, 10) || 1)}
+              className="tadm-input"
+              style={{ width: "100%" }}
+            />
+          </div>
+        </div>
+        <button type="submit" disabled={submitting} className="tadm-btn primary" style={{ marginTop: 12 }}>
+          {submitting ? "Adding…" : "Add slot"}
+        </button>
+      </form>
 
-        {/* ADD SLOT FORM */}
-        <form onSubmit={handleAdd} className="bg-white/[0.04] border border-white/10 rounded-2xl p-5 mb-8 space-y-3">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-[#00c853]">Add a slot</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-[#a0a0a0] mb-1">Date</label>
-              <input type="date" value={date} min={todayLocalISO()} onChange={(e) => setDate(e.target.value)} required className="w-full px-3 py-2.5 bg-white/[0.07] border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#00c853]" />
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="text-xs text-[#a0a0a0]">Time</label>
-                <label className="text-[10px] text-[#a0a0a0] flex items-center gap-1.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={allDay}
-                    onChange={(e) => setAllDay(e.target.checked)}
-                    className="accent-[#00c853] cursor-pointer"
-                  />
-                  All day (any time)
-                </label>
-              </div>
-              <input
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                required={!allDay}
-                disabled={allDay}
-                step={900}
-                className="w-full px-3 py-2.5 bg-white/[0.07] border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#00c853] disabled:opacity-40 disabled:cursor-not-allowed"
-              />
-              {allDay && (
-                <p className="text-[10px] text-[#888] mt-1">Open day — customer picks any time that works.</p>
-              )}
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-[#a0a0a0] mb-1">Label (optional)</label>
-              <input type="text" value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. South Austin · Downtown · Mueller HEB" className="w-full px-3 py-2.5 bg-white/[0.07] border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#00c853]" />
-            </div>
-            <div>
-              <label className="block text-xs text-[#a0a0a0] mb-1">Capacity</label>
-              <input type="number" value={capacity} min={1} max={10} onChange={(e) => setCapacity(parseInt(e.target.value, 10) || 1)} className="w-full px-3 py-2.5 bg-white/[0.07] border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-[#00c853]" />
-            </div>
-          </div>
-          <button type="submit" disabled={submitting} className="w-full px-4 py-3 bg-[#00c853] hover:bg-[#00e676] disabled:opacity-50 text-[#0a0a0a] font-bold rounded-xl transition cursor-pointer">
-            {submitting ? "Adding…" : "Add slot"}
+      {error && (
+        <div className="tadm-card" style={{ borderColor: "var(--tadm-bad)" }}>
+          <p style={{ margin: 0, fontSize: 12.5, fontWeight: 500, color: "var(--tadm-bad)" }}>{error}</p>
+        </div>
+      )}
+
+      {/* SLOT LIST */}
+      <div className="tadm-card">
+        <h3>
+          Upcoming slots ({slots.length})
+          <button onClick={refresh} disabled={loading} className="tadm-btn sm right">
+            ↻ Refresh
           </button>
-        </form>
-
-        {error && <div className="mb-6 p-3 bg-red-500/10 border border-red-500/30 text-red-300 text-sm rounded-lg">{error}</div>}
-
-        {/* SLOT LIST */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[#a0a0a0]">Upcoming slots ({slots.length})</h2>
-            <button onClick={refresh} disabled={loading} className="text-xs text-[#00c853] hover:text-[#00e676] disabled:opacity-50">↻ Refresh</button>
+        </h3>
+        {slots.length === 0 ? (
+          <div className={loading ? "tadm-empty pulse" : "tadm-empty"}>
+            {loading ? "Loading slots…" : "No slots yet. Add one above."}
           </div>
-          {slots.length === 0 ? (
-            <p className="text-[#888] text-sm italic py-6 text-center">No slots yet. Add one above.</p>
-          ) : (
-            slots.map((s) => {
+        ) : (
+          <div className="tadm-rows">
+            {slots.map((s) => {
               const booked = slotBookedCount(s);
               const isOpen = booked < s.capacity;
               const recently = s.id === justAddedId;
+              const isPast = !s.allDay && !!s.time && new Date(`${s.date}T${s.time}`) < new Date();
               // MC list endpoint only returns the seat count, not the
               // per-booking detail — so `s.bookings[]` is empty for MC slots
               // even when booked > 0. Only render the "last: NAME (device)"
               // line when we actually have the booking record.
               const lastBooking = s.bookings && s.bookings.length > 0 ? s.bookings[s.bookings.length - 1] : null;
               return (
-                <div key={s.id} className={`flex items-center justify-between gap-3 p-4 rounded-xl border transition ${recently ? "bg-[#00c853]/10 border-[#00c853]/50" : "bg-white/[0.04] border-white/10"}`}>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-white font-bold text-sm">
-                      {formatDate(s.date)} · <span className="text-[#00c853]">{s.allDay ? "Any time" : formatTime(s.time)}</span>
-                      {s.label && <span className="text-[#bdbdbd] font-medium ml-2">· {s.label}</span>}
-                    </p>
-                    <p className="text-[#888] text-xs mt-1">
-                      {booked}/{s.capacity} booked
-                      {isOpen ? <span className="text-[#00c853] ml-1">· open</span> : <span className="text-[#ff5566] ml-1">· FULL</span>}
-                      {lastBooking && (
-                        <span className="ml-2">— last: {lastBooking.sellerName} ({lastBooking.deviceLabel || "device"})</span>
-                      )}
-                    </p>
+                <div
+                  key={s.id}
+                  className="tadm-row"
+                  style={recently ? { background: "var(--tadm-green-soft)", borderRadius: 8 } : undefined}
+                >
+                  <div className="main">
+                    {formatDate(s.date)} · <span style={{ color: "var(--tadm-green)" }}>{s.allDay ? "Any time" : formatTime(s.time)}</span>
+                    {s.label && <span className="dim"> · {s.label}</span>}
+                    {lastBooking && (
+                      <span className="dim"> — last: {lastBooking.sellerName} ({lastBooking.deviceLabel || "device"})</span>
+                    )}
                   </div>
-                  <button onClick={() => handleRemove(s.id)} className="text-xs text-[#ff5566] hover:text-[#ff8088] border border-[#ff5566]/30 hover:border-[#ff5566]/60 rounded-lg px-3 py-1.5 transition cursor-pointer shrink-0">
+                  <span className="meta">{booked}/{s.capacity} booked</span>
+                  <span className={`tadm-pill ${isPast ? "off" : isOpen ? "on" : "warn"}`}>
+                    {isPast ? "past" : isOpen ? "open" : "full"}
+                  </span>
+                  <button onClick={() => handleRemove(s.id)} className="tadm-btn sm danger">
                     Remove
                   </button>
                 </div>
               );
-            })
-          )}
-        </div>
+            })}
+          </div>
+        )}
       </div>
-    </main>
+    </div>
   );
 }

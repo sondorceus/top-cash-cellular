@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 
 type Subscriber = {
   email: string;
@@ -37,6 +36,21 @@ type SendResp = {
 };
 
 const STORAGE_KEY = "tcc_admin_token";
+
+/* one-off form label styles (colors via --tadm-* vars only) */
+const lbl: CSSProperties = {
+  display: "block",
+  font: "700 10.5px var(--tadm-mono)",
+  textTransform: "uppercase",
+  letterSpacing: "1.2px",
+  color: "var(--tadm-faint)",
+  margin: "0 0 5px",
+};
+const hint: CSSProperties = {
+  textTransform: "none",
+  letterSpacing: 0,
+  fontWeight: 500,
+};
 
 export default function NewsletterAdminPage() {
   const [token, setToken] = useState("");
@@ -173,214 +187,211 @@ export default function NewsletterAdminPage() {
 
   if (!token) {
     return (
-      <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-6">
-        <div className="max-w-sm w-full bg-white/5 border border-white/10 rounded-2xl p-6">
-          <h1 className="text-xl font-bold mb-2">📬 Newsletter admin</h1>
-          <p className="text-sm text-[#bdbdbd] mb-4">Enter your admin token to manage subscribers.</p>
+      <div className="tadm-wrap">
+        <div className="tadm-card" style={{ maxWidth: 420, margin: "48px auto 0" }}>
+          <h3>Newsletter admin</h3>
+          <p style={{ margin: "0 0 12px", fontSize: 12.5, fontWeight: 500, color: "var(--tadm-dim)" }}>
+            Enter your admin token to manage subscribers.
+          </p>
           <form onSubmit={(e) => { e.preventDefault(); submitToken(); }}>
             <input
               type="password"
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value)}
               placeholder="admin token"
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#00c853]"
+              className="tadm-input"
+              style={{ width: "100%" }}
               autoFocus
             />
-            <button type="submit" className="w-full mt-3 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-sm py-2.5 rounded-full transition cursor-pointer">
+            <button type="submit" className="tadm-btn primary" style={{ width: "100%", marginTop: 10 }}>
               Continue
             </button>
-            {authError && <p className="text-red-400 text-xs mt-3">{authError}</p>}
+            {authError && <p style={{ margin: "10px 0 0", fontSize: 12, color: "var(--tadm-bad)" }}>{authError}</p>}
           </form>
-          <Link href="/admin" className="block mt-4 text-[10px] text-[#888] hover:text-white">← back to /admin</Link>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <Link href="/admin" className="text-[11px] text-[#888] hover:text-white">← admin home</Link>
-            <h1 className="text-2xl font-bold mt-1">📬 Newsletter</h1>
-          </div>
-          <button onClick={loadSubs} disabled={loading} className="text-xs bg-white/5 border border-white/10 hover:bg-white/10 px-3 py-1.5 rounded cursor-pointer disabled:opacity-50">
-            {loading ? "Loading…" : "Refresh"}
-          </button>
+    <div className="tadm-wrap">
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+        <div className="tadm-page-head" style={{ flex: 1 }}>
+          <h1>Newsletter</h1>
+          <p>Subscribers, compose &amp; send — dry-run preview before anything goes out.</p>
         </div>
+        <button onClick={loadSubs} disabled={loading} className="tadm-btn sm">
+          {loading ? "Loading…" : "Refresh"}
+        </button>
+      </div>
 
-        {/* Stat cards */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-1">Explicit signups</p>
-            <p className="text-3xl font-bold text-[#00c853]">{counts.explicit}</p>
-            <p className="text-[10px] text-[#666] mt-1">opted in via newsletter form</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-1">From buyback leads</p>
-            <p className="text-3xl font-bold text-[#ffb400]">{counts.fromLeads}</p>
-            <p className="text-[10px] text-[#666] mt-1">customers — implicit (CAN-SPAM existing biz relationship)</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="text-[10px] uppercase tracking-wider text-[#888] font-bold mb-1">Recipient if you send now</p>
-            <p className="text-3xl font-bold text-white">{recipientCount}</p>
-            <p className="text-[10px] text-[#666] mt-1">{includeLeads ? "explicit + leads" : "explicit only"}</p>
-          </div>
+      {/* Stat tiles */}
+      <div className="tadm-tiles" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))" }}>
+        <div className="tadm-tile" style={{ cursor: "default" }}>
+          <div className="num green">{counts.explicit}</div>
+          <div className="lbl">EXPLICIT SIGNUPS</div>
+          <div className="sub">opted in via newsletter form</div>
         </div>
-
-        {/* Compose */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-[#dcdcdc] mb-4">Compose</h2>
-
-          <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Subject <span className="text-[#888] normal-case">(shows in inbox)</span></label>
-          <input
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="iPhone trade-in prices just went up"
-            maxLength={200}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#00c853] mb-3"
-          />
-
-          <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">Preheader <span className="text-[#888] normal-case">(inbox preview line, optional)</span></label>
-          <input
-            value={preheader}
-            onChange={(e) => setPreheader(e.target.value)}
-            placeholder="iPhone 17 Pro Max now $20 more — locked through this weekend"
-            maxLength={120}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#00c853] mb-3"
-          />
-
-          <label className="block text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold mb-1">
-            Body
-            <span className="text-[#888] normal-case ml-1">— use {"{firstName}"} as a placeholder; falls back to &quot;there&quot;</span>
-          </label>
-          <textarea
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            rows={12}
-            maxLength={20000}
-            placeholder={"Quick heads up — we just bumped buyback prices on iPhone 17 Pro Max, MacBook Pro M4, and a handful of others.\n\nIf you've been thinking about trading anything in, this is the week.\n\nGet a quote: https://topcashcellular.com"}
-            className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white leading-relaxed focus:outline-none focus:border-[#00c853] resize-none mb-2 font-mono"
-          />
-          <p className="text-[10px] text-[#888] mb-3">{body.length}/20000 · {"{firstName}"} interpolates per recipient. Blank lines split paragraphs.</p>
-
-          <label className="flex items-center gap-2 text-[11px] text-[#dcdcdc] mb-4 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={includeLeads}
-              onChange={(e) => setIncludeLeads(e.target.checked)}
-              className="w-4 h-4 cursor-pointer"
-            />
-            Include past buyback customers (CAN-SPAM existing-business-relationship — adds {counts.fromLeads} recipients)
-          </label>
-
-          <div className="flex gap-2">
-            <button
-              onClick={doPreview}
-              disabled={previewing || !subject.trim() || body.trim().length < 30}
-              className="px-4 py-2 bg-white/5 border border-white/15 hover:bg-white/10 rounded-full text-sm font-bold cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {previewing ? "Rendering…" : "👁 Preview"}
-            </button>
-            <button
-              onClick={doSend}
-              disabled={sending || !subject.trim() || body.trim().length < 30 || recipientCount === 0}
-              className={`px-4 py-2 rounded-full text-sm font-extrabold cursor-pointer transition disabled:opacity-40 disabled:cursor-not-allowed ${
-                confirmSend
-                  ? "bg-red-500 hover:bg-red-400 text-white"
-                  : "bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a]"
-              }`}
-            >
-              {sending
-                ? "Sending…"
-                : confirmSend
-                  ? `🚀 CONFIRM: Send to ${recipientCount}`
-                  : `Send to ${recipientCount} →`}
-            </button>
-            {confirmSend && !sending && (
-              <button
-                onClick={() => setConfirmSend(false)}
-                className="px-4 py-2 bg-white/5 border border-white/15 hover:bg-white/10 rounded-full text-sm cursor-pointer"
-              >
-                Cancel
-              </button>
-            )}
-          </div>
-          {error && <p className="text-red-400 text-xs mt-3">⚠️ {error}</p>}
+        <div className="tadm-tile" style={{ cursor: "default" }}>
+          <div className="num" style={{ color: "var(--tadm-warn)" }}>{counts.fromLeads}</div>
+          <div className="lbl">FROM BUYBACK LEADS</div>
+          <div className="sub">customers — implicit (CAN-SPAM existing biz relationship)</div>
         </div>
-
-        {/* Preview */}
-        {previewHtml && (
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-[#dcdcdc] mb-2">
-              Preview <span className="text-[#888] normal-case ml-2">— rendered for {previewRecipient}</span>
-            </h2>
-            <iframe
-              srcDoc={previewHtml}
-              className="w-full h-[600px] bg-white rounded-lg border border-white/10"
-              title="Newsletter preview"
-              sandbox="allow-same-origin"
-            />
-          </div>
-        )}
-
-        {/* Send result */}
-        {sendResult && (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-5 mb-6">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-emerald-300 mb-3">✓ Sent</h2>
-            <p className="text-white text-sm mb-2">
-              <strong>{sendResult.sent}</strong> delivered to recipients · <strong>{sendResult.failed}</strong> failed (out of {sendResult.count} total)
-            </p>
-            <p className="text-[#888] text-xs mb-3">Send ID: <code className="text-[#dcdcdc]">{sendResult.sendId}</code></p>
-            {sendResult.failures.length > 0 && (
-              <details className="text-xs">
-                <summary className="text-yellow-300 cursor-pointer mb-2">Failed addresses ({sendResult.failures.length})</summary>
-                <ul className="text-[#bdbdbd] space-y-1 ml-2">
-                  {sendResult.failures.map((f, i) => (
-                    <li key={i}>{f.email}: {f.error}</li>
-                  ))}
-                </ul>
-              </details>
-            )}
-          </div>
-        )}
-
-        {/* Subscriber list */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-[#dcdcdc] mb-3">Subscribers ({subs.length})</h2>
-          {subs.length === 0 ? (
-            <p className="text-[#888] text-sm">No subscribers yet. The signup form on the homepage feeds this list.</p>
-          ) : (
-            <div className="max-h-[400px] overflow-y-auto -mx-2">
-              <table className="w-full text-sm">
-                <thead className="text-[10px] uppercase tracking-wider text-[#888] font-bold border-b border-white/10">
-                  <tr>
-                    <th className="text-left px-2 py-2">Email</th>
-                    <th className="text-left px-2 py-2">Name</th>
-                    <th className="text-left px-2 py-2">Signed up</th>
-                    <th className="text-left px-2 py-2">Source</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {subs.map((s) => (
-                    <tr key={s.email} className="border-b border-white/5 hover:bg-white/[0.02]">
-                      <td className="px-2 py-2 text-[#dcdcdc]">{s.email}</td>
-                      <td className="px-2 py-2 text-[#bdbdbd]">{s.name || "—"}</td>
-                      <td className="px-2 py-2 text-[#888] text-[11px]">{new Date(s.signedUpAt).toLocaleDateString()}</td>
-                      <td className="px-2 py-2 text-[10px]">
-                        <span className={`px-1.5 py-0.5 rounded ${s.source === "signup" ? "bg-emerald-500/15 text-emerald-300" : s.source === "lead" ? "bg-amber-500/15 text-amber-300" : "bg-white/10 text-[#bdbdbd]"}`}>
-                          {s.source || "?"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+        <div className="tadm-tile" style={{ cursor: "default" }}>
+          <div className="num">{recipientCount}</div>
+          <div className="lbl">RECIPIENTS IF SENT NOW</div>
+          <div className="sub">{includeLeads ? "explicit + leads" : "explicit only"}</div>
         </div>
       </div>
-    </main>
+
+      {/* Compose */}
+      <div className="tadm-card" style={{ marginTop: 10 }}>
+        <h3>Compose</h3>
+
+        <label style={lbl}>Subject <span style={hint}>(shows in inbox)</span></label>
+        <input
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          placeholder="iPhone trade-in prices just went up"
+          maxLength={200}
+          className="tadm-input"
+          style={{ width: "100%", marginBottom: 12 }}
+        />
+
+        <label style={lbl}>Preheader <span style={hint}>(inbox preview line, optional)</span></label>
+        <input
+          value={preheader}
+          onChange={(e) => setPreheader(e.target.value)}
+          placeholder="iPhone 17 Pro Max now $20 more — locked through this weekend"
+          maxLength={120}
+          className="tadm-input"
+          style={{ width: "100%", marginBottom: 12 }}
+        />
+
+        <label style={lbl}>
+          Body
+          <span style={hint}> — use {"{firstName}"} as a placeholder; falls back to &quot;there&quot;</span>
+        </label>
+        <textarea
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={12}
+          maxLength={20000}
+          placeholder={"Quick heads up — we just bumped buyback prices on iPhone 17 Pro Max, MacBook Pro M4, and a handful of others.\n\nIf you've been thinking about trading anything in, this is the week.\n\nGet a quote: https://topcashcellular.com"}
+          className="tadm-textarea"
+          style={{ width: "100%", resize: "none", fontFamily: "var(--tadm-mono)", lineHeight: 1.6 }}
+        />
+        <p style={{ margin: "6px 0 12px", font: "600 10.5px var(--tadm-mono)", color: "var(--tadm-faint)" }}>
+          {body.length}/20000 · {"{firstName}"} interpolates per recipient. Blank lines split paragraphs.
+        </p>
+
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11.5, fontWeight: 500, color: "var(--tadm-dim)", marginBottom: 14, cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={includeLeads}
+            onChange={(e) => setIncludeLeads(e.target.checked)}
+            style={{ width: 15, height: 15, cursor: "pointer", accentColor: "var(--tadm-green)" }}
+          />
+          Include past buyback customers (CAN-SPAM existing-business-relationship — adds {counts.fromLeads} recipients)
+        </label>
+
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button
+            onClick={doPreview}
+            disabled={previewing || !subject.trim() || body.trim().length < 30}
+            className="tadm-btn"
+          >
+            {previewing ? "Rendering…" : "Preview (dry run)"}
+          </button>
+          <button
+            onClick={doSend}
+            disabled={sending || !subject.trim() || body.trim().length < 30 || recipientCount === 0}
+            className={`tadm-btn ${confirmSend ? "danger" : "primary"}`}
+          >
+            {sending
+              ? "Sending…"
+              : confirmSend
+                ? `CONFIRM: Send to ${recipientCount}`
+                : `Send to ${recipientCount} →`}
+          </button>
+          {confirmSend && !sending && (
+            <button onClick={() => setConfirmSend(false)} className="tadm-btn">
+              Cancel
+            </button>
+          )}
+        </div>
+        {error && <p style={{ margin: "10px 0 0", fontSize: 12, fontWeight: 600, color: "var(--tadm-bad)" }}>{error}</p>}
+      </div>
+
+      {/* Preview */}
+      {previewHtml && (
+        <div className="tadm-card" style={{ marginTop: 10 }}>
+          <h3>
+            Preview
+            <span className="right" style={{ fontWeight: 500 }}>rendered for {previewRecipient}</span>
+          </h3>
+          <iframe
+            srcDoc={previewHtml}
+            style={{ width: "100%", height: 600, background: "#fff", border: "1px solid var(--tadm-border)", borderRadius: 10 }}
+            title="Newsletter preview"
+            sandbox="allow-same-origin"
+          />
+        </div>
+      )}
+
+      {/* Send result */}
+      {sendResult && (
+        <div className="tadm-card" style={{ marginTop: 10 }}>
+          <h3>
+            Send result
+            <span className="right"><span className="tadm-pill on">SENT</span></span>
+          </h3>
+          <p style={{ margin: "0 0 6px", fontSize: 13, color: "var(--tadm-text)" }}>
+            <strong>{sendResult.sent}</strong> delivered · <strong>{sendResult.failed}</strong> failed (out of {sendResult.count} total)
+          </p>
+          <p style={{ margin: "0 0 10px", font: "600 11px var(--tadm-mono)", color: "var(--tadm-faint)" }}>
+            Send ID: <span style={{ color: "var(--tadm-dim)" }}>{sendResult.sendId}</span>
+          </p>
+          {sendResult.failures.length > 0 && (
+            <details style={{ fontSize: 12 }}>
+              <summary style={{ color: "var(--tadm-warn)", cursor: "pointer", marginBottom: 6 }}>
+                Failed addresses ({sendResult.failures.length})
+              </summary>
+              <ul style={{ margin: 0, paddingLeft: 18, color: "var(--tadm-dim)", display: "grid", gap: 4 }}>
+                {sendResult.failures.map((f, i) => (
+                  <li key={i}>{f.email}: {f.error}</li>
+                ))}
+              </ul>
+            </details>
+          )}
+        </div>
+      )}
+
+      {/* Subscriber list */}
+      <div className="tadm-card" style={{ marginTop: 10 }}>
+        <h3>
+          Subscribers
+          <span className="right">{subs.length}</span>
+        </h3>
+        {subs.length === 0 ? (
+          <div className="tadm-empty">No subscribers yet. The signup form on the homepage feeds this list.</div>
+        ) : (
+          <div className="tadm-rows" style={{ maxHeight: 400, overflowY: "auto" }}>
+            {subs.map((s) => (
+              <div key={s.email} className="tadm-row">
+                <span className="main">
+                  {s.email}
+                  {s.name ? <span className="dim"> · {s.name}</span> : null}
+                </span>
+                <span className="meta">{new Date(s.signedUpAt).toLocaleDateString()}</span>
+                <span className={`tadm-pill ${s.source === "signup" ? "on" : s.source === "lead" ? "warn" : "off"}`}>
+                  {s.source || "?"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
