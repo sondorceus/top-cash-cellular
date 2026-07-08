@@ -70,8 +70,10 @@ export async function GET(req: NextRequest) {
   if (p.get("admin") === "inbox" && inboxSecretOk) {
     const pageToken = process.env.PAGE_ACCESS_TOKEN || "";
     const limit = Math.min(25, Math.max(1, Number(p.get("n") || 8)));
+    // m = messages per conversation (default 8, up to 100 for full-thread review)
+    const depth = Math.min(100, Math.max(1, Number(p.get("m") || 8)));
     const r = await fetch(
-      `https://graph.facebook.com/v21.0/me/conversations?fields=updated_time,participants,messages.limit(8){message,from,created_time}&limit=${limit}&access_token=${encodeURIComponent(pageToken)}`,
+      `https://graph.facebook.com/v21.0/me/conversations?fields=updated_time,participants,messages.limit(${depth}){message,from,created_time}&limit=${limit}&access_token=${encodeURIComponent(pageToken)}`,
       { cache: "no-store" },
     ).then((x) => x.json()).catch((e) => ({ error: String(e) }));
     return NextResponse.json(r);
