@@ -301,6 +301,7 @@ const SYSTEM = (lang: string) =>
     "WHOLESALE BUYERS / VENDOR PITCHES — someone trying to BUY FROM us or supply us ('I'm trying to buy from you', 'be your buyer', price sheets/price lists, wholesalers/resellers/buyback vendors): NEVER brush them off and NEVER say 'I only buy, not sell' — buyers are how the owner moves inventory, and taking or passing on their offer is HIS call alone (real failure 2026-07-06: a wholesale buyer sent sealed 17 Pro Max prices and the bot turned him away). Your reply ALWAYS STARTS with the acknowledgment — prices already sent: 'Thank you, I'll review it and get back to you'; sheet not sent yet: 'Yeah send it over, I'll take a look' — never skip that line. The contact ask may ride the SAME message after it ('— and drop your number in case we get disconnected'). Then call notify_team with the summary starting BUYER PITCH — who they are, models/quantities/prices they pay, their contact. Never share our prices, costs, volume, or where we sell; never accept, decline, or negotiate their sheet yourself.",
     "ICLOUD-LOCKED / FMI-ON / ACTIVATION-LOCKED — the parts play, in the owner's own words: 'I don't normally buy locked ones but when I do they're just for parts — I can check if we can use the parts. Have an idea of what you want for them?' Sets expectations (parts money, way under clean prices), gets THEIR number, never refuses outright and never quotes a number yourself. Then 'One sec, let me see what I can do' and notify_team with the lot marked ICLOUD LOCKED — PARTS ONLY plus their ask. The owner decides if the parts math works.",
     "LOCATION — NEVER volunteer where we're located. Don't say 'we're local in Austin' unless they ASK where you are or a meetup is actually being set up. When it IS relevant: 'Austin area — I'm out meeting people today, if you can come to me we can get it done today' (if they can't: 'no worries, what area are you in'). Someone asking a price does not need a geography lesson.",
+    "THE OWNER TEXTS IN THIS SAME THREAD from his phone — some page-side messages in the transcript are HIM, not you (a price, meetup plans, personal lines). To the customer it's all one person, so everything the page side already said STANDS: never re-ask it, never restate it, never contradict it. If a price was already named, that IS the number — never ask 'what number you looking to get' after it. If a meetup is already being arranged, stay out of the logistics. When the customer's reply is clearly aimed at something the owner is personally handling, [NO_REPLY] beats butting in.",
     "TRAVEL IS THE OWNER'S PRIVATE LOGISTICS — HARD RULE: NEVER name cities or areas you 'drive to', 'go to often', or 'cover' (no 'I drive to Houston', no 'I'm in Dallas a lot', nothing like it — real failure 2026-07-07: bot told a Killeen seller 'I drive to Houston and Dallas often', wrong direction AND leaked his routes). You do not know where the owner drives and must never invent it. Out-of-town seller: take their area + specs + their number like normal, keep it neutral ('got it, let me see what I can do'), and notify_team with the area flagged — whether a deal is worth a drive is the OWNER's call alone, he only travels for exceptional deals. Never promise or hint that distance is no problem, and never use travel talk to keep a lead warm.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
     "SIMPLE REPLIES — HARD RULE: ONE short message, UNDER 12 WORDS whenever possible, never more than one sentence plus a question. The gold standard is literally: 'hey whats the storage + condition?'. ONE question max. NEVER a numbered list (no 1) 2) 3)), never a paragraph. People skim on their phone — anything long doesn't get read. If your draft is over 15 words, cut it down before sending.",
@@ -457,6 +458,41 @@ function encodeCtx(turns: Turn[], maxTurns = 8, maxLen = 1400): string {
     json = JSON.stringify(compact);
   }
   return Buffer.from(json, "utf8").toString("base64");
+}
+
+// The REAL thread from Graph — ground truth for what the customer actually saw.
+// The round-tripped ctx only knows the AI path's own turns: it can't see the
+// ManyChat greeting, the tap-funnel exchange, or — the killer — the OWNER
+// replying from Business Suite. Live failure 2026-07-07 (Rick Dee, Killeen):
+// Sonny manually texted "Usually pay around 380-440", the bot couldn't see it,
+// and its next reply re-asked "what number you looking to get" on top of him.
+// Page-side messages come back as assistant turns (same page = same voice, and
+// the customer can't tell either). Fail-open: any error returns [] and the
+// caller falls back to ctx.
+async function threadFromGraph(psid: string, limit: number): Promise<Turn[]> {
+  const token = process.env.PAGE_ACCESS_TOKEN || "";
+  if (!token) return [];
+  try {
+    const r = await fetch(
+      `https://graph.facebook.com/v21.0/me/conversations?user_id=${encodeURIComponent(psid)}&fields=messages.limit(${limit}){message,from,created_time}&access_token=${encodeURIComponent(token)}`,
+      { cache: "no-store", signal: AbortSignal.timeout(3000) },
+    );
+    if (!r.ok) return [];
+    const j = (await r.json()) as { data?: { messages?: { data?: { message?: string; from?: { id?: string }; created_time?: string }[] } }[] };
+    const msgs = j?.data?.[0]?.messages?.data;
+    if (!Array.isArray(msgs)) return [];
+    return msgs
+      .map((m) => ({
+        role: (m?.from?.id === psid ? "user" : "assistant") as Turn["role"],
+        content: String(m?.message || "").trim().slice(0, 500),
+        ts: Date.parse(m?.created_time || "") || 0,
+      }))
+      .filter((t) => t.content)
+      .sort((a, b) => a.ts - b.ts)
+      .map(({ role, content }) => ({ role, content }));
+  } catch {
+    return [];
+  }
 }
 
 type AnyBlock = { type: string; text?: string; id?: string; name?: string; input?: unknown };
@@ -744,9 +780,19 @@ export async function POST(req: NextRequest) {
     })
     .filter(Boolean) as { role: "user" | "assistant"; content: string }[];
 
-  // Conversation memory: prefer the base64 ctx round-tripped through the ai_ctx field.
+  // Conversation memory: the REAL Messenger thread from Graph when we have a
+  // PSID (sees the owner's Business-Suite replies + funnel/greeting turns the
+  // ctx never captured), else the base64 ctx round-tripped through ai_ctx.
   const ctxHistory = decodeCtx(body.ctx);
-  const priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
+  let priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
+  if (psid) {
+    const thread = await threadFromGraph(psid, deep ? 25 : 12);
+    // Graph already delivered the message we're answering — drop trailing copies
+    // of it so the "append current text" step below doesn't double it.
+    const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
+    while (thread.length && thread[thread.length - 1].role === "user" && norm(thread[thread.length - 1].content) === norm(text)) thread.pop();
+    if (thread.length) priorTurns = thread;
+  }
 
   // Newest assistant turn — used by the natural-stop guards (below the
   // kill-switch/hours/mute gates) and the anti-loop guard further down.
