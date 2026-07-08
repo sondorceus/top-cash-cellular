@@ -18,11 +18,31 @@ import { type ConvoState } from "../../lib/msgr-brain";
 import { quoteDevice, type QuoteSpec } from "../../lib/quote";
 import { PRICE_TABLE } from "../../data/prices";
 import { notifyOwnerSms } from "../../lib/owner-sms";
+import { recordOutbound, listSentHashes, sentHash, markDefer, deferActive } from "../../lib/msgr-signals";
 
 export const dynamic = "force-dynamic";
 // after() runs owner alerts + (for off-catalog leads) a web market-check —
 // give the function room so a slow search can never kill the alert.
 export const maxDuration = 60;
+
+// Conversation model. Sonnet-tier because the live failures (few-shot lines
+// parroted verbatim, re-asking an answered question, tool-use meta-narration)
+// are rule-following failures Haiku keeps making despite HARD-RULE prompts.
+// Env-overridable for instant rollback: set MSGR_AI_MODEL=claude-haiku-4-5-20251001.
+// Latency budget is ManyChat's ~10s dynamic-block window — Sonnet over Opus on
+// purpose, plus prompt caching below keeps the big system prompt ~free/fast on
+// cache hits. Helper calls (normalizer, ES→EN translation) stay on Haiku.
+const MSGR_MODEL = process.env.MSGR_AI_MODEL || "claude-sonnet-5";
+// Sonnet 5 runs ADAPTIVE THINKING when `thinking` is omitted — with
+// max_tokens 150 it would burn the whole budget thinking and return a
+// truncated/empty reply. Disable explicitly (accepted on sonnet-5/opus-4.7+;
+// NOT sent for haiku, where omitting the param is the off state).
+const THINKING_OFF = /sonnet-5|opus-4-[678]/.test(MSGR_MODEL) ? { thinking: { type: "disabled" as const } } : {};
+// One cache breakpoint on the system block caches tools+system together
+// (render order is tools → system). The prompt is ~10k tokens, well over the
+// cacheable minimum; hits cut both latency and cost — the tool round-trip
+// re-sends the whole prefix seconds later and reads it from cache.
+const cachedSystem = (lang: string) => [{ type: "text" as const, text: SYSTEM(lang), cache_control: { type: "ephemeral" as const } }];
 
 function authed(req: NextRequest): boolean {
   const expected = process.env.MSGR_BOT_SECRET;
@@ -295,7 +315,7 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
 const SYSTEM = (lang: string) =>
   [
     "You're the guy who buys the phones at Top Cash Cellular, texting leads back on Messenger. TALK EXACTLY LIKE THE OWNER TEXTS. His typography: first letter capitalized, NO ending period, no exclamation marks, barely any commas ('Which one' / 'What area' / 'Would meet north' / 'Yes are you in Austin area'). Say 'I', not 'we' ('I can do 650', 'I can come to you'). Short, direct, warm — almost every reply is ONE line, usually under 12 words. NEVER sound like a bot or an ad: no 'Great question', no 'Perfect!', no feature lists, and NEVER volunteer the 'no fees / no obligation / safe public spot / free shipping' spiel — that reads like a scam and kills leads. Skip emojis mostly (one occasionally is fine).",
-    "REAL EXCHANGES FROM THE OWNER — mimic these exactly (tone, length, capitalization): seller: 'Hi, is this available?' → 'Yes, are you still interested?' · seller lists two phones → 'Which one do you have' · vague what-do-you-buy → 'Anything iPads game console etc' / 'I buy all types just asking for price' · specs unclear → 'Sealed or open box?' / 'Also let me know if it's new or used' / 'You selling multiple?' · making an offer → 'I can do 740 but if it's open it would be 700' · deal forming → 'Are you in Austin area? I can pick up tomorrow or Monday' · not local → 'What area' · setting the spot → 'Would meet north' / 'Give me a location and I can map it' · follow-up → 'You still wanna sell bro'.",
+    "REAL EXCHANGES FROM THE OWNER — these are VOICE references: match the tone, length, and capitalization, but NEVER copy a whole example sentence word-for-word into a reply (a canned example pasted verbatim never fits the actual convo — adapt it): seller: 'Hi, is this available?' → 'Yes, are you still interested?' · seller lists two phones → 'Which one do you have' · vague what-do-you-buy → 'Anything iPads game console etc' / 'I buy all types just asking for price' · specs unclear → 'Sealed or open box?' / 'Also let me know if it's new or used' / 'You selling multiple?' · making an offer → 'I can do 740 but if it's open it would be 700' · deal forming → 'Are you in Austin area? I can pick up tomorrow or Monday' · not local → 'What area' · setting the spot → 'Would meet north' / 'Give me a location and I can map it' · follow-up → 'You still wanna sell bro'.",
     "NEGOTIATION LIKE THE OWNER — NUMBER FIRST, THEN EDUCATE, NEVER FIGHT: on ANY price friction (too low, hesitation, someone-else-offered-more) your FIRST move is getting THEIR number — BEFORE defending anything. Make the ask SMOOTH and helpful, never a standoff: while working up a quote it's 'I'll get you a quote soon — if there's a specific number you need to be at let me know'; on pushback it's 'Tell me your price please' / 'What were you hoping to get'. It should feel like you're trying to hit their number, not like a negotiation move. Once you have their number, EDUCATE calmly why you can or can't get near it (resale math, thin margins, waiting on the flip, cash today) — explaining against THEIR number lands way better than arguing about yours. When they name a price, NEVER accept or split the difference yourself: say 'Let me see what I can do, one sec' and call notify_team with their counter — the owner decides every exception. Lock status moves money: his real line is 'If unlock I can pay 950 but lock price is not good' — always know carrier/lock before talking firm numbers, and quote the unlocked/locked split the way he does. Market honesty is fine: 'Prices on the ultra not too good right now'. Once a deal is forming, capture contact like he does: 'Mind dropping your best number in case we get disconnected?'.",
     "IF THEY VOLUNTEER it's blacklisted / reported / financed: react exactly like the owner — 'I still buy just asking for the price' — keep it neutral and call notify_team with what they said. Never lecture, never refuse, never promise; the owner makes that call.",
     "WHOLESALE BUYERS / VENDOR PITCHES — someone trying to BUY FROM us or supply us ('I'm trying to buy from you', 'be your buyer', price sheets/price lists, wholesalers/resellers/buyback vendors): NEVER brush them off and NEVER say 'I only buy, not sell' — buyers are how the owner moves inventory, and taking or passing on their offer is HIS call alone (real failure 2026-07-06: a wholesale buyer sent sealed 17 Pro Max prices and the bot turned him away). Your reply ALWAYS STARTS with the acknowledgment — prices already sent: 'Thank you, I'll review it and get back to you'; sheet not sent yet: 'Yeah send it over, I'll take a look' — never skip that line. The contact ask may ride the SAME message after it ('— and drop your number in case we get disconnected'). Then call notify_team with the summary starting BUYER PITCH — who they are, models/quantities/prices they pay, their contact. Never share our prices, costs, volume, or where we sell; never accept, decline, or negotiate their sheet yourself.",
@@ -307,6 +327,7 @@ const SYSTEM = (lang: string) =>
     "SIMPLE REPLIES — HARD RULE: ONE short message, UNDER 12 WORDS whenever possible, never more than one sentence plus a question. The gold standard is literally: 'hey whats the storage + condition?'. ONE question max. NEVER a numbered list (no 1) 2) 3)), never a paragraph. People skim on their phone — anything long doesn't get read. If your draft is over 15 words, cut it down before sending.",
     "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up, just to confirm'. ONLY when a message actually contains a 15-digit number, call check_imei: it confirms the exact model (often storage too) — then just confirm condition and run the normal 'one sec, let me see what I can do' → get_quote + notify_team handoff (never a price to the customer). If the lookup fails, casually ask for the model from Settings > General > About instead (one short line). check_imei is ONLY for confirming what the device is; you make NO buy/pass decisions off it and NEVER mention locks or blacklists — the owner sees the details and makes every call. If they only have an Apple serial, take it and call notify_team — team decodes it.",
     "NEVER NARRATE YOURSELF: no 'let me check', no mentioning tools/lookups/systems, no correcting your own process ('jumped the gun'), no meta-comments — every reply is just a normal human text to the customer.",
+    "NEVER SEND THE SAME SENTENCE TWICE in one conversation — a repeated line is the loudest bot tell there is. If you need to hold them again, vary it ('give me a min', 'checking something right quick', 'almost got it'); if you need to re-ask, rephrase it.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
       : "Reply in the user's language (if they write Spanish, answer in Spanish).",
@@ -315,7 +336,7 @@ const SYSTEM = (lang: string) =>
     "WE BUY: iPhones (11+), Samsung Galaxy (S21+, Z Fold/Flip), Google Pixel, MacBooks, and consoles — ANY condition, even cracked (lower offer). Conditions: sealed (new in plastic), like-new, good, fair, broken. That list is what gets an INSTANT number — it is NOT a refusal list: for anything else (watches, tablets, other electronics) the owner's real line is 'I buy all types just asking for price' — take the item + their ask and notify_team, NEVER turn a category away yourself. The ONE exception you may decline solo is an obvious single junk item with no lot attached.",
     "KNOW THE DEVICE CATEGORY — ask the RIGHT specs and never mix categories up: phones → model + storage + carrier/lock + condition. Apple Watch / Galaxy Watch = SMARTWATCH with real resale → series/gen + case size (41/45mm) + GPS or cellular + condition. Fitbits and no-name fitness bands = very low resale — stay neutral, take the info + their ask, team decides. iPads/tablets → which model + generation, storage, wifi-only or cellular. MacBooks/laptops → chip (M1/M2/M3 or Intel), year, RAM, storage. Consoles → exact model (PS5 disc vs digital, Series X vs S), storage, controllers included. AirPods/earbuds → model + generation + which case. TVs/soundbars/keyboards/monitors → usually not worth shipping, but on a LOT take the list + asks and let the team decide. If you don't recognize a product name, ask plainly ('what is that — a watch, a tablet, or something else?') — never guess the category.",
     "READ MODELS CAREFULLY — quantity + product line + category (real failure: '10 Samsung Galaxy 3 watches' got answered as 'so 10 Galaxy S3 phones? and what about the 3 watches' — wrong on both). 'Samsung Galaxy N watch(es)' / 'Galaxy watch N' = Galaxy WATCH N, a smartwatch, never an S-series phone. The number right before a category noun is usually the QUANTITY ('10 TVs', '10 Fitbits'), the number inside a product name is the generation ('Watch 3', 'S24'). If quantity vs model is ambiguous, ask ONE clean confirm ('the watches — Galaxy Watch 3, and you have 10 of them?') instead of guessing.",
-    "QUOTING — CRITICAL: you NEVER tell the customer a price. Work the order smoothly — model → storage → condition → carrier — ONE combined question for whatever's still missing, never re-asking anything they already said or implied. Once you have the specs (and ideally the number they need to be at), say exactly the owner's move: 'One sec, let me see what I can do' — then call the get_quote and notify_team TOOLS (tool calls are invisible system actions — the customer must NEVER see tool names, asterisk stage directions like *calling...*, or any mention of checking systems; the engine number goes to the team, NOT the customer — repeating get_quote's number to the customer is the single worst mistake you can make) and call notify_team with device + specs + their target number. If they push for an instant number: 'give me a minute, I'm seeing what I can do'. Never make up or estimate a price under any circumstances.",
+    "QUOTING — CRITICAL: you NEVER tell the customer a price. Work the order smoothly — model → storage → condition → carrier — ONE combined question for whatever's still missing, never re-asking anything they already said or implied. NEVER say the one-sec line while a spec is still missing — ask the missing spec instead (saying 'one sec' and then firing another question reads broken). Once you have the specs (and ideally the number they need to be at), say exactly the owner's move: 'One sec, let me see what I can do' — then call the get_quote and notify_team TOOLS (tool calls are invisible system actions — the customer must NEVER see tool names, asterisk stage directions like *calling...*, or any mention of checking systems; the engine number goes to the team, NOT the customer — repeating get_quote's number to the customer is the single worst mistake you can make) and call notify_team with device + specs + their target number. If they push for an instant number: 'give me a minute, I'm seeing what I can do'. Never make up or estimate a price under any circumstances.",
     "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers.",
     "SEALED IS THE MONEY WORD — never gloss over it: sealed / brand new / never opened / still in plastic / factory sealed pays a real premium over even a like-new one (we resell it as new), so when they say it's sealed, LOCK that in as the condition, never downgrade it to 'good/mint' and never re-ask. It also makes a device worth capturing even if it's a bit older. Same intake otherwise (storage + carrier) → 'one sec, let me see what I can do' → get_quote + notify_team; the engine already adds the sealed premium to the owner's reference number, so you never quote it yourself.",
     "CONDITION FROM SPOKEN WORDS — the #1 re-ask failure ('I have 2 sealed pro maxes' then asking condition looks broken): sealed / brand new / new in box / never used / never opened / still in plastic = SEALED. like new / mint / perfect / barely used = MINT. works fine / some scratches / used but good = GOOD. rough / beat up / scuffed / heavy wear = FAIR. cracked / shattered / broken / won't turn on / doesn't turn on / dead / no power = BROKEN. If ANY of these appeared anywhere in the convo, condition is ANSWERED — never ask it again (real failure: customer said 'It just doesn't turn on' and 12 seconds later the bot asked 'does it turn on?' — instant broken-bot moment; her LAST message counts too, not just older ones).",
@@ -398,10 +419,14 @@ function render(
   secret: string,
   ctx?: string,
   tagAction?: "arm" | "disarm",
+  psid?: string,
 ) {
   const clip = (s: string) => (Array.from(s).length > 20 ? Array.from(s).slice(0, 20).join("") : s);
   const cb = `${origin}/api/msgr?s=${encodeURIComponent(secret)}`;
   const messages = texts.filter(Boolean).map((t) => ({ type: "text", text: t }));
+  // Outbound ledger (owner-takeover detection reads it) — after() so the
+  // blob writes never delay the ManyChat response.
+  if (psid && texts.some((t) => t && t.trim())) after(() => recordOutbound(psid, texts));
   // No filler "…" when there is nothing to say — an empty send reads as a
   // stray "." to the customer (seen live 2026-07-05); silence is better.
   const content: Record<string, unknown> = { messages };
@@ -412,7 +437,8 @@ function render(
       url: cb,
       method: "post",
       headers: { "X-Bot-Secret": secret },
-      payload: { state: qr.state },
+      // psid rides the tap's state so /api/msgr can keep the ledger going.
+      payload: { state: psid ? { ...qr.state, psid } : qr.state },
     }));
   }
   // ctx = compact base64 conversation memory. Returned two ways: top-level `ctx`
@@ -469,7 +495,8 @@ function encodeCtx(turns: Turn[], maxTurns = 8, maxLen = 1400): string {
 // Page-side messages come back as assistant turns (same page = same voice, and
 // the customer can't tell either). Fail-open: any error returns [] and the
 // caller falls back to ctx.
-async function threadFromGraph(psid: string, limit: number): Promise<Turn[]> {
+type ThreadMsg = Turn & { ts: number };
+async function threadFromGraph(psid: string, limit: number): Promise<ThreadMsg[]> {
   const token = process.env.PAGE_ACCESS_TOKEN || "";
   if (!token) return [];
   try {
@@ -488,10 +515,36 @@ async function threadFromGraph(psid: string, limit: number): Promise<Turn[]> {
         ts: Date.parse(m?.created_time || "") || 0,
       }))
       .filter((t) => t.content)
-      .sort((a, b) => a.ts - b.ts)
-      .map(({ role, content }) => ({ role, content }));
+      .sort((a, b) => a.ts - b.ts);
   } catch {
     return [];
+  }
+}
+
+// OWNER-TAKEOVER DETECTION — the standdown the ManyChat path never had.
+// A page-side message in the real thread that (a) is recent, (b) is NEWER than
+// the newest thing the bot recorded sending, and (c) hash-matches nothing in
+// the bot's outbound ledger (msgr-sent, written by ALL bot paths) can only be
+// a human typing from Business Suite. Rick Dee case 2026-07-07: Sonny quoted
+// "380-440" manually and the bot re-asked the price on top of him. Requires an
+// existing ledger for the psid so pre-feature convos and the CTM ad greeting
+// (sent before the bot's first reply) can never false-trigger. Fail-open.
+async function ownerActive(psid: string, thread: ThreadMsg[]): Promise<boolean> {
+  try {
+    if (!thread.length) return false;
+    const sent = await listSentHashes(psid);
+    if (!sent.size) return false; // no ledger yet → can't judge, stay live
+    const pageMsgs = thread.filter((t) => t.role === "assistant");
+    if (!pageMsgs.length) return false;
+    const now = Date.now();
+    return pageMsgs.some(
+      (m) =>
+        now - m.ts < 30 * 60_000 && // recent — old unknowns are pre-feature noise
+        !sent.has(sentHash(m.content)) &&
+        !/replied to an ad/i.test(m.content), // Meta's system line, not a human
+    );
+  } catch {
+    return false;
   }
 }
 
@@ -696,7 +749,7 @@ export async function POST(req: NextRequest) {
       const r = await fetch(`${origin}/api/msgr?s=${encodeURIComponent(secret)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Bot-Secret": secret },
-        body: JSON.stringify({ state }),
+        body: JSON.stringify({ state: psid ? { ...state, psid } : state }),
       });
       if (r.ok) return NextResponse.json(await r.json());
     } catch {
@@ -727,7 +780,7 @@ export async function POST(req: NextRequest) {
       content: { messages: [], actions: [{ action: "remove_tag", tag_name: FOLLOWUP_TAG }] },
     };
     if (!turns.length) return NextResponse.json(disarmOnly); // no memory → don't nudge blind
-    if (psid && (await isMuted(psid))) return NextResponse.json(disarmOnly); // owner took over — never nudge into his convo
+    if (psid && ((await isMuted(psid)) || (await deferActive(psid)))) return NextResponse.json(disarmOnly); // owner took over — never nudge into his convo
     const hrN =
       Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
     if (hrN < 8 || hrN >= 22) return NextResponse.json(disarmOnly); // no 2am nudges
@@ -736,6 +789,7 @@ export async function POST(req: NextRequest) {
     );
     const nudgeText = esN ? "¿Sigues interesado? Ando haciendo recogidas hoy si puedes verme, efectivo en mano 💵" : "Still want that cash offer? I'm out doing pickups today if you can meet me 💵";
     const newCtxN = encodeCtx([...turns, { role: "assistant", content: nudgeText }]);
+    if (psid) after(() => recordOutbound(psid, [nudgeText])); // outbound ledger
     return NextResponse.json({
       version: "v2",
       content: {
@@ -756,7 +810,7 @@ export async function POST(req: NextRequest) {
       // REAL funnel menu — this is the menu funnel's front door.
       const out = await proxyFunnel({ step: "start" });
       if (out) return out;
-      return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret);
+      return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret, undefined, undefined, psid || undefined);
     }
     // MID-conversation empty input is almost always a photo/attachment (sellers
     // send device pics constantly). Restarting the menu here reads as a broken
@@ -768,7 +822,7 @@ export async function POST(req: NextRequest) {
       ? "No puedo ver fotos por aquí — dime qué es y en qué condición está 👍"
       : "Can't see pics on here — just tell me what it is and the condition 👍";
     const picCtx = body.ctx !== undefined ? encodeCtx([...priorEmpty, { role: "assistant", content: picLine }], ctxTurns, ctxLen) : undefined;
-    return render([picLine], [], origin, secret, picCtx);
+    return render([picLine], [], origin, secret, picCtx, undefined, psid || undefined);
   }
   const rawHistory = Array.isArray(body.history) ? body.history : [];
   const history = rawHistory
@@ -791,7 +845,24 @@ export async function POST(req: NextRequest) {
     // of it so the "append current text" step below doesn't double it.
     const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
     while (thread.length && thread[thread.length - 1].role === "user" && norm(thread[thread.length - 1].content) === norm(text)) thread.pop();
-    if (thread.length) priorTurns = thread;
+    if (thread.length) {
+      // Human takeover → stand down 60 min and tell the owner ONCE (never
+      // when he already muted or a standdown is already running).
+      if (await ownerActive(psid, thread)) {
+        const alreadyQuiet = (await deferActive(psid)) || (await isMuted(psid));
+        await markDefer(psid);
+        if (!alreadyQuiet) {
+          after(async () => {
+            const who = await senderName(psid);
+            return notifyOwnerSms(
+              `🤫 Saw you jump into the Messenger convo${who ? ` with ${who}` : ""} — bot is standing down for 60 min so it never talks over you. Mute longer from Mission Control or the take-over link if you need it.`,
+            );
+          });
+        }
+        return EMPTY();
+      }
+      priorTurns = thread.map(({ role, content }) => ({ role, content }));
+    }
   }
 
   // Newest assistant turn — used by the natural-stop guards (below the
@@ -833,6 +904,9 @@ export async function POST(req: NextRequest) {
       [],
       origin,
       secret,
+      undefined,
+      undefined,
+      psid || undefined,
     );
   }
 
@@ -842,6 +916,7 @@ export async function POST(req: NextRequest) {
   const myTs = Date.now();
   if (psid) {
     if (await isMuted(psid)) return EMPTY(); // owner is working this convo — stay silent
+    if (await deferActive(psid)) return EMPTY(); // takeover standdown still running
     const entries = await listMarkers(psid);
     if (entries.some(({ mark: m }) => m.kind === "a" && m.hash === myHash && myTs - m.ts < 90_000)) return EMPTY();
     await putMarker(psid, "q", myHash, myRand, myTs);
@@ -870,6 +945,7 @@ export async function POST(req: NextRequest) {
     if (psid) {
       actions.push({ action: "remove_tag", tag_name: FOLLOWUP_TAG });
       putMarker(psid, "a", myHash, myRand, Date.now()).catch(() => {}); // burst-dedupe a repeat
+      if (line) after(() => recordOutbound(psid, [line])); // outbound ledger
     }
     return NextResponse.json({
       version: "v2",
@@ -912,9 +988,10 @@ export async function POST(req: NextRequest) {
 
     for (let round = 0; round < 4; round++) {
       const resp = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
+        model: MSGR_MODEL,
         max_tokens: 150,
-        system: SYSTEM(lang),
+        ...THINKING_OFF,
+        system: cachedSystem(lang),
         tools: TOOLS as never,
         messages: messages as never,
       });
@@ -952,9 +1029,10 @@ export async function POST(req: NextRequest) {
       const Anthropic = (await import("@anthropic-ai/sdk")).default;
       const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
       const retry = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
+        model: MSGR_MODEL,
         max_tokens: 150,
-        system: SYSTEM(lang),
+        ...THINKING_OFF,
+        system: cachedSystem(lang),
         messages: [...priorTurns, { role: "user", content: text }] as never,
       });
       replyText = (retry.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
@@ -1182,7 +1260,7 @@ export async function POST(req: NextRequest) {
     body.ctx !== undefined
       ? encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }], ctxTurns, ctxLen)
       : undefined;
-  return render([replyText], quickReplies, origin, secret, newCtx, psid ? (lastQuote ? "arm" : "disarm") : undefined);
+  return render([replyText], quickReplies, origin, secret, newCtx, psid ? (lastQuote ? "arm" : "disarm") : undefined, psid || undefined);
 }
 
 export async function GET(req: NextRequest) {
@@ -1206,6 +1284,42 @@ export async function GET(req: NextRequest) {
       `<p style="color:#a9adc4;font-size:14px;line-height:1.6;margin:0 0 20px;">${on ? "This conversation is all yours — the AI won't reply or nudge this customer." : "The AI will handle this customer's next message again."}</p>` +
       `<a href="${toggle}" style="display:inline-block;background:${on ? "#00c853" : "#ffb400"};color:#0a0a0a;font-weight:800;text-decoration:none;padding:12px 26px;border-radius:999px;font-size:14px;">${on ? "Hand back to the bot" : "Mute again (24h)"}</a></div></body></html>`;
     return new NextResponse(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+  }
+
+  // Model self-test: ?selftest=1&s=<MSGR_BOT_SECRET|CRON_SECRET>. Runs ONE tiny
+  // real call with the exact production params (model, thinking-off, cached
+  // system) — proves the key + request shape work after any model/env change
+  // without waiting for a live customer. Run it twice to see cacheRead > 0.
+  if (req.nextUrl.searchParams.get("selftest")) {
+    const s = req.nextUrl.searchParams.get("s");
+    const okSecret = (!!process.env.MSGR_BOT_SECRET && s === process.env.MSGR_BOT_SECRET) ||
+      (!!process.env.CRON_SECRET && s === process.env.CRON_SECRET);
+    if (!okSecret) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    const t0 = Date.now();
+    try {
+      const Anthropic = (await import("@anthropic-ai/sdk")).default;
+      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const r = await client.messages.create({
+        model: MSGR_MODEL,
+        max_tokens: 60,
+        ...THINKING_OFF,
+        system: cachedSystem("en"),
+        messages: [{ role: "user", content: "SELFTEST: reply with exactly: ok" }],
+      });
+      const textOut = (r.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join(" ").trim();
+      const usage = r.usage as unknown as { input_tokens?: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
+      return NextResponse.json({
+        ok: true,
+        model: r.model,
+        ms: Date.now() - t0,
+        reply: textOut.slice(0, 80),
+        cacheRead: usage?.cache_read_input_tokens ?? 0,
+        cacheWrite: usage?.cache_creation_input_tokens ?? 0,
+        uncached: usage?.input_tokens ?? 0,
+      });
+    } catch (e) {
+      return NextResponse.json({ ok: false, model: MSGR_MODEL, ms: Date.now() - t0, error: String(e).slice(0, 400) }, { status: 500 });
+    }
   }
 
   // Market-check spot test: ?market=<query>&s=<MSGR_BOT_SECRET|CRON_SECRET>.

@@ -36,6 +36,10 @@ export type ConvoState = {
   // "es" = run the whole flow in Spanish. Chosen at the opener, carried on every
   // quick-reply's state so every step adapts. undefined/"en" = English.
   lang?: "en" | "es";
+  // Meta PSID, injected at the RENDERER boundary (not by brain steps) so every
+  // tap round-trips it — lets /api/msgr record its outbound texts in the
+  // msgr-sent ledger the owner-takeover detection reads.
+  psid?: string;
 };
 
 // Tiny bilingual picker — keeps each step's copy readable inline.

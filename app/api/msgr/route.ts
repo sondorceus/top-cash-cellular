@@ -14,6 +14,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { advance, seedState, detectBulkIntent, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 import { notifyOwnerSms } from "../../lib/owner-sms";
+import { recordOutbound } from "../../lib/msgr-signals";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,7 @@ function authed(req: NextRequest): boolean {
 }
 
 // Render a BotReply into ManyChat Dynamic Block v2 JSON.
-function renderManyChat(reply: BotReply, self: string, secret: string) {
+function renderManyChat(reply: BotReply, self: string, secret: string, psid?: string) {
   // Callback URL carries the secret as a query param too — ManyChat does not
   // reliably forward per-quick-reply `headers` on dynamic_block_callback taps,
   // so the header alone can 401 the callback and dead-end the conversation.
@@ -34,13 +35,15 @@ function renderManyChat(reply: BotReply, self: string, secret: string) {
   // Messenger caps quick-reply/button titles at 20 chars; over-length titles
   // make the whole message fail to render. Clip defensively.
   const clip = (s: string) => (Array.from(s).length > 20 ? Array.from(s).slice(0, 20).join("") : s);
+  // psid rides every callback's state so the NEXT tap can record its outbound
+  // texts too — without it the sent-ledger goes blind after one hop.
   const mkCb = (qr: { caption: string; state: unknown }) => ({
     type: "dynamic_block_callback",
     caption: clip(qr.caption),
     url: cb,
     method: "post",
     headers: { "X-Bot-Secret": secret },
-    payload: { state: qr.state },
+    payload: { state: psid ? { ...(qr.state as Record<string, unknown>), psid } : qr.state },
   });
   const mkUrl = (b: { caption: string; url: string }) => ({
     type: "url",
@@ -152,7 +155,12 @@ export async function POST(req: NextRequest) {
     reply.texts = ["👇 Almost there — just tap one of the buttons below to keep going!"];
     reply.urlButtons = undefined;
   }
-  return renderManyChat(reply, self, secret);
+  // Outbound ledger: when we know who this is, record what the funnel said so
+  // the AI's owner-takeover detection can tell bot lines from Sonny's.
+  const psidRaw = typeof (body as { psid?: unknown }).psid === "string" ? String((body as { psid?: unknown }).psid).trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
+  const psid = /^\d{3,20}$/.test(psidRaw) ? psidRaw : state.psid && /^\d{3,20}$/.test(state.psid) ? state.psid : "";
+  if (psid) await recordOutbound(psid, reply.texts);
+  return renderManyChat(reply, self, secret, psid || undefined);
 }
 
 // Health check / ManyChat connection test.

@@ -21,6 +21,7 @@ import { NextRequest, NextResponse, after } from "next/server";
 import crypto from "crypto";
 import { put, list, del } from "@vercel/blob";
 import { advance, type BotReply, type ConvoState } from "../../lib/msgr-brain";
+import { recordOutbound, markDefer as markDeferShared, deferActive as deferActiveShared, DEFER_MS as DEFER_MS_SHARED } from "../../lib/msgr-signals";
 
 export const dynamic = "force-dynamic";
 // Human-pace delay (up to ~2 min) + AI rounds happen in after(); keep the
@@ -83,6 +84,60 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(r);
   }
 
+  // Conversations overview (secret-gated): compact per-customer view — name,
+  // PSID, last message, mute/standdown state. This is what Mission Control's
+  // Messenger panel renders; the mute buttons + Theot's "pause chat with X"
+  // resolve names against it.
+  if (p.get("admin") === "convos" && inboxSecretOk) {
+    const pageToken = process.env.PAGE_ACCESS_TOKEN || "";
+    const limit = Math.min(25, Math.max(1, Number(p.get("n") || 12)));
+    const meId = await fetch(`https://graph.facebook.com/v21.0/me?fields=id&access_token=${encodeURIComponent(pageToken)}`, { cache: "no-store" })
+      .then((x) => x.json()).then((j) => String(j?.id || "")).catch(() => "");
+    const r = (await fetch(
+      `https://graph.facebook.com/v21.0/me/conversations?fields=updated_time,participants,messages.limit(3){message,from,created_time}&limit=${limit}&access_token=${encodeURIComponent(pageToken)}`,
+      { cache: "no-store" },
+    ).then((x) => x.json()).catch((e) => ({ error: String(e) }))) as {
+      error?: unknown;
+      data?: { id?: string; updated_time?: string; participants?: { data?: { id?: string; name?: string }[] }; messages?: { data?: { message?: string; from?: { id?: string }; created_time?: string }[] } }[];
+    };
+    if (r.error || !Array.isArray(r.data)) return NextResponse.json({ ok: false, error: r.error || "no data" }, { status: 502 });
+    const convos = await Promise.all(
+      r.data.map(async (c) => {
+        const other = (c.participants?.data || []).find((pp) => pp.id && pp.id !== meId) || {};
+        const psid = String(other.id || "");
+        const last = (c.messages?.data || []).find((m) => (m.message || "").trim()) || {};
+        const [muted, deferred] = psid ? await Promise.all([isMuted(psid), deferActive(psid)]) : [false, false];
+        return {
+          id: c.id || "",
+          psid,
+          name: String((other as { name?: string }).name || ""),
+          updated: c.updated_time || "",
+          lastMsg: String((last as { message?: string }).message || "").slice(0, 140),
+          lastFrom: (last as { from?: { id?: string } }).from?.id === psid ? "customer" : "page",
+          muted,
+          deferred,
+        };
+      }),
+    );
+    return NextResponse.json({ ok: true, convos });
+  }
+
+  // Mute / unmute by PSID (secret-gated, server-to-server): writes the same
+  // msgr-mute/{psid}/{ts13}-{hours} marker the email take-over link mints —
+  // newest wins, h=0 unmutes. Mission Control's buttons + comms commands land here.
+  if (p.get("admin") === "mute" && inboxSecretOk) {
+    const u = (p.get("u") || "").trim();
+    if (!/^\d{3,20}$/.test(u)) return NextResponse.json({ ok: false, error: "bad psid" }, { status: 400 });
+    const h = Math.min(999, Math.max(0, Math.round(Number(p.get("h") ?? 24)) || 0));
+    await put(`msgr-mute/${u}/${String(Date.now()).padStart(13, "0")}-${h}`, ".", {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: "text/plain",
+    });
+    return NextResponse.json({ ok: true, psid: u, muted: h > 0, hours: h });
+  }
+
   const mode = p.get("hub.mode");
   const token = p.get("hub.verify_token");
   const challenge = p.get("hub.challenge");
@@ -108,6 +163,9 @@ function signatureOk(raw: string, header: string | null): boolean {
 // ---- Send API render + send -----------------------------------------------
 // Turn a BotReply into Meta message payloads and send them in order.
 async function send(recipientId: string, reply: BotReply, token: string) {
+  // Outbound ledger — lets the AI brain tell its own page messages from the
+  // owner's Business-Suite replies when it reads the thread via Graph.
+  recordOutbound(recipientId, reply.texts).catch(() => {});
   const quickReplies = reply.quickReplies.map((qr) => ({
     content_type: "text",
     title: clip(qr.caption),
@@ -282,33 +340,10 @@ async function markLatest(psid: string, mid: string) {
 // never enter its memory), so "be smart around the human" is impossible — the
 // smart behavior is to stand down and resume once the human stops (or the
 // conversation is closed and the customer writes again after the window).
-const DEFER_MS = 60 * 60_000;
-async function markDefer(psid: string) {
-  try {
-    await put(`msgr-defer/${psid}/${String(Date.now()).padStart(13, "0")}`, ".", {
-      access: "public",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      contentType: "text/plain",
-    });
-  } catch {
-    /* best-effort */
-  }
-}
-async function deferActive(psid: string): Promise<boolean> {
-  try {
-    const { blobs } = await list({ prefix: `msgr-defer/${psid}/`, limit: 100 });
-    const ts = blobs
-      .map((b) => ({ t: Number(b.pathname.match(/\/(\d{13})$/)?.[1] || 0), url: b.url }))
-      .filter((x) => x.t);
-    if (!ts.length) return false;
-    const old = ts.filter((x) => Date.now() - x.t > DEFER_MS * 2).map((x) => x.url);
-    if (old.length) del(old).catch(() => {});
-    return ts.some((x) => Date.now() - x.t < DEFER_MS);
-  } catch {
-    return false; // fail open: reply rather than go silent on infra errors
-  }
-}
+// Shared with the AI brain via lib/msgr-signals — one defer marker system.
+const DEFER_MS = DEFER_MS_SHARED;
+const markDefer = markDeferShared;
+const deferActive = deferActiveShared;
 
 // Owner mute (the takeover link in the lead alert → /api/msgr-ai?mute=): the
 // bot goes fully silent for that contact until the mute window expires. The link
