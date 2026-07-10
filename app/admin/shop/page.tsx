@@ -38,6 +38,38 @@ const STORAGE_OPTS = ["64GB", "128GB", "256GB", "512GB", "1TB", "2TB"];
 
 const money = (cents: number) => `$${(cents / 100).toFixed(2).replace(/\.00$/, "")}`;
 
+// Vercel rejects request bodies over ~4.5MB BEFORE the upload route runs, so
+// a raw iPhone photo (often 5-8MB) died silently at the platform door — that
+// is how "I uploaded 3, only 1 showed" happened: the one under the limit
+// survived. Downscale in the browser first: 1800px long edge, JPEG q0.85,
+// which lands listing photos at ~300-700KB. As a bonus, Safari decodes HEIC
+// natively here, so iPhone captures convert to universally-viewable JPEG.
+const MAX_EDGE = 1800;
+const VERCEL_BODY_LIMIT = 4.4 * 1024 * 1024;
+
+async function compressPhoto(f: File): Promise<{ blob: Blob; name: string } | null> {
+  try {
+    const bmp = await createImageBitmap(f);
+    const scale = Math.min(1, MAX_EDGE / Math.max(bmp.width, bmp.height));
+    const w = Math.round(bmp.width * scale);
+    const h = Math.round(bmp.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(bmp, 0, 0, w, h);
+    bmp.close();
+    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/jpeg", 0.85));
+    if (!blob || blob.size === 0) return null;
+    return { blob, name: (f.name.replace(/\.\w+$/, "") || "photo") + ".jpg" };
+  } catch {
+    // Browser couldn't decode this format (e.g. HEIC outside Safari) —
+    // caller falls back to the original bytes.
+    return null;
+  }
+}
+
 type Draft = {
   modelLabel: string;
   storage: string;
@@ -73,6 +105,10 @@ export default function AdminShopPage() {
   const [uploading, setUploading] = useState(false);
   const [flash, setFlash] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  // Photo editor for an already-posted listing — the fix path when a photo
+  // failed at post time and the listing is live with fewer than intended.
+  const [photoEdit, setPhotoEdit] = useState<{ id: string; photos: string[] } | null>(null);
+  const editFileRef = useRef<HTMLInputElement>(null);
 
   const getToken = useCallback((): string | null => {
     let t = token || localStorage.getItem(TOKEN_KEY) || "";
@@ -133,26 +169,52 @@ export default function AdminShopPage() {
   }, [draft.modelLabel, draft.costUsd, draft.grade, familySku]);
 
   // ----- photo upload -----------------------------------------------------
-  const uploadPhotos = async (files: FileList | null) => {
-    if (!files?.length) return;
+  // Compress → upload each file, narrating progress and reporting every
+  // failure BY NAME at the end. The old version let a later success wipe an
+  // earlier failure's flash message, which is why dropped photos went
+  // unnoticed.
+  const uploadFiles = async (files: FileList, room: number): Promise<string[]> => {
     const t = getToken();
-    if (!t) return;
+    if (!t) return [];
     setUploading(true);
     const urls: string[] = [];
-    for (const f of Array.from(files).slice(0, 8 - draft.photos.length)) {
+    const failed: string[] = [];
+    const batch = Array.from(files).slice(0, room);
+    for (let i = 0; i < batch.length; i++) {
+      const f = batch[i];
+      setFlash(`Uploading photo ${i + 1} of ${batch.length}…`);
+      const small = await compressPhoto(f);
+      const body = small?.blob ?? f;
+      const name = small?.name ?? f.name;
+      if (body.size > VERCEL_BODY_LIMIT) {
+        failed.push(`${f.name} (too large — couldn't shrink it in this browser)`);
+        continue;
+      }
       const fd = new FormData();
-      fd.append("file", f);
+      fd.append("file", new File([body], name, { type: small ? "image/jpeg" : f.type }));
       try {
         const r = await fetch("/api/upload", { method: "POST", headers: { "x-admin-token": t }, body: fd });
-        const d = await r.json();
+        const d = await r.json().catch(() => ({}));
         if (r.ok && d.url) urls.push(d.url);
-        else setFlash(d.error || "Upload failed.");
+        else failed.push(`${f.name} (${d.error || `server said ${r.status}`})`);
       } catch {
-        setFlash("Upload failed — network.");
+        failed.push(`${f.name} (network)`);
       }
     }
-    setDraft((dr) => ({ ...dr, photos: [...dr.photos, ...urls].slice(0, 8) }));
     setUploading(false);
+    if (files.length > room) failed.push(`${files.length - room} skipped — 8-photo cap`);
+    setFlash(
+      failed.length
+        ? `${urls.length} of ${batch.length} uploaded. FAILED: ${failed.join("; ")}`
+        : `${urls.length} photo${urls.length === 1 ? "" : "s"} uploaded.`,
+    );
+    return urls;
+  };
+
+  const uploadPhotos = async (files: FileList | null) => {
+    if (!files?.length) return;
+    const urls = await uploadFiles(files, 8 - draft.photos.length);
+    if (urls.length) setDraft((dr) => ({ ...dr, photos: [...dr.photos, ...urls].slice(0, 8) }));
     if (fileRef.current) fileRef.current.value = "";
   };
 
@@ -222,6 +284,20 @@ export default function AdminShopPage() {
     const n = parseFloat(v);
     if (!Number.isFinite(n) || n < 0) return setFlash("Bad price.");
     patch(l.id, { status: "sold", soldPriceCents: toCents(n) });
+  };
+
+  const addEditPhotos = async (files: FileList | null) => {
+    if (!files?.length || !photoEdit) return;
+    const urls = await uploadFiles(files, 8 - photoEdit.photos.length);
+    if (urls.length) setPhotoEdit((pe) => (pe ? { ...pe, photos: [...pe.photos, ...urls].slice(0, 8) } : pe));
+    if (editFileRef.current) editFileRef.current.value = "";
+  };
+
+  const savePhotoEdit = async () => {
+    if (!photoEdit) return;
+    await patch(photoEdit.id, { photos: photoEdit.photos });
+    setPhotoEdit(null);
+    setFlash("Photos saved — live now.");
   };
 
   const editPrice = (l: ShopListing) => {
@@ -509,6 +585,18 @@ export default function AdminShopPage() {
                       Price
                     </button>
                   )}
+                  {l.status !== "removed" && l.status !== "sold" && (
+                    <button
+                      onClick={() => setPhotoEdit(photoEdit?.id === l.id ? null : { id: l.id, photos: l.photos })}
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold border transition ${
+                        photoEdit?.id === l.id
+                          ? "bg-[#00c853]/10 border-[#00c853]/60 text-[#00c853]"
+                          : "bg-white/5 border-white/15 hover:border-[#00c853]/60"
+                      }`}
+                    >
+                      Photos ({l.photos.length})
+                    </button>
+                  )}
                   {l.status !== "sold" && (
                     <button
                       onClick={() => window.confirm(`Remove the ${l.modelLabel}? It disappears from the shop.`) && patch(l.id, { status: "removed" })}
@@ -518,6 +606,54 @@ export default function AdminShopPage() {
                     </button>
                   )}
                 </div>
+
+                {photoEdit?.id === l.id && (
+                  <div className="basis-full mt-2 pt-3 border-t border-white/10">
+                    <div className="text-[10.5px] font-bold uppercase tracking-[0.8px] text-[#63636e] mb-2">
+                      Edit photos — changes go live on save
+                    </div>
+                    <div className="flex flex-wrap gap-2 items-center">
+                      {photoEdit.photos.map((u) => (
+                        <div key={u} className="relative w-16 h-16 rounded-xl bg-white/5 border border-white/15 p-1">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={u} alt="" className="w-full h-full object-contain" />
+                          <button
+                            type="button"
+                            onClick={() => setPhotoEdit((pe) => (pe ? { ...pe, photos: pe.photos.filter((p) => p !== u) } : pe))}
+                            className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[#ff6b6b] text-black text-xs font-bold leading-none"
+                            aria-label="Remove photo"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={() => editFileRef.current?.click()}
+                        disabled={uploading || photoEdit.photos.length >= 8}
+                        className="w-16 h-16 rounded-xl border border-dashed border-white/25 text-[#9aa3b2] text-2xl hover:border-[#00c853]/60 hover:text-[#00c853] transition disabled:opacity-40"
+                      >
+                        {uploading ? "…" : "+"}
+                      </button>
+                      <input ref={editFileRef} type="file" accept="image/*" multiple hidden onChange={(e) => addEditPhotos(e.target.files)} />
+                      <div className="ml-auto flex gap-2">
+                        <button
+                          onClick={savePhotoEdit}
+                          disabled={uploading}
+                          className="bg-[#00c853] text-[#0a0a0a] px-5 py-2 rounded-full text-xs font-bold hover:bg-[#00e676] transition disabled:opacity-60"
+                        >
+                          Save photos
+                        </button>
+                        <button
+                          onClick={() => setPhotoEdit(null)}
+                          className="px-4 py-2 rounded-full text-xs font-bold bg-white/5 border border-white/15 hover:border-white/40 transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
