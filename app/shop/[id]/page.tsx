@@ -28,12 +28,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!l) return { title: `Listing not found | ${BRAND}` };
   const priceStr = `$${(l.priceCents / 100).toFixed(0)}`;
   const name = [l.modelLabel, l.storage, l.color].filter(Boolean).join(" ");
+  // Absolute image URL for the share card: listing photos are already
+  // absolute Blob URLs; stock renders are /public-relative and need the
+  // domain. Texting a listing link to a buyer should unfurl with the phone.
+  const rawImg = l.photos[0] || l.stockImage || null;
+  const ogImg = rawImg ? (rawImg.startsWith("http") ? rawImg : `https://topcashcellular.com${rawImg}`) : undefined;
+  const desc = `Buy this tested ${name} in ${GRADE_LABEL[l.grade]} condition for ${priceStr}. ${
+    l.batteryPct ? `Battery ${l.batteryPct}%. ` : ""
+  }Personally tested in ${LOCATION_DISPLAY}. 30-day returns, local pickup or shipping.`;
   return {
     title: `${name} (${GRADE_LABEL[l.grade]}) — ${priceStr} | ${BRAND}`,
-    description: `Buy this tested ${name} in ${GRADE_LABEL[l.grade]} condition for ${priceStr}. ${
-      l.batteryPct ? `Battery ${l.batteryPct}%. ` : ""
-    }Personally tested in ${LOCATION_DISPLAY}. 30-day returns, local pickup or shipping.`,
+    description: desc,
     alternates: { canonical: `https://topcashcellular.com/shop/${l.id}` },
+    openGraph: {
+      title: `${name} — ${priceStr} · ${GRADE_LABEL[l.grade]}`,
+      description: desc,
+      url: `https://topcashcellular.com/shop/${l.id}`,
+      ...(ogImg ? { images: [{ url: ogImg }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name} — ${priceStr} · ${GRADE_LABEL[l.grade]}`,
+      description: desc,
+      ...(ogImg ? { images: [ogImg] } : {}),
+    },
   };
 }
 

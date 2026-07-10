@@ -4,6 +4,7 @@ import SiteFooter from "../components/SiteFooter";
 import { readPublicListings } from "../lib/shop-listings";
 import ShopHeader from "./ShopHeader";
 import ShopBrowser from "./ShopBrowser";
+import StockAlert from "./StockAlert";
 import { SHOP_CATEGORIES, listingInCategory } from "./categories";
 import { BRAND, LOCATION_DISPLAY, EMAIL } from "../lib/constants";
 
@@ -63,6 +64,7 @@ export default async function ShopPage() {
       >
         Sell your device
       </Link>
+      <StockAlert context="shop-index" />
     </div>
   );
 

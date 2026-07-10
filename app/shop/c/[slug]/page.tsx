@@ -5,6 +5,7 @@ import SiteFooter from "../../../components/SiteFooter";
 import { readPublicListings } from "../../../lib/shop-listings";
 import ShopHeader from "../../ShopHeader";
 import ShopBrowser from "../../ShopBrowser";
+import StockAlert from "../../StockAlert";
 import { SHOP_CATEGORIES, findCategory, listingInCategory } from "../../categories";
 import { BRAND } from "../../../lib/constants";
 
@@ -74,17 +75,36 @@ export default async function CategoryPage({ params }: Props) {
           Sell us yours instead
         </Link>
       )}
+      <StockAlert context={`shop-cat-${cat.slug}`} />
     </div>
   );
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Shop", item: "https://topcashcellular.com/shop" },
-      { "@type": "ListItem", position: 2, name: cat.label, item: `https://topcashcellular.com/shop/c/${cat.slug}` },
-    ],
-  };
+  const activeInCat = listings.filter((l) => l.status === "listed");
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Shop", item: "https://topcashcellular.com/shop" },
+        { "@type": "ListItem", position: 2, name: cat.label, item: `https://topcashcellular.com/shop/c/${cat.slug}` },
+      ],
+    },
+    ...(activeInCat.length > 0
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: cat.title,
+            numberOfItems: activeInCat.length,
+            itemListElement: activeInCat.slice(0, 20).map((l, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              url: `https://topcashcellular.com/shop/${l.id}`,
+            })),
+          },
+        ]
+      : []),
+  ];
 
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">

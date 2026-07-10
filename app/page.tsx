@@ -7214,6 +7214,15 @@ export default function Home() {
               </div>
             </div>
 
+            {/* SHOP — plain link, no dropdown: the store has its own category nav */}
+            <a
+              href="/shop"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-semibold text-white hover:text-[#00c853] hover:bg-white/5 transition cursor-pointer"
+            >
+              Shop
+              <span className="text-[9px] font-extrabold uppercase tracking-wider bg-[#00c853] text-[#0a0a0a] rounded-full px-1.5 py-0.5 leading-none">New</span>
+            </a>
+
             {/* BULK */}
             <div className="group relative" onMouseEnter={() => setMegaMenuOpen("bulk")} onMouseLeave={() => setMegaMenuOpen(null)}>
               <a
@@ -7660,6 +7669,21 @@ export default function Home() {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* SHOP — flat link, the store carries its own category nav */}
+            <div className="border-b border-white/10">
+              <a
+                href="/shop"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.06] transition tap-press"
+              >
+                <span className="text-base font-semibold text-white flex items-center gap-2">
+                  Shop
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider bg-[#00c853] text-[#0a0a0a] rounded-full px-1.5 py-0.5 leading-none">New</span>
+                </span>
+                <svg className="w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+              </a>
             </div>
 
             {/* BULK section */}

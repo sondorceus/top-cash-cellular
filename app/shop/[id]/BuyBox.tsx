@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { track } from "@vercel/analytics";
 
 // The claim form. Success = the unit is on hold and Skywalker has the
 // buyer's contact — closing happens human-to-human (cash at pickup, Zelle /
@@ -73,7 +74,10 @@ export default function BuyBox({
   if (!open) {
     return (
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+          track("shop_claim_opened", { listingId });
+        }}
         className="block w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-bold text-center hover:bg-[#00e676] transition shadow-lg"
       >
         Claim this device
@@ -99,6 +103,7 @@ export default function BuyBox({
         setBusy(false);
         return;
       }
+      track("shop_claim_submitted", { listingId, fulfilment });
       setDone(true);
     } catch {
       setError("Network hiccup — try again.");
