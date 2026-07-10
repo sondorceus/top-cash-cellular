@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
-import { HeaderSearch } from "../../components/HeaderSearch";
 import SiteFooter from "../../components/SiteFooter";
 import { readPublicListings } from "../../lib/shop-listings";
 import { GRADE_LABEL, GRADE_BLURB } from "../../lib/shop-grades";
+import ShopHeader from "../ShopHeader";
+import { ListingCard } from "../ShopBrowser";
+import { categoryForListing } from "../categories";
 import Gallery from "./Gallery";
 import BuyBox from "./BuyBox";
 import { BRAND, LOCATION_DISPLAY, EMAIL } from "../../lib/constants";
@@ -38,8 +39,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ListingPage({ params }: Props) {
   const { id } = await params;
-  const l = await getListing(id);
+  const all = await readPublicListings();
+  const l = all.find((x) => x.id === id) ?? null;
   if (!l) notFound();
+
+  const cat = categoryForListing(l.category);
+  const related = all
+    .filter((x) => x.id !== l.id && x.status === "listed" && categoryForListing(x.category).slug === cat.slug)
+    .sort((a, b) => (a.postedAt < b.postedAt ? 1 : -1))
+    .slice(0, 4);
 
   const name = [l.modelLabel, l.storage, l.color].filter(Boolean).join(" ");
   const priceStr = `$${(l.priceCents / 100).toFixed(2).replace(/\.00$/, "")}`;
@@ -65,32 +73,21 @@ export default async function ListingPage({ params }: Props) {
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-black border border-white/15 flex items-center justify-center">
-              <span className="w-6 h-6 rounded-lg bg-[#00c853] flex items-center justify-center">
-                <svg viewBox="0 0 24 24" className="w-3.5 h-5" fill="none" stroke="#fff" strokeWidth="2">
-                  <rect x="6" y="2" width="12" height="20" rx="2.5" />
-                  <line x1="10" y1="19" x2="14" y2="19" strokeLinecap="round" />
-                </svg>
-              </span>
-            </span>
-            <div className="flex flex-col leading-none">
-              <span className="text-[14px] font-extrabold tracking-tight text-white">TOP CASH</span>
-              <span className="text-[10px] font-bold tracking-[0.2em] text-[#00c853] uppercase">Cellular</span>
-            </div>
-          </Link>
-          <div className="flex items-center gap-3">
-            <HeaderSearch className="hidden sm:flex w-40 sm:w-56 md:w-64" />
-            <Link href="/shop" className="text-xs text-[#dcdcdc] hover:text-white whitespace-nowrap">
-              ← All devices
-            </Link>
-          </div>
-        </div>
-      </SlideOnScrollNav>
+      <ShopHeader activeSlug={cat.slug} />
 
       <div className="max-w-5xl mx-auto px-4 pt-8 pb-16 w-full flex-1">
+        <nav className="text-xs text-[#63636e] mb-5" aria-label="Breadcrumb">
+          <Link href="/shop" className="hover:text-white transition">
+            Shop
+          </Link>
+          <span className="mx-1.5">/</span>
+          <Link href={`/shop/c/${cat.slug}`} className="hover:text-white transition">
+            {cat.label}
+          </Link>
+          <span className="mx-1.5">/</span>
+          <span className="text-[#9a9a9a]">{l.modelLabel}</span>
+        </nav>
+
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
           <Gallery images={images} alt={name} sold={l.status === "sold"} />
 
@@ -172,6 +169,22 @@ export default async function ListingPage({ params }: Props) {
             </div>
           ))}
         </div>
+
+        {related.length > 0 && (
+          <div className="mt-16">
+            <div className="flex items-end justify-between mb-5">
+              <h2 className="text-xl font-bold">More {cat.label === "More devices" ? "devices" : cat.label} in stock</h2>
+              <Link href={`/shop/c/${cat.slug}`} className="text-xs font-bold text-[#00c853] hover:text-[#00e676] transition">
+                See all →
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {related.map((r) => (
+                <ListingCard key={r.id} l={r} />
+              ))}
+            </div>
+          </div>
+        )}
 
         <p className="text-xs text-[#555] mt-10">
           Questions about this device? Email {EMAIL} and mention listing {l.id}.

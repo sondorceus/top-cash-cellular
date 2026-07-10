@@ -3,10 +3,12 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ShopListingPublic } from "../lib/shop-listings";
-import { GRADE_LABEL } from "../lib/shop-grades";
+import { GRADE_LABEL, LISTING_GRADES, type ListingGrade } from "../lib/shop-grades";
 
-// Client half of /shop: category chips + the listing grid. Listings arrive
-// as props from the server page — no client fetch, no spinner on first paint.
+// Client half of the shop grids: sort + grade filter + the listing cards.
+// Category navigation happens ABOVE this component (tiles + header bar), so
+// the browser itself never filters by category — it renders what the server
+// page hands it. Keeps one grid implementation for /shop and /shop/c/[slug].
 
 const GRADE_STYLE: Record<string, { text: string; border: string; bg: string }> = {
   excellent: { text: "text-[#00c853]", border: "border-[#00c853]/40", bg: "bg-[#00c853]/10" },
@@ -14,13 +16,11 @@ const GRADE_STYLE: Record<string, { text: string; border: string; bg: string }> 
   fair: { text: "text-[#ffb400]", border: "border-[#ffb400]/40", bg: "bg-[#ffb400]/10" },
 };
 
+type Sort = "new" | "price-asc" | "price-desc";
+
 export function price(cents: number): string {
   const d = cents / 100;
   return Number.isInteger(d) ? `$${d}` : `$${d.toFixed(2)}`;
-}
-
-function imageFor(l: ShopListingPublic): string | null {
-  return l.photos[0] || l.stockImage || null;
 }
 
 function GradeChip({ grade }: { grade: string }) {
@@ -32,8 +32,8 @@ function GradeChip({ grade }: { grade: string }) {
   );
 }
 
-function ListingCard({ l }: { l: ShopListingPublic }) {
-  const img = imageFor(l);
+export function ListingCard({ l }: { l: ShopListingPublic }) {
+  const img = l.photos[0] || l.stockImage || null;
   const subline = [l.storage, l.color, l.carrier].filter(Boolean).join(" · ");
   const inactive = l.status !== "listed";
 
@@ -59,7 +59,7 @@ function ListingCard({ l }: { l: ShopListingPublic }) {
             style={{ filter: "drop-shadow(0 14px 18px rgba(0,0,0,0.5))" }}
           />
         ) : (
-          <div className="text-[#555] text-sm font-semibold">{l.modelLabel}</div>
+          <div className="text-[#555] text-sm font-semibold text-center px-3">{l.modelLabel}</div>
         )}
         <div className="absolute top-3 left-3">
           <GradeChip grade={l.grade} />
@@ -100,61 +100,76 @@ function ListingCard({ l }: { l: ShopListingPublic }) {
   );
 }
 
-export default function ShopBrowser({ listings }: { listings: ShopListingPublic[] }) {
-  const [cat, setCat] = useState<string>("All");
+export default function ShopBrowser({
+  listings,
+  emptyState,
+}: {
+  listings: ShopListingPublic[];
+  /** Rendered when no ACTIVE listings survive the filters (sold wall still shows). */
+  emptyState?: React.ReactNode;
+}) {
+  const [sort, setSort] = useState<Sort>("new");
+  const [grades, setGrades] = useState<Set<ListingGrade>>(new Set());
 
-  const cats = useMemo(() => {
-    const set = new Set(listings.filter((l) => l.status !== "sold").map((l) => l.category));
-    return ["All", ...Array.from(set).sort()];
-  }, [listings]);
+  const toggleGrade = (g: ListingGrade) => {
+    setGrades((prev) => {
+      const next = new Set(prev);
+      if (next.has(g)) next.delete(g);
+      else next.add(g);
+      return next;
+    });
+  };
 
-  const active = listings.filter((l) => l.status !== "sold" && (cat === "All" || l.category === cat));
+  const active = useMemo(() => {
+    let xs = listings.filter((l) => l.status !== "sold");
+    if (grades.size) xs = xs.filter((l) => grades.has(l.grade));
+    if (sort === "price-asc") xs = [...xs].sort((a, b) => a.priceCents - b.priceCents);
+    else if (sort === "price-desc") xs = [...xs].sort((a, b) => b.priceCents - a.priceCents);
+    // "new" keeps the server's newest-first order
+    return xs;
+  }, [listings, grades, sort]);
+
   const sold = listings.filter((l) => l.status === "sold").slice(0, 8);
-
-  if (listings.length === 0) {
-    // Launch state (Skywalker 2026-07-10: "put coming soon for pictures and
-    // stuff") — the shop went live ahead of its first posting, so an empty
-    // feed reads as a launch, not a failure.
-    return (
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-10 sm:p-14 text-center max-w-xl">
-        <p className="text-xs font-bold text-[#00c853] tracking-widest uppercase mb-3">Coming soon</p>
-        <div className="text-3xl font-bold mb-3">First devices are in testing</div>
-        <p className="text-[#dcdcdc] text-sm mb-7">
-          Photos, battery reports and prices land here the moment each device clears our bench.
-          Check back shortly — or turn your old one into cash while you wait.
-        </p>
-        <Link
-          href="/"
-          className="inline-block bg-[#00c853] text-[#0a0a0a] px-6 py-3 rounded-full font-semibold hover:bg-[#00e676] transition"
-        >
-          Sell your device
-        </Link>
-      </div>
-    );
-  }
+  const anyActive = listings.some((l) => l.status !== "sold");
 
   return (
     <>
-      {cats.length > 2 && (
-        <div className="flex flex-wrap gap-2 mb-6">
-          {cats.map((c) => (
+      {anyActive && (
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          {LISTING_GRADES.map((g) => (
             <button
-              key={c}
-              onClick={() => setCat(c)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold border transition ${
-                cat === c
+              key={g}
+              onClick={() => toggleGrade(g)}
+              className={`px-3.5 py-1.5 rounded-full text-[13px] font-semibold border transition ${
+                grades.has(g)
                   ? "bg-[#00c853] text-[#0a0a0a] border-[#00c853]"
                   : "bg-white/5 text-[#dcdcdc] border-white/10 hover:border-white/25"
               }`}
             >
-              {c}
+              {GRADE_LABEL[g]}
             </button>
           ))}
+          <div className="ml-auto">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as Sort)}
+              aria-label="Sort listings"
+              className="bg-white/5 border border-white/15 rounded-full px-4 py-1.5 text-[13px] font-semibold text-[#dcdcdc] focus:outline-none focus:border-[#00c853]/60 [&>option]:bg-[#0a0a0a]"
+            >
+              <option value="new">Newest first</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+            </select>
+          </div>
         </div>
       )}
 
       {active.length === 0 ? (
-        <p className="text-[#9a9a9a] py-8">Nothing in {cat} right now — check another category.</p>
+        anyActive ? (
+          <p className="text-[#9a9a9a] py-8">Nothing matches those filters — clear a grade and look again.</p>
+        ) : (
+          emptyState ?? null
+        )
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {active.map((l) => (
