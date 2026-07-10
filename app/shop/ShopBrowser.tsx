@@ -112,12 +112,16 @@ export default function ShopBrowser({ listings }: { listings: ShopListingPublic[
   const sold = listings.filter((l) => l.status === "sold").slice(0, 8);
 
   if (listings.length === 0) {
+    // Launch state (Skywalker 2026-07-10: "put coming soon for pictures and
+    // stuff") — the shop went live ahead of its first posting, so an empty
+    // feed reads as a launch, not a failure.
     return (
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-10 text-center max-w-xl">
-        <div className="text-2xl font-bold mb-2">Fresh stock is on the way</div>
-        <p className="text-[#dcdcdc] text-sm mb-6">
-          Devices land here as soon as they clear testing. Check back soon — or turn your old one into
-          cash while you wait.
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-10 sm:p-14 text-center max-w-xl">
+        <p className="text-xs font-bold text-[#00c853] tracking-widest uppercase mb-3">Coming soon</p>
+        <div className="text-3xl font-bold mb-3">First devices are in testing</div>
+        <p className="text-[#dcdcdc] text-sm mb-7">
+          Photos, battery reports and prices land here the moment each device clears our bench.
+          Check back shortly — or turn your old one into cash while you wait.
         </p>
         <Link
           href="/"
