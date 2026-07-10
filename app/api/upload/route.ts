@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
+import { safeEqual } from "../../lib/admin-auth";
 
 // Customer photo upload. Funnel posts JPEG/PNG/WEBP captures of the
 // device for the AI fraud + condition check on the lead side. Hardened
@@ -29,10 +30,15 @@ function sniffAllowedImage(head: Buffer): boolean {
 export async function POST(req: NextRequest) {
   // Per-IP rate limit. 12 uploads per 10 min covers a legit customer
   // photographing every angle of one device with retries; rejects
-  // scripted Blob-quota floods.
-  const ip = clientIp(req);
-  const rl = rateLimit(`upload:${ip}`, UPLOAD_LIMIT, UPLOAD_WINDOW_MS);
-  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many uploads — wait a moment and try again.");
+  // scripted Blob-quota floods. A valid admin token bypasses the cap —
+  // posting a batch of shop listings (up to 8 photos each) from
+  // /admin/shop would trip it in one device and a half otherwise.
+  const isAdmin = safeEqual(req.headers.get("x-admin-token"), process.env.TCC_ADMIN_TOKEN);
+  if (!isAdmin) {
+    const ip = clientIp(req);
+    const rl = rateLimit(`upload:${ip}`, UPLOAD_LIMIT, UPLOAD_WINDOW_MS);
+    if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many uploads — wait a moment and try again.");
+  }
 
   try {
     const form = await req.formData();

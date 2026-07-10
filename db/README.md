@@ -1,9 +1,23 @@
-# TCC storefront — dormant scaffolding
+# TCC storefront
 
-**Status: not live. Nothing imports these modules, no route serves them, no
-database exists.** Skywalker 2026-07-10: "we aren't selling now, just have it
-setup for now." This directory and the two `app/lib/shop-*.ts` modules are
-inert on purpose — they cost nothing at build or runtime until wired up.
+**Status: v1 BUILT (2026-07-10, same day as the scaffolding).** Skywalker asked
+for the full sell side so he can start posting. The live surface is:
+
+- `/shop` + `/shop/[id]` — public storefront (dark theme, brand green, native chrome)
+- `/admin/shop` — posting cockpit (model datalist, live price suggestion, photo upload)
+- `/api/shop`, `/api/shop/buy`, `/api/admin/shop` — feed / claim / CRUD
+- Persistence: **Vercel Blob** (`app/lib/shop-listings.ts`), NOT the Postgres
+  schema below. Random-suffixed pathname so costCents never sits at a guessable
+  public URL; the public API strips cost. v1 sells by **reservation** (claim →
+  on_hold → owner closes by cash/Zelle/Cash App), so there is no checkout race
+  for Blob to lose. Buyer PII goes to MC comms + owner email only, never the blob.
+- Marking sold auto-writes the `[SALE: …]` profit-ledger message (Platform
+  "TCC Shop"), format-verified against the parser — cost pre-filled from the
+  listing. `saleLogged:false` in the PATCH response means the MC write did NOT
+  land (e.g. rotated key) and the sale needs manual entry on /admin/profit.
+
+The Postgres schema in this directory is still the **destination** for when
+Stripe checkout lands; `db/schema.sql` remains unexecuted until then.
 
 The storefront sells refurbished devices TCC bought through the buyback funnel.
 It is the reverse money flow from everything else in this repo: `/sell` is us

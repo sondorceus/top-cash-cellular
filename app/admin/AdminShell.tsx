@@ -13,6 +13,7 @@ const NAV: { href: string; ico: string; label: string; primary?: boolean }[] = [
   { href: "/admin/customers", ico: "⬡", label: "Customers", primary: true },
   { href: "/admin/analytics", ico: "≡", label: "Analytics", primary: true },
   { href: "/admin/prices", ico: "◇", label: "Prices" },
+  { href: "/admin/shop", ico: "⬢", label: "Shop" },
   { href: "/admin/profit", ico: "⊙", label: "Profit" },
   { href: "/admin/referrals", ico: "✳", label: "Referrals" },
   { href: "/admin/sequences", ico: "✉", label: "Sequences" },

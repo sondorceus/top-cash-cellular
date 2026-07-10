@@ -68,6 +68,7 @@ export default function SiteFooter() {
             <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Quick Navigation</p>
             <div className="space-y-2">
               <a href="/" className="block text-xs hover:text-[#00c853] transition">Get Custom Quote</a>
+              <a href="/shop" className="block text-xs hover:text-[#00c853] transition">Shop Devices</a>
               <a href="/how-it-works" className="block text-xs hover:text-[#00c853] transition">How It Works</a>
               <a href="/?page=grading" className="block text-xs hover:text-[#00c853] transition">Grading Guide</a>
               <a href="/?page=shipping" className="block text-xs hover:text-[#00c853] transition">Shipping &amp; Returns</a>
