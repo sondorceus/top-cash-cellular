@@ -415,6 +415,10 @@ const TOOLS = [
 // Every quote arms it; every other reply disarms it, so a customer who answered
 // never gets nudged. Tag actions only go out on the ManyChat path (psid known).
 const FOLLOWUP_TAG = "quoted-followup";
+// Follow-ups only chase deals worth chasing (Skywalker 2026-07-11: "some deals
+// arent worth it") — a nudge over a $60 scrap phone reads desperate. Shared
+// floor with /api/cron/msgr-followup.
+const FOLLOWUP_MIN = Number(process.env.MSGR_FOLLOWUP_MIN ?? 100);
 function render(
   texts: string[],
   quickReplies: { caption: string; state: ConvoState }[],
@@ -1383,7 +1387,15 @@ export async function POST(req: NextRequest) {
     body.ctx !== undefined
       ? encodeCtx([...priorTurns, { role: "user", content: textForCtx }, { role: "assistant", content: replyText }], ctxTurns, ctxLen)
       : undefined;
-  return render([replyText], quickReplies, origin, secret, newCtx, psid ? (lastQuote ? "arm" : "disarm") : undefined, psid || undefined);
+  return render(
+    [replyText],
+    quickReplies,
+    origin,
+    secret,
+    newCtx,
+    psid ? (lastQuote && lastQuote.offer >= FOLLOWUP_MIN ? "arm" : "disarm") : undefined,
+    psid || undefined,
+  );
 }
 
 export async function GET(req: NextRequest) {
