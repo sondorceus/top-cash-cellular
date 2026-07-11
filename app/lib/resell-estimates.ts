@@ -17,7 +17,12 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   "iPhone 16 Pro Max": 721, "iPhone 16 Pro": 638, "iPhone 16 Plus": 428, "iPhone 16": 520,
   "iPhone 15 Pro Max": 525, "iPhone 15 Pro": 528, "iPhone 15": 349,
   "iPhone 14 Pro Max": 417, "iPhone 14 Pro": 358, "iPhone 14": 268,
-  "iPhone 13 Pro Max": 338, "iPhone 13 Pro": 268, "iPhone 13": 211,
+  // 13-family recalibrated 2026-07-11 (Skywalker-approved): the May comps were
+  // stale-low and the margin cap was squashing good-condition offers to
+  // $110/$140/$176 while Sonny actually pays ~$170 for a good 13 (his live
+  // correction in the Damian thread: "170 unlocked, 120 locked"). Backed out
+  // of his real payouts at the 25%-margin + eBay-net formula.
+  "iPhone 13 Pro Max": 460, "iPhone 13 Pro": 400, "iPhone 13": 330,
   // Samsung
   "Galaxy S26 Ultra": 927, "Galaxy S25 Ultra": 714, "Galaxy S24 Ultra": 544,
   "Galaxy S26": 741, "Galaxy S25": 372,

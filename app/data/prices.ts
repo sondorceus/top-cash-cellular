@@ -36,7 +36,10 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // iPhone 13 series
   ip13pm: { att: 50, tmobile: 80, other: 150 },
   ip13p:  { att: 40, tmobile: 60, other: 100 },
-  ip13:   { att: 30, tmobile: 50, other: 70 },
+  // ip13 att raised over tmobile 2026-07-11 — Sonny: "ATT and Verizon are a
+  // bit lower right now because of locking issues" (verizon-locked falls back
+  // to the att gap). T-Mobile 50 lands his exact $120 locked number.
+  ip13:   { att: 55, tmobile: 50, other: 70 },
   // Older iPhones — smaller deductions
   ip12pm: { att: 30, tmobile: 40, other: 70 },
   ip12p:  { att: 25, tmobile: 35, other: 50 },
@@ -173,10 +176,14 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "128": { fair: 90, good: 162, mint: 175, sealed: 183 },
     "256": { fair: 103, good: 179, mint: 192, sealed: 200 },
     "512": { fair: 103, good: 192, mint: 205, sealed: 213 } },
+  // ip13 recalibrated 2026-07-11 to Sonny's live payouts (he corrected a bot
+  // quote to "170 unlocked / 120 locked" for a good one — Damian thread):
+  // good 128 + the $25 phone bonus lands exactly on $170 unlocked / $120
+  // T-Mobile. Resell comp raised in lockstep so the margin cap clears.
   ip13: {
-    "128": { broken: 48, fair: 94, good: 117, mint: 130, sealed: 190 },
-    "256": { broken: 52, fair: 103, good: 134, mint: 147, sealed: 218 },
-    "512": { broken: 57, fair: 107, good: 143, mint: 156, sealed: 238 } },
+    "128": { broken: 48, fair: 115, good: 145, mint: 158, sealed: 190 },
+    "256": { broken: 52, fair: 122, good: 152, mint: 165, sealed: 218 },
+    "512": { broken: 57, fair: 128, good: 160, mint: 173, sealed: 238 } },
   ip13mini: {
     "128": { fair: 76, good: 124, mint: 137, sealed: 180 },
     "256": { fair: 104, good: 152, mint: 165, sealed: 190 },
