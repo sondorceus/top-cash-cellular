@@ -6,7 +6,9 @@
 // funnel logic — meetup+cash, owner SMS, Spanish handoffs — is reused, not rebuilt.
 //
 //   POST /api/msgr-ai   header X-Bot-Secret OR ?s=<MSGR_BOT_SECRET>
-//   body: { text: string, history?: {role|from, text}[], lang?: "en"|"es" }
+//   body: { text: string, history?: {role|from, text}[], lang?: "en"|"es",
+//           psid?, ctx?, deep?, images?: string[] (photo URLs the model LOOKS at),
+//           recover?: true (inbox-watch answering an old unanswered message) }
 //
 // Renders ManyChat Dynamic Block v2 (same shape as /api/msgr).
 
@@ -323,6 +325,7 @@ const SYSTEM = (lang: string) =>
     "LOCATION — NEVER volunteer where we're located. Don't say 'we're local in Austin' unless they ASK where you are or a meetup is actually being set up. When it IS relevant: 'Austin area — I'm out meeting people today, if you can come to me we can get it done today' (if they can't: 'no worries, what area are you in'). Someone asking a price does not need a geography lesson.",
     "THE OWNER TEXTS IN THIS SAME THREAD from his phone — some page-side messages in the transcript are HIM, not you (a price, meetup plans, personal lines). To the customer it's all one person, so everything the page side already said STANDS: never re-ask it, never restate it, never contradict it. If a price was already named, that IS the number — never ask 'what number you looking to get' after it. If a meetup is already being arranged, stay out of the logistics. When the customer's reply is clearly aimed at something the owner is personally handling, [NO_REPLY] beats butting in.",
     "TRAVEL IS THE OWNER'S PRIVATE LOGISTICS — HARD RULE: NEVER name cities or areas you 'drive to', 'go to often', or 'cover' (no 'I drive to Houston', no 'I'm in Dallas a lot', nothing like it — real failure 2026-07-07: bot told a Killeen seller 'I drive to Houston and Dallas often', wrong direction AND leaked his routes). You do not know where the owner drives and must never invent it. Out-of-town seller: take their area + specs + their number like normal, keep it neutral ('got it, let me see what I can do'), and notify_team with the area flagged — whether a deal is worth a drive is the OWNER's call alone, he only travels for exceptional deals. Never promise or hint that distance is no problem, and never use travel talk to keep a lead warm.",
+    "PHOTOS: the message sometimes includes photos the customer sent — look at them like the owner would. Identify what you can SEE (model if recognizable, color, sealed box, cracks/wear, what's on the screen or the box label) and move the intake forward in ONE short line ('that's a 13 Pro right? what storage' / 'ok that crack isn't bad — is it unlocked?'). Whatever the photo already answers, never re-ask it. A condition read from a photo is provisional — the real check happens at the meetup, so never promise or imply a number off a picture. If the photo is too blurry or ambiguous, just ask plainly what it is. NEVER say you can't see pics when a photo is attached, and never talk about 'analyzing the image' — you're just a guy looking at a picture on his phone.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
     "SIMPLE REPLIES — HARD RULE: ONE short message, UNDER 12 WORDS whenever possible, never more than one sentence plus a question. The gold standard is literally: 'hey whats the storage + condition?'. ONE question max. NEVER a numbered list (no 1) 2) 3)), never a paragraph. People skim on their phone — anything long doesn't get read. If your draft is over 15 words, cut it down before sending.",
     "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up, just to confirm'. ONLY when a message actually contains a 15-digit number, call check_imei: it confirms the exact model (often storage too) — then just confirm condition and run the normal 'one sec, let me see what I can do' → get_quote + notify_team handoff (never a price to the customer). If the lookup fails, casually ask for the model from Settings > General > About instead (one short line). check_imei is ONLY for confirming what the device is; you make NO buy/pass decisions off it and NEVER mention locks or blacklists — the owner sees the details and makes every call. If they only have an Apple serial, take it and call notify_team — team decodes it.",
@@ -334,7 +337,7 @@ const SYSTEM = (lang: string) =>
     // ---- facts (mirror the button funnel exactly) ----
     "HOW IT WORKS (only if they ASK — answer in UNDER 12 words, like: 'you tell me what you got, we meet up and I pay you — whole thing is usually super quick 👍 let me know what you have, carrier, condition and all that'): do NOT explain the whole process or mention shipping unless they say they're out of town (then: 'no worries, we ship free — topcashcellular.com'). No walk-in store, never say 'come to the store'.",
     "WE BUY: iPhones (11+), Samsung Galaxy (S21+, Z Fold/Flip), Google Pixel, MacBooks, and consoles — ANY condition, even cracked (lower offer). Conditions: sealed (new in plastic), like-new, good, fair, broken. That list is what gets an INSTANT number — it is NOT a refusal list: for anything else (watches, tablets, other electronics) the owner's real line is 'I buy all types just asking for price' — take the item + their ask and notify_team, NEVER turn a category away yourself. The ONE exception you may decline solo is an obvious single junk item with no lot attached.",
-    "KNOW THE DEVICE CATEGORY — ask the RIGHT specs and never mix categories up: phones → model + storage + carrier/lock + condition. Apple Watch / Galaxy Watch = SMARTWATCH with real resale → series/gen + case size (41/45mm) + GPS or cellular + condition. Fitbits and no-name fitness bands = very low resale — stay neutral, take the info + their ask, team decides. iPads/tablets → which model + generation, storage, wifi-only or cellular. MacBooks/laptops → chip (M1/M2/M3 or Intel), year, RAM, storage. Consoles → exact model (PS5 disc vs digital, Series X vs S), storage, controllers included. AirPods/earbuds → model + generation + which case. TVs/soundbars/keyboards/monitors → usually not worth shipping, but on a LOT take the list + asks and let the team decide. If you don't recognize a product name, ask plainly ('what is that — a watch, a tablet, or something else?') — never guess the category.",
+    "KNOW THE DEVICE CATEGORY — ask the RIGHT specs and never mix categories up: phones → model + storage + carrier/lock + condition. Apple Watch / Galaxy Watch = SMARTWATCH with real resale → series/gen + case size (41/45mm) + GPS or cellular + condition. Fitbits and no-name fitness bands = very low resale — stay neutral, take the info + their ask, team decides. iPads/tablets → which model + generation, storage, wifi-only or cellular. MacBooks/laptops → chip (M1/M2/M3 or Intel), year, RAM, storage. Consoles → exact model (PS5 disc vs digital, Series X vs S), storage, controllers included — and take disc/digital EXACTLY as they said it, never flip it back (real failure 2026-07-09: 'Digital no games' got read back as 'sounds like disc PS4'). AirPods/earbuds → model + generation + which case. TVs/soundbars/keyboards/monitors → usually not worth shipping, but on a LOT take the list + asks and let the team decide. If you don't recognize a product name, ask plainly ('what is that — a watch, a tablet, or something else?') — never guess the category.",
     "READ MODELS CAREFULLY — quantity + product line + category (real failure: '10 Samsung Galaxy 3 watches' got answered as 'so 10 Galaxy S3 phones? and what about the 3 watches' — wrong on both). 'Samsung Galaxy N watch(es)' / 'Galaxy watch N' = Galaxy WATCH N, a smartwatch, never an S-series phone. The number right before a category noun is usually the QUANTITY ('10 TVs', '10 Fitbits'), the number inside a product name is the generation ('Watch 3', 'S24'). If quantity vs model is ambiguous, ask ONE clean confirm ('the watches — Galaxy Watch 3, and you have 10 of them?') instead of guessing.",
     "QUOTING — CRITICAL: you NEVER tell the customer a price. Work the order smoothly — model → storage → condition → carrier — ONE combined question for whatever's still missing, never re-asking anything they already said or implied. NEVER say the one-sec line while a spec is still missing — ask the missing spec instead (saying 'one sec' and then firing another question reads broken). Once you have the specs (and ideally the number they need to be at), say exactly the owner's move: 'One sec, let me see what I can do' — then call the get_quote and notify_team TOOLS (tool calls are invisible system actions — the customer must NEVER see tool names, asterisk stage directions like *calling...*, or any mention of checking systems; the engine number goes to the team, NOT the customer — repeating get_quote's number to the customer is the single worst mistake you can make) and call notify_team with device + specs + their target number. If they push for an instant number: 'give me a minute, I'm seeing what I can do'. Never make up or estimate a price under any circumstances.",
     "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers.",
@@ -495,27 +498,69 @@ function encodeCtx(turns: Turn[], maxTurns = 8, maxLen = 1400): string {
 // Page-side messages come back as assistant turns (same page = same voice, and
 // the customer can't tell either). Fail-open: any error returns [] and the
 // caller falls back to ctx.
-type ThreadMsg = Turn & { ts: number };
+type ThreadMsg = Turn & { ts: number; imgs?: string[] };
+type GraphAtt = { image_data?: { url?: string }; file_url?: string };
 async function threadFromGraph(psid: string, limit: number): Promise<ThreadMsg[]> {
   const token = process.env.PAGE_ACCESS_TOKEN || "";
   if (!token) return [];
   try {
     const r = await fetch(
-      `https://graph.facebook.com/v21.0/me/conversations?user_id=${encodeURIComponent(psid)}&fields=messages.limit(${limit}){message,from,created_time}&access_token=${encodeURIComponent(token)}`,
+      `https://graph.facebook.com/v21.0/me/conversations?user_id=${encodeURIComponent(psid)}&fields=messages.limit(${limit}){message,from,created_time,attachments}&access_token=${encodeURIComponent(token)}`,
       { cache: "no-store", signal: AbortSignal.timeout(3000) },
     );
     if (!r.ok) return [];
-    const j = (await r.json()) as { data?: { messages?: { data?: { message?: string; from?: { id?: string }; created_time?: string }[] } }[] };
+    const j = (await r.json()) as { data?: { messages?: { data?: { message?: string; from?: { id?: string }; created_time?: string; attachments?: { data?: GraphAtt[] } }[] } }[] };
     const msgs = j?.data?.[0]?.messages?.data;
     if (!Array.isArray(msgs)) return [];
     return msgs
-      .map((m) => ({
-        role: (m?.from?.id === psid ? "user" : "assistant") as Turn["role"],
-        content: String(m?.message || "").trim().slice(0, 500),
-        ts: Date.parse(m?.created_time || "") || 0,
-      }))
+      .map((m) => {
+        const imgs = (m?.attachments?.data || [])
+          .map((a) => String(a?.image_data?.url || a?.file_url || ""))
+          .filter((u) => /^https:\/\//.test(u));
+        return {
+          role: (m?.from?.id === psid ? "user" : "assistant") as Turn["role"],
+          // Photo-only messages used to vanish from the transcript entirely —
+          // the model never knew a pic was sent. Keep a placeholder in view.
+          content: String(m?.message || "").trim().slice(0, 500) || (imgs.length ? "📷 (photo)" : ""),
+          ts: Date.parse(m?.created_time || "") || 0,
+          imgs,
+        };
+      })
       .filter((t) => t.content)
       .sort((a, b) => a.ts - b.ts);
+  } catch {
+    return [];
+  }
+}
+
+// Fresh photos from the newest run of CUSTOMER messages — the burst being
+// answered right now. Sellers send device pics constantly and both transports
+// used to drop them ("can't see pics" — while the model is multimodal). Only
+// the current burst rides the Claude call: old photos are stale context and
+// their signed CDN URLs expire anyway. `maxAgeMs` widens for the inbox-watch
+// recovery path, where the unanswered photo can be hours old.
+async function latestCustomerImages(psid: string, maxAgeMs = 15 * 60_000): Promise<string[]> {
+  const token = process.env.PAGE_ACCESS_TOKEN || "";
+  if (!token) return [];
+  try {
+    const r = await fetch(
+      `https://graph.facebook.com/v21.0/me/conversations?user_id=${encodeURIComponent(psid)}&fields=messages.limit(6){from,created_time,attachments}&access_token=${encodeURIComponent(token)}`,
+      { cache: "no-store", signal: AbortSignal.timeout(3500) },
+    );
+    if (!r.ok) return [];
+    const j = (await r.json()) as { data?: { messages?: { data?: { from?: { id?: string }; created_time?: string; attachments?: { data?: GraphAtt[] } }[] } }[] };
+    const msgs = j?.data?.[0]?.messages?.data || []; // newest first
+    const out: string[] = [];
+    for (const m of msgs) {
+      if (m?.from?.id !== psid) break; // stop at the page's last reply
+      if ((Date.parse(m?.created_time || "") || 0) < Date.now() - maxAgeMs) break;
+      for (const a of m?.attachments?.data || []) {
+        const u = String(a?.image_data?.url || a?.file_url || "");
+        if (/^https:\/\//.test(u)) out.push(u);
+      }
+      if (out.length >= 4) break;
+    }
+    return out.slice(0, 4);
   } catch {
     return [];
   }
@@ -703,10 +748,17 @@ export async function POST(req: NextRequest) {
   // ManyChat's Default Reply dynamic block passes the typed message as a JSON body
   // ({"text":"{{Last Text Input}}"}); read it raw (spaces would break a URL query).
   const rawBody = await req.text().catch(() => "");
-  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown; psid?: unknown; deep?: unknown } = {};
+  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown; psid?: unknown; deep?: unknown; images?: unknown; recover?: unknown } = {};
   try { body = JSON.parse(rawBody); } catch { /* not json */ }
   // deep = caller stores ctx somewhere roomy (owned webhook's blob) → longer memory.
   const deep = body.deep === true;
+  // recover = inbox-watch calling about an old unanswered message — widen the
+  // photo-freshness window so an hours-old unanswered pic still gets seen.
+  const recover = body.recover === true;
+  // Photos riding the request (owned webhook passes attachment URLs directly).
+  let images: string[] = Array.isArray(body.images)
+    ? (body.images as unknown[]).map((u) => String(u || "")).filter((u) => /^https:\/\//.test(u)).slice(0, 4)
+    : [];
   const ctxTurns = deep ? 24 : 8;
   const ctxLen = deep ? 4000 : 1400;
   let text = (typeof body.text === "string" ? body.text : req.nextUrl.searchParams.get("text") || "").slice(0, 1500).trim();
@@ -804,26 +856,37 @@ export async function POST(req: NextRequest) {
   if (!text) {
     if (process.env.MSGR_AI_ENABLED === "0") return EMPTY();
     if (psid && (await isMuted(psid))) return EMPTY();
-    const priorEmpty = decodeCtx(body.ctx);
-    if (!priorEmpty.length) {
-      // Fresh conversation with nothing typed (a Get Started tap): serve the
-      // REAL funnel menu — this is the menu funnel's front door.
-      const out = await proxyFunnel({ step: "start" });
-      if (out) return out;
-      return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret, undefined, undefined, psid || undefined);
+    // Empty text is usually a photo. Pull the actual image(s) from Graph and
+    // let the model LOOK at them (fall through to the main AI flow below with
+    // images attached) — sellers send device pics constantly and the old
+    // "can't see pics" line was a lie a real buyer would never say (two live
+    // threads on 2026-07-09/10 show pics being ignored outright).
+    if (!images.length && psid) images = await latestCustomerImages(psid, recover ? 24 * 3_600_000 : undefined);
+    if (!images.length) {
+      const priorEmpty = decodeCtx(body.ctx);
+      if (!priorEmpty.length) {
+        // Fresh conversation with nothing typed (a Get Started tap): serve the
+        // REAL funnel menu — this is the menu funnel's front door.
+        const out = await proxyFunnel({ step: "start" });
+        if (out) return out;
+        return render(["hey, tell me what you have and i'll get you a cash offer 👍"], [], origin, secret, undefined, undefined, psid || undefined);
+      }
+      // MID-conversation empty input with no fetchable image (video/sticker/
+      // audio, or the Graph read failed). Restarting the menu here reads as a
+      // broken bot — acknowledge it and keep the thread moving instead.
+      const esPic = /[áéíóúñ¿¡]|\b(hola|cu[aá]nto|vend[eo]|tel[eé]fono|celular|precio|quiero|gracias)\b/i.test(
+        priorEmpty.filter((t) => t.role === "user").map((t) => t.content).join(" "),
+      );
+      const picLine = esPic
+        ? "No puedo ver eso por aquí — dime qué es y en qué condición está 👍"
+        : "Can't open that on here — just tell me what it is and the condition 👍";
+      const picCtx = body.ctx !== undefined ? encodeCtx([...priorEmpty, { role: "assistant", content: picLine }], ctxTurns, ctxLen) : undefined;
+      return render([picLine], [], origin, secret, picCtx, undefined, psid || undefined);
     }
-    // MID-conversation empty input is almost always a photo/attachment (sellers
-    // send device pics constantly). Restarting the menu here reads as a broken
-    // bot — acknowledge the pic and keep the thread moving instead.
-    const esPic = /[áéíóúñ¿¡]|\b(hola|cu[aá]nto|vend[eo]|tel[eé]fono|celular|precio|quiero|gracias)\b/i.test(
-      priorEmpty.filter((t) => t.role === "user").map((t) => t.content).join(" "),
-    );
-    const picLine = esPic
-      ? "No puedo ver fotos por aquí — dime qué es y en qué condición está 👍"
-      : "Can't see pics on here — just tell me what it is and the condition 👍";
-    const picCtx = body.ctx !== undefined ? encodeCtx([...priorEmpty, { role: "assistant", content: picLine }], ctxTurns, ctxLen) : undefined;
-    return render([picLine], [], origin, secret, picCtx, undefined, psid || undefined);
   }
+  // What the transcript/dedupe/ctx record for this turn — photo-only messages
+  // get a placeholder so memory and burst markers stay coherent.
+  const textForCtx = text || "📷 (photo)";
   const rawHistory = Array.isArray(body.history) ? body.history : [];
   const history = rawHistory
     .slice(-10)
@@ -842,9 +905,16 @@ export async function POST(req: NextRequest) {
   if (psid) {
     const thread = await threadFromGraph(psid, deep ? 25 : 12);
     // Graph already delivered the message we're answering — drop trailing copies
-    // of it so the "append current text" step below doesn't double it.
+    // of it (and, when answering a photo, its "📷 (photo)" placeholder) so the
+    // "append current turn" step below doesn't double it.
     const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
-    while (thread.length && thread[thread.length - 1].role === "user" && norm(thread[thread.length - 1].content) === norm(text)) thread.pop();
+    while (
+      thread.length &&
+      thread[thread.length - 1].role === "user" &&
+      ((!!text && norm(thread[thread.length - 1].content) === norm(text)) ||
+        (images.length > 0 && thread[thread.length - 1].content === "📷 (photo)"))
+    )
+      thread.pop();
     if (thread.length) {
       // Human takeover → stand down 60 min and tell the owner ONCE (never
       // when he already muted or a standdown is already running).
@@ -893,7 +963,7 @@ export async function POST(req: NextRequest) {
     // After hours: one short holding line + ping the owner so no overnight lead is lost.
     after(async () => {
       const who = psid ? await senderName(psid) : "";
-      return notifyOwnerSms(`🌙 After-hours TCC lead${who ? ` — ${who}` : ""}: "${text.slice(0, 80)}" — follow up in ManyChat.`);
+      return notifyOwnerSms(`🌙 After-hours TCC lead${who ? ` — ${who}` : ""}: "${textForCtx.slice(0, 80)}" — follow up in ManyChat.`);
     });
     return render(
       [
@@ -910,15 +980,20 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Burst dedupe: skip a text we just answered; claim the reply slot for this request.
+  // Burst dedupe: skip a text we just answered; claim the reply slot for this
+  // request. The answered-window is 4 min (not 90s) because it's also the
+  // CROSS-TRANSPORT dedupe: ManyChat (~30s delay) and the owned webhook
+  // (~40–135s human-paced delay) both forward the same customer message, and
+  // live threads on 2026-07-09 show the resulting double replies landing up to
+  // ~2 min apart — one even contradicting the other.
   const myRand = crypto.randomUUID().slice(0, 8).replace(/-/g, "");
-  const myHash = textHash(text);
+  const myHash = textHash(textForCtx);
   const myTs = Date.now();
   if (psid) {
     if (await isMuted(psid)) return EMPTY(); // owner is working this convo — stay silent
     if (await deferActive(psid)) return EMPTY(); // takeover standdown still running
     const entries = await listMarkers(psid);
-    if (entries.some(({ mark: m }) => m.kind === "a" && m.hash === myHash && myTs - m.ts < 90_000)) return EMPTY();
+    if (entries.some(({ mark: m }) => m.kind === "a" && m.hash === myHash && myTs - m.ts < 240_000)) return EMPTY();
     await putMarker(psid, "q", myHash, myRand, myTs);
   }
 
@@ -936,7 +1011,7 @@ export async function POST(req: NextRequest) {
   const stopHere = (line: string) => {
     const turns = [
       ...priorTurns,
-      { role: "user" as const, content: text },
+      { role: "user" as const, content: textForCtx },
       ...(line ? [{ role: "assistant" as const, content: line }] : []),
     ];
     const stopCtx = body.ctx !== undefined ? encodeCtx(turns, ctxTurns, ctxLen) : undefined;
@@ -984,17 +1059,42 @@ export async function POST(req: NextRequest) {
   try {
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const messages: { role: "user" | "assistant"; content: unknown }[] = [...priorTurns, { role: "user", content: text }];
+    // Photos ride the current user turn as URL image blocks — the API fetches
+    // the Meta CDN URL itself (no base64 round-trip through this function).
+    const userContent: unknown = images.length
+      ? [
+          ...images.map((u) => ({ type: "image" as const, source: { type: "url" as const, url: u } })),
+          { type: "text" as const, text: text || "(sent a photo — go off what you can see)" },
+        ]
+      : text;
+    const messages: { role: "user" | "assistant"; content: unknown }[] = [...priorTurns, { role: "user", content: userContent }];
+    let imagesStripped = false;
 
     for (let round = 0; round < 4; round++) {
-      const resp = await client.messages.create({
-        model: MSGR_MODEL,
-        max_tokens: 150,
-        ...THINKING_OFF,
-        system: cachedSystem(lang),
-        tools: TOOLS as never,
-        messages: messages as never,
-      });
+      let resp;
+      try {
+        resp = await client.messages.create({
+          model: MSGR_MODEL,
+          max_tokens: 150,
+          ...THINKING_OFF,
+          system: cachedSystem(lang),
+          tools: TOOLS as never,
+          messages: messages as never,
+        });
+      } catch (e) {
+        // An expired/unfetchable CDN image URL fails the whole call — drop the
+        // image blocks once and answer from text instead of going silent.
+        if (images.length && !imagesStripped) {
+          imagesStripped = true;
+          messages[priorTurns.length] = {
+            role: "user",
+            content: text || "(sent a photo that would not open — ask them what the device is)",
+          };
+          round--;
+          continue;
+        }
+        throw e;
+      }
       const blocks = resp.content as unknown as AnyBlock[];
       if (resp.stop_reason === "tool_use") {
         messages.push({ role: "assistant", content: resp.content });
@@ -1033,7 +1133,7 @@ export async function POST(req: NextRequest) {
         max_tokens: 150,
         ...THINKING_OFF,
         system: cachedSystem(lang),
-        messages: [...priorTurns, { role: "user", content: text }] as never,
+        messages: [...priorTurns, { role: "user", content: textForCtx }] as never,
       });
       replyText = (retry.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
     } catch {
@@ -1124,6 +1224,29 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // ── POST-HANDOFF WAIT — never stonewall someone asking where their number is ──
+  // After "one sec, let me see what I can do", the anti-chase rules can leave a
+  // customer's direct "how much??" with pure silence (live failure 2026-07-09:
+  // she asked for the iPad number FOUR times — "?????" — and got nothing all
+  // night). If the model went quiet but they're clearly waiting on the promised
+  // number, send ONE expectation-setting wait line; if that was already sent,
+  // stay quiet (the owner is being re-alerted by the signal detection anyway).
+  if (noReply) {
+    const askedAgain = /\bhow much\b|\bprice\b|\bnumber\b|\bquote\b|\boffer\b|any update|\bupdate\b|you there|u there|still there|\?{2,}|cu[aá]nto|precio|sigues ah[ií]/i.test(text);
+    const heldRecently = priorTurns.slice(-6).some(
+      (t) => t.role === "assistant" && /one sec|let me see what i can do|still working on|un momento|d[eé]jame ver|sigo consiguiendo/i.test(t.content),
+    );
+    const waitLine =
+      lang === "es"
+        ? "Perdón por la espera — sigo consiguiendo el número, te aviso en cuanto lo tenga 👍"
+        : "Sorry for the wait — still working on that number for you, I'll text you as soon as I have it 👍";
+    const waitAlreadySent = priorTurns.some((t) => t.role === "assistant" && similar(t.content, waitLine) >= 0.7);
+    if (askedAgain && heldRecently && !waitAlreadySent) {
+      replyText = waitLine;
+      noReply = false;
+    }
+  }
+
   // Stale? A newer request claimed the slot while the AI was running — that newer
   // request answers (it carries the newest {{Last Text Input}}); this one goes silent.
   if (psid) {
@@ -1158,7 +1281,7 @@ export async function POST(req: NextRequest) {
     // ManyChat's pause nor the bot can see), so his takeover signal is this
     // link in the alert — tap it and the bot goes silent for this customer.
     const muteLink = psid ? ` 🤫 Take over (mutes bot 24h): https://topcashcellular.com/api/msgr-ai?mute=${psid}&t=${muteToken(psid)}` : "";
-    const customerText = text;
+    const customerText = textForCtx;
     const botText = noReply ? "" : replyText;
     after(async () => {
       // ES → EN translation (one cheap call, reused for MC + the SMS quote).
@@ -1234,7 +1357,7 @@ export async function POST(req: NextRequest) {
   // they said (so a later real message picks the thread back up) and the
   // follow-up tag disarms (never nudge someone the bot chose to ignore).
   if (noReply) {
-    const silentCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: text }], ctxTurns, ctxLen) : undefined;
+    const silentCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: textForCtx }], ctxTurns, ctxLen) : undefined;
     const actions: Record<string, unknown>[] = [];
     if (silentCtx) actions.push({ action: "set_field_value", field_name: "ai_ctx", value: silentCtx });
     if (psid) actions.push({ action: "remove_tag", tag_name: FOLLOWUP_TAG });
@@ -1258,7 +1381,7 @@ export async function POST(req: NextRequest) {
   // carries a ctx field). Until then the response stays byte-for-byte the old format — no risk.
   const newCtx =
     body.ctx !== undefined
-      ? encodeCtx([...priorTurns, { role: "user", content: text }, { role: "assistant", content: replyText }], ctxTurns, ctxLen)
+      ? encodeCtx([...priorTurns, { role: "user", content: textForCtx }, { role: "assistant", content: replyText }], ctxTurns, ctxLen)
       : undefined;
   return render([replyText], quickReplies, origin, secret, newCtx, psid ? (lastQuote ? "arm" : "disarm") : undefined, psid || undefined);
 }

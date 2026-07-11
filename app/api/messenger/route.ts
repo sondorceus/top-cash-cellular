@@ -161,6 +161,27 @@ function signatureOk(raw: string, header: string | null): boolean {
 }
 
 // ---- Send API render + send -----------------------------------------------
+// One Send-API POST with a single retry + error logging. Every outbound used
+// to be fetch().catch(() => {}) — a transient Graph failure dropped the reply
+// with zero trace (the likeliest shape of the 2026-07-10 silent-drop lead).
+async function graphPost(token: string, payload: Record<string, unknown>): Promise<boolean> {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await fetch(`${GRAPH}?access_token=${encodeURIComponent(token)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (r.ok) return true;
+      console.error("[messenger] send failed", r.status, (await r.text().catch(() => "")).slice(0, 300));
+    } catch (e) {
+      console.error("[messenger] send threw", (e as Error).message);
+    }
+    await new Promise((res) => setTimeout(res, 1500));
+  }
+  return false;
+}
+
 // Turn a BotReply into Meta message payloads and send them in order.
 async function send(recipientId: string, reply: BotReply, token: string) {
   // Outbound ledger — lets the AI brain tell its own page messages from the
@@ -196,11 +217,7 @@ async function send(recipientId: string, reply: BotReply, token: string) {
   });
 
   for (const message of payloads) {
-    await fetch(`${GRAPH}?access_token=${encodeURIComponent(token)}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ recipient: { id: recipientId }, messaging_type: "RESPONSE", message }),
-    }).catch(() => {});
+    await graphPost(token, { recipient: { id: recipientId }, messaging_type: "RESPONSE", message });
   }
 }
 
@@ -234,11 +251,7 @@ function stateFrom(event: Record<string, any>): ConvoState {
 // ---- conversational AI brain (typed messages) -----------------------------
 // A single plain-text Send-API message.
 async function sendText(recipientId: string, text: string, token: string) {
-  await fetch(`${GRAPH}?access_token=${encodeURIComponent(token)}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ recipient: { id: recipientId }, messaging_type: "RESPONSE", message: { text } }),
-  }).catch(() => {});
+  await graphPost(token, { recipient: { id: recipientId }, messaging_type: "RESPONSE", message: { text } });
 }
 
 // Per-user conversation memory: the AI brain's compact base64 transcript, stored
@@ -388,7 +401,7 @@ async function latestIs(psid: string, mid: string): Promise<boolean> {
 // Route a typed message to the SAME conversational AI the ManyChat pipe uses
 // (/api/msgr-ai) — with per-user memory — then Send-API each reply line. This is
 // the continuous back-and-forth ManyChat's one-shot Default Reply couldn't do.
-async function aiReply(origin: string, senderId: string, text: string, token: string) {
+async function aiReply(origin: string, senderId: string, text: string, token: string, images: string[] = []) {
   type BrainOut = {
     content?: { messages?: { text?: string }[]; quick_replies?: { caption?: string; payload?: { state?: unknown } }[] };
     ctx?: string;
@@ -402,7 +415,13 @@ async function aiReply(origin: string, senderId: string, text: string, token: st
       headers: { "Content-Type": "application/json" },
       // deep: blob-backed memory has no ManyChat field-size limit — the brain
       // keeps a longer transcript window (device/quote stay in view all convo).
-      body: JSON.stringify({ text, ctx, deep: true }),
+      // psid: lets the brain read the REAL thread, and — critically — joins the
+      // shared burst-dedupe markers, so this path and ManyChat (which BOTH get
+      // every message while the two transports coexist) stop double-replying
+      // to the same customer text (live doubles on 2026-07-09, one saying
+      // "disc PS4" right after the other heard "digital").
+      // images: photo attachment URLs — the brain looks at them.
+      body: JSON.stringify({ text, ctx, deep: true, psid: senderId, images }),
     });
     out = (await r.json()) as BrainOut;
   } catch {
@@ -424,11 +443,7 @@ async function aiReply(origin: string, senderId: string, text: string, token: st
   for (let i = 0; i < texts.length; i++) {
     const isLast = i === texts.length - 1;
     if (isLast && qrs.length) {
-      await fetch(`${GRAPH}?access_token=${encodeURIComponent(token)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipient: { id: senderId }, messaging_type: "RESPONSE", message: { text: texts[i], quick_replies: qrs } }),
-      }).catch(() => {});
+      await graphPost(token, { recipient: { id: senderId }, messaging_type: "RESPONSE", message: { text: texts[i], quick_replies: qrs } });
     } else {
       await sendText(senderId, texts[i], token);
     }
@@ -459,7 +474,10 @@ export async function POST(req: NextRequest) {
     // Pass 1: taps answer instantly (menus must be snappy); typed messages are
     // collected last-one-wins per sender and their newest-marker is written NOW,
     // so any earlier in-flight delayed reply for this sender knows it's stale.
-    const typedBySender = new Map<string, { text: string; mid: string }>();
+    // Photo attachments ride along (merged across events in this delivery) so
+    // the brain can LOOK at them — attachment-only messages used to be dropped
+    // on the floor here (live: device pics ignored outright, 2026-07-09/10).
+    const typedBySender = new Map<string, { text: string; mid: string; images: string[] }>();
     for (const entry of data.entry || []) {
       for (const event of entry.messaging || []) {
         const senderId = event?.sender?.id;
@@ -490,11 +508,21 @@ export async function POST(req: NextRequest) {
           continue;
         }
 
-        // Free-typed text → conversational AI brain (continuous back-and-forth).
+        // Free-typed text and/or photos → conversational AI brain.
         const typed = typeof event?.message?.text === "string" ? event.message.text.trim() : "";
-        if (typed) {
-          const mid = String(event?.message?.mid || typed).slice(0, 120);
-          typedBySender.set(senderId, { text: typed, mid });
+        const imgs = (Array.isArray(event?.message?.attachments) ? event.message.attachments : [])
+          .filter((a: any) => a?.type === "image" && typeof a?.payload?.url === "string")
+          .map((a: any) => String(a.payload.url));
+        if (typed || imgs.length) {
+          const mid = String(event?.message?.mid || typed || imgs[0]).slice(0, 120);
+          const prev = typedBySender.get(senderId);
+          typedBySender.set(senderId, {
+            // Text wins over a photo-only placeholder; photos accumulate across
+            // the delivery so "two pics then the question" answers as one turn.
+            text: typed || prev?.text || "",
+            mid,
+            images: [...(prev?.images || []), ...imgs].slice(0, 4),
+          });
           await markLatest(senderId, mid);
         }
       }
@@ -507,7 +535,7 @@ export async function POST(req: NextRequest) {
     // delay never eats another's — and a multi-sender burst can't run the 300s
     // function budget dry the way sequential long delays would.
     await Promise.all(
-      [...typedBySender].map(async ([senderId, { text, mid }]) => {
+      [...typedBySender].map(async ([senderId, { text, mid, images }]) => {
         if (await isMuted(senderId)) return; // owner muted this convo via the takeover link
         if (await deferActive(senderId)) return; // a human/other sender owns this convo
         const total = replyDelayMs();
@@ -517,7 +545,7 @@ export async function POST(req: NextRequest) {
         if (!(await latestIs(senderId, mid))) return;
         if (await isMuted(senderId)) return; // owner tapped mute during the reply delay
         if (await deferActive(senderId)) return; // human jumped in during the wait
-        await aiReply(origin, senderId, text, token as string);
+        await aiReply(origin, senderId, text, token as string, images);
       }),
     );
   });

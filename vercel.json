@@ -15,7 +15,7 @@
     },
     {
       "path": "/api/cron/inbox-watch",
-      "schedule": "20 * * * *"
+      "schedule": "*/15 * * * *"
     },
     {
       "path": "/api/cron/daily-summary",
