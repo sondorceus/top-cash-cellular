@@ -18,7 +18,9 @@
 import { createHash } from "crypto";
 import { put, list, del } from "@vercel/blob";
 
-export const DEFER_MS = 60 * 60_000; // 60 min standdown per takeover signal
+// 2h standdown per takeover signal — was 60 min; Sonny liked the feature and
+// asked for the longer window (2026-07-11): his convos often run past an hour.
+export const DEFER_MS = 120 * 60_000;
 
 const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
 
