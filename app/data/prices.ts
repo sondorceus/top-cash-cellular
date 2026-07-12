@@ -12,6 +12,10 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // iPhone 17 family — Atlas Mobile wholesale carrier-gap (NIB Sealed
   // Unlocked − Locked). "Other" = gap + $100 per Skywalker's rule.
   // Verizon and Unlocked: no entry → defaults to $0 deduction.
+  // ip17pm/ip17p stay zeroed here — their gaps are CONDITION-DEPENDENT and
+  // live in CARRIER_GAPS_BY_COND below (Skywalker 2026-07-12: zeroed flat
+  // gaps meant a T-Mobile broken 17PM paid the full unlocked $342 while
+  // IWM pays $300 locked).
   ip17pm: { att: 0, tmobile: 0, other: 0 },
   ip17p:  { att: 0, tmobile: 0, other: 0 },
   ip17air: { att: 355, tmobile: 355, other: 455 },
@@ -125,6 +129,47 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   px9pfold: { att: 60, tmobile: 80, other: 150 },
   px9pxl: { att: 40, tmobile: 60, other: 100 },
   pxfold: { att: 40, tmobile: 60, other: 100 } };
+
+// Condition-dependent carrier gaps for models where one flat number can't
+// work (Skywalker 2026-07-12). The 17 Pro/Pro Max flat gaps were zeroed for
+// the sealed unlocked-Atlas play, which silently paid FULL unlocked price
+// for locked units in every condition — a T-Mobile broken 17PM quoted $342
+// vs IWM's $300, and a locked 2TB sealed quoted $1250 against Atlas's $1090
+// locked exit (a guaranteed loss). Gaps below mirror IWM's live per-section
+// carrier deltas (scraped 2026-07-12):
+//   used  = flawless/good/fair sections; broken = broken section.
+// Sealed + locked is NOT auto-quotable: the Atlas NIB locked gap runs $310
+// (256GB) to $610 (2TB) — per-storage, too wide for a flat gap — so it
+// routes to manual review and the owner prices it against the Atlas sheet.
+// Verizon: unlocked pays full; locked falls back to the att gap (same rule
+// as CARRIER_DEDUCTIONS).
+export type CondCarrierGaps = {
+  used: Record<string, number>;
+  broken: Record<string, number>;
+  sealedLocked: "manual";
+};
+export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
+  ip17pm: { used: { att: 120, tmobile: 105, other: 500 }, broken: { att: 100, tmobile: 75, other: 250 }, sealedLocked: "manual" },
+  ip17p:  { used: { att: 150, tmobile: 75,  other: 450 }, broken: { att: 50,  tmobile: 75, other: 200 }, sealedLocked: "manual" },
+};
+
+// Resolve the carrier gap for a (model, carrier, condition). Returns null
+// when the model has no condition-dependent entry (callers fall back to the
+// flat CARRIER_DEDUCTIONS). `manual: true` means don't auto-quote this combo.
+export function carrierGapForCondition(
+  modelId: string,
+  carrier: string | undefined,
+  conditionId: string | undefined,
+  verizonLocked: boolean,
+): { gap: number; manual: boolean } | null {
+  const m = CARRIER_GAPS_BY_COND[modelId];
+  if (!m) return null;
+  const c = carrier === "verizon" ? (verizonLocked ? "att" : "unlocked") : (carrier || "unlocked");
+  if (c === "unlocked") return { gap: 0, manual: false };
+  if (conditionId === "sealed") return { gap: 0, manual: true };
+  const tier = conditionId === "broken" ? m.broken : m.used;
+  return { gap: tier[c] ?? tier.att ?? 0, manual: false };
+}
 
 // Minimum offer threshold — below this we lose money on shipping + processing.
 // Devices below this get "Manual review & custom quote" instead of a dollar amount.

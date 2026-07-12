@@ -12,7 +12,7 @@ import { SlideOnScrollNav } from "./components/SlideOnScrollNav";
 import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
 import NextImage from "next/image";
-import { CARRIER_DEDUCTIONS, PRICE_TABLE, MIN_OFFER, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
+import { CARRIER_DEDUCTIONS, carrierGapForCondition, PRICE_TABLE, MIN_OFFER, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
 import { CATALOG_PRICE_BY_MODEL_ID } from "./data/catalog-prices";
 
 import { BRAND, EMAIL, EMAIL_HREF } from "./lib/constants";
@@ -5883,8 +5883,18 @@ export default function Home() {
   // Atlas resale (ip17pm 256 sealed: Atlas locked $770 — a flat $200 gap
   // left us at ~$727, a ~$43 margin, vs ~$178 at the AT&T gap).
   const carrierModelId = model?.id ?? "";
-  const carrierDeduction =
-    carrier?.id === "verizon"
+  // Condition-dependent gaps (17 Pro / Pro Max) take precedence over the
+  // flat table — their flat entries are zeroed and a locked unit's dock
+  // depends on used vs broken (sealed+locked → manual review; see
+  // CARRIER_GAPS_BY_COND in data/prices.ts). Skywalker 2026-07-12 after a
+  // T-Mobile broken 17PM auto-quoted the full unlocked $342 vs IWM's $300.
+  const condCarrierGap = carrierModelId
+    ? carrierGapForCondition(carrierModelId, carrier?.id, condition?.id, carrierLock?.id === "yes")
+    : null;
+  const isSealedLockedPremium = !!condCarrierGap?.manual;
+  const carrierDeduction = condCarrierGap != null
+    ? condCarrierGap.gap
+    : carrier?.id === "verizon"
       ? (carrierLock?.id === "yes"
           ? (priceOverrides?.carrierDeductions?.[carrierModelId]?.verizon
              ?? CARRIER_DEDUCTIONS[carrierModelId]?.verizon
@@ -6025,7 +6035,7 @@ export default function Home() {
   // 'Pending quote'.
   const isPendingQuote = !model?.base;
   const isBrokenNonFunctional = condition?.id === "broken" && brokenFunctional === false;
-  const isManualQuote = isBelowMinimum || isBrokenNonFunctional || needsMarginReview;
+  const isManualQuote = isBelowMinimum || isBrokenNonFunctional || needsMarginReview || isSealedLockedPremium;
 
   // Add-to-order mode: append the currently-priced device to an existing offer.
   // NOTE: the append route wants `quote` as the LINE TOTAL (price × qty), and

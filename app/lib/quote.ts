@@ -18,6 +18,7 @@ import { list } from "@vercel/blob";
 import {
   PRICE_TABLE,
   CARRIER_DEDUCTIONS,
+  carrierGapForCondition,
   MIN_OFFER,
   SEALED_PREMIUM,
   BASE_PRICED_MODELS,
@@ -163,9 +164,18 @@ export async function quoteDevice(
     // Carrier gap (flat $). Verizon is the only carrier with a lock question:
     // unlocked Verizon pays full (gap 0); locked Verizon loses the verizon
     // gap, falling back to the att gap. att/tmobile/other apply directly.
+    // Condition-dependent models (17 Pro / Pro Max) resolve via
+    // CARRIER_GAPS_BY_COND first — mirrors the funnel exactly, including the
+    // sealed+locked manual-review route. Skywalker 2026-07-12.
     const carrier = spec.carrier ?? "unlocked";
+    const condGap = carrierGapForCondition(id, carrier, cond, !!spec.carrierLocked);
+    if (condGap?.manual) {
+      return { ok: true, offer: null, manualReview: true, reason: "sealed + carrier-locked premium model — Atlas locked gap is per-storage; owner prices manually", source: "price-table", modelId: id };
+    }
     let carrierDeduction = 0;
-    if (carrier === "verizon") {
+    if (condGap != null) {
+      carrierDeduction = condGap.gap;
+    } else if (carrier === "verizon") {
       carrierDeduction = spec.carrierLocked
         ? (ov.carrierDeductions?.[id]?.verizon
             ?? CARRIER_DEDUCTIONS[id]?.verizon
