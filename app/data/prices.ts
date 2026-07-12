@@ -149,13 +149,13 @@ export const MANUAL_REVIEW_DEVICES = new Set([
 
 export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   ip11: {
-    "128": { broken: 1, fair: 26, good: 77, mint: 85, sealed: 94 },
+    "128": { broken: 1, fair: 26, good: 65, mint: 85, sealed: 94 },
     "256": { broken: 1, fair: 35, good: 85, mint: 94, sealed: 103 },
-    "64": { broken: 1, fair: 13, good: 62, mint: 73, sealed: 81 } },
+    "64": { broken: 1, fair: 13, good: 33, mint: 47, sealed: 81 } },
   ip11p: {
     "256": { broken: 1, fair: 47, good: 94, mint: 107, sealed: 111 },
     "512": { broken: 2, fair: 64, good: 103, mint: 115, sealed: 119 },
-    "64": { broken: 1, fair: 30, good: 81, mint: 94, sealed: 98 } },
+    "64": { broken: 1, fair: 30, good: 61, mint: 74, sealed: 98 } },
   ip11pm: {
     "256": { broken: 17, fair: 69, good: 119, mint: 132, sealed: 137 },
     "512": { broken: 20, fair: 85, good: 132, mint: 145, sealed: 149 },
@@ -163,11 +163,11 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   ip12: {
     "128": { broken: 22, fair: 17, good: 90, mint: 98, sealed: 107 },
     "256": { broken: 23, fair: 35, good: 98, mint: 107, sealed: 115 },
-    "64": { broken: 20, fair: 13, good: 77, mint: 85, sealed: 94 } },
+    "64": { broken: 20, fair: 13, good: 61, mint: 85, sealed: 94 } },
   ip12mini: {
-    "128": { broken: 1, fair: 48, good: 71, mint: 86, sealed: 109 },
-    "256": { broken: 1, fair: 52, good: 76, mint: 90, sealed: 114 },
-    "64": { broken: 1, fair: 19, good: 43, mint: 57, sealed: 104 } },
+    "128": { broken: 1, fair: 38, good: 61, mint: 74, sealed: 109 },
+    "256": { broken: 1, fair: 43, good: 65, mint: 90, sealed: 114 },
+    "64": { broken: 1, fair: 11, good: 33, mint: 47, sealed: 104 } },
   ip12p: {
     "128": { broken: 20, fair: 51, good: 119, mint: 132, sealed: 141 },
     "256": { broken: 25, fair: 60, good: 132, mint: 145, sealed: 153 },
@@ -238,13 +238,13 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 173, fair: 277, good: 336, mint: 338, sealed: 383 },
     "512": { broken: 209, fair: 289, good: 353, mint: 355, sealed: 434 } },
   ip16e: {
-    "128": { broken: 38, fair: 152, good: 214, mint: 232, sealed: 281 },
-    "256": { broken: 56, fair: 218, good: 280, mint: 299, sealed: 323 },
+    "128": { broken: 38, fair: 119, good: 177, mint: 232, sealed: 281 },
+    "256": { broken: 56, fair: 182, good: 241, mint: 299, sealed: 323 },
     // 512 sealed was 357 — BELOW mint (361), so a factory-sealed unit paid less
     // than mint. mint follows a clean +33 good→mint step across all tiers, so
     // sealed was the low one. Raised to 365 (mint + a small premium continuing
     // the shrinking sealed-over-mint trend: +34 @128, +9 @256, ~+4 @512). (bug fix)
-    "512": { broken: 74, fair: 266, good: 328, mint: 346, sealed: 365 } },
+    "512": { broken: 74, fair: 227, good: 285, mint: 346, sealed: 365 } },
   ip16p: {
     "128": { broken: 223, fair: 315, good: 417, mint: 419, sealed: 504 },
     // 1TB sealed capped down from 646 → 478 (= resell $638 × MARGIN_FLOOR_MULT 0.75)
@@ -270,9 +270,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 209, fair: 305, good: 451, mint: 453, sealed: 502 },
     "512": { broken: 281, fair: 370, good: 519, mint: 521, sealed: 621 } },
   ip17air: {
-    "1tb": { broken: 290, fair: 375, good: 720, mint: 735, sealed: 810 },
-    "256": { broken: 182, fair: 260, good: 520, mint: 535, sealed: 660 },
-    "512": { broken: 254, fair: 305, good: 620, mint: 635, sealed: 750 } },
+    "1tb": { broken: 290, fair: 375, good: 578, mint: 735, sealed: 810 },
+    "256": { broken: 182, fair: 260, good: 457, mint: 535, sealed: 660 },
+    "512": { broken: 254, fair: 305, good: 511, mint: 635, sealed: 750 } },
   ip17e: {
     "256": { broken: 65, fair: 160, good: 240, mint: 255, sealed: 270 },
     "512": { broken: 83, fair: 190, good: 280, mint: 295, sealed: 310 } },
@@ -373,7 +373,7 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 47, fair: 207, good: 261, mint: 306, sealed: 351 },
     "512": { broken: 47, fair: 225, good: 279, mint: 324, sealed: 382 } },
   px9p: {
-    "128": { broken: 20, fair: 126, good: 180, mint: 216, sealed: 243 },
+    "128": { broken: 20, fair: 101, good: 180, mint: 191, sealed: 243 },
     "1tb": { broken: 25, fair: 194, good: 248, mint: 284, sealed: 324 },
     "256": { broken: 22, fair: 153, good: 207, mint: 243, sealed: 279 },
     "512": { broken: 24, fair: 171, good: 225, mint: 261, sealed: 310 } },
@@ -399,31 +399,31 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   // === AUDIT FIXES — devices that were >15% off with multiplier fallback ===
   gs23u: {
     "1tb": { broken: 8, fair: 98, good: 209, mint: 217, sealed: 289 },
-    "256": { broken: 7, fair: 98, good: 207, mint: 217, sealed: 266 },
+    "256": { broken: 7, fair: 98, good: 182, mint: 217, sealed: 266 },
     "512": { broken: 7, fair: 98, good: 209, mint: 217, sealed: 288 } },
   gs22: {
-    "128": { broken: 1, fair: 36, good: 58, mint: 72, sealed: 90 },
-    "256": { broken: 1, fair: 45, good: 68, mint: 81, sealed: 108 } },
+    "128": { broken: 1, fair: 11, good: 33, mint: 47, sealed: 90 },
+    "256": { broken: 1, fair: 20, good: 43, mint: 56, sealed: 108 } },
   gzflip4: {
-    "128": { broken: 1, fair: 1, good: 26, mint: 30, sealed: 50 },
-    "256": { broken: 1, fair: 1, good: 26, mint: 30, sealed: 54 },
-    "512": { broken: 1, fair: 1, good: 26, mint: 30, sealed: 58 } },
+    "128": { broken: 1, fair: 1, good: 2, mint: 11, sealed: 50 },
+    "256": { broken: 1, fair: 1, good: 7, mint: 15, sealed: 54 },
+    "512": { broken: 1, fair: 1, good: 7, mint: 15, sealed: 58 } },
   px8: {
-    "128": { broken: 1, fair: 68, good: 108, mint: 126, sealed: 166 },
-    "256": { broken: 2, fair: 90, good: 130, mint: 148, sealed: 189 } },
+    "128": { broken: 1, fair: 43, good: 83, mint: 101, sealed: 166 },
+    "256": { broken: 2, fair: 65, good: 105, mint: 123, sealed: 189 } },
   // === AUDIT ROUND 2 — 5 more devices with >15% multiplier error ===
   gs24p: {
     "256": { broken: 47, fair: 94, good: 175, mint: 183, sealed: 247 },
     "512": { broken: 56, fair: 94, good: 175, mint: 183, sealed: 247 } },
   gs21: {
-    "128": { broken: 1, fair: 18, good: 27, mint: 40, sealed: 68 },
-    "256": { broken: 1, fair: 27, good: 36, mint: 50, sealed: 86 } },
+    "128": { broken: 1, fair: 2, good: 11, mint: 25, sealed: 68 },
+    "256": { broken: 1, fair: 11, good: 20, mint: 33, sealed: 86 } },
   px7p: {
-    "128": { broken: 1, fair: 45, good: 72, mint: 108, sealed: 135 },
-    "256": { broken: 2, fair: 58, good: 86, mint: 122, sealed: 144 },
-    "512": { broken: 4, fair: 63, good: 90, mint: 126, sealed: 148 } },
+    "128": { broken: 1, fair: 20, good: 47, mint: 83, sealed: 135 },
+    "256": { broken: 2, fair: 33, good: 61, mint: 97, sealed: 144 },
+    "512": { broken: 4, fair: 38, good: 65, mint: 101, sealed: 148 } },
   gs20: {
-    "base": { broken: 1, fair: 45, good: 58, mint: 68, sealed: 90 } },
+    "base": { broken: 1, fair: 20, good: 33, mint: 43, sealed: 90 } },
   // === FULL IWM SCRAPE — all remaining devices ===
   gnote10: {
     // Note 10 is 256GB-only. Prices = live IWM payout × 0.90 (house rule),
@@ -431,77 +431,77 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     // Brand New $110. mint=Flawless, sealed=Brand New. (Replaces a malformed
     // entry whose inner keys were condition grades, not storage tiers, so
     // every Note 10 quote was silently falling back to the multiplier path.)
-    "256": { broken: 9, fair: 40, good: 63, mint: 72, sealed: 99 } },
+    "256": { broken: 9, fair: 25, good: 47, mint: 56, sealed: 99 } },
   gnote10p: {
-    "256": { broken: 13, fair: 45, good: 99, mint: 117, sealed: 135 },
-    "512": { broken: 32, fair: 54, good: 108, mint: 126, sealed: 158 } },
+    "256": { broken: 13, fair: 20, good: 74, mint: 92, sealed: 135 },
+    "512": { broken: 32, fair: 29, good: 83, mint: 101, sealed: 158 } },
   gnote10p5g: {
-    "256": { broken: 20, fair: 45, good: 99, mint: 117, sealed: 135 },
-    "512": { broken: 29, fair: 58, good: 112, mint: 130, sealed: 158 } },
+    "256": { broken: 20, fair: 20, good: 74, mint: 92, sealed: 135 },
+    "512": { broken: 29, fair: 33, good: 87, mint: 105, sealed: 158 } },
   gnote20: {
-    "128": { broken: 1, fair: 68, good: 81, mint: 90, sealed: 117 },
-    "256": { broken: 2, fair: 76, good: 90, mint: 99, sealed: 130 } },
+    "128": { broken: 1, fair: 43, good: 56, mint: 65, sealed: 117 },
+    "256": { broken: 2, fair: 51, good: 65, mint: 74, sealed: 130 } },
   gnote9: {
-    "128": { broken: 1, fair: 27, good: 54, mint: 68, sealed: 94 },
-    "512": { broken: 1, fair: 36, good: 63, mint: 76, sealed: 113 } },
+    "128": { broken: 1, fair: 2, good: 29, mint: 43, sealed: 94 },
+    "512": { broken: 1, fair: 11, good: 38, mint: 51, sealed: 113 } },
   gs20fe: {
-    "128": { broken: 1, fair: 18, good: 32, mint: 40, sealed: 63 },
-    "256": { broken: 1, fair: 27, good: 40, mint: 50, sealed: 81 } },
+    "128": { broken: 1, fair: 1, good: 11, mint: 20, sealed: 63 },
+    "256": { broken: 1, fair: 7, good: 20, mint: 29, sealed: 81 } },
   gs20p: {
-    "128": { broken: 1, fair: 36, good: 68, mint: 76, sealed: 104 },
-    "512": { broken: 1, fair: 58, good: 90, mint: 99, sealed: 130 } },
+    "128": { broken: 1, fair: 11, good: 43, mint: 51, sealed: 104 },
+    "512": { broken: 1, fair: 33, good: 65, mint: 74, sealed: 130 } },
   gs20u: {
-    "128": { broken: 1, fair: 68, good: 104, mint: 122, sealed: 148 },
-    "256": { broken: 1, fair: 76, good: 112, mint: 130, sealed: 158 },
-    "512": { broken: 2, fair: 86, good: 122, mint: 140, sealed: 166 } },
+    "128": { broken: 1, fair: 43, good: 79, mint: 97, sealed: 148 },
+    "256": { broken: 1, fair: 51, good: 87, mint: 105, sealed: 158 },
+    "512": { broken: 2, fair: 61, good: 97, mint: 115, sealed: 166 } },
   gs21fe: {
-    "128": { broken: 1, fair: 22, good: 27, mint: 36, sealed: 54 },
-    "256": { broken: 1, fair: 32, good: 36, mint: 45, sealed: 72 } },
+    "128": { broken: 1, fair: 1, good: 2, mint: 11, sealed: 54 },
+    "256": { broken: 1, fair: 7, good: 11, mint: 20, sealed: 72 } },
   gs21p: {
-    "128": { broken: 1, fair: 36, good: 54, mint: 63, sealed: 90 },
-    "256": { broken: 1, fair: 45, good: 63, mint: 72, sealed: 118 } },
+    "128": { broken: 1, fair: 11, good: 29, mint: 38, sealed: 90 },
+    "256": { broken: 1, fair: 20, good: 38, mint: 47, sealed: 118 } },
   gs21u: {
-    "128": { broken: 1, fair: 54, good: 72, mint: 81, sealed: 99 },
-    "256": { broken: 1, fair: 63, good: 81, mint: 90, sealed: 108 },
-    "512": { broken: 1, fair: 68, good: 86, mint: 94, sealed: 112 } },
+    "128": { broken: 1, fair: 29, good: 47, mint: 56, sealed: 99 },
+    "256": { broken: 1, fair: 38, good: 56, mint: 65, sealed: 108 },
+    "512": { broken: 1, fair: 43, good: 61, mint: 69, sealed: 112 } },
   gs22p: {
-    "128": { broken: 2, fair: 63, good: 86, mint: 99, sealed: 126 },
-    "256": { broken: 7, fair: 72, good: 94, mint: 108, sealed: 148 } },
+    "128": { broken: 2, fair: 38, good: 61, mint: 74, sealed: 126 },
+    "256": { broken: 7, fair: 47, good: 69, mint: 83, sealed: 148 } },
   gs22u: {
-    "128": { broken: 2, fair: 76, good: 108, mint: 126, sealed: 162 },
-    "1tb": { broken: 2, fair: 99, good: 130, mint: 148, sealed: 280 },
-    "256": { broken: 2, fair: 90, good: 122, mint: 140, sealed: 204 },
-    "512": { broken: 2, fair: 94, good: 126, mint: 144, sealed: 242 } },
+    "128": { broken: 2, fair: 51, good: 83, mint: 101, sealed: 162 },
+    "1tb": { broken: 2, fair: 74, good: 105, mint: 123, sealed: 280 },
+    "256": { broken: 2, fair: 65, good: 97, mint: 115, sealed: 204 },
+    "512": { broken: 2, fair: 69, good: 101, mint: 119, sealed: 242 } },
   gs23: {
     "128": { broken: 1, fair: 30, good: 69, mint: 73, sealed: 132 },
     "256": { broken: 1, fair: 30, good: 69, mint: 73, sealed: 132 },
     "512": { broken: 1, fair: 30, good: 69, mint: 73, sealed: 132 } },
   gs23fe: {
-    "128": { broken: 1, fair: 32, good: 63, mint: 81, sealed: 90 },
-    "256": { broken: 1, fair: 40, good: 72, mint: 90, sealed: 108 } },
+    "128": { broken: 1, fair: 7, good: 38, mint: 56, sealed: 90 },
+    "256": { broken: 1, fair: 15, good: 47, mint: 65, sealed: 108 } },
   gs23p: {
     "128": { broken: 20, sealed: 166 },
     "256": { broken: 25, fair: 39, good: 107, mint: 115, sealed: 166 },
     "512": { broken: 26, fair: 39, good: 107, mint: 115, sealed: 166 } },
   gs24fe: {
-    "128": { broken: 2, fair: 72, good: 117, mint: 135, sealed: 171 },
-    "256": { broken: 11, fair: 90, good: 135, mint: 153, sealed: 189 } },
+    "128": { broken: 2, fair: 47, good: 92, mint: 110, sealed: 171 },
+    "256": { broken: 11, fair: 65, good: 110, mint: 128, sealed: 189 } },
   gs25edge: {
     "256": { broken: 65, fair: 60, good: 279, mint: 315, sealed: 351 },
     "512": { broken: 74, fair: 60, good: 302, mint: 338, sealed: 382 } },
   gs25fe: {
-    "128": { broken: 11, fair: 9, good: 194, mint: 220, sealed: 256 },
-    "256": { broken: 20, fair: 9, good: 212, mint: 238, sealed: 274 },
+    "128": { broken: 11, fair: 9, good: 169, mint: 220, sealed: 256 },
+    "256": { broken: 20, fair: 9, good: 187, mint: 238, sealed: 274 },
     // 512GB filled in 2026-05-24 — previously only had broken/sealed which
     // returned undefined for fair/good/mint and crashed quote generation.
     // Interpolated from the 256GB row + a ~10% storage uplift.
     "512": { broken: 11, fair: 9, good: 230, mint: 256, sealed: 290 } },
   gzflip3: {
-    "128": { broken: 1, fair: 14, good: 27, mint: 36, sealed: 54 },
-    "256": { broken: 1, fair: 22, good: 36, mint: 45, sealed: 68 } },
+    "128": { broken: 1, fair: 1, good: 2, mint: 11, sealed: 54 },
+    "256": { broken: 1, fair: 1, good: 11, mint: 20, sealed: 68 } },
   gzfold3: {
-    "256": { broken: 1, fair: 72, good: 108, mint: 126, sealed: 153 },
-    "512": { broken: 2, fair: 86, good: 122, mint: 140, sealed: 180 } },
+    "256": { broken: 1, fair: 47, good: 83, mint: 101, sealed: 153 },
+    "512": { broken: 2, fair: 61, good: 97, mint: 115, sealed: 180 } },
   gzfold4: {
     "1tb": { broken: 2, fair: 35, good: 145, mint: 153, sealed: 200 },
     "256": { broken: 1, fair: 35, good: 145, mint: 153, sealed: 200 },
@@ -586,39 +586,39 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "2tb": { broken: 338, fair: 783, good: 837, mint: 909, sealed: 1035 },
     "512": { broken: 270, fair: 558, good: 612, mint: 684, sealed: 765 } },
   px10a: {
-    "128": { broken: 2, fair: 99, good: 153, mint: 198, sealed: 225 },
+    "128": { broken: 2, fair: 74, good: 153, mint: 198, sealed: 225 },
     "256": { broken: 11, fair: 117, good: 171, mint: 216, sealed: 248 } },
   px5: {
-    "base": { broken: 1, fair: 18, good: 32, mint: 40, sealed: 54 } },
+    "base": { broken: 1, fair: 1, good: 7, mint: 15, sealed: 54 } },
   px5a: {
     // broken was 27 — ABOVE fair (22), so claiming worse condition paid more.
     // Lowered to 6 to restore the ladder, derived from the Pixel-family
     // broken/fair ratio (px5 4/18, px6 9/32 ≈ 0.22-0.28 × fair 22). Confirm. (bug fix)
-    "base": { broken: 2, fair: 22, good: 32, mint: 36, sealed: 50 } },
+    "base": { broken: 2, fair: 1, good: 20, mint: 29, sealed: 50 } },
   px6: {
-    "128": { broken: 1, fair: 32, good: 45, mint: 58, sealed: 86 },
-    "256": { broken: 1, fair: 40, good: 54, mint: 68, sealed: 99 } },
+    "128": { broken: 1, fair: 7, good: 20, mint: 33, sealed: 86 },
+    "256": { broken: 1, fair: 15, good: 29, mint: 43, sealed: 99 } },
   px6p: {
-    "128": { broken: 1, fair: 40, good: 68, mint: 81, sealed: 108 },
-    "256": { broken: 1, fair: 50, good: 76, mint: 90, sealed: 112 },
-    "512": { broken: 1, fair: 54, good: 81, mint: 94, sealed: 117 } },
+    "128": { broken: 1, fair: 15, good: 43, mint: 56, sealed: 108 },
+    "256": { broken: 1, fair: 25, good: 51, mint: 65, sealed: 112 },
+    "512": { broken: 1, fair: 29, good: 56, mint: 69, sealed: 117 } },
   px7: {
-    "128": { broken: 1, fair: 36, good: 51, mint: 63, sealed: 99 },
-    "256": { broken: 1, fair: 54, good: 69, mint: 81, sealed: 108 } },
+    "128": { broken: 1, fair: 11, good: 20, mint: 38, sealed: 99 },
+    "256": { broken: 1, fair: 20, good: 29, mint: 47, sealed: 108 } },
   px7a: {
-    "base": { broken: 1, fair: 45, good: 63, mint: 72, sealed: 99 } },
+    "base": { broken: 1, fair: 20, good: 38, mint: 47, sealed: 99 } },
   px8a: {
-    "128": { broken: 1, fair: 72, good: 108, mint: 126, sealed: 162 },
-    "256": { broken: 1, fair: 81, good: 117, mint: 135, sealed: 184 } },
+    "128": { broken: 1, fair: 47, good: 83, mint: 101, sealed: 162 },
+    "256": { broken: 1, fair: 56, good: 92, mint: 110, sealed: 184 } },
   px9a: {
-    "128": { broken: 20, fair: 90, good: 130, mint: 158, sealed: 189 },
-    "256": { broken: 25, fair: 108, good: 148, mint: 176, sealed: 212 } },
+    "128": { broken: 20, fair: 65, good: 105, mint: 133, sealed: 189 },
+    "256": { broken: 25, fair: 83, good: 123, mint: 151, sealed: 212 } },
   px9pfold: {
     "256": { broken: 74, fair: 292, good: 360, mint: 405, sealed: 450 },
     "512": { broken: 83, fair: 320, good: 387, mint: 432, sealed: 540 } },
   pxfold: {
-    "256": { broken: 7, fair: 90, good: 135, mint: 158, sealed: 202 },
-    "512": { broken: 7, fair: 126, good: 171, mint: 194, sealed: 248 } },
+    "256": { broken: 7, fair: 65, good: 110, mint: 133, sealed: 202 },
+    "512": { broken: 7, fair: 101, good: 146, mint: 169, sealed: 248 } },
   switch: {
     "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108 } },
   switchlite: {
@@ -642,42 +642,42 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   awse3: {
     "base": { fair: 13, good: 34, mint: 51, sealed: 72 } },
   mba13m3: {
-    "1tb": { fair: 432, good: 540, mint: 648, sealed: 693 },
-    "2tb": { fair: 544, good: 652, mint: 760, sealed: 806 } },
+    "1tb": { fair: 320, good: 418, mint: 518, sealed: 562 },
+    "2tb": { fair: 432, good: 531, mint: 630, sealed: 675 } },
   mba15m3: {
-    "1tb": { fair: 472, good: 594, mint: 675, sealed: 729 },
-    "2tb": { fair: 562, good: 684, mint: 765, sealed: 819 } },
+    "1tb": { fair: 342, good: 441, mint: 540, sealed: 585 },
+    "2tb": { fair: 410, good: 508, mint: 608, sealed: 652 } },
   mba_m4_2025: {
-    "1tb": { fair: 531, good: 644, mint: 778, sealed: 824 },
-    "2tb": { fair: 711, good: 824, mint: 958, sealed: 1004 } },
+    "1tb": { fair: 432, good: 531, mint: 630, sealed: 675 },
+    "2tb": { fair: 544, good: 644, mint: 742, sealed: 788 } },
   mba_m5_2026: {
-    "1tb": { fair: 585, good: 698, mint: 832, sealed: 922 },
-    "2tb": { fair: 900, good: 1012, mint: 1148, sealed: 1238 },
-    "4tb": { fair: 1350, good: 1462, mint: 1598, sealed: 1688 } },
+    "1tb": { fair: 544, good: 644, mint: 742, sealed: 788 },
+    "2tb": { fair: 634, good: 734, mint: 832, sealed: 878 },
+    "4tb": { fair: 837, good: 936, mint: 1035, sealed: 1080 } },
   mbp13m1: {
     "2tb": { fair: 468, good: 558, mint: 626, sealed: 675 } },
   mbp14m2: {
-    "2tb": { fair: 630, good: 765, mint: 945, sealed: 990 },
-    "4tb": { fair: 810, good: 945, mint: 1125, sealed: 1170 },
-    "8tb": { fair: 900, good: 1125, mint: 1350, sealed: 1404 } },
+    "2tb": { fair: 544, good: 644, mint: 742, sealed: 788 },
+    "4tb": { fair: 680, good: 778, mint: 878, sealed: 922 },
+    "8tb": { fair: 860, good: 958, mint: 1058, sealed: 1102 } },
   mbp14m3: {
-    "1tb": { fair: 891, good: 981, mint: 1080, sealed: 1107 },
-    "2tb": { fair: 900, good: 1080, mint: 1215, sealed: 1260 },
-    "4tb": { fair: 1035, good: 1215, mint: 1395, sealed: 1462 },
-    "512": { fair: 756, good: 846, mint: 945, sealed: 972 },
-    "8tb": { fair: 2160, good: 2565, mint: 2835, sealed: 2925 } },
+    "1tb": { fair: 387, good: 486, mint: 585, sealed: 630 },
+    "2tb": { fair: 477, good: 576, mint: 675, sealed: 720 },
+    "4tb": { fair: 747, good: 846, mint: 945, sealed: 990 },
+    "512": { fair: 342, good: 441, mint: 540, sealed: 585 },
+    "8tb": { fair: 1242, good: 1341, mint: 1440, sealed: 1485 } },
   mbp16_m5pmax_2026: {
-    "2tb": { fair: 2340, good: 2475, mint: 2610, sealed: 2745 } },
+    "2tb": { fair: 1782, good: 1881, mint: 1980, sealed: 2025 } },
   mbp16m2: {
-    "2tb": { fair: 1215, good: 1408, mint: 1620, sealed: 1665 },
-    "4tb": { fair: 1170, good: 1418, mint: 1710, sealed: 1778 },
-    "8tb": { fair: 1350, good: 1598, mint: 1890, sealed: 1958 } },
+    "2tb": { fair: 702, good: 801, mint: 900, sealed: 945 },
+    "4tb": { fair: 927, good: 1026, mint: 1125, sealed: 1170 },
+    "8tb": { fair: 1107, good: 1206, mint: 1305, sealed: 1350 } },
   mbp16m3: {
-    "2tb": { fair: 1350, good: 1485, mint: 1665, sealed: 1732 },
-    "4tb": { fair: 1620, good: 1755, mint: 1935, sealed: 2002 },
-    "8tb": { fair: 1845, good: 2025, mint: 2295, sealed: 2362 } },
+    "2tb": { fair: 927, good: 1026, mint: 1125, sealed: 1170 },
+    "4tb": { fair: 1152, good: 1251, mint: 1350, sealed: 1395 },
+    "8tb": { fair: 1692, good: 1791, mint: 1890, sealed: 1935 } },
   mbp16m4: {
-    "2tb": { fair: 1935, good: 2070, mint: 2205, sealed: 2295 } },
+    "2tb": { fair: 1490, good: 1588, mint: 1688, sealed: 1732 } },
   xss: {
     "base": { broken: 21, fair: 54, good: 90, mint: 135, sealed: 158 },
     "carbonblack": { broken: 43, fair: 86, good: 148, mint: 184, sealed: 220 } },
@@ -693,29 +693,28 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   awse2: {
     "base": { good: 9, mint: 17, sealed: 38 } },
   mba13m2: {
-    "1tb": { fair: 310, good: 387, mint: 446, sealed: 482 },
-    "256": { fair: 198, good: 274, mint: 333, sealed: 369 },
-    "2tb": { fair: 356, good: 432, mint: 490, sealed: 526 },
-    "512": { fair: 243, good: 320, mint: 378, sealed: 414 } },
+    "1tb": { fair: 194, good: 292, mint: 392, sealed: 436 },
+    "256": { fair: 126, good: 225, mint: 324, sealed: 369 },
+    "2tb": { fair: 261, good: 360, mint: 459, sealed: 504 },
+    "512": { fair: 148, good: 248, mint: 346, sealed: 392 } },
   mba15m2: {
-    "1tb": { fair: 374, good: 441, mint: 486, sealed: 513 },
-    "256": { fair: 284, good: 351, mint: 396, sealed: 423 },
-    "2tb": { fair: 464, good: 531, mint: 576, sealed: 603 },
-    "512": { fair: 328, good: 396, mint: 441, sealed: 468 } },
+    "1tb": { fair: 320, good: 418, mint: 518, sealed: 562 },
+    "256": { fair: 252, good: 351, mint: 450, sealed: 495 },
+    "2tb": { fair: 410, good: 508, mint: 608, sealed: 652 },
+    "512": { fair: 274, good: 374, mint: 472, sealed: 518 } },
   mbp14_m5_2025: {
-    "1tb": { fair: 788, good: 891, mint: 990, sealed: 1058 },
-    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1148 },
-    "4tb": { fair: 1102, good: 1206, mint: 1305, sealed: 1372 },
-    "512": { fair: 652, good: 756, mint: 855, sealed: 922 } },
+    "1tb": { fair: 882, good: 981, mint: 1080, sealed: 1125 },
+    "2tb": { fair: 1017, good: 1116, mint: 1215, sealed: 1260 },
+    "4tb": { fair: 1242, good: 1341, mint: 1440, sealed: 1485 },
+    "512": { fair: 792, good: 891, mint: 990, sealed: 1035 } },
   mbp14_m5pmax_2026: {
-    "1tb": { fair: 788, good: 891, mint: 990, sealed: 1058 },
-    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1148 },
-    "4tb": { fair: 1102, good: 1206, mint: 1305, sealed: 1372 },
-    "512": { fair: 652, good: 756, mint: 855, sealed: 922 } },
+    "1tb": { fair: 1062, good: 1161, mint: 1260, sealed: 1305 },
+    "2tb": { fair: 1197, good: 1296, mint: 1395, sealed: 1440 },
+    "4tb": { fair: 1422, good: 1521, mint: 1620, sealed: 1665 } },
   mbp14m4: {
-    "1tb": { fair: 765, good: 868, mint: 968, sealed: 1012 },
-    "2tb": { fair: 878, good: 981, mint: 1080, sealed: 1125 },
-    "512": { fair: 652, good: 756, mint: 855, sealed: 900 } },
+    "1tb": { fair: 770, good: 868, mint: 968, sealed: 1012 },
+    "2tb": { fair: 882, good: 981, mint: 1080, sealed: 1125 },
+    "512": { fair: 657, good: 756, mint: 855, sealed: 900 } },
   ps4: {
     "base": { broken: 8, fair: 14, good: 27, mint: 45, sealed: 63 } },
   ps4pro: {
@@ -1125,8 +1124,8 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   mbp16_m5pmax_2026: {
     processors: [
       { id: "m5pro_18_20", label: "M5 Pro", sub: "18-Core CPU / 20-Core GPU", multiplier: 1.00, adj: 1900 },
-      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.35, adj: 2750 },
-      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.50, adj: 3000 },
+      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.35, adj: 2900 },
+      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.50, adj: 3200 },
     ],
     memory: [
       { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1137,8 +1136,8 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     storage: [
       { id: "1tb", label: "1 TB",  sub: "SSD", multiplier: 1.00, adj: 0 },
-      { id: "2tb", label: "2 TB",  sub: "SSD", multiplier: 1.15, adj: 250 },
-      { id: "4tb", label: "4 TB",  sub: "SSD", multiplier: 1.40, adj: 500 },
+      { id: "2tb", label: "2 TB",  sub: "SSD", multiplier: 1.15, adj: 300 },
+      { id: "4tb", label: "4 TB",  sub: "SSD", multiplier: 1.40, adj: 600 },
       { id: "8tb", label: "8 TB",  sub: "SSD", multiplier: 1.75, adj: 1500 },
     ],
     hasNanoGlass: true },
@@ -1147,10 +1146,10 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // on M5 Max only (not M5 Pro).
   mbp14_m5pmax_2026: {
     processors: [
-      { id: "m5pro_15_16", label: "M5 Pro", sub: "15-Core CPU / 16-Core GPU", multiplier: 1.00, adj: 1300 },
-      { id: "m5pro_18_20", label: "M5 Pro", sub: "18-Core CPU / 20-Core GPU", multiplier: 1.20, adj: 1450 },
-      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.50, adj: 2400 },
-      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.70, adj: 2800 },
+      { id: "m5pro_15_16", label: "M5 Pro", sub: "15-Core CPU / 16-Core GPU", multiplier: 1.00, adj: 1400 },
+      { id: "m5pro_18_20", label: "M5 Pro", sub: "18-Core CPU / 20-Core GPU", multiplier: 1.20, adj: 1600 },
+      { id: "m5max_18_32", label: "M5 Max", sub: "18-Core CPU / 32-Core GPU", multiplier: 1.50, adj: 2300 },
+      { id: "m5max_18_40", label: "M5 Max", sub: "18-Core CPU / 40-Core GPU", multiplier: 1.70, adj: 3000 },
     ],
     memory: [
       { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1169,9 +1168,9 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2024 16-inch MacBook Pro M4 Pro/Max
   mbp16m4: {
     processors: [
-      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.00, adj: 1375 },
-      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.46, adj: 1850 },
-      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.69, adj: 2275 },
+      { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.00, adj: 1475 },
+      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 1.46, adj: 1950 },
+      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.69, adj: 2200 },
     ],
     memory: [
       { id: "24",  label: "24 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1191,11 +1190,11 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2024 14-inch MacBook Pro M4
   mbp14m4: {
     processors: [
-      { id: "m4_10_10",    label: "M4",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 875 },
+      { id: "m4_10_10",    label: "M4",     sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 950 },
       { id: "m4pro_12_16", label: "M4 Pro", sub: "12-Core CPU / 16-Core GPU", multiplier: 1.37, adj: 1200 },
       { id: "m4pro_14_20", label: "M4 Pro", sub: "14-Core CPU / 20-Core GPU", multiplier: 1.42, adj: 1250 },
-      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 2.26, adj: 1700 },
-      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 2.47, adj: 2100 },
+      { id: "m4max_14_32", label: "M4 Max", sub: "14-Core CPU / 32-Core GPU", multiplier: 2.26, adj: 1775 },
+      { id: "m4max_16_40", label: "M4 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 2.47, adj: 2150 },
     ],
     memory: [
       { id: "16",  label: "16 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1218,8 +1217,8 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   mbp16m3: {
     processors: [
       { id: "m3pro_12_18", label: "M3 Pro", sub: "12-Core CPU / 18-Core GPU", multiplier: 1.00, adj: 1000 },
-      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 1.41, adj: 1500 },
-      { id: "m3max_16_40", label: "M3 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.54, adj: 1600 },
+      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 1.41, adj: 1600 },
+      { id: "m3max_16_40", label: "M3 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 1.54, adj: 1800 },
     ],
     memory: [
       { id: "18",  label: "18 GB",  sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1231,19 +1230,19 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     storage: [
       { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
-      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 150 },
-      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 300 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
       { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 500 },
-      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 1200 },
+      { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 1100 },
     ],
     hasNanoGlass: false },
   // 2023 14-inch MacBook Pro M3 / Pro / Max
   mbp14m3: {
     processors: [
-      { id: "m3_8_10",     label: "M3",     sub: "8-Core CPU / 10-Core GPU",  multiplier: 1.00, adj: 575 },
-      { id: "m3pro_11_14", label: "M3 Pro", sub: "11-Core CPU / 14-Core GPU", multiplier: 1.43, adj: 800 },
-      { id: "m3pro_12_18", label: "M3 Pro", sub: "12-Core CPU / 18-Core GPU", multiplier: 1.51, adj: 850 },
-      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 2.30, adj: 1300 },
+      { id: "m3_8_10",     label: "M3",     sub: "8-Core CPU / 10-Core GPU",  multiplier: 1.00, adj: 600 },
+      { id: "m3pro_11_14", label: "M3 Pro", sub: "11-Core CPU / 14-Core GPU", multiplier: 1.43, adj: 850 },
+      { id: "m3pro_12_18", label: "M3 Pro", sub: "12-Core CPU / 18-Core GPU", multiplier: 1.51, adj: 925 },
+      { id: "m3max_14_30", label: "M3 Max", sub: "14-Core CPU / 30-Core GPU", multiplier: 2.30, adj: 1200 },
       { id: "m3max_16_40", label: "M3 Max", sub: "16-Core CPU / 40-Core GPU", multiplier: 2.70, adj: 1500 },
     ],
     memory: [
@@ -1259,18 +1258,18 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     storage: [
       { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
-      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 100 },
-      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
-      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 500 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 50 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 150 },
+      { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 450 },
       { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 1000 },
     ],
     hasNanoGlass: false },
   // 2023 16-inch MacBook Pro M2 Pro/Max (no nano-texture this gen)
   mbp16m2: {
     processors: [
-      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.00, adj: 775 },
-      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.25, adj: 1100 },
-      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.40, adj: 1200 },
+      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.00, adj: 750 },
+      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.25, adj: 1200 },
+      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.40, adj: 1300 },
     ],
     memory: [
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1280,8 +1279,8 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
     ],
     storage: [
       { id: "512", label: "512 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
-      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 150 },
-      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 300 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.00, adj: 125 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.18, adj: 250 },
       { id: "4tb", label: "4 TB",   sub: "SSD", multiplier: 1.40, adj: 500 },
       { id: "8tb", label: "8 TB",   sub: "SSD", multiplier: 1.70, adj: 700 },
     ],
@@ -1289,10 +1288,10 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2023 14-inch MacBook Pro M2 Pro/Max
   mbp14m2: {
     processors: [
-      { id: "m2pro_10_16", label: "M2 Pro", sub: "10-Core CPU / 16-Core GPU", multiplier: 1.00, adj: 600 },
-      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.11, adj: 650 },
-      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.44, adj: 975 },
-      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.50, adj: 1025 },
+      { id: "m2pro_10_16", label: "M2 Pro", sub: "10-Core CPU / 16-Core GPU", multiplier: 1.00, adj: 675 },
+      { id: "m2pro_12_19", label: "M2 Pro", sub: "12-Core CPU / 19-Core GPU", multiplier: 1.11, adj: 725 },
+      { id: "m2max_12_30", label: "M2 Max", sub: "12-Core CPU / 30-Core GPU", multiplier: 1.44, adj: 950 },
+      { id: "m2max_12_38", label: "M2 Max", sub: "12-Core CPU / 38-Core GPU", multiplier: 1.50, adj: 1000 },
     ],
     memory: [
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1313,7 +1312,7 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // No nano glass on the base M5 model.
   mbp14_m5_2025: {
     processors: [
-      { id: "m5_10_10", label: "M5", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 850 },
+      { id: "m5_10_10", label: "M5", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 1100 },
     ],
     memory: [
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1332,8 +1331,8 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // same across sizes; the 15-inch just commands a price premium).
   mba_m5_2026: {
     processors: [
-      { id: "m5_13",       label: "M5 (13-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 0.85, adj: 700 },
-      { id: "m5_15",       label: "M5 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.12, adj: 775 },
+      { id: "m5_13",       label: "M5 (13-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 0.85, adj: 750 },
+      { id: "m5_15",       label: "M5 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.12, adj: 825 },
     ],
     memory: [
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1351,8 +1350,8 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 256/512/1TB/2TB storage. Same approach as M5 Air: screen size on processor step.
   mba_m4_2025: {
     processors: [
-      { id: "m4_13", label: "M4 (13-inch)", sub: "10-Core CPU / 8-Core GPU",  multiplier: 0.85, adj: 550 },
-      { id: "m4_15", label: "M4 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.06, adj: 575 },
+      { id: "m4_13", label: "M4 (13-inch)", sub: "10-Core CPU / 8-Core GPU",  multiplier: 0.85, adj: 575 },
+      { id: "m4_15", label: "M4 (15-inch)", sub: "10-Core CPU / 10-Core GPU", multiplier: 1.06, adj: 600 },
     ],
     memory: [
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 0 },
@@ -1369,25 +1368,25 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2024 MacBook Air 15" M3
   mba15m3: {
     processors: [
-      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 500 },
+      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 525 },
     ],
     memory: [
       { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 50 },
-      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 150 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 125 },
     ],
     storage: [
       { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
-      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 50 },
-      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 100 },
-      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 200 },
+      { id: "512", label: "512 GB", sub: "SSD", multiplier: 1.00, adj: 25 },
+      { id: "1tb", label: "1 TB",   sub: "SSD", multiplier: 1.15, adj: 75 },
+      { id: "2tb", label: "2 TB",   sub: "SSD", multiplier: 1.35, adj: 150 },
     ],
     hasNanoGlass: false },
   // 2024 MacBook Air 13" M3
   mba13m3: {
     processors: [
-      { id: "m3_8_8",  label: "M3", sub: "8-Core CPU / 8-Core GPU",  multiplier: 1.00, adj: 440 },
-      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.14, adj: 490 },
+      { id: "m3_8_8",  label: "M3", sub: "8-Core CPU / 8-Core GPU",  multiplier: 1.00, adj: 450 },
+      { id: "m3_8_10", label: "M3", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.14, adj: 510 },
     ],
     memory: [
       { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
@@ -1404,12 +1403,12 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2023 MacBook Air 15" M2
   mba15m2: {
     processors: [
-      { id: "m2_8_10", label: "M2", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 450 },
+      { id: "m2_8_10", label: "M2", sub: "8-Core CPU / 10-Core GPU", multiplier: 1.00, adj: 500 },
     ],
     memory: [
       { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },
       { id: "16", label: "16 GB", sub: "Unified Memory", multiplier: 1.00, adj: 50 },
-      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 150 },
+      { id: "24", label: "24 GB", sub: "Unified Memory", multiplier: 1.10, adj: 100 },
     ],
     storage: [
       { id: "256", label: "256 GB", sub: "SSD", multiplier: 0.85, adj: 0 },
@@ -1439,8 +1438,8 @@ export const MACBOOK_SPECS: Record<string, MacSpec> = {
   // 2020 MacBook Air 13" M1 — first Apple Silicon Mac, simpler config
   mba13m1: {
     processors: [
-      { id: "m1_8_7", label: "M1", sub: "8-Core CPU / 7-Core GPU", multiplier: 1.00, adj: 250 },
-      { id: "m1_8_8", label: "M1", sub: "8-Core CPU / 8-Core GPU", multiplier: 1.08, adj: 280 },
+      { id: "m1_8_7", label: "M1", sub: "8-Core CPU / 7-Core GPU", multiplier: 1.00, adj: 240 },
+      { id: "m1_8_8", label: "M1", sub: "8-Core CPU / 8-Core GPU", multiplier: 1.08, adj: 290 },
     ],
     memory: [
       { id: "8",  label: "8 GB",  sub: "Unified Memory", multiplier: 0.92, adj: 0 },

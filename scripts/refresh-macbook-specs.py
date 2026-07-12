@@ -131,6 +131,12 @@ def main():
     src = PRICES_TS.read_text(encoding="utf-8")
     blk_start = src.index("export const MACBOOK_SPECS")
     blk_end = src.find("\nexport ", blk_start + 10)
+    # find() returns -1 when MACBOOK_SPECS is the file's last export; the
+    # later `blk_end += len(seg) - (j - i)` then walks -1 up to 0 after the
+    # first length-changing edit, and every remaining entry_span searches an
+    # empty slice → phantom "entry not found" for all subsequent models.
+    if blk_end == -1:
+        blk_end = len(src)
 
     pages = {}
     changes, misses = [], []

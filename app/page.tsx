@@ -1611,14 +1611,14 @@ const PS5_VARIANTS = [
   // Storage is implicit by variant — Pro ships 2 TB, Slim ships 1 TB,
   // original ships 825 GB. No storage step or extras question for
   // consoles per Skywalker (2026-05-12).
-  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 405, image: "/devices/ps5pro.webp" },
-  { id: "ps5slim", label: "PlayStation 5 Slim",   base: 270, image: "/devices/ps5-slim-disc.webp" },
-  { id: "ps5",     label: "PlayStation 5",        base: 292, image: "/devices/ps5.webp" },
+  { id: "ps5pro",  label: "PlayStation 5 Pro",    base: 585, image: "/devices/ps5pro.webp" },
+  { id: "ps5slim", label: "PlayStation 5 Slim",   base: 338, image: "/devices/ps5-slim-disc.webp" },
+  { id: "ps5",     label: "PlayStation 5",        base: 360, image: "/devices/ps5.webp" },
 ];
 const PS4_VARIANTS = [
-  { id: "ps4pro", label: "PlayStation 4 Pro", base: 104, image: "/devices/ps4-pro.webp" },
-  { id: "ps4", label: "PlayStation 4 (Standard)", base: 72, image: "/devices/ps4.webp" },
-  { id: "ps4slim", label: "PlayStation 4 Slim", base: 81, inquiryOnly: false, image: "/devices/ps4-slim.webp" },
+  { id: "ps4pro", label: "PlayStation 4 Pro", base: 122, image: "/devices/ps4-pro.webp" },
+  { id: "ps4", label: "PlayStation 4 (Standard)", base: 117, image: "/devices/ps4.webp" },
+  { id: "ps4slim", label: "PlayStation 4 Slim", base: 86, inquiryOnly: false, image: "/devices/ps4-slim.webp" },
 ];
 const SONY_SERIES = [
   { id: "ps5_family", label: "PlayStation 5", year: "Pro · Std · Slim", topPrice: 405, image: "/ps5-series.webp", variants: PS5_VARIANTS },
@@ -1627,15 +1627,15 @@ const SONY_SERIES = [
 const SONY_MODELS = [...PS5_VARIANTS, ...PS4_VARIANTS];
 
 const MICROSOFT_MODELS = [
-  { id: "xsx",  label: "Xbox Series X", base: 292, image: "/devices/xbox-series-x.webp" },
-  { id: "xss",  label: "Xbox Series S", base: 149, image: "/devices/xbox-series-s.webp" },
+  { id: "xsx",  label: "Xbox Series X", base: 410, image: "/devices/xbox-series-x.webp" },
+  { id: "xss",  label: "Xbox Series S", base: 181, image: "/devices/xbox-series-s.webp" },
   { id: "xone", label: "Xbox One",      base: 81,  image: "/devices/xbox-one.webp" },
 ];
 
 const NINTENDO_MODELS = [
-  { id: "switch", label: "Nintendo Switch OLED", base: 108, image: "/devices/switch-oled.webp" },
-  { id: "switchv2", label: "Nintendo Switch V2", base: 68, image: "/devices/switch-oled.webp" },
-  { id: "switchlite", label: "Nintendo Switch Lite", base: 27, image: "/devices/switch-lite.webp" },
+  { id: "switch", label: "Nintendo Switch OLED", base: 126, image: "/devices/switch-oled.webp" },
+  { id: "switchv2", label: "Nintendo Switch V2", base: 76, image: "/devices/switch-oled.webp" },
+  { id: "switchlite", label: "Nintendo Switch Lite", base: 36, image: "/devices/switch-lite.webp" },
 ];
 
 const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS];
@@ -1646,16 +1646,16 @@ const CONSOLE_MODELS = [...SONY_MODELS, ...MICROSOFT_MODELS, ...NINTENDO_MODELS]
 // cellular / band / box adds live in APPLE_WATCH_SPECS below and stack on
 // top per the IWM tree. (aws11 / awse3 reuse closest art until real renders.)
 const APPLEWATCH_MODELS = [
-  { id: "awu3", label: "Apple Watch Ultra 3", base: 285, image: "/devices/apple-watch-ultra-3.webp" },
-  { id: "awu2", label: "Apple Watch Ultra 2", base: 170, image: "/devices/apple-watch-ultra-2.webp" },
-  { id: "awu1", label: "Apple Watch Ultra", base: 119, image: "/devices/apple-watch-ultra.webp" },
+  { id: "awu3", label: "Apple Watch Ultra 3", base: 302, image: "/devices/apple-watch-ultra-3.webp" },
+  { id: "awu2", label: "Apple Watch Ultra 2", base: 180, image: "/devices/apple-watch-ultra-2.webp" },
+  { id: "awu1", label: "Apple Watch Ultra", base: 126, image: "/devices/apple-watch-ultra.webp" },
   { id: "aws11", label: "Apple Watch Series 11", base: 123, image: "/devices/apple-watch-series-10.webp" },
-  { id: "aws10", label: "Apple Watch Series 10", base: 106, image: "/devices/apple-watch-series-10.webp" },
-  { id: "aws9", label: "Apple Watch Series 9", base: 77, image: "/devices/apple-watch-series-9.webp" },
-  { id: "aws8", label: "Apple Watch Series 8", base: 60, image: "/devices/apple-watch-series-8.webp" },
-  { id: "aws7", label: "Apple Watch Series 7", base: 38, image: "/devices/apple-watch-series-7.webp" },
+  { id: "aws10", label: "Apple Watch Series 10", base: 158, image: "/devices/apple-watch-series-10.webp" },
+  { id: "aws9", label: "Apple Watch Series 9", base: 104, image: "/devices/apple-watch-series-9.webp" },
+  { id: "aws8", label: "Apple Watch Series 8", base: 59, image: "/devices/apple-watch-series-8.webp" },
+  { id: "aws7", label: "Apple Watch Series 7", base: 46, image: "/devices/apple-watch-series-7.webp" },
   { id: "awse3", label: "Apple Watch SE 3", base: 72, image: "/devices/apple-watch-se-2.webp" },
-  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 38, image: "/devices/apple-watch-se-2.webp" },
+  { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 34, image: "/devices/apple-watch-se-2.webp" },
   { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, inquiryOnly: true, image: "/devices/apple-watch-se-1.webp" },
 ];
 
