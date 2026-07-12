@@ -150,138 +150,138 @@ export const MANUAL_REVIEW_DEVICES = new Set([
 export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   ip11: {
     "128": { broken: 1, fair: 26, good: 77, mint: 85, sealed: 94 },
-    "256": { broken: 9, fair: 35, good: 85, mint: 94, sealed: 103 },
-    "64": { broken: 0, fair: 13, good: 62, mint: 73, sealed: 81 } },
+    "256": { broken: 1, fair: 35, good: 85, mint: 94, sealed: 103 },
+    "64": { broken: 1, fair: 13, good: 62, mint: 73, sealed: 81 } },
   ip11p: {
-    "256": { broken: 0, fair: 47, good: 94, mint: 107, sealed: 111 },
-    "512": { broken: 13, fair: 64, good: 103, mint: 115, sealed: 119 },
-    "64": { broken: 0, fair: 30, good: 81, mint: 94, sealed: 98 } },
+    "256": { broken: 1, fair: 47, good: 94, mint: 107, sealed: 111 },
+    "512": { broken: 2, fair: 64, good: 103, mint: 115, sealed: 119 },
+    "64": { broken: 1, fair: 30, good: 81, mint: 94, sealed: 98 } },
   ip11pm: {
-    "256": { fair: 69, good: 119, mint: 132, sealed: 137 },
-    "512": { fair: 85, good: 132, mint: 145, sealed: 149 },
-    "64": { fair: 51, good: 107, mint: 119, sealed: 124 } },
+    "256": { broken: 17, fair: 69, good: 119, mint: 132, sealed: 137 },
+    "512": { broken: 20, fair: 85, good: 132, mint: 145, sealed: 149 },
+    "64": { broken: 15, fair: 51, good: 107, mint: 119, sealed: 124 } },
   ip12: {
-    "128": { fair: 17, good: 90, mint: 98, sealed: 107 },
-    "256": { fair: 35, good: 98, mint: 107, sealed: 115 },
-    "64": { fair: 13, good: 77, mint: 85, sealed: 94 } },
+    "128": { broken: 22, fair: 17, good: 90, mint: 98, sealed: 107 },
+    "256": { broken: 23, fair: 35, good: 98, mint: 107, sealed: 115 },
+    "64": { broken: 20, fair: 13, good: 77, mint: 85, sealed: 94 } },
   ip12mini: {
-    "128": { fair: 48, good: 71, mint: 86, sealed: 109 },
-    "256": { fair: 52, good: 76, mint: 90, sealed: 114 },
-    "64": { fair: 19, good: 43, mint: 57, sealed: 104 } },
+    "128": { broken: 1, fair: 48, good: 71, mint: 86, sealed: 109 },
+    "256": { broken: 1, fair: 52, good: 76, mint: 90, sealed: 114 },
+    "64": { broken: 1, fair: 19, good: 43, mint: 57, sealed: 104 } },
   ip12p: {
-    "128": { fair: 51, good: 119, mint: 132, sealed: 141 },
-    "256": { fair: 60, good: 132, mint: 145, sealed: 153 },
-    "512": { fair: 60, good: 145, mint: 158, sealed: 166 } },
+    "128": { broken: 20, fair: 51, good: 119, mint: 132, sealed: 141 },
+    "256": { broken: 25, fair: 60, good: 132, mint: 145, sealed: 153 },
+    "512": { broken: 26, fair: 60, good: 145, mint: 158, sealed: 166 } },
   ip12pm: {
-    "128": { fair: 90, good: 162, mint: 175, sealed: 183 },
-    "256": { fair: 103, good: 179, mint: 192, sealed: 200 },
-    "512": { fair: 103, good: 192, mint: 205, sealed: 213 } },
+    "128": { broken: 38, fair: 90, good: 162, mint: 175, sealed: 183 },
+    "256": { broken: 40, fair: 103, good: 179, mint: 192, sealed: 200 },
+    "512": { broken: 43, fair: 103, good: 192, mint: 205, sealed: 213 } },
   // ip13 recalibrated 2026-07-11 to Sonny's live payouts (he corrected a bot
   // quote to "170 unlocked / 120 locked" for a good one — Damian thread):
   // good 128 + the $25 phone bonus lands exactly on $170 unlocked / $120
   // T-Mobile. Resell comp raised in lockstep so the margin cap clears.
   ip13: {
-    "128": { broken: 48, fair: 115, good: 145, mint: 158, sealed: 190 },
-    "256": { broken: 52, fair: 122, good: 152, mint: 165, sealed: 218 },
-    "512": { broken: 57, fair: 128, good: 160, mint: 173, sealed: 238 } },
+    "128": { broken: 20, fair: 115, good: 145, mint: 158, sealed: 190 },
+    "256": { broken: 25, fair: 122, good: 152, mint: 165, sealed: 218 },
+    "512": { broken: 29, fair: 128, good: 160, mint: 173, sealed: 238 } },
   ip13mini: {
-    "128": { fair: 76, good: 124, mint: 137, sealed: 180 },
-    "256": { fair: 104, good: 152, mint: 165, sealed: 190 },
-    "512": { fair: 124, good: 171, mint: 185, sealed: 215 } },
+    "128": { broken: 20, fair: 76, good: 124, mint: 137, sealed: 180 },
+    "256": { broken: 25, fair: 104, good: 152, mint: 165, sealed: 190 },
+    "512": { broken: 26, fair: 124, good: 171, mint: 185, sealed: 215 } },
   ip13p: {
-    "128": { broken: 62, fair: 128, good: 192, mint: 194, sealed: 217 },
-    "1tb": { broken: 71, fair: 158, good: 230, mint: 232, sealed: 255 },
-    "256": { broken: 66, fair: 141, good: 209, mint: 211, sealed: 234 },
-    "512": { broken: 68, fair: 158, good: 221, mint: 224, sealed: 247 } },
+    "128": { broken: 33, fair: 128, good: 192, mint: 194, sealed: 217 },
+    "1tb": { broken: 43, fair: 158, good: 230, mint: 232, sealed: 255 },
+    "256": { broken: 38, fair: 141, good: 209, mint: 211, sealed: 234 },
+    "512": { broken: 40, fair: 158, good: 221, mint: 224, sealed: 247 } },
   ip13pm: {
-    "128": { broken: 81, fair: 162, good: 230, mint: 232, sealed: 255 },
-    "1tb": { broken: 95, fair: 230, good: 277, mint: 279, sealed: 305 },
-    "256": { broken: 86, fair: 175, good: 247, mint: 249, sealed: 273 },
-    "512": { broken: 90, fair: 192, good: 264, mint: 266, sealed: 289 } },
+    "128": { broken: 51, fair: 162, good: 230, mint: 232, sealed: 255 },
+    "1tb": { broken: 65, fair: 230, good: 277, mint: 279, sealed: 305 },
+    "256": { broken: 56, fair: 175, good: 247, mint: 249, sealed: 273 },
+    "512": { broken: 61, fair: 192, good: 264, mint: 266, sealed: 289 } },
   ip14: {
-    "128": { broken: 57, fair: 107, good: 122, mint: 134, sealed: 223 },
-    "256": { broken: 62, fair: 124, good: 138, mint: 151, sealed: 247 },
-    "512": { broken: 64, fair: 124, good: 151, mint: 164, sealed: 271 } },
+    "128": { broken: 29, fair: 107, good: 122, mint: 134, sealed: 223 },
+    "256": { broken: 33, fair: 124, good: 138, mint: 151, sealed: 247 },
+    "512": { broken: 35, fair: 124, good: 151, mint: 164, sealed: 271 } },
   ip14p: {
-    "128": { broken: 111, fair: 171, good: 223, mint: 236, sealed: 260 },
-    "1tb": { broken: 138, fair: 205, good: 274, mint: 287, sealed: 315 },
-    "256": { broken: 124, fair: 187, good: 240, mint: 253, sealed: 277 },
-    "512": { broken: 132, fair: 196, good: 258, mint: 270, sealed: 294 } },
+    "128": { broken: 87, fair: 171, good: 223, mint: 236, sealed: 260 },
+    "1tb": { broken: 105, fair: 205, good: 274, mint: 287, sealed: 315 },
+    "256": { broken: 97, fair: 187, good: 240, mint: 253, sealed: 277 },
+    "512": { broken: 101, fair: 196, good: 258, mint: 270, sealed: 294 } },
   ip14plus: {
-    "128": { broken: 60, fair: 107, good: 160, mint: 172, sealed: 196 },
-    "256": { broken: 73, fair: 124, good: 172, mint: 185, sealed: 209 },
-    "512": { broken: 73, fair: 124, good: 181, mint: 194, sealed: 217 } },
+    "128": { broken: 61, fair: 107, good: 160, mint: 172, sealed: 196 },
+    "256": { broken: 65, fair: 124, good: 172, mint: 185, sealed: 209 },
+    "512": { broken: 69, fair: 124, good: 181, mint: 194, sealed: 217 } },
   ip14pm: {
-    "128": { broken: 152, fair: 209, good: 273, mint: 274, sealed: 298 },
-    "1tb": { broken: 179, fair: 209, good: 319, mint: 321, sealed: 350 },
-    "256": { broken: 162, fair: 234, good: 289, mint: 292, sealed: 315 },
-    "512": { broken: 171, fair: 239, good: 307, mint: 308, sealed: 332 } },
+    "128": { broken: 119, fair: 209, good: 273, mint: 274, sealed: 298 },
+    "1tb": { broken: 173, fair: 209, good: 319, mint: 321, sealed: 350 },
+    "256": { broken: 137, fair: 234, good: 289, mint: 292, sealed: 315 },
+    "512": { broken: 155, fair: 239, good: 307, mint: 308, sealed: 332 } },
   ip15: {
-    "128": { broken: 95, fair: 158, good: 213, mint: 215, sealed: 281 },
-    "256": { broken: 104, fair: 179, good: 230, mint: 232, sealed: 323 },
-    "512": { broken: 109, fair: 187, good: 247, mint: 249, sealed: 357 } },
+    "128": { broken: 65, fair: 158, good: 213, mint: 215, sealed: 281 },
+    "256": { broken: 74, fair: 179, good: 230, mint: 232, sealed: 323 },
+    "512": { broken: 79, fair: 187, good: 247, mint: 249, sealed: 357 } },
   ip15p: {
-    "128": { broken: 158, fair: 226, good: 281, mint: 283, sealed: 307 },
-    "1tb": { broken: 175, fair: 234, good: 332, mint: 334, sealed: 421 },
-    "256": { broken: 179, fair: 247, good: 298, mint: 300, sealed: 323 },
-    "512": { broken: 187, fair: 255, good: 315, mint: 317, sealed: 341 } },
+    "128": { broken: 146, fair: 226, good: 281, mint: 283, sealed: 307 },
+    "1tb": { broken: 191, fair: 234, good: 332, mint: 334, sealed: 421 },
+    "256": { broken: 164, fair: 247, good: 298, mint: 300, sealed: 323 },
+    "512": { broken: 173, fair: 255, good: 315, mint: 317, sealed: 341 } },
   ip15plus: {
-    "128": { broken: 107, fair: 158, good: 230, mint: 232, sealed: 255 },
-    "256": { broken: 119, fair: 179, good: 247, mint: 249, sealed: 273 },
-    "512": { broken: 128, fair: 187, good: 264, mint: 266, sealed: 289 } },
+    "128": { broken: 105, fair: 158, good: 230, mint: 232, sealed: 255 },
+    "256": { broken: 115, fair: 179, good: 247, mint: 249, sealed: 273 },
+    "512": { broken: 123, fair: 187, good: 264, mint: 266, sealed: 289 } },
   ip15pm: {
-    "1tb": { broken: 190, fair: 319, good: 391, mint: 394, sealed: 417 },
-    "256": { broken: 171, fair: 289, good: 357, mint: 360, sealed: 383 },
-    "512": { broken: 180, fair: 302, good: 375, mint: 376, sealed: 400 } },
+    "1tb": { broken: 155, fair: 319, good: 391, mint: 394, sealed: 417 },
+    "256": { broken: 137, fair: 289, good: 357, mint: 360, sealed: 383 },
+    "512": { broken: 146, fair: 302, good: 375, mint: 376, sealed: 400 } },
   ip16: {
-    "128": { broken: 162, fair: 251, good: 315, mint: 317, sealed: 353 },
-    "256": { broken: 187, fair: 277, good: 336, mint: 338, sealed: 383 },
-    "512": { broken: 196, fair: 289, good: 353, mint: 355, sealed: 434 } },
+    "128": { broken: 137, fair: 251, good: 315, mint: 317, sealed: 353 },
+    "256": { broken: 173, fair: 277, good: 336, mint: 338, sealed: 383 },
+    "512": { broken: 209, fair: 289, good: 353, mint: 355, sealed: 434 } },
   ip16e: {
-    "128": { broken: 66, fair: 152, good: 214, mint: 232, sealed: 281 },
-    "256": { broken: 86, fair: 218, good: 280, mint: 299, sealed: 323 },
+    "128": { broken: 38, fair: 152, good: 214, mint: 232, sealed: 281 },
+    "256": { broken: 56, fair: 218, good: 280, mint: 299, sealed: 323 },
     // 512 sealed was 357 — BELOW mint (361), so a factory-sealed unit paid less
     // than mint. mint follows a clean +33 good→mint step across all tiers, so
     // sealed was the low one. Raised to 365 (mint + a small premium continuing
     // the shrinking sealed-over-mint trend: +34 @128, +9 @256, ~+4 @512). (bug fix)
-    "512": { broken: 104, fair: 266, good: 328, mint: 346, sealed: 365 } },
+    "512": { broken: 74, fair: 266, good: 328, mint: 346, sealed: 365 } },
   ip16p: {
-    "128": { broken: 217, fair: 315, good: 417, mint: 419, sealed: 504 },
+    "128": { broken: 223, fair: 315, good: 417, mint: 419, sealed: 504 },
     // 1TB sealed capped down from 646 → 478 (= resell $638 × MARGIN_FLOOR_MULT 0.75)
     // to stop bait-and-switch: runtime clipped 646 silently. 2026-05-24.
-    "1tb": { broken: 217, fair: 430, good: 468, mint: 470, sealed: 478 },
-    "256": { broken: 239, fair: 341, good: 438, mint: 440, sealed: 551 },
-    "512": { broken: 239, fair: 353, good: 455, mint: 457, sealed: 598 } },
+    "1tb": { broken: 290, fair: 430, good: 468, mint: 470, sealed: 478 },
+    "256": { broken: 231, fair: 341, good: 438, mint: 440, sealed: 551 },
+    "512": { broken: 267, fair: 353, good: 455, mint: 457, sealed: 598 } },
   ip16plus: {
-    "128": { broken: 179, fair: 264, good: 353, mint: 355, sealed: 409 },
-    "256": { broken: 200, fair: 285, good: 379, mint: 381, sealed: 459 },
-    "512": { broken: 217, fair: 311, good: 404, mint: 406, sealed: 502 } },
+    "128": { broken: 169, fair: 264, good: 353, mint: 355, sealed: 409 },
+    "256": { broken: 205, fair: 285, good: 379, mint: 381, sealed: 459 },
+    "512": { broken: 241, fair: 311, good: 404, mint: 406, sealed: 502 } },
   ip16pm: {
     // 1TB sealed capped 874 → 540 (= resell $721 × 0.75 MARGIN_FLOOR). 2026-05-24.
-    "1tb": { broken: 298, fair: 468, good: 566, mint: 568, sealed: 591 },
-    "256": { broken: 266, fair: 417, good: 519, mint: 521, sealed: 684 },
-    "512": { broken: 289, fair: 438, good: 540, mint: 542, sealed: 779 } },
+    "1tb": { broken: 263, fair: 468, good: 566, mint: 568, sealed: 591 },
+    "256": { broken: 200, fair: 417, good: 519, mint: 521, sealed: 684 },
+    "512": { broken: 227, fair: 438, good: 540, mint: 542, sealed: 779 } },
   // iPhone 17 PRICE_TABLE — Atlas Mobile wholesale buy sheet minus $100
   // buffer. Unlocked headlines; per-carrier deductions live in
   // CARRIER_DEDUCTIONS above. Skywalker 2026-05-18 — replaces older
   // numbers that were under-paying on premium (Pro/Pro Max) and
   // over-paying on low-end (17/17e) relative to Atlas + buffer.
   ip17: {
-    "256": { broken: 145, fair: 305, good: 451, mint: 453, sealed: 502 },
-    "512": { broken: 195, fair: 370, good: 519, mint: 521, sealed: 621 } },
+    "256": { broken: 209, fair: 305, good: 451, mint: 453, sealed: 502 },
+    "512": { broken: 281, fair: 370, good: 519, mint: 521, sealed: 621 } },
   ip17air: {
-    "1tb": { broken: 215, fair: 375, good: 720, mint: 735, sealed: 810 },
-    "256": { broken: 145, fair: 260, good: 520, mint: 535, sealed: 660 },
-    "512": { broken: 170, fair: 305, good: 620, mint: 635, sealed: 750 } },
+    "1tb": { broken: 290, fair: 375, good: 720, mint: 735, sealed: 810 },
+    "256": { broken: 182, fair: 260, good: 520, mint: 535, sealed: 660 },
+    "512": { broken: 254, fair: 305, good: 620, mint: 635, sealed: 750 } },
   ip17e: {
-    "256": { broken: 100, fair: 160, good: 240, mint: 255, sealed: 270 },
-    "512": { broken: 140, fair: 190, good: 280, mint: 295, sealed: 310 } },
+    "256": { broken: 65, fair: 160, good: 240, mint: 255, sealed: 270 },
+    "512": { broken: 83, fair: 190, good: 280, mint: 295, sealed: 310 } },
   ip17p: {
     // Custom flat pricing (Skywalker, 2026-06): 17 Pro Max ladder minus $40 (excellent OFFER
     // $580 = base 555 + $25 bonus); +$55/tier; no carrier penalty. Broken left unchanged.
-    "1tb": { broken: 417, fair: 625, good: 645, mint: 650, sealed: 695 },
-    "256": { broken: 350, fair: 515, good: 535, mint: 540, sealed: 585 },
-    "512": { broken: 385, fair: 570, good: 590, mint: 595, sealed: 640 } },
+    "1tb": { broken: 389, fair: 625, good: 645, mint: 650, sealed: 695 },
+    "256": { broken: 245, fair: 515, good: 535, mint: 540, sealed: 585 },
+    "512": { broken: 353, fair: 570, good: 590, mint: 595, sealed: 640 } },
   ip17pm: {
     // Custom flat pricing (Skywalker). Excellent OFFER $620 = base 595 + $25
     // popular-phone bonus; mint/good/fair/broken unchanged.
@@ -291,100 +291,100 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     // quote time restores the target offer. ip17pm is intentionally OUT of
     // RESELL_ESTIMATES so these sub-25%-margin sealed offers aren't clawed
     // back by the margin cap. NO carrier penalty (deductions zeroed above).
-    "1tb": { broken: 527, fair: 665, good: 685, mint: 690, sealed: 1025 },
-    "256": { broken: 434, fair: 555, good: 575, mint: 580, sealed: 725 },
-    "2tb": { broken: 566, fair: 720, good: 740, mint: 745, sealed: 1225 },
-    "512": { broken: 472, fair: 610, good: 630, mint: 635, sealed: 835 } },
+    "1tb": { broken: 353, fair: 665, good: 685, mint: 690, sealed: 1025 },
+    "256": { broken: 290, fair: 555, good: 575, mint: 580, sealed: 725 },
+    "2tb": { broken: 425, fair: 720, good: 740, mint: 745, sealed: 1225 },
+    "512": { broken: 317, fair: 610, good: 630, mint: 635, sealed: 835 } },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
-    "128": { broken: 13, fair: 39, good: 128, mint: 137, sealed: 187 },
-    "256": { broken: 13, fair: 39, good: 128, mint: 137, sealed: 187 },
+    "128": { broken: 25, fair: 39, good: 128, mint: 137, sealed: 187 },
+    "256": { broken: 29, fair: 39, good: 128, mint: 137, sealed: 187 },
     "512": { fair: 39, good: 128, mint: 137, sealed: 187 } },
   gs24u: {
-    "1tb": { broken: 94, fair: 158, good: 332, mint: 341, sealed: 417 },
-    "256": { broken: 94, fair: 158, good: 332, mint: 341, sealed: 417 },
-    "512": { broken: 94, fair: 158, good: 332, mint: 341, sealed: 417 } },
+    "1tb": { broken: 97, fair: 158, good: 332, mint: 341, sealed: 417 },
+    "256": { broken: 87, fair: 158, good: 332, mint: 341, sealed: 417 },
+    "512": { broken: 92, fair: 158, good: 332, mint: 341, sealed: 417 } },
   gs25: {
-    "128": { broken: 39, fair: 69, good: 238, mint: 261, sealed: 297 },
-    "256": { broken: 39, fair: 69, good: 274, mint: 297, sealed: 328 },
-    "512": { broken: 39, fair: 69, good: 238, mint: 261, sealed: 297 } },
+    "128": { broken: 29, fair: 69, good: 238, mint: 261, sealed: 297 },
+    "256": { broken: 33, fair: 69, good: 274, mint: 297, sealed: 328 },
+    "512": { broken: 29, fair: 69, good: 238, mint: 261, sealed: 297 } },
   gs25p: {
-    "256": { broken: 60, fair: 98, good: 306, mint: 360, sealed: 396 },
-    "512": { broken: 60, fair: 98, good: 360, mint: 414, sealed: 441 } },
+    "256": { broken: 47, fair: 98, good: 306, mint: 360, sealed: 396 },
+    "512": { broken: 56, fair: 98, good: 360, mint: 414, sealed: 441 } },
   gs25u: {
-    "1tb": { broken: 141, fair: 213, good: 540, mint: 580, sealed: 603 },
-    "256": { broken: 135, fair: 213, good: 472, mint: 513, sealed: 558 },
-    "512": { broken: 141, fair: 213, good: 495, mint: 536, sealed: 580 } },
+    "1tb": { broken: 128, fair: 213, good: 540, mint: 580, sealed: 603 },
+    "256": { broken: 110, fair: 213, good: 472, mint: 513, sealed: 558 },
+    "512": { broken: 119, fair: 213, good: 495, mint: 536, sealed: 580 } },
   gs26: {
     // S26 has no real 128GB tier — mirror 256 so mislabeled "128gb" listings still price right.
-    "128": { broken: 90, fair: 284, good: 356, mint: 405, sealed: 450 },
-    "256": { broken: 90, fair: 284, good: 356, mint: 405, sealed: 450 },
-    "512": { broken: 99, fair: 306, good: 378, mint: 428, sealed: 477 } },
+    "128": { broken: 65, fair: 284, good: 356, mint: 405, sealed: 450 },
+    "256": { broken: 65, fair: 284, good: 356, mint: 405, sealed: 450 },
+    "512": { broken: 74, fair: 306, good: 378, mint: 428, sealed: 477 } },
   gs26p: {
-    "128": { broken: 108, fair: 306, good: 387, mint: 450, sealed: 495 },
-    "256": { broken: 108, fair: 306, good: 387, mint: 450, sealed: 495 },
-    "512": { broken: 117, fair: 342, good: 423, mint: 486, sealed: 540 } },
+    "128": { broken: 83, fair: 306, good: 387, mint: 450, sealed: 495 },
+    "256": { broken: 83, fair: 306, good: 387, mint: 450, sealed: 495 },
+    "512": { broken: 92, fair: 342, good: 423, mint: 486, sealed: 540 } },
   gs26u: {
-    "1tb": { broken: 144, fair: 468, good: 576, mint: 657, sealed: 720 },
-    "128": { broken: 126, fair: 396, good: 504, mint: 585, sealed: 630 },
-    "256": { broken: 126, fair: 396, good: 504, mint: 585, sealed: 630 },
-    "512": { broken: 135, fair: 432, good: 540, mint: 621, sealed: 675 } },
+    "1tb": { broken: 119, fair: 468, good: 576, mint: 657, sealed: 720 },
+    "128": { broken: 101, fair: 396, good: 504, mint: 585, sealed: 630 },
+    "256": { broken: 101, fair: 396, good: 504, mint: 585, sealed: 630 },
+    "512": { broken: 110, fair: 432, good: 540, mint: 621, sealed: 675 } },
   // === SAMSUNG Z SERIES ===
   gzflip5: {
-    "256": { broken: 0, fair: 5, good: 128, mint: 141, sealed: 202 },
-    "512": { broken: 0, fair: 5, good: 128, mint: 141, sealed: 213 } },
+    "256": { broken: 2, fair: 5, good: 128, mint: 141, sealed: 202 },
+    "512": { broken: 7, fair: 5, good: 128, mint: 141, sealed: 213 } },
   gzflip6: {
-    "256": { broken: 1, fair: 9, good: 198, mint: 234, sealed: 261 },
-    "512": { broken: 1, fair: 9, good: 216, mint: 247, sealed: 306 } },
+    "256": { broken: 29, fair: 9, good: 198, mint: 234, sealed: 261 },
+    "512": { broken: 38, fair: 9, good: 216, mint: 247, sealed: 306 } },
   gzflip7: {
-    "256": { broken: 9, fair: 22, good: 351, mint: 387, sealed: 423 },
-    "512": { broken: 9, fair: 22, good: 364, mint: 400, sealed: 468 } },
+    "256": { broken: 38, fair: 22, good: 351, mint: 387, sealed: 423 },
+    "512": { broken: 51, fair: 22, good: 364, mint: 400, sealed: 468 } },
   gzfold5: {
-    "1tb": { broken: 1, fair: 51, good: 213, mint: 221, sealed: 315 },
-    "256": { broken: 1, fair: 51, good: 213, mint: 221, sealed: 310 },
-    "512": { broken: 1, fair: 51, good: 213, mint: 221, sealed: 315 } },
+    "1tb": { broken: 25, fair: 51, good: 213, mint: 221, sealed: 315 },
+    "256": { broken: 20, fair: 51, good: 213, mint: 221, sealed: 310 },
+    "512": { broken: 23, fair: 51, good: 213, mint: 221, sealed: 315 } },
   gzfold6: {
-    "1tb": { broken: 9, fair: 111, good: 414, mint: 468, sealed: 504 },
-    "256": { broken: 9, fair: 111, good: 351, mint: 405, sealed: 450 },
-    "512": { broken: 9, fair: 111, good: 387, mint: 441, sealed: 477 } },
+    "1tb": { broken: 74, fair: 111, good: 414, mint: 468, sealed: 504 },
+    "256": { broken: 65, fair: 111, good: 351, mint: 405, sealed: 450 },
+    "512": { broken: 69, fair: 111, good: 387, mint: 441, sealed: 477 } },
   gzfold7: {
-    "1tb": { broken: 144, fair: 319, good: 693, mint: 738, sealed: 765 },
-    "256": { broken: 135, fair: 319, good: 630, mint: 675, sealed: 711 },
-    "512": { broken: 140, fair: 319, good: 666, mint: 711, sealed: 738 } },
+    "1tb": { broken: 119, fair: 319, good: 693, mint: 738, sealed: 765 },
+    "256": { broken: 110, fair: 319, good: 630, mint: 675, sealed: 711 },
+    "512": { broken: 115, fair: 319, good: 666, mint: 711, sealed: 738 } },
   gztrifold: {
-    "1tb": { broken: 189, fair: 945, good: 1395, mint: 1845, sealed: 2138 },
-    "512": { broken: 180, fair: 900, good: 1350, mint: 1800, sealed: 2070 } },
+    "1tb": { broken: 164, fair: 945, good: 1395, mint: 1845, sealed: 2138 },
+    "512": { broken: 155, fair: 900, good: 1350, mint: 1800, sealed: 2070 } },
   // === PIXEL (10% below IWM) ===
   px10pxl: {
-    "1tb": { broken: 126, fair: 378, good: 432, mint: 450, sealed: 477 },
-    "256": { broken: 104, fair: 333, good: 387, mint: 405, sealed: 432 },
-    "512": { broken: 112, fair: 364, good: 418, mint: 436, sealed: 464 } },
+    "1tb": { broken: 87, fair: 378, good: 432, mint: 450, sealed: 477 },
+    "256": { broken: 65, fair: 333, good: 387, mint: 405, sealed: 432 },
+    "512": { broken: 74, fair: 364, good: 418, mint: 436, sealed: 464 } },
   px10p: {
-    "128": { broken: 68, fair: 252, good: 315, mint: 360, sealed: 387 },
-    "1tb": { broken: 81, fair: 333, good: 396, mint: 441, sealed: 468 },
-    "256": { broken: 72, fair: 288, good: 351, mint: 396, sealed: 423 },
-    "512": { broken: 76, fair: 319, good: 382, mint: 427, sealed: 454 } },
+    "128": { broken: 43, fair: 252, good: 315, mint: 360, sealed: 387 },
+    "1tb": { broken: 56, fair: 333, good: 396, mint: 441, sealed: 468 },
+    "256": { broken: 47, fair: 288, good: 351, mint: 396, sealed: 423 },
+    "512": { broken: 51, fair: 319, good: 382, mint: 427, sealed: 454 } },
   px10: {
-    "128": { broken: 68, fair: 216, good: 274, mint: 297, sealed: 333 },
-    "256": { broken: 76, fair: 234, good: 292, mint: 315, sealed: 356 } },
+    "128": { broken: 20, fair: 216, good: 274, mint: 297, sealed: 333 },
+    "256": { broken: 29, fair: 234, good: 292, mint: 315, sealed: 356 } },
   px9pxl: {
-    "128": { broken: 68, fair: 189, good: 243, mint: 288, sealed: 315 },
-    "1tb": { broken: 74, fair: 243, good: 297, mint: 342, sealed: 396 },
-    "256": { broken: 72, fair: 207, good: 261, mint: 306, sealed: 351 },
-    "512": { broken: 72, fair: 225, good: 279, mint: 324, sealed: 382 } },
+    "128": { broken: 43, fair: 189, good: 243, mint: 288, sealed: 315 },
+    "1tb": { broken: 49, fair: 243, good: 297, mint: 342, sealed: 396 },
+    "256": { broken: 47, fair: 207, good: 261, mint: 306, sealed: 351 },
+    "512": { broken: 47, fair: 225, good: 279, mint: 324, sealed: 382 } },
   px9p: {
-    "128": { broken: 45, fair: 126, good: 180, mint: 216, sealed: 243 },
-    "1tb": { broken: 50, fair: 194, good: 248, mint: 284, sealed: 324 },
-    "256": { broken: 47, fair: 153, good: 207, mint: 243, sealed: 279 },
-    "512": { broken: 49, fair: 171, good: 225, mint: 261, sealed: 310 } },
+    "128": { broken: 20, fair: 126, good: 180, mint: 216, sealed: 243 },
+    "1tb": { broken: 25, fair: 194, good: 248, mint: 284, sealed: 324 },
+    "256": { broken: 22, fair: 153, good: 207, mint: 243, sealed: 279 },
+    "512": { broken: 24, fair: 171, good: 225, mint: 261, sealed: 310 } },
   px9: {
-    "128": { broken: 40, fair: 112, good: 153, mint: 198, sealed: 225 },
-    "256": { broken: 45, fair: 130, good: 175, mint: 220, sealed: 247 } },
+    "128": { broken: 15, fair: 112, good: 153, mint: 198, sealed: 225 },
+    "256": { broken: 20, fair: 130, good: 175, mint: 220, sealed: 247 } },
   px8p: {
-    "128": { broken: 32, fair: 112, good: 144, mint: 184, sealed: 207 },
-    "1tb": { broken: 36, fair: 148, good: 180, mint: 220, sealed: 274 },
-    "256": { broken: 33, fair: 122, good: 153, mint: 194, sealed: 243 },
-    "512": { broken: 34, fair: 140, good: 171, mint: 212, sealed: 261 } },
+    "128": { broken: 7, fair: 112, good: 144, mint: 184, sealed: 207 },
+    "1tb": { broken: 11, fair: 148, good: 180, mint: 220, sealed: 274 },
+    "256": { broken: 8, fair: 122, good: 153, mint: 194, sealed: 243 },
+    "512": { broken: 9, fair: 140, good: 171, mint: 212, sealed: 261 } },
   // === CONSOLES (10% below IWM) ===
   ps5pro: {
     "base": { broken: 8, fair: 297, good: 378, mint: 450, sealed: 495 } },
@@ -398,32 +398,32 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "base": { broken: 21, fair: 36, good: 72, mint: 90, sealed: 112 } },
   // === AUDIT FIXES — devices that were >15% off with multiplier fallback ===
   gs23u: {
-    "1tb": { broken: 33, fair: 98, good: 209, mint: 217, sealed: 289 },
-    "256": { broken: 32, fair: 98, good: 207, mint: 217, sealed: 266 },
-    "512": { broken: 32, fair: 98, good: 209, mint: 217, sealed: 288 } },
+    "1tb": { broken: 8, fair: 98, good: 209, mint: 217, sealed: 289 },
+    "256": { broken: 7, fair: 98, good: 207, mint: 217, sealed: 266 },
+    "512": { broken: 7, fair: 98, good: 209, mint: 217, sealed: 288 } },
   gs22: {
-    "128": { broken: 18, fair: 36, good: 58, mint: 72, sealed: 90 },
-    "256": { broken: 22, fair: 45, good: 68, mint: 81, sealed: 108 } },
+    "128": { broken: 1, fair: 36, good: 58, mint: 72, sealed: 90 },
+    "256": { broken: 1, fair: 45, good: 68, mint: 81, sealed: 108 } },
   gzflip4: {
-    "128": { broken: 0, fair: 1, good: 26, mint: 30, sealed: 50 },
-    "256": { broken: 0, fair: 1, good: 26, mint: 30, sealed: 54 },
-    "512": { broken: 0, fair: 1, good: 26, mint: 30, sealed: 58 } },
+    "128": { broken: 1, fair: 1, good: 26, mint: 30, sealed: 50 },
+    "256": { broken: 1, fair: 1, good: 26, mint: 30, sealed: 54 },
+    "512": { broken: 1, fair: 1, good: 26, mint: 30, sealed: 58 } },
   px8: {
-    "128": { broken: 22, fair: 68, good: 108, mint: 126, sealed: 166 },
-    "256": { broken: 27, fair: 90, good: 130, mint: 148, sealed: 189 } },
+    "128": { broken: 1, fair: 68, good: 108, mint: 126, sealed: 166 },
+    "256": { broken: 2, fair: 90, good: 130, mint: 148, sealed: 189 } },
   // === AUDIT ROUND 2 — 5 more devices with >15% multiplier error ===
   gs24p: {
-    "256": { broken: 39, fair: 94, good: 175, mint: 183, sealed: 247 },
-    "512": { broken: 39, fair: 94, good: 175, mint: 183, sealed: 247 } },
+    "256": { broken: 47, fair: 94, good: 175, mint: 183, sealed: 247 },
+    "512": { broken: 56, fair: 94, good: 175, mint: 183, sealed: 247 } },
   gs21: {
-    "128": { broken: 9, fair: 18, good: 27, mint: 40, sealed: 68 },
-    "256": { broken: 9, fair: 27, good: 36, mint: 50, sealed: 86 } },
+    "128": { broken: 1, fair: 18, good: 27, mint: 40, sealed: 68 },
+    "256": { broken: 1, fair: 27, good: 36, mint: 50, sealed: 86 } },
   px7p: {
-    "128": { broken: 22, fair: 45, good: 72, mint: 108, sealed: 135 },
-    "256": { broken: 27, fair: 58, good: 86, mint: 122, sealed: 144 },
-    "512": { broken: 29, fair: 63, good: 90, mint: 126, sealed: 148 } },
+    "128": { broken: 1, fair: 45, good: 72, mint: 108, sealed: 135 },
+    "256": { broken: 2, fair: 58, good: 86, mint: 122, sealed: 144 },
+    "512": { broken: 4, fair: 63, good: 90, mint: 126, sealed: 148 } },
   gs20: {
-    "base": { broken: 14, fair: 45, good: 58, mint: 68, sealed: 90 } },
+    "base": { broken: 1, fair: 45, good: 58, mint: 68, sealed: 90 } },
   // === FULL IWM SCRAPE — all remaining devices ===
   gnote10: {
     // Note 10 is 256GB-only. Prices = live IWM payout × 0.90 (house rule),
@@ -433,77 +433,77 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     // every Note 10 quote was silently falling back to the multiplier path.)
     "256": { broken: 9, fair: 40, good: 63, mint: 72, sealed: 99 } },
   gnote10p: {
-    "256": { broken: 38, fair: 45, good: 99, mint: 117, sealed: 135 },
-    "512": { broken: 47, fair: 54, good: 108, mint: 126, sealed: 158 } },
+    "256": { broken: 13, fair: 45, good: 99, mint: 117, sealed: 135 },
+    "512": { broken: 32, fair: 54, good: 108, mint: 126, sealed: 158 } },
   gnote10p5g: {
-    "256": { broken: 36, fair: 45, good: 99, mint: 117, sealed: 135 },
-    "512": { broken: 50, fair: 58, good: 112, mint: 130, sealed: 158 } },
+    "256": { broken: 20, fair: 45, good: 99, mint: 117, sealed: 135 },
+    "512": { broken: 29, fair: 58, good: 112, mint: 130, sealed: 158 } },
   gnote20: {
-    "128": { fair: 68, good: 81, mint: 90, sealed: 117 },
-    "256": { fair: 76, good: 90, mint: 99, sealed: 130 } },
+    "128": { broken: 1, fair: 68, good: 81, mint: 90, sealed: 117 },
+    "256": { broken: 2, fair: 76, good: 90, mint: 99, sealed: 130 } },
   gnote9: {
-    "128": { broken: 9, fair: 27, good: 54, mint: 68, sealed: 94 },
-    "512": { broken: 18, fair: 36, good: 63, mint: 76, sealed: 113 } },
+    "128": { broken: 1, fair: 27, good: 54, mint: 68, sealed: 94 },
+    "512": { broken: 1, fair: 36, good: 63, mint: 76, sealed: 113 } },
   gs20fe: {
-    "128": { broken: 14, fair: 18, good: 32, mint: 40, sealed: 63 },
-    "256": { broken: 22, fair: 27, good: 40, mint: 50, sealed: 81 } },
+    "128": { broken: 1, fair: 18, good: 32, mint: 40, sealed: 63 },
+    "256": { broken: 1, fair: 27, good: 40, mint: 50, sealed: 81 } },
   gs20p: {
-    "128": { broken: 14, fair: 36, good: 68, mint: 76, sealed: 104 },
-    "512": { broken: 15, fair: 58, good: 90, mint: 99, sealed: 130 } },
+    "128": { broken: 1, fair: 36, good: 68, mint: 76, sealed: 104 },
+    "512": { broken: 1, fair: 58, good: 90, mint: 99, sealed: 130 } },
   gs20u: {
-    "128": { broken: 14, fair: 68, good: 104, mint: 122, sealed: 148 },
-    "256": { broken: 18, fair: 76, good: 112, mint: 130, sealed: 158 },
-    "512": { broken: 22, fair: 86, good: 122, mint: 140, sealed: 166 } },
+    "128": { broken: 1, fair: 68, good: 104, mint: 122, sealed: 148 },
+    "256": { broken: 1, fair: 76, good: 112, mint: 130, sealed: 158 },
+    "512": { broken: 2, fair: 86, good: 122, mint: 140, sealed: 166 } },
   gs21fe: {
-    "128": { broken: 9, fair: 22, good: 27, mint: 36, sealed: 54 },
-    "256": { broken: 14, fair: 32, good: 36, mint: 45, sealed: 72 } },
+    "128": { broken: 1, fair: 22, good: 27, mint: 36, sealed: 54 },
+    "256": { broken: 1, fair: 32, good: 36, mint: 45, sealed: 72 } },
   gs21p: {
-    "128": { broken: 14, fair: 36, good: 54, mint: 63, sealed: 90 },
-    "256": { broken: 14, fair: 45, good: 63, mint: 72, sealed: 118 } },
+    "128": { broken: 1, fair: 36, good: 54, mint: 63, sealed: 90 },
+    "256": { broken: 1, fair: 45, good: 63, mint: 72, sealed: 118 } },
   gs21u: {
-    "128": { broken: 22, fair: 54, good: 72, mint: 81, sealed: 99 },
-    "256": { broken: 24, fair: 63, good: 81, mint: 90, sealed: 108 },
-    "512": { broken: 25, fair: 68, good: 86, mint: 94, sealed: 112 } },
+    "128": { broken: 1, fair: 54, good: 72, mint: 81, sealed: 99 },
+    "256": { broken: 1, fair: 63, good: 81, mint: 90, sealed: 108 },
+    "512": { broken: 1, fair: 68, good: 86, mint: 94, sealed: 112 } },
   gs22p: {
-    "128": { broken: 22, fair: 63, good: 86, mint: 99, sealed: 126 },
-    "256": { broken: 27, fair: 72, good: 94, mint: 108, sealed: 148 } },
+    "128": { broken: 2, fair: 63, good: 86, mint: 99, sealed: 126 },
+    "256": { broken: 7, fair: 72, good: 94, mint: 108, sealed: 148 } },
   gs22u: {
-    "128": { broken: 27, fair: 76, good: 108, mint: 126, sealed: 162 },
-    "1tb": { broken: 27, fair: 99, good: 130, mint: 148, sealed: 280 },
-    "256": { broken: 27, fair: 90, good: 122, mint: 140, sealed: 204 },
-    "512": { broken: 27, fair: 94, good: 126, mint: 144, sealed: 242 } },
+    "128": { broken: 2, fair: 76, good: 108, mint: 126, sealed: 162 },
+    "1tb": { broken: 2, fair: 99, good: 130, mint: 148, sealed: 280 },
+    "256": { broken: 2, fair: 90, good: 122, mint: 140, sealed: 204 },
+    "512": { broken: 2, fair: 94, good: 126, mint: 144, sealed: 242 } },
   gs23: {
-    "128": { broken: 9, fair: 30, good: 69, mint: 73, sealed: 132 },
-    "256": { broken: 9, fair: 30, good: 69, mint: 73, sealed: 132 },
-    "512": { broken: 9, fair: 30, good: 69, mint: 73, sealed: 132 } },
+    "128": { broken: 1, fair: 30, good: 69, mint: 73, sealed: 132 },
+    "256": { broken: 1, fair: 30, good: 69, mint: 73, sealed: 132 },
+    "512": { broken: 1, fair: 30, good: 69, mint: 73, sealed: 132 } },
   gs23fe: {
-    "128": { broken: 14, fair: 32, good: 63, mint: 81, sealed: 90 },
-    "256": { broken: 15, fair: 40, good: 72, mint: 90, sealed: 108 } },
+    "128": { broken: 1, fair: 32, good: 63, mint: 81, sealed: 90 },
+    "256": { broken: 1, fair: 40, good: 72, mint: 90, sealed: 108 } },
   gs23p: {
-    "128": { broken: 17, sealed: 166 },
-    "256": { broken: 17, fair: 39, good: 107, mint: 115, sealed: 166 },
-    "512": { broken: 17, fair: 39, good: 107, mint: 115, sealed: 166 } },
+    "128": { broken: 20, sealed: 166 },
+    "256": { broken: 25, fair: 39, good: 107, mint: 115, sealed: 166 },
+    "512": { broken: 26, fair: 39, good: 107, mint: 115, sealed: 166 } },
   gs24fe: {
-    "128": { broken: 22, fair: 72, good: 117, mint: 135, sealed: 171 },
-    "256": { broken: 32, fair: 90, good: 135, mint: 153, sealed: 189 } },
+    "128": { broken: 2, fair: 72, good: 117, mint: 135, sealed: 171 },
+    "256": { broken: 11, fair: 90, good: 135, mint: 153, sealed: 189 } },
   gs25edge: {
-    "256": { broken: 5, fair: 60, good: 279, mint: 315, sealed: 351 },
-    "512": { broken: 5, fair: 60, good: 302, mint: 338, sealed: 382 } },
+    "256": { broken: 65, fair: 60, good: 279, mint: 315, sealed: 351 },
+    "512": { broken: 74, fair: 60, good: 302, mint: 338, sealed: 382 } },
   gs25fe: {
-    "128": { broken: 0, fair: 9, good: 194, mint: 220, sealed: 256 },
-    "256": { broken: 0, fair: 9, good: 212, mint: 238, sealed: 274 },
+    "128": { broken: 11, fair: 9, good: 194, mint: 220, sealed: 256 },
+    "256": { broken: 20, fair: 9, good: 212, mint: 238, sealed: 274 },
     // 512GB filled in 2026-05-24 — previously only had broken/sealed which
     // returned undefined for fair/good/mint and crashed quote generation.
     // Interpolated from the 256GB row + a ~10% storage uplift.
-    "512": { broken: 0, fair: 9, good: 230, mint: 256, sealed: 290 } },
+    "512": { broken: 11, fair: 9, good: 230, mint: 256, sealed: 290 } },
   gzflip3: {
-    "128": { broken: 9, fair: 14, good: 27, mint: 36, sealed: 54 },
-    "256": { broken: 14, fair: 22, good: 36, mint: 45, sealed: 68 } },
+    "128": { broken: 1, fair: 14, good: 27, mint: 36, sealed: 54 },
+    "256": { broken: 1, fair: 22, good: 36, mint: 45, sealed: 68 } },
   gzfold3: {
-    "256": { broken: 18, fair: 72, good: 108, mint: 126, sealed: 153 },
-    "512": { broken: 22, fair: 86, good: 122, mint: 140, sealed: 180 } },
+    "256": { broken: 1, fair: 72, good: 108, mint: 126, sealed: 153 },
+    "512": { broken: 2, fair: 86, good: 122, mint: 140, sealed: 180 } },
   gzfold4: {
-    "1tb": { broken: 1, fair: 35, good: 145, mint: 153, sealed: 200 },
+    "1tb": { broken: 2, fair: 35, good: 145, mint: 153, sealed: 200 },
     "256": { broken: 1, fair: 35, good: 145, mint: 153, sealed: 200 },
     "512": { broken: 1, fair: 35, good: 145, mint: 153, sealed: 200 } },
   ipad11: {
@@ -586,39 +586,39 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "2tb": { broken: 338, fair: 783, good: 837, mint: 909, sealed: 1035 },
     "512": { broken: 270, fair: 558, good: 612, mint: 684, sealed: 765 } },
   px10a: {
-    "128": { broken: 45, fair: 99, good: 153, mint: 198, sealed: 225 },
-    "256": { broken: 54, fair: 117, good: 171, mint: 216, sealed: 248 } },
+    "128": { broken: 2, fair: 99, good: 153, mint: 198, sealed: 225 },
+    "256": { broken: 11, fair: 117, good: 171, mint: 216, sealed: 248 } },
   px5: {
-    "base": { broken: 4, fair: 18, good: 32, mint: 40, sealed: 54 } },
+    "base": { broken: 1, fair: 18, good: 32, mint: 40, sealed: 54 } },
   px5a: {
     // broken was 27 — ABOVE fair (22), so claiming worse condition paid more.
     // Lowered to 6 to restore the ladder, derived from the Pixel-family
     // broken/fair ratio (px5 4/18, px6 9/32 ≈ 0.22-0.28 × fair 22). Confirm. (bug fix)
-    "base": { broken: 6, fair: 22, good: 32, mint: 36, sealed: 50 } },
+    "base": { broken: 2, fair: 22, good: 32, mint: 36, sealed: 50 } },
   px6: {
-    "128": { broken: 9, fair: 32, good: 45, mint: 58, sealed: 86 },
-    "256": { broken: 11, fair: 40, good: 54, mint: 68, sealed: 99 } },
+    "128": { broken: 1, fair: 32, good: 45, mint: 58, sealed: 86 },
+    "256": { broken: 1, fair: 40, good: 54, mint: 68, sealed: 99 } },
   px6p: {
-    "128": { broken: 14, fair: 40, good: 68, mint: 81, sealed: 108 },
-    "256": { broken: 14, fair: 50, good: 76, mint: 90, sealed: 112 },
-    "512": { broken: 14, fair: 54, good: 81, mint: 94, sealed: 117 } },
+    "128": { broken: 1, fair: 40, good: 68, mint: 81, sealed: 108 },
+    "256": { broken: 1, fair: 50, good: 76, mint: 90, sealed: 112 },
+    "512": { broken: 1, fair: 54, good: 81, mint: 94, sealed: 117 } },
   px7: {
-    "128": { broken: 14, fair: 36, good: 51, mint: 63, sealed: 99 },
-    "256": { broken: 22, fair: 54, good: 69, mint: 81, sealed: 108 } },
+    "128": { broken: 1, fair: 36, good: 51, mint: 63, sealed: 99 },
+    "256": { broken: 1, fair: 54, good: 69, mint: 81, sealed: 108 } },
   px7a: {
-    "base": { broken: 14, fair: 45, good: 63, mint: 72, sealed: 99 } },
+    "base": { broken: 1, fair: 45, good: 63, mint: 72, sealed: 99 } },
   px8a: {
-    "128": { broken: 18, fair: 72, good: 108, mint: 126, sealed: 162 },
-    "256": { broken: 18, fair: 81, good: 117, mint: 135, sealed: 184 } },
+    "128": { broken: 1, fair: 72, good: 108, mint: 126, sealed: 162 },
+    "256": { broken: 1, fair: 81, good: 117, mint: 135, sealed: 184 } },
   px9a: {
-    "128": { broken: 45, fair: 90, good: 130, mint: 158, sealed: 189 },
-    "256": { broken: 50, fair: 108, good: 148, mint: 176, sealed: 212 } },
+    "128": { broken: 20, fair: 90, good: 130, mint: 158, sealed: 189 },
+    "256": { broken: 25, fair: 108, good: 148, mint: 176, sealed: 212 } },
   px9pfold: {
-    "256": { broken: 99, fair: 292, good: 360, mint: 405, sealed: 450 },
-    "512": { broken: 108, fair: 320, good: 387, mint: 432, sealed: 540 } },
+    "256": { broken: 74, fair: 292, good: 360, mint: 405, sealed: 450 },
+    "512": { broken: 83, fair: 320, good: 387, mint: 432, sealed: 540 } },
   pxfold: {
-    "256": { broken: 32, fair: 90, good: 135, mint: 158, sealed: 202 },
-    "512": { broken: 32, fair: 126, good: 171, mint: 194, sealed: 248 } },
+    "256": { broken: 7, fair: 90, good: 135, mint: 158, sealed: 202 },
+    "512": { broken: 7, fair: 126, good: 171, mint: 194, sealed: 248 } },
   switch: {
     "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108 } },
   switchlite: {

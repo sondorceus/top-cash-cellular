@@ -104,9 +104,17 @@ export function getResellEstimate(modelName: string | undefined | null): number 
 export function resellMultiplierForCondition(condition: string | undefined, brokenGlass?: "front" | "back" | "both" | null): number {
   const c = (condition || "").toLowerCase();
   if (c.includes("broken") || c.includes("crack") || c.includes("dead") || c.includes("won't")) {
-    if (brokenGlass === "both") return 0.22;
-    if (brokenGlass === "back") return 0.40;
-    return 0.30; // front-only or unspecified
+    // Raised 0.30/0.40/0.22 → 0.55/0.60/0.40 (Skywalker-approved 2026-07-12).
+    // The old 0.30 modeled a parts-only exit, but our broken tier is
+    // cracked-BUT-FUNCTIONAL (non-functional units go to manual quote), and a
+    // working cracked flagship resells far above 30% of working value — IWM
+    // pays $300+ for a broken 17 Pro the old cap squashed to $186, silently
+    // overriding the owner's own PRICE_TABLE broken cells on every 14–17 Pro.
+    // Broken cells are now IWM×0.90-derived (2026-07-12 recab), so the cap is
+    // a drift guardrail again, not the price-setter.
+    if (brokenGlass === "both") return 0.40;
+    if (brokenGlass === "back") return 0.60;
+    return 0.55; // front-only or unspecified
   }
   // "heav" catches both "heavy" and DJI's "Heavily Used" (heavily ≠ heavy
   // as a substring — easy to miss; checked it).
