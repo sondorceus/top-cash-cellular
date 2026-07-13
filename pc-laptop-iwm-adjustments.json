@@ -3,7 +3,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "galaxy-buds",
-    "scraped_at": "2026-07-13T05:31:23+00:00",
+    "scraped_at": "2026-07-13T15:37:15+00:00",
     "series": "acer-aspire-laptop",
     "url": "https://www.itsworthmore.com/sell/acer-aspire-laptop/galaxy-buds"
   },
@@ -11,7 +11,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "galaxy-buds-live",
-    "scraped_at": "2026-07-13T05:31:24+00:00",
+    "scraped_at": "2026-07-13T15:37:16+00:00",
     "series": "acer-aspire-laptop",
     "url": "https://www.itsworthmore.com/sell/acer-aspire-laptop/galaxy-buds-live"
   },
@@ -19,7 +19,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "galaxy-buds-plus",
-    "scraped_at": "2026-07-13T05:31:24+00:00",
+    "scraped_at": "2026-07-13T15:37:15+00:00",
     "series": "acer-aspire-laptop",
     "url": "https://www.itsworthmore.com/sell/acer-aspire-laptop/galaxy-buds-plus"
   },
@@ -96,7 +96,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:19+00:00",
+    "scraped_at": "2026-07-13T15:39:29+00:00",
     "series": "acer-nitro",
     "storage_adj": {
       "1TB SSD": 50,
@@ -239,7 +239,7 @@
       "32GB RAM": 40,
       "64GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:33:18+00:00",
+    "scraped_at": "2026-07-13T15:39:28+00:00",
     "series": "acer-nitro",
     "storage_adj": {
       "1TB SSD": 40,
@@ -509,7 +509,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:25+00:00",
+    "scraped_at": "2026-07-13T15:37:17+00:00",
     "series": "acer-nitro",
     "storage_adj": {
       "128GB SSD": 0,
@@ -778,7 +778,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:35+00:00",
+    "scraped_at": "2026-07-13T15:37:27+00:00",
     "series": "acer-nitro",
     "storage_adj": {
       "128GB SSD": 10,
@@ -916,7 +916,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:18+00:00",
+    "scraped_at": "2026-07-13T15:39:28+00:00",
     "series": "acer-nitro",
     "storage_adj": {
       "1TB SSD": 40,
@@ -1252,7 +1252,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:26+00:00",
+    "scraped_at": "2026-07-13T15:37:17+00:00",
     "series": "acer-predator",
     "storage_adj": {
       "1TB SSD": 30,
@@ -1863,7 +1863,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:31:27+00:00",
+    "scraped_at": "2026-07-13T15:37:19+00:00",
     "series": "acer-predator",
     "storage_adj": {
       "1TB SSD": 30,
@@ -2320,7 +2320,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:48+00:00",
+    "scraped_at": "2026-07-13T15:38:55+00:00",
     "series": "alienware-13",
     "storage_adj": {
       "128GB SSD": 0,
@@ -2433,7 +2433,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:48+00:00",
+    "scraped_at": "2026-07-13T15:38:55+00:00",
     "series": "alienware-13",
     "storage_adj": {
       "1TB HDD": 10,
@@ -2545,7 +2545,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:47+00:00",
+    "scraped_at": "2026-07-13T15:38:54+00:00",
     "series": "alienware-15",
     "storage_adj": {
       "128GB SSD": 0,
@@ -2650,7 +2650,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:48+00:00",
+    "scraped_at": "2026-07-13T15:38:54+00:00",
     "series": "alienware-15",
     "storage_adj": {
       "128GB SSD": 5,
@@ -2765,7 +2765,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:48+00:00",
+    "scraped_at": "2026-07-13T15:38:54+00:00",
     "series": "alienware-15",
     "storage_adj": {
       "1TB HDD": 15,
@@ -2882,7 +2882,7 @@
     "iwm_name": "Sell Your Alienware 17 R2 Laptop for the Most Cash",
     "model": "alienware-17-r2",
     "ram_adj": {},
-    "scraped_at": "2026-07-13T05:32:46+00:00",
+    "scraped_at": "2026-07-13T15:38:52+00:00",
     "series": "alienware-17",
     "storage_adj": {
       "128GB SSD": 0,
@@ -2998,7 +2998,7 @@
     "iwm_name": "Sell Your Alienware 17 R3 Laptop for the Most Cash",
     "model": "alienware-17-r3",
     "ram_adj": {},
-    "scraped_at": "2026-07-13T05:32:46+00:00",
+    "scraped_at": "2026-07-13T15:38:53+00:00",
     "series": "alienware-17",
     "storage_adj": {
       "128GB SSD": 0,
@@ -3117,7 +3117,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:47+00:00",
+    "scraped_at": "2026-07-13T15:38:53+00:00",
     "series": "alienware-17",
     "storage_adj": {
       "128GB SDD": 15,
@@ -3234,7 +3234,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:47+00:00",
+    "scraped_at": "2026-07-13T15:38:53+00:00",
     "series": "alienware-17",
     "storage_adj": {
       "1TB HDD": 0,
@@ -3351,7 +3351,7 @@
       "32GB RAM": 0,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:46+00:00",
+    "scraped_at": "2026-07-13T15:39:56+00:00",
     "series": "alienware-area-series-desktop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -3465,7 +3465,7 @@
       "32GB RAM": 75,
       "64GB RAM": 150
     },
-    "scraped_at": "2026-07-13T05:33:29+00:00",
+    "scraped_at": "2026-07-13T15:39:39+00:00",
     "series": "alienware-area-series-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -3582,7 +3582,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:29+00:00",
+    "scraped_at": "2026-07-13T15:39:39+00:00",
     "series": "alienware-area-series-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -3697,7 +3697,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:34+00:00",
+    "scraped_at": "2026-07-13T15:37:26+00:00",
     "series": "alienware-area-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -3871,7 +3871,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:42+00:00",
+    "scraped_at": "2026-07-13T15:39:53+00:00",
     "series": "alienware-aurora-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -3992,7 +3992,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:38+00:00",
+    "scraped_at": "2026-07-13T15:39:48+00:00",
     "series": "alienware-aurora-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -4111,7 +4111,7 @@
       "32GB RAM": 0,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:46+00:00",
+    "scraped_at": "2026-07-13T15:39:56+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -4245,7 +4245,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:33+00:00",
+    "scraped_at": "2026-07-13T15:38:36+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -4400,7 +4400,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:33+00:00",
+    "scraped_at": "2026-07-13T15:38:36+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -4547,7 +4547,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:34+00:00",
+    "scraped_at": "2026-07-13T15:38:36+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -4698,7 +4698,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:34+00:00",
+    "scraped_at": "2026-07-13T15:38:37+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -4856,7 +4856,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:51+00:00",
+    "scraped_at": "2026-07-13T15:38:58+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -5049,7 +5049,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:51+00:00",
+    "scraped_at": "2026-07-13T15:38:58+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -5254,7 +5254,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:52+00:00",
+    "scraped_at": "2026-07-13T15:38:58+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -5400,7 +5400,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:32+00:00",
+    "scraped_at": "2026-07-13T15:38:35+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -5540,7 +5540,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:33+00:00",
+    "scraped_at": "2026-07-13T15:38:35+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -5683,7 +5683,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:33+00:00",
+    "scraped_at": "2026-07-13T15:38:36+00:00",
     "series": "alienware-aurora-series-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -5837,7 +5837,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:34+00:00",
+    "scraped_at": "2026-07-13T15:37:26+00:00",
     "series": "alienware-m-series-laptop",
     "storage_adj": {
       "1TB HDD": -20,
@@ -6353,7 +6353,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:32:38+00:00",
+    "scraped_at": "2026-07-13T15:38:43+00:00",
     "series": "alienware-m-series-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -6541,7 +6541,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:31:34+00:00",
+    "scraped_at": "2026-07-13T15:37:26+00:00",
     "series": "alienware-m-series-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -6918,7 +6918,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:32:38+00:00",
+    "scraped_at": "2026-07-13T15:38:42+00:00",
     "series": "alienware-m-series-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -7166,7 +7166,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:39+00:00",
+    "scraped_at": "2026-07-13T15:38:43+00:00",
     "series": "alienware-x-series-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -7330,7 +7330,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:32:39+00:00",
+    "scraped_at": "2026-07-13T15:38:43+00:00",
     "series": "alienware-x-series-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -7516,7 +7516,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:39+00:00",
+    "scraped_at": "2026-07-13T15:38:45+00:00",
     "series": "alienware-x-series-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -7697,7 +7697,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:32:39+00:00",
+    "scraped_at": "2026-07-13T15:38:45+00:00",
     "series": "alienware-x-series-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -7875,7 +7875,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:57+00:00",
+    "scraped_at": "2026-07-13T15:40:10+00:00",
     "series": "dell-14-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -7983,7 +7983,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:38+00:00",
+    "scraped_at": "2026-07-13T15:39:48+00:00",
     "series": "dell-14-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -8090,7 +8090,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:45+00:00",
+    "scraped_at": "2026-07-13T15:39:55+00:00",
     "series": "dell-14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -8195,7 +8195,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:45+00:00",
+    "scraped_at": "2026-07-13T15:39:54+00:00",
     "series": "dell-14-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -8302,7 +8302,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:45+00:00",
+    "scraped_at": "2026-07-13T15:39:55+00:00",
     "series": "dell-14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -8400,7 +8400,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:51+00:00",
+    "scraped_at": "2026-07-13T15:40:02+00:00",
     "series": "dell-15-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -8507,7 +8507,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:44+00:00",
+    "scraped_at": "2026-07-13T15:39:53+00:00",
     "series": "dell-15-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -8614,7 +8614,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:33+00:00",
+    "scraped_at": "2026-07-13T15:39:43+00:00",
     "series": "dell-16-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -8716,7 +8716,7 @@
       "64GB RAM": 70,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:50+00:00",
+    "scraped_at": "2026-07-13T15:40:00+00:00",
     "series": "dell-16-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -8818,7 +8818,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:51+00:00",
+    "scraped_at": "2026-07-13T15:40:02+00:00",
     "series": "dell-16-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -8908,7 +8908,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:50+00:00",
+    "scraped_at": "2026-07-13T15:40:02+00:00",
     "series": "dell-16-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -8998,7 +8998,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:34+00:00",
+    "scraped_at": "2026-07-13T15:39:44+00:00",
     "series": "dell-16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -9110,7 +9110,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:45+00:00",
+    "scraped_at": "2026-07-13T15:39:56+00:00",
     "series": "dell-16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -9220,7 +9220,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:33+00:00",
+    "scraped_at": "2026-07-13T15:39:43+00:00",
     "series": "dell-16-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -9342,7 +9342,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:37+00:00",
+    "scraped_at": "2026-07-13T15:37:30+00:00",
     "series": "dell-g-series",
     "storage_adj": {
       "128GB SSD": 0,
@@ -9946,7 +9946,7 @@
       "32GB RAM": 40,
       "64GB RAM": 80
     },
-    "scraped_at": "2026-07-13T05:32:20+00:00",
+    "scraped_at": "2026-07-13T15:38:23+00:00",
     "series": "dell-g-series",
     "storage_adj": {
       "1TB SSD": 40,
@@ -10106,7 +10106,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:36+00:00",
+    "scraped_at": "2026-07-13T15:37:28+00:00",
     "series": "dell-g-series",
     "storage_adj": {
       "128GB SSD": -10,
@@ -10414,7 +10414,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:36+00:00",
+    "scraped_at": "2026-07-13T15:37:28+00:00",
     "series": "dell-g-series",
     "storage_adj": {
       "128GB SSD": 0,
@@ -10832,7 +10832,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:37+00:00",
+    "scraped_at": "2026-07-13T15:37:29+00:00",
     "series": "dell-g-series",
     "storage_adj": {
       "128GB SSD": -5,
@@ -11317,7 +11317,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "dell-chromebook",
-    "scraped_at": "2026-07-13T05:31:43+00:00",
+    "scraped_at": "2026-07-13T15:37:37+00:00",
     "series": "dell-laptop",
     "url": "https://www.itsworthmore.com/sell/dell-laptop/dell-chromebook"
   },
@@ -11370,7 +11370,7 @@
       "32GB RAM": 75,
       "8GB RAM": 35
     },
-    "scraped_at": "2026-07-13T05:32:55+00:00",
+    "scraped_at": "2026-07-13T15:39:02+00:00",
     "series": "dell-optiplex-desktop",
     "storage_adj": {
       "1TB SSD": 75,
@@ -11582,8 +11582,8 @@
     "chips": [],
     "condition_adj": {
       "broken": 0,
-      "fair": -105,
-      "good": -40,
+      "fair": -40,
+      "good": -15,
       "mint": 0,
       "sealed": 30
     },
@@ -11592,10 +11592,10 @@
     "model": "optiplex-tower",
     "ram_adj": {
       "16GB RAM": 25,
-      "32GB RAM": 50,
+      "32GB RAM": 65,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:55+00:00",
+    "scraped_at": "2026-07-13T15:39:02+00:00",
     "series": "dell-optiplex-desktop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -11610,15 +11610,15 @@
         "chips": [],
         "condition_adj": {
           "broken": 0,
-          "fair": -105,
-          "good": -40,
+          "fair": -40,
+          "good": -15,
           "mint": 0,
           "sealed": 30
         },
         "model_label": "7010 Tower",
         "ram_adj": {
           "16GB RAM": 25,
-          "32GB RAM": 50,
+          "32GB RAM": 65,
           "8GB RAM": 0
         },
         "storage_adj": {
@@ -11628,7 +11628,7 @@
         }
       },
       "7010-tower-plus": {
-        "base_price": 210,
+        "base_price": 135,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -11640,7 +11640,7 @@
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 60,
+            "adj": 40,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
@@ -11656,8 +11656,8 @@
         },
         "model_label": "7010 Tower Plus",
         "ram_adj": {
-          "16GB RAM": 10,
-          "32GB RAM": 25,
+          "16GB RAM": 15,
+          "32GB RAM": 30,
           "8GB RAM": 0
         },
         "storage_adj": {
@@ -11667,7 +11667,7 @@
         }
       },
       "7080-tower": {
-        "base_price": 20,
+        "base_price": 15,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -11679,28 +11679,28 @@
             "label": "Intel Core i5 10th Gen."
           },
           {
-            "adj": 190,
+            "adj": 120,
             "attrs": {
               "processor_type": "[intel-core-i5-13th-gen.]"
             },
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 250,
+            "adj": 160,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 20,
+            "adj": 15,
             "attrs": {
               "processor_type": "[intel-core-i7-10th-gen]"
             },
             "label": "Intel Core i7 10th Gen."
           },
           {
-            "adj": 40,
+            "adj": 45,
             "attrs": {
               "processor_type": "[intel-core-i9-10th-gen]"
             },
@@ -11709,8 +11709,8 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -65,
-          "good": -25,
+          "fair": -40,
+          "good": -15,
           "mint": 0,
           "sealed": 20
         },
@@ -11727,7 +11727,7 @@
         }
       },
       "7090-tower": {
-        "base_price": 30,
+        "base_price": 45,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -11739,49 +11739,49 @@
             "label": "Intel Core i5 10th Gen."
           },
           {
-            "adj": 180,
+            "adj": 90,
             "attrs": {
               "processor_type": "[intel-core-i5-13th-gen.]"
             },
             "label": "Intel Core i5 13th Gen."
           },
           {
-            "adj": 240,
+            "adj": 130,
             "attrs": {
               "processor_type": "[intel-core-i7-13th-gen.]"
             },
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 60,
+            "adj": 50,
             "attrs": {
               "processor_type": "[intel-core-i5-11th-gen]"
             },
             "label": "Intel Core i5 11th Gen."
           },
           {
-            "adj": 70,
+            "adj": 45,
             "attrs": {
               "processor_type": "[intel-core-i7-10th-gen]"
             },
             "label": "Intel Core i7 10th Gen."
           },
           {
-            "adj": 95,
+            "adj": 80,
             "attrs": {
               "processor_type": "[intel-core-i7-11th-gen]"
             },
             "label": "Intel Core i7 11th Gen."
           },
           {
-            "adj": 130,
+            "adj": 95,
             "attrs": {
               "processor_type": "[intel-core-i9-10th-gen]"
             },
             "label": "Intel Core i9 10th Gen."
           },
           {
-            "adj": 160,
+            "adj": 125,
             "attrs": {
               "processor_type": "[intel-core-i9-11th-gen]"
             },
@@ -11790,8 +11790,8 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -120,
-          "good": -45,
+          "fair": -55,
+          "good": -25,
           "mint": 0,
           "sealed": 20
         },
@@ -11854,7 +11854,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:44+00:00",
+    "scraped_at": "2026-07-13T15:39:54+00:00",
     "series": "dell-pro-13-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -12005,7 +12005,7 @@
       "32GB RAM": 30,
       "64GB RAM": 60
     },
-    "scraped_at": "2026-07-13T05:33:52+00:00",
+    "scraped_at": "2026-07-13T15:40:04+00:00",
     "series": "dell-pro-13-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -12156,7 +12156,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:32+00:00",
+    "scraped_at": "2026-07-13T15:39:41+00:00",
     "series": "dell-pro-13-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -12307,7 +12307,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:53+00:00",
+    "scraped_at": "2026-07-13T15:40:04+00:00",
     "series": "dell-pro-13-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -12463,7 +12463,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:16+00:00",
+    "scraped_at": "2026-07-13T15:39:25+00:00",
     "series": "dell-pro-13-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -12570,7 +12570,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:34:00+00:00",
+    "scraped_at": "2026-07-13T15:40:13+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -12626,7 +12626,7 @@
     "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-14-essential-pv14250"
   },
   "dell-pro-14-laptop/dell-pro-14-essential-pv14255": {
-    "base_price": 200,
+    "base_price": 230,
     "battery_adj": {
       "good": 0,
       "poor": -100
@@ -12645,7 +12645,7 @@
         "label": "AMD Ryzen 5 220"
       },
       {
-        "adj": 50,
+        "adj": 45,
         "attrs": {
           "model": "[pv14255]",
           "processor_type": "[amd-ryzen-ai-5-330]"
@@ -12653,7 +12653,7 @@
         "label": "AMD Ryzen AI 5 330"
       },
       {
-        "adj": 75,
+        "adj": 55,
         "attrs": {
           "model": "[pv14255]",
           "processor_type": "[amd-ryzen-7-250]"
@@ -12661,7 +12661,7 @@
         "label": "AMD Ryzen 7 250"
       },
       {
-        "adj": 120,
+        "adj": 100,
         "attrs": {
           "model": "[pv14255]",
           "processor_type": "[amd-ryzen-ai-7-350]"
@@ -12674,7 +12674,7 @@
       "fair": -90,
       "good": -35,
       "mint": 0,
-      "sealed": 25
+      "sealed": 75
     },
     "done": true,
     "iwm_name": "Sell your Dell Pro 14 Essential PV14255 for More Cash Online",
@@ -12683,7 +12683,7 @@
       "16GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:58+00:00",
+    "scraped_at": "2026-07-13T15:40:11+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -12691,7 +12691,7 @@
     },
     "submodels": {
       "": {
-        "base_price": 200,
+        "base_price": 230,
         "battery_adj": {
           "good": 0,
           "poor": -100
@@ -12710,7 +12710,7 @@
             "label": "AMD Ryzen 5 220"
           },
           {
-            "adj": 50,
+            "adj": 45,
             "attrs": {
               "model": "[pv14255]",
               "processor_type": "[amd-ryzen-ai-5-330]"
@@ -12718,7 +12718,7 @@
             "label": "AMD Ryzen AI 5 330"
           },
           {
-            "adj": 75,
+            "adj": 55,
             "attrs": {
               "model": "[pv14255]",
               "processor_type": "[amd-ryzen-7-250]"
@@ -12726,7 +12726,7 @@
             "label": "AMD Ryzen 7 250"
           },
           {
-            "adj": 120,
+            "adj": 100,
             "attrs": {
               "model": "[pv14255]",
               "processor_type": "[amd-ryzen-ai-7-350]"
@@ -12739,7 +12739,7 @@
           "fair": -90,
           "good": -35,
           "mint": 0,
-          "sealed": 25
+          "sealed": 75
         },
         "model_label": "",
         "ram_adj": {
@@ -12813,7 +12813,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:40+00:00",
+    "scraped_at": "2026-07-13T15:39:51+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -12962,7 +12962,7 @@
       "32GB RAM": 20,
       "64GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:41+00:00",
+    "scraped_at": "2026-07-13T15:39:51+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -13096,7 +13096,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:31+00:00",
+    "scraped_at": "2026-07-13T15:39:41+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -13249,7 +13249,7 @@
       "32GB RAM": 30,
       "64GB RAM": 60
     },
-    "scraped_at": "2026-07-13T05:33:57+00:00",
+    "scraped_at": "2026-07-13T15:40:10+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -13406,7 +13406,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:30+00:00",
+    "scraped_at": "2026-07-13T15:39:41+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -13499,7 +13499,7 @@
         "label": "AMD Ryzen 5 Pro 215"
       },
       {
-        "adj": 30,
+        "adj": 40,
         "attrs": {
           "model": "[pb14255]",
           "processor_type": "[amd-ryzen-5-pro-220]"
@@ -13507,7 +13507,7 @@
         "label": "AMD Ryzen 5 Pro 220"
       },
       {
-        "adj": 60,
+        "adj": 70,
         "attrs": {
           "model": "[pb14255]",
           "processor_type": "[amd-ryzen-5-pro-230]"
@@ -13523,7 +13523,7 @@
         "label": "AMD Ryzen AI 5 Pro 340"
       },
       {
-        "adj": 85,
+        "adj": 80,
         "attrs": {
           "model": "[pb14255]",
           "processor_type": "[amd-ryzen-7-pro-250]"
@@ -13531,7 +13531,7 @@
         "label": "AMD Ryzen 7 Pro 250"
       },
       {
-        "adj": 120,
+        "adj": 100,
         "attrs": {
           "model": "[pb14255]",
           "processor_type": "[amd-ryzen-ai-7-pro-350]"
@@ -13539,7 +13539,7 @@
         "label": "AMD Ryzen AI 7 Pro 350"
       },
       {
-        "adj": 160,
+        "adj": 140,
         "attrs": {
           "model": "[pb14255]",
           "processor_type": "[amd-ryzen-ai-9-hx-pro-370]"
@@ -13549,8 +13549,8 @@
     ],
     "condition_adj": {
       "broken": 0,
-      "fair": -140,
-      "good": -65,
+      "fair": -160,
+      "good": -75,
       "mint": 0,
       "sealed": 35,
       "verygood": -25
@@ -13560,10 +13560,10 @@
     "model": "dell-pro-14-plus-pb14255",
     "ram_adj": {
       "16GB RAM": 0,
-      "32GB RAM": 30,
-      "64GB RAM": 60
+      "32GB RAM": 25,
+      "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:57+00:00",
+    "scraped_at": "2026-07-13T15:40:10+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -13600,7 +13600,7 @@
             "label": "AMD Ryzen 5 Pro 215"
           },
           {
-            "adj": 30,
+            "adj": 40,
             "attrs": {
               "model": "[pb14255]",
               "processor_type": "[amd-ryzen-5-pro-220]"
@@ -13608,7 +13608,7 @@
             "label": "AMD Ryzen 5 Pro 220"
           },
           {
-            "adj": 60,
+            "adj": 70,
             "attrs": {
               "model": "[pb14255]",
               "processor_type": "[amd-ryzen-5-pro-230]"
@@ -13624,7 +13624,7 @@
             "label": "AMD Ryzen AI 5 Pro 340"
           },
           {
-            "adj": 85,
+            "adj": 80,
             "attrs": {
               "model": "[pb14255]",
               "processor_type": "[amd-ryzen-7-pro-250]"
@@ -13632,7 +13632,7 @@
             "label": "AMD Ryzen 7 Pro 250"
           },
           {
-            "adj": 120,
+            "adj": 100,
             "attrs": {
               "model": "[pb14255]",
               "processor_type": "[amd-ryzen-ai-7-pro-350]"
@@ -13640,7 +13640,7 @@
             "label": "AMD Ryzen AI 7 Pro 350"
           },
           {
-            "adj": 160,
+            "adj": 140,
             "attrs": {
               "model": "[pb14255]",
               "processor_type": "[amd-ryzen-ai-9-hx-pro-370]"
@@ -13650,8 +13650,8 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -140,
-          "good": -65,
+          "fair": -160,
+          "good": -75,
           "mint": 0,
           "sealed": 35,
           "verygood": -25
@@ -13659,8 +13659,8 @@
         "model_label": "",
         "ram_adj": {
           "16GB RAM": 0,
-          "32GB RAM": 30,
-          "64GB RAM": 60
+          "32GB RAM": 25,
+          "64GB RAM": 50
         },
         "storage_adj": {
           "1TB SSD": 30,
@@ -13720,7 +13720,7 @@
       "32GB RAM": 40,
       "64GB RAM": 80
     },
-    "scraped_at": "2026-07-13T05:33:31+00:00",
+    "scraped_at": "2026-07-13T15:39:41+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -13833,7 +13833,7 @@
       "32GB RAM": 75,
       "64GB RAM": 150
     },
-    "scraped_at": "2026-07-13T05:33:46+00:00",
+    "scraped_at": "2026-07-13T15:39:56+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 125,
@@ -13950,7 +13950,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:56+00:00",
+    "scraped_at": "2026-07-13T15:40:10+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -14068,7 +14068,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:58+00:00",
+    "scraped_at": "2026-07-13T15:40:11+00:00",
     "series": "dell-pro-14-laptop",
     "storage_adj": {
       "1TB SSD": 100,
@@ -14135,7 +14135,7 @@
     "url": "https://www.itsworthmore.com/sell/dell-pro-14-laptop/dell-pro-max-14-premium-ma14250"
   },
   "dell-pro-15-laptop/dell-pro-15-essential-pv15250": {
-    "base_price": 230,
+    "base_price": 240,
     "battery_adj": {
       "good": 0,
       "poor": -100
@@ -14167,7 +14167,7 @@
       "fair": -90,
       "good": -40,
       "mint": 0,
-      "sealed": 25
+      "sealed": 75
     },
     "done": true,
     "iwm_name": "Sell your Dell Pro 15 Essential PV15250 for More Cash Online",
@@ -14176,7 +14176,7 @@
       "16GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:51+00:00",
+    "scraped_at": "2026-07-13T15:40:03+00:00",
     "series": "dell-pro-15-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -14184,7 +14184,7 @@
     },
     "submodels": {
       "": {
-        "base_price": 230,
+        "base_price": 240,
         "battery_adj": {
           "good": 0,
           "poor": -100
@@ -14216,7 +14216,7 @@
           "fair": -90,
           "good": -40,
           "mint": 0,
-          "sealed": 25
+          "sealed": 75
         },
         "model_label": "",
         "ram_adj": {
@@ -14265,7 +14265,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:52+00:00",
+    "scraped_at": "2026-07-13T15:40:04+00:00",
     "series": "dell-pro-15-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -14373,7 +14373,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:40+00:00",
+    "scraped_at": "2026-07-13T15:39:50+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -14526,7 +14526,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:40+00:00",
+    "scraped_at": "2026-07-13T15:39:51+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -14660,7 +14660,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:16+00:00",
+    "scraped_at": "2026-07-13T15:39:26+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -14812,7 +14812,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:41+00:00",
+    "scraped_at": "2026-07-13T15:39:52+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -14976,7 +14976,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:47+00:00",
+    "scraped_at": "2026-07-13T15:39:57+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 80,
@@ -15108,7 +15108,7 @@
       "32GB RAM": 40,
       "64GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:33:51+00:00",
+    "scraped_at": "2026-07-13T15:40:02+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -15246,7 +15246,7 @@
       "32GB RAM": 35,
       "64GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:33:47+00:00",
+    "scraped_at": "2026-07-13T15:39:57+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -15377,7 +15377,7 @@
       "32GB RAM": 75,
       "64GB RAM": 150
     },
-    "scraped_at": "2026-07-13T05:33:50+00:00",
+    "scraped_at": "2026-07-13T15:40:00+00:00",
     "series": "dell-pro-16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -15502,7 +15502,7 @@
       "32GB RAM": 35,
       "64GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:33:48+00:00",
+    "scraped_at": "2026-07-13T15:39:59+00:00",
     "series": "dell-pro-18-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -15648,7 +15648,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:32+00:00",
+    "scraped_at": "2026-07-13T15:39:42+00:00",
     "series": "dell-pro-rugged",
     "storage_adj": {
       "1TB SSD": 50,
@@ -15755,7 +15755,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:33+00:00",
+    "scraped_at": "2026-07-13T15:39:42+00:00",
     "series": "dell-pro-rugged",
     "storage_adj": {
       "1TB SSD": 50,
@@ -15821,7 +15821,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "dell-pro-14-laptop",
-    "scraped_at": "2026-07-13T05:33:16+00:00",
+    "scraped_at": "2026-07-13T15:39:26+00:00",
     "series": "dell-pro",
     "url": "https://www.itsworthmore.com/sell/dell-pro/dell-pro-14-laptop"
   },
@@ -15829,7 +15829,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "dell-pro-rugged",
-    "scraped_at": "2026-07-13T05:33:17+00:00",
+    "scraped_at": "2026-07-13T15:39:26+00:00",
     "series": "dell-rugged",
     "url": "https://www.itsworthmore.com/sell/dell-rugged/dell-pro-rugged"
   },
@@ -15876,7 +15876,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:28+00:00",
+    "scraped_at": "2026-07-13T15:37:20+00:00",
     "series": "dell-rugged",
     "storage_adj": {
       "1TB SSD": 50,
@@ -16038,7 +16038,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:32+00:00",
+    "scraped_at": "2026-07-13T15:37:24+00:00",
     "series": "dell-vostro",
     "storage_adj": {
       "1TB SSD": 20,
@@ -16525,7 +16525,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:33+00:00",
+    "scraped_at": "2026-07-13T15:37:24+00:00",
     "series": "dell-vostro",
     "storage_adj": {
       "1TB SSD": 30,
@@ -17128,7 +17128,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:33+00:00",
+    "scraped_at": "2026-07-13T15:37:24+00:00",
     "series": "dell-vostro",
     "storage_adj": {
       "1TB SSD": 30,
@@ -17321,7 +17321,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "expertbook",
-    "scraped_at": "2026-07-13T05:31:24+00:00",
+    "scraped_at": "2026-07-13T15:37:16+00:00",
     "series": "expert-laptop",
     "url": "https://www.itsworthmore.com/sell/expert-laptop/expertbook"
   },
@@ -17379,7 +17379,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:35+00:00",
+    "scraped_at": "2026-07-13T15:39:45+00:00",
     "series": "expert-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -17623,7 +17623,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:36+00:00",
+    "scraped_at": "2026-07-13T15:39:46+00:00",
     "series": "expert-laptop",
     "storage_adj": {
       "1TB SSD": 35,
@@ -17797,7 +17797,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:34+00:00",
+    "scraped_at": "2026-07-13T15:39:44+00:00",
     "series": "expert-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -17985,7 +17985,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:34+00:00",
+    "scraped_at": "2026-07-13T15:39:44+00:00",
     "series": "expert-laptop",
     "storage_adj": {
       "1TB SSD": 15,
@@ -18278,7 +18278,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:34+00:00",
+    "scraped_at": "2026-07-13T15:39:44+00:00",
     "series": "expert-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -18416,7 +18416,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:36+00:00",
+    "scraped_at": "2026-07-13T15:39:45+00:00",
     "series": "expert-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -18554,7 +18554,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:35+00:00",
+    "scraped_at": "2026-07-13T15:39:45+00:00",
     "series": "expert-laptop",
     "storage_adj": {
       "1TB SSD": 15,
@@ -18946,7 +18946,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "hp-omen",
-    "scraped_at": "2026-07-13T05:31:28+00:00",
+    "scraped_at": "2026-07-13T15:37:20+00:00",
     "series": "hp-desktop",
     "url": "https://www.itsworthmore.com/sell/hp-desktop/hp-omen"
   },
@@ -18996,7 +18996,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:53+00:00",
+    "scraped_at": "2026-07-13T15:40:06+00:00",
     "series": "hp-elitebook-ultra",
     "storage_adj": {
       "1TB SSD": 50,
@@ -19093,7 +19093,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:53+00:00",
+    "scraped_at": "2026-07-13T15:40:06+00:00",
     "series": "hp-elitebook-ultra",
     "storage_adj": {
       "1TB SSD": 30,
@@ -19236,7 +19236,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:55+00:00",
+    "scraped_at": "2026-07-13T15:39:02+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -19759,7 +19759,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:15+00:00",
+    "scraped_at": "2026-07-13T15:39:25+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -20712,7 +20712,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:34:01+00:00",
+    "scraped_at": "2026-07-13T15:40:15+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 40,
@@ -20834,7 +20834,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:56+00:00",
+    "scraped_at": "2026-07-13T15:40:09+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -21061,7 +21061,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:34:01+00:00",
+    "scraped_at": "2026-07-13T15:40:15+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 40,
@@ -21175,7 +21175,7 @@
       "4GB RAM": 0,
       "8GB RAM": 5
     },
-    "scraped_at": "2026-07-13T05:31:26+00:00",
+    "scraped_at": "2026-07-13T15:37:17+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -21458,7 +21458,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:27+00:00",
+    "scraped_at": "2026-07-13T15:37:19+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -21908,7 +21908,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:27+00:00",
+    "scraped_at": "2026-07-13T15:37:19+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -22274,7 +22274,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:28+00:00",
+    "scraped_at": "2026-07-13T15:37:19+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -22759,7 +22759,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:28+00:00",
+    "scraped_at": "2026-07-13T15:37:20+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -23288,7 +23288,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:36+00:00",
+    "scraped_at": "2026-07-13T15:37:28+00:00",
     "series": "hp-elitebook",
     "storage_adj": {
       "1TB SSD": 25,
@@ -24228,7 +24228,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:59+00:00",
+    "scraped_at": "2026-07-13T15:37:58+00:00",
     "series": "hp-envy",
     "storage_adj": {
       "128GB SSD": 15,
@@ -24441,7 +24441,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:59+00:00",
+    "scraped_at": "2026-07-13T15:37:59+00:00",
     "series": "hp-envy",
     "storage_adj": {
       "128GB SSD": 10,
@@ -24700,7 +24700,7 @@
       "64GB RAM": 80,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:00+00:00",
+    "scraped_at": "2026-07-13T15:37:59+00:00",
     "series": "hp-envy",
     "storage_adj": {
       "128GB SSD": 10,
@@ -25063,7 +25063,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:00+00:00",
+    "scraped_at": "2026-07-13T15:37:59+00:00",
     "series": "hp-envy",
     "storage_adj": {
       "128GB SSD": -15,
@@ -25345,7 +25345,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:40+00:00",
+    "scraped_at": "2026-07-13T15:37:33+00:00",
     "series": "hp-notebook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -25510,7 +25510,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:40+00:00",
+    "scraped_at": "2026-07-13T15:37:34+00:00",
     "series": "hp-notebook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -25709,7 +25709,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:41+00:00",
+    "scraped_at": "2026-07-13T15:37:34+00:00",
     "series": "hp-notebook",
     "storage_adj": {
       "128GB SSD": 10,
@@ -25895,7 +25895,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:27+00:00",
+    "scraped_at": "2026-07-13T15:39:37+00:00",
     "series": "hp-omen-desktop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -26076,7 +26076,7 @@
       "64GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:27+00:00",
+    "scraped_at": "2026-07-13T15:39:37+00:00",
     "series": "hp-omen-desktop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -26253,7 +26253,7 @@
       "32GB RAM": 20,
       "64GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:28+00:00",
+    "scraped_at": "2026-07-13T15:39:38+00:00",
     "series": "hp-omen-desktop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -26432,7 +26432,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:28+00:00",
+    "scraped_at": "2026-07-13T15:39:37+00:00",
     "series": "hp-omen-desktop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -26538,7 +26538,7 @@
     "url": "https://www.itsworthmore.com/sell/hp-omen-desktop/hp-omen-35l-desktop"
   },
   "hp-omen-desktop/hp-omen-40l-desktop": {
-    "base_price": 225,
+    "base_price": 300,
     "battery_adj": {},
     "charger_adj": {
       "hdmi": 1,
@@ -26556,7 +26556,7 @@
         "label": "AMD Ryzen 7 5800X"
       },
       {
-        "adj": 150,
+        "adj": 125,
         "attrs": {
           "model": "[40l]",
           "processor_type": "[amd-ryzen-7-7700x]"
@@ -26564,7 +26564,7 @@
         "label": "AMD Ryzen 7 7700X"
       },
       {
-        "adj": 50,
+        "adj": 75,
         "attrs": {
           "model": "[40l]",
           "processor_type": "[amd-ryzen-9-5900x]"
@@ -26580,7 +26580,7 @@
         "label": "Intel Core i7 12th Gen."
       },
       {
-        "adj": 175,
+        "adj": 170,
         "attrs": {
           "model": "[40l]",
           "processor_type": "[intel-core-i7-14th-gen.]"
@@ -26588,7 +26588,7 @@
         "label": "Intel Core i7 14th Gen."
       },
       {
-        "adj": 75,
+        "adj": 60,
         "attrs": {
           "model": "[40l]",
           "processor_type": "[intel-core-i9-12th-gen]"
@@ -26596,7 +26596,7 @@
         "label": "Intel Core i9 12th Gen."
       },
       {
-        "adj": 225,
+        "adj": 200,
         "attrs": {
           "model": "[40l]",
           "processor_type": "[intel-core-i9-14th-gen.]"
@@ -26630,16 +26630,16 @@
       "32GB RAM": 20,
       "64GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:28+00:00",
+    "scraped_at": "2026-07-13T15:39:39+00:00",
     "series": "hp-omen-desktop",
     "storage_adj": {
-      "1TB SSD": 15,
-      "2TB SSD": 30,
+      "1TB SSD": 20,
+      "2TB SSD": 40,
       "512GB SSD": 0
     },
     "submodels": {
       "": {
-        "base_price": 225,
+        "base_price": 300,
         "battery_adj": {},
         "charger_adj": {
           "hdmi": 1,
@@ -26657,7 +26657,7 @@
             "label": "AMD Ryzen 7 5800X"
           },
           {
-            "adj": 150,
+            "adj": 125,
             "attrs": {
               "model": "[40l]",
               "processor_type": "[amd-ryzen-7-7700x]"
@@ -26665,7 +26665,7 @@
             "label": "AMD Ryzen 7 7700X"
           },
           {
-            "adj": 50,
+            "adj": 75,
             "attrs": {
               "model": "[40l]",
               "processor_type": "[amd-ryzen-9-5900x]"
@@ -26681,7 +26681,7 @@
             "label": "Intel Core i7 12th Gen."
           },
           {
-            "adj": 175,
+            "adj": 170,
             "attrs": {
               "model": "[40l]",
               "processor_type": "[intel-core-i7-14th-gen.]"
@@ -26689,7 +26689,7 @@
             "label": "Intel Core i7 14th Gen."
           },
           {
-            "adj": 75,
+            "adj": 60,
             "attrs": {
               "model": "[40l]",
               "processor_type": "[intel-core-i9-12th-gen]"
@@ -26697,7 +26697,7 @@
             "label": "Intel Core i9 12th Gen."
           },
           {
-            "adj": 225,
+            "adj": 200,
             "attrs": {
               "model": "[40l]",
               "processor_type": "[intel-core-i9-14th-gen.]"
@@ -26730,8 +26730,8 @@
           "64GB RAM": 40
         },
         "storage_adj": {
-          "1TB SSD": 15,
-          "2TB SSD": 30,
+          "1TB SSD": 20,
+          "2TB SSD": 40,
           "512GB SSD": 0
         }
       }
@@ -26815,7 +26815,7 @@
       "32GB RAM": 20,
       "64GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:37+00:00",
+    "scraped_at": "2026-07-13T15:39:47+00:00",
     "series": "hp-omen-desktop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -27108,7 +27108,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:38+00:00",
+    "scraped_at": "2026-07-13T15:37:30+00:00",
     "series": "hp-omen-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -27652,7 +27652,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:38+00:00",
+    "scraped_at": "2026-07-13T15:37:30+00:00",
     "series": "hp-omen-laptop",
     "storage_adj": {
       "128GB SSD": 10,
@@ -28208,7 +28208,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:38+00:00",
+    "scraped_at": "2026-07-13T15:37:30+00:00",
     "series": "hp-omen-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -28517,7 +28517,7 @@
       "32GB RAM": 75,
       "64GB RAM": 125
     },
-    "scraped_at": "2026-07-13T05:33:25+00:00",
+    "scraped_at": "2026-07-13T15:39:35+00:00",
     "series": "hp-omen-max-laptop",
     "storage_adj": {
       "1TB SSD": 75,
@@ -28665,7 +28665,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:43+00:00",
+    "scraped_at": "2026-07-13T15:39:53+00:00",
     "series": "hp-omen-slim-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -28821,7 +28821,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:24+00:00",
+    "scraped_at": "2026-07-13T15:39:35+00:00",
     "series": "hp-omen-transcend-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -28951,7 +28951,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:25+00:00",
+    "scraped_at": "2026-07-13T15:39:35+00:00",
     "series": "hp-omen-transcend-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -29068,7 +29068,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:55+00:00",
+    "scraped_at": "2026-07-13T15:40:07+00:00",
     "series": "hp-omnibook-ultra",
     "storage_adj": {
       "1TB SSD": 40,
@@ -29176,7 +29176,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:56+00:00",
+    "scraped_at": "2026-07-13T15:40:09+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -29338,7 +29338,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:55+00:00",
+    "scraped_at": "2026-07-13T15:40:09+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 40,
@@ -29513,7 +29513,7 @@
       "24GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:56+00:00",
+    "scraped_at": "2026-07-13T15:40:09+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -29660,7 +29660,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:54+00:00",
+    "scraped_at": "2026-07-13T15:40:06+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 50,
@@ -29794,7 +29794,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:55+00:00",
+    "scraped_at": "2026-07-13T15:40:07+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 50,
@@ -29894,7 +29894,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:54+00:00",
+    "scraped_at": "2026-07-13T15:40:07+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 40,
@@ -30008,7 +30008,7 @@
       "16GB RAM": 0,
       "32GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:33:55+00:00",
+    "scraped_at": "2026-07-13T15:40:08+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 75,
@@ -30134,7 +30134,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:22+00:00",
+    "scraped_at": "2026-07-13T15:37:14+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -30261,7 +30261,7 @@
       "24GB RAM": 15,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:54+00:00",
+    "scraped_at": "2026-07-13T15:40:06+00:00",
     "series": "hp-omnibook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -30396,7 +30396,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:50+00:00",
+    "scraped_at": "2026-07-13T15:40:00+00:00",
     "series": "hp-omnistudio-desktop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -30600,7 +30600,7 @@
       "4GB RAM": 0,
       "8GB RAM": 20
     },
-    "scraped_at": "2026-07-13T05:31:58+00:00",
+    "scraped_at": "2026-07-13T15:37:57+00:00",
     "series": "hp-pavilion",
     "storage_adj": {
       "128GB SSD": 15,
@@ -30900,7 +30900,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:58+00:00",
+    "scraped_at": "2026-07-13T15:37:58+00:00",
     "series": "hp-pavilion",
     "storage_adj": {
       "128GB SSD": 10,
@@ -31156,7 +31156,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:17+00:00",
+    "scraped_at": "2026-07-13T15:39:26+00:00",
     "series": "hp-pavilion",
     "storage_adj": {
       "1TB SSD": 40,
@@ -31416,7 +31416,7 @@
       "4GB RAM": -10,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:59+00:00",
+    "scraped_at": "2026-07-13T15:37:58+00:00",
     "series": "hp-pavilion",
     "storage_adj": {
       "128GB SSD": 0,
@@ -31725,7 +31725,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:58+00:00",
+    "scraped_at": "2026-07-13T15:37:57+00:00",
     "series": "hp-pavilion",
     "storage_adj": {
       "128GB SSD": 20,
@@ -31915,7 +31915,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:44+00:00",
+    "scraped_at": "2026-07-13T15:38:51+00:00",
     "series": "hp-probook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -32228,7 +32228,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:32+00:00",
+    "scraped_at": "2026-07-13T15:39:42+00:00",
     "series": "hp-probook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -32426,7 +32426,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "hp-probook-g4",
-    "scraped_at": "2026-07-13T05:31:29+00:00",
+    "scraped_at": "2026-07-13T15:37:20+00:00",
     "series": "hp-probook",
     "url": "https://www.itsworthmore.com/sell/hp-probook/hp-probook-g4"
   },
@@ -32471,7 +32471,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:29+00:00",
+    "scraped_at": "2026-07-13T15:37:20+00:00",
     "series": "hp-probook",
     "storage_adj": {
       "128GB SSD": 10,
@@ -32807,7 +32807,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:29+00:00",
+    "scraped_at": "2026-07-13T15:37:21+00:00",
     "series": "hp-probook",
     "storage_adj": {
       "128GB SSD": 10,
@@ -33098,7 +33098,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:29+00:00",
+    "scraped_at": "2026-07-13T15:37:21+00:00",
     "series": "hp-probook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -33486,7 +33486,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:30+00:00",
+    "scraped_at": "2026-07-13T15:37:21+00:00",
     "series": "hp-probook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -34025,7 +34025,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:38+00:00",
+    "scraped_at": "2026-07-13T15:37:31+00:00",
     "series": "hp-probook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -34416,7 +34416,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:56+00:00",
+    "scraped_at": "2026-07-13T15:37:56+00:00",
     "series": "hp-spectre",
     "storage_adj": {
       "1TB SSD": 30,
@@ -34615,7 +34615,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:57+00:00",
+    "scraped_at": "2026-07-13T15:37:56+00:00",
     "series": "hp-spectre",
     "storage_adj": {
       "1TB SSD": 30,
@@ -34766,7 +34766,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:57+00:00",
+    "scraped_at": "2026-07-13T15:37:57+00:00",
     "series": "hp-spectre",
     "storage_adj": {
       "1TB SSD": 30,
@@ -34901,7 +34901,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:31:58+00:00",
+    "scraped_at": "2026-07-13T15:37:57+00:00",
     "series": "hp-spectre",
     "storage_adj": {
       "1TB SSD": 30,
@@ -35183,7 +35183,7 @@
       "64GB RAM": 65,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:39+00:00",
+    "scraped_at": "2026-07-13T15:37:31+00:00",
     "series": "hp-victus-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -35457,7 +35457,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:59+00:00",
+    "scraped_at": "2026-07-13T15:40:12+00:00",
     "series": "hp-zbook-ultra",
     "storage_adj": {
       "1TB SSD": 50,
@@ -35600,7 +35600,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:54+00:00",
+    "scraped_at": "2026-07-13T15:39:00+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "1TB SSD": 40,
@@ -35982,7 +35982,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:17+00:00",
+    "scraped_at": "2026-07-13T15:39:26+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "1TB SSD": 50,
@@ -36334,7 +36334,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:34:01+00:00",
+    "scraped_at": "2026-07-13T15:40:17+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "1TB SSD": 50,
@@ -36526,7 +36526,7 @@
       "64GB RAM": 60,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:32:52+00:00",
+    "scraped_at": "2026-07-13T15:38:58+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -36867,7 +36867,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:32:52+00:00",
+    "scraped_at": "2026-07-13T15:38:59+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -37404,7 +37404,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:32:52+00:00",
+    "scraped_at": "2026-07-13T15:38:59+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "128GB SSD": 0,
@@ -37697,7 +37697,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:53+00:00",
+    "scraped_at": "2026-07-13T15:38:59+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -38174,7 +38174,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:53+00:00",
+    "scraped_at": "2026-07-13T15:38:59+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -38508,7 +38508,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:53+00:00",
+    "scraped_at": "2026-07-13T15:39:00+00:00",
     "series": "hp-zbook",
     "storage_adj": {
       "1TB SSD": 30,
@@ -38845,7 +38845,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:49+00:00",
+    "scraped_at": "2026-07-13T15:37:45+00:00",
     "series": "inspiron-3000-series-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -38964,7 +38964,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:49+00:00",
+    "scraped_at": "2026-07-13T15:37:46+00:00",
     "series": "inspiron-3000-series-laptop",
     "storage_adj": {
       "128GB SSD": 5,
@@ -39503,7 +39503,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:51+00:00",
+    "scraped_at": "2026-07-13T15:37:48+00:00",
     "series": "inspiron-3000-series-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -39607,7 +39607,7 @@
       "16GB RAM": 10,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:47+00:00",
+    "scraped_at": "2026-07-13T15:37:43+00:00",
     "series": "inspiron-5000-series-laptop",
     "storage_adj": {
       "256GB SSD": 0,
@@ -39806,7 +39806,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:31:47+00:00",
+    "scraped_at": "2026-07-13T15:37:43+00:00",
     "series": "inspiron-5000-series-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -40227,7 +40227,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:47+00:00",
+    "scraped_at": "2026-07-13T15:37:43+00:00",
     "series": "inspiron-5000-series-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -40692,7 +40692,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:48+00:00",
+    "scraped_at": "2026-07-13T15:37:44+00:00",
     "series": "inspiron-5000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -41003,7 +41003,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:48+00:00",
+    "scraped_at": "2026-07-13T15:37:44+00:00",
     "series": "inspiron-5000-series-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -41147,7 +41147,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:45+00:00",
+    "scraped_at": "2026-07-13T15:37:41+00:00",
     "series": "inspiron-7000-series-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -41611,7 +41611,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:46+00:00",
+    "scraped_at": "2026-07-13T15:37:42+00:00",
     "series": "inspiron-7000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -42276,7 +42276,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:46+00:00",
+    "scraped_at": "2026-07-13T15:37:42+00:00",
     "series": "inspiron-7000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -42922,7 +42922,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:46+00:00",
+    "scraped_at": "2026-07-13T15:37:42+00:00",
     "series": "inspiron-7000-series-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -43338,7 +43338,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:47+00:00",
+    "scraped_at": "2026-07-13T15:37:43+00:00",
     "series": "inspiron-7000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -43513,7 +43513,7 @@
       "16GB RAM": 10,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:53+00:00",
+    "scraped_at": "2026-07-13T15:37:51+00:00",
     "series": "latitude-3000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -43958,7 +43958,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:54+00:00",
+    "scraped_at": "2026-07-13T15:37:52+00:00",
     "series": "latitude-3000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -44413,7 +44413,7 @@
       "16GB RAM": 10,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:54+00:00",
+    "scraped_at": "2026-07-13T15:37:53+00:00",
     "series": "latitude-3000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -44769,7 +44769,7 @@
       "16GB RAM": 10,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:55+00:00",
+    "scraped_at": "2026-07-13T15:37:54+00:00",
     "series": "latitude-5000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -44984,7 +44984,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:56+00:00",
+    "scraped_at": "2026-07-13T15:37:54+00:00",
     "series": "latitude-5000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -45566,7 +45566,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:56+00:00",
+    "scraped_at": "2026-07-13T15:37:55+00:00",
     "series": "latitude-5000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -46411,7 +46411,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:56+00:00",
+    "scraped_at": "2026-07-13T15:37:55+00:00",
     "series": "latitude-5000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -47060,7 +47060,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:48+00:00",
+    "scraped_at": "2026-07-13T15:37:45+00:00",
     "series": "latitude-7000-series-laptop",
     "storage_adj": {
       "256GB SSD": 0,
@@ -47348,7 +47348,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:52+00:00",
+    "scraped_at": "2026-07-13T15:37:49+00:00",
     "series": "latitude-7000-series-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -48208,7 +48208,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:53+00:00",
+    "scraped_at": "2026-07-13T15:37:51+00:00",
     "series": "latitude-7000-series-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -49082,7 +49082,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:54+00:00",
+    "scraped_at": "2026-07-13T15:37:52+00:00",
     "series": "latitude-7000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -49220,7 +49220,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:32:05+00:00",
+    "scraped_at": "2026-07-13T15:38:05+00:00",
     "series": "latitude-7000-series-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -49357,7 +49357,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:31:54+00:00",
+    "scraped_at": "2026-07-13T15:37:53+00:00",
     "series": "latitude-9000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -49469,7 +49469,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:55+00:00",
+    "scraped_at": "2026-07-13T15:37:54+00:00",
     "series": "latitude-9000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -49989,7 +49989,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:55+00:00",
+    "scraped_at": "2026-07-13T15:37:54+00:00",
     "series": "latitude-9000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -50243,7 +50243,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:34:00+00:00",
+    "scraped_at": "2026-07-13T15:40:14+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -50365,7 +50365,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:58+00:00",
+    "scraped_at": "2026-07-13T15:39:06+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB HDD": 5,
@@ -50492,7 +50492,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:32:56+00:00",
+    "scraped_at": "2026-07-13T15:39:03+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "128GB SSD": -10,
@@ -50658,7 +50658,7 @@
       "4GB RAM": 0,
       "8GB RAM": 25
     },
-    "scraped_at": "2026-07-13T05:31:28+00:00",
+    "scraped_at": "2026-07-13T15:37:20+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB HDD": 5,
@@ -50891,7 +50891,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:32:57+00:00",
+    "scraped_at": "2026-07-13T15:39:05+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -51078,7 +51078,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:41+00:00",
+    "scraped_at": "2026-07-13T15:39:52+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -51156,7 +51156,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "lenovo-ideapad-730s",
-    "scraped_at": "2026-07-13T05:32:56+00:00",
+    "scraped_at": "2026-07-13T15:39:04+00:00",
     "series": "lenovo-ideapad-laptop",
     "url": "https://www.itsworthmore.com/sell/lenovo-ideapad-laptop/lenovo-ideapad-730s"
   },
@@ -51240,7 +51240,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:55+00:00",
+    "scraped_at": "2026-07-13T15:39:03+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -51452,7 +51452,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:56+00:00",
+    "scraped_at": "2026-07-13T15:39:03+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -51686,7 +51686,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:37+00:00",
+    "scraped_at": "2026-07-13T15:39:47+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -51871,7 +51871,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:37+00:00",
+    "scraped_at": "2026-07-13T15:39:47+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -52016,7 +52016,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:32:57+00:00",
+    "scraped_at": "2026-07-13T15:39:04+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -52208,7 +52208,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:34:02+00:00",
+    "scraped_at": "2026-07-13T15:40:17+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -52397,7 +52397,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:32:57+00:00",
+    "scraped_at": "2026-07-13T15:39:05+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "128GB SSD": -10,
@@ -52537,7 +52537,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:58+00:00",
+    "scraped_at": "2026-07-13T15:39:06+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -52683,7 +52683,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:57+00:00",
+    "scraped_at": "2026-07-13T15:39:05+00:00",
     "series": "lenovo-ideapad-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -52892,7 +52892,7 @@
       "32GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:41+00:00",
+    "scraped_at": "2026-07-13T15:38:46+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 60,
@@ -53142,7 +53142,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:44+00:00",
+    "scraped_at": "2026-07-13T15:38:50+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -53512,7 +53512,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:41+00:00",
+    "scraped_at": "2026-07-13T15:38:46+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -53934,7 +53934,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:44+00:00",
+    "scraped_at": "2026-07-13T15:38:51+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -54179,7 +54179,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:44+00:00",
+    "scraped_at": "2026-07-13T15:38:50+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -54318,7 +54318,7 @@
       "64GB RAM": 150,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:46+00:00",
+    "scraped_at": "2026-07-13T15:38:52+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 75,
@@ -54520,7 +54520,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:40+00:00",
+    "scraped_at": "2026-07-13T15:38:45+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -54732,7 +54732,7 @@
       "32GB RAM": 60,
       "64GB RAM": 120
     },
-    "scraped_at": "2026-07-13T05:32:45+00:00",
+    "scraped_at": "2026-07-13T15:38:51+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -54870,7 +54870,7 @@
       "32GB RAM": 0,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:32:49+00:00",
+    "scraped_at": "2026-07-13T15:38:55+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -55023,7 +55023,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:49+00:00",
+    "scraped_at": "2026-07-13T15:38:55+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -55171,7 +55171,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:49+00:00",
+    "scraped_at": "2026-07-13T15:38:56+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -55316,7 +55316,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:40+00:00",
+    "scraped_at": "2026-07-13T15:38:45+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -55500,7 +55500,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:49+00:00",
+    "scraped_at": "2026-07-13T15:38:56+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -55655,7 +55655,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:43+00:00",
+    "scraped_at": "2026-07-13T15:38:49+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -55769,7 +55769,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:43+00:00",
+    "scraped_at": "2026-07-13T15:38:49+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -55880,7 +55880,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:43+00:00",
+    "scraped_at": "2026-07-13T15:38:49+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -55997,7 +55997,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:43+00:00",
+    "scraped_at": "2026-07-13T15:38:48+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -56116,7 +56116,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:42+00:00",
+    "scraped_at": "2026-07-13T15:38:48+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -56235,7 +56235,7 @@
     "iwm_name": "Sell your Lenovo Legion Y720 for More Cash Online",
     "model": "lenovo-legion-y720",
     "ram_adj": {},
-    "scraped_at": "2026-07-13T05:32:42+00:00",
+    "scraped_at": "2026-07-13T15:38:47+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "128GB SSD + 1TB HDD": 0,
@@ -56337,7 +56337,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:42+00:00",
+    "scraped_at": "2026-07-13T15:38:47+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "128GB SSD + 1TB HDD": 10,
@@ -56446,7 +56446,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:42+00:00",
+    "scraped_at": "2026-07-13T15:38:47+00:00",
     "series": "lenovo-legion-laptop",
     "storage_adj": {
       "1TB SSD": 35,
@@ -56627,7 +56627,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:59+00:00",
+    "scraped_at": "2026-07-13T15:39:06+00:00",
     "series": "lenovo-legion",
     "storage_adj": {
       "1TB HDD": 0,
@@ -56938,7 +56938,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:59+00:00",
+    "scraped_at": "2026-07-13T15:39:06+00:00",
     "series": "lenovo-legion",
     "storage_adj": {
       "1TB HDD": 0,
@@ -57139,7 +57139,7 @@
     "url": "https://www.itsworthmore.com/sell/lenovo-legion/lenovo-legion-tower-5i"
   },
   "lenovo-legion/lenovo-legion-tower-7i": {
-    "base_price": 310,
+    "base_price": 260,
     "battery_adj": {},
     "charger_adj": {
       "hdmi": 1,
@@ -57158,7 +57158,7 @@
         "label": "Intel Core i7 10th Gen."
       },
       {
-        "adj": 80,
+        "adj": 40,
         "attrs": {
           "model": "[7i]",
           "model_year": "[2021]",
@@ -57167,7 +57167,7 @@
         "label": "Intel Core i7 11th Gen."
       },
       {
-        "adj": 150,
+        "adj": 140,
         "attrs": {
           "model": "[7i]",
           "model_year": "[2022]",
@@ -57176,7 +57176,7 @@
         "label": "Intel Core i7 12th Gen."
       },
       {
-        "adj": 250,
+        "adj": 220,
         "attrs": {
           "model": "[7i-gen-8]",
           "model_year": "[2023]",
@@ -57185,7 +57185,16 @@
         "label": "Intel Core i7 13th Gen."
       },
       {
-        "adj": 90,
+        "adj": 315,
+        "attrs": {
+          "model": "[7i-gen-8]",
+          "model_year": "[2024]",
+          "processor_type": "[intel-core-i7-14th-gen.]"
+        },
+        "label": "Intel Core i7 14th Gen."
+      },
+      {
+        "adj": 50,
         "attrs": {
           "model": "[7i]",
           "model_year": "[2020]",
@@ -57194,7 +57203,7 @@
         "label": "Intel Core i9 10th Gen."
       },
       {
-        "adj": 165,
+        "adj": 120,
         "attrs": {
           "model": "[7i]",
           "model_year": "[2021]",
@@ -57203,7 +57212,7 @@
         "label": "Intel Core i9 11th Gen."
       },
       {
-        "adj": 240,
+        "adj": 210,
         "attrs": {
           "model": "[7i]",
           "model_year": "[2022]",
@@ -57212,13 +57221,22 @@
         "label": "Intel Core i9 12th Gen."
       },
       {
-        "adj": 340,
+        "adj": 300,
         "attrs": {
           "model": "[7i-gen-8]",
           "model_year": "[2023]",
           "processor_type": "[intel-core-i9-13th-gen.]"
         },
         "label": "Intel Core i9 13th Gen."
+      },
+      {
+        "adj": 380,
+        "attrs": {
+          "model": "[7i-gen-8]",
+          "model_year": "[2024]",
+          "processor_type": "[intel-core-i9-14th-gen.]"
+        },
+        "label": "Intel Core i9 14th Gen."
       }
     ],
     "condition_adj": {
@@ -57237,11 +57255,11 @@
       "NVIDIA GeForce RTX 2080 SUPER": 50,
       "NVIDIA GeForce RTX 3060": 25,
       "NVIDIA GeForce RTX 3070": 50,
-      "NVIDIA GeForce RTX 3080": 150,
-      "NVIDIA GeForce RTX 3080 ti": 180,
+      "NVIDIA GeForce RTX 3080": 100,
+      "NVIDIA GeForce RTX 3080 ti": 175,
       "NVIDIA GeForce RTX 4070 Ti": 0,
-      "NVIDIA GeForce RTX 4080": 150,
-      "NVIDIA GeForce RTX 4090": 300
+      "NVIDIA GeForce RTX 4080": 300,
+      "NVIDIA GeForce RTX 4090": 500
     },
     "iwm_name": "Sell your Lenovo Legion Tower 7i for More Cash Online",
     "model": "lenovo-legion-tower-7i",
@@ -57251,7 +57269,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:59+00:00",
+    "scraped_at": "2026-07-13T15:39:07+00:00",
     "series": "lenovo-legion",
     "storage_adj": {
       "1TB HDD": 0,
@@ -57262,7 +57280,7 @@
     },
     "submodels": {
       "": {
-        "base_price": 310,
+        "base_price": 260,
         "battery_adj": {},
         "charger_adj": {
           "hdmi": 1,
@@ -57281,7 +57299,7 @@
             "label": "Intel Core i7 10th Gen."
           },
           {
-            "adj": 80,
+            "adj": 40,
             "attrs": {
               "model": "[7i]",
               "model_year": "[2021]",
@@ -57290,7 +57308,7 @@
             "label": "Intel Core i7 11th Gen."
           },
           {
-            "adj": 150,
+            "adj": 140,
             "attrs": {
               "model": "[7i]",
               "model_year": "[2022]",
@@ -57299,7 +57317,7 @@
             "label": "Intel Core i7 12th Gen."
           },
           {
-            "adj": 250,
+            "adj": 220,
             "attrs": {
               "model": "[7i-gen-8]",
               "model_year": "[2023]",
@@ -57308,7 +57326,16 @@
             "label": "Intel Core i7 13th Gen."
           },
           {
-            "adj": 90,
+            "adj": 315,
+            "attrs": {
+              "model": "[7i-gen-8]",
+              "model_year": "[2024]",
+              "processor_type": "[intel-core-i7-14th-gen.]"
+            },
+            "label": "Intel Core i7 14th Gen."
+          },
+          {
+            "adj": 50,
             "attrs": {
               "model": "[7i]",
               "model_year": "[2020]",
@@ -57317,7 +57344,7 @@
             "label": "Intel Core i9 10th Gen."
           },
           {
-            "adj": 165,
+            "adj": 120,
             "attrs": {
               "model": "[7i]",
               "model_year": "[2021]",
@@ -57326,7 +57353,7 @@
             "label": "Intel Core i9 11th Gen."
           },
           {
-            "adj": 240,
+            "adj": 210,
             "attrs": {
               "model": "[7i]",
               "model_year": "[2022]",
@@ -57335,13 +57362,22 @@
             "label": "Intel Core i9 12th Gen."
           },
           {
-            "adj": 340,
+            "adj": 300,
             "attrs": {
               "model": "[7i-gen-8]",
               "model_year": "[2023]",
               "processor_type": "[intel-core-i9-13th-gen.]"
             },
             "label": "Intel Core i9 13th Gen."
+          },
+          {
+            "adj": 380,
+            "attrs": {
+              "model": "[7i-gen-8]",
+              "model_year": "[2024]",
+              "processor_type": "[intel-core-i9-14th-gen.]"
+            },
+            "label": "Intel Core i9 14th Gen."
           }
         ],
         "condition_adj": {
@@ -57359,11 +57395,11 @@
           "NVIDIA GeForce RTX 2080 SUPER": 50,
           "NVIDIA GeForce RTX 3060": 25,
           "NVIDIA GeForce RTX 3070": 50,
-          "NVIDIA GeForce RTX 3080": 150,
-          "NVIDIA GeForce RTX 3080 ti": 180,
+          "NVIDIA GeForce RTX 3080": 100,
+          "NVIDIA GeForce RTX 3080 ti": 175,
           "NVIDIA GeForce RTX 4070 Ti": 0,
-          "NVIDIA GeForce RTX 4080": 150,
-          "NVIDIA GeForce RTX 4090": 300
+          "NVIDIA GeForce RTX 4080": 300,
+          "NVIDIA GeForce RTX 4090": 500
         },
         "model_label": "",
         "ram_adj": {
@@ -57500,7 +57536,7 @@
       "64GB RAM": 55,
       "8GB RAM": 5
     },
-    "scraped_at": "2026-07-13T05:33:25+00:00",
+    "scraped_at": "2026-07-13T15:39:36+00:00",
     "series": "lenovo-loq-series-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -57687,7 +57723,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:49+00:00",
+    "scraped_at": "2026-07-13T15:40:00+00:00",
     "series": "lenovo-loq-series-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -57799,7 +57835,7 @@
       "32GB RAM": 0,
       "64GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:34:03+00:00",
+    "scraped_at": "2026-07-13T15:40:18+00:00",
     "series": "lenovo-pro-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -57890,7 +57926,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:30+00:00",
+    "scraped_at": "2026-07-13T15:39:40+00:00",
     "series": "lenovo-slim-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -57984,7 +58020,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:36+00:00",
+    "scraped_at": "2026-07-13T15:39:46+00:00",
     "series": "lenovo-slim-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -58121,7 +58157,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:30+00:00",
+    "scraped_at": "2026-07-13T15:39:40+00:00",
     "series": "lenovo-slim-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -58248,7 +58284,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:44+00:00",
+    "scraped_at": "2026-07-13T15:39:54+00:00",
     "series": "lenovo-slim-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -58341,7 +58377,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:30+00:00",
+    "scraped_at": "2026-07-13T15:39:40+00:00",
     "series": "lenovo-slim-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -58440,7 +58476,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:36+00:00",
+    "scraped_at": "2026-07-13T15:39:46+00:00",
     "series": "lenovo-slim-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -58550,7 +58586,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:01+00:00",
+    "scraped_at": "2026-07-13T15:38:00+00:00",
     "series": "lenovo-thinkbook-series",
     "storage_adj": {
       "1TB SSD": 30,
@@ -59002,7 +59038,7 @@
       "40GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:01+00:00",
+    "scraped_at": "2026-07-13T15:38:00+00:00",
     "series": "lenovo-thinkbook-series",
     "storage_adj": {
       "128GB SSD": -25,
@@ -60126,7 +60162,7 @@
       "40GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:02+00:00",
+    "scraped_at": "2026-07-13T15:38:01+00:00",
     "series": "lenovo-thinkbook-series",
     "storage_adj": {
       "1TB SSD": 30,
@@ -60607,7 +60643,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:02+00:00",
+    "scraped_at": "2026-07-13T15:38:01+00:00",
     "series": "lenovo-thinkbook-series",
     "storage_adj": {
       "1TB SSD": 30,
@@ -61122,7 +61158,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "lenovo-thinkcentre-aio",
-    "scraped_at": "2026-07-13T05:31:31+00:00",
+    "scraped_at": "2026-07-13T15:37:23+00:00",
     "series": "lenovo-thinkcentre",
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-aio"
   },
@@ -61130,7 +61166,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "lenovo-thinkcentre-nano-desktop",
-    "scraped_at": "2026-07-13T05:31:31+00:00",
+    "scraped_at": "2026-07-13T15:37:23+00:00",
     "series": "lenovo-thinkcentre",
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-nano-desktop"
   },
@@ -61138,7 +61174,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "lenovo-thinkcentre-sff",
-    "scraped_at": "2026-07-13T05:31:30+00:00",
+    "scraped_at": "2026-07-13T15:37:22+00:00",
     "series": "lenovo-thinkcentre",
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-sff"
   },
@@ -61232,7 +61268,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:31:31+00:00",
+    "scraped_at": "2026-07-13T15:37:22+00:00",
     "series": "lenovo-thinkcentre",
     "storage_adj": {
       "128GB SSD": 0,
@@ -61538,7 +61574,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "lenovo-thinkcentre-tower",
-    "scraped_at": "2026-07-13T05:31:31+00:00",
+    "scraped_at": "2026-07-13T15:37:23+00:00",
     "series": "lenovo-thinkcentre",
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkcentre/lenovo-thinkcentre-tower"
   },
@@ -61609,7 +61645,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:20+00:00",
+    "scraped_at": "2026-07-13T15:39:31+00:00",
     "series": "lenovo-thinkpad-e14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -61766,7 +61802,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:20+00:00",
+    "scraped_at": "2026-07-13T15:39:31+00:00",
     "series": "lenovo-thinkpad-e14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -61955,7 +61991,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:34:00+00:00",
+    "scraped_at": "2026-07-13T15:40:13+00:00",
     "series": "lenovo-thinkpad-e14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -62128,7 +62164,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:26+00:00",
+    "scraped_at": "2026-07-13T15:39:36+00:00",
     "series": "lenovo-thinkpad-e15-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -62269,7 +62305,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:21+00:00",
+    "scraped_at": "2026-07-13T15:39:31+00:00",
     "series": "lenovo-thinkpad-e16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -62428,7 +62464,7 @@
       "64GB RAM": 125,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:22+00:00",
+    "scraped_at": "2026-07-13T15:39:32+00:00",
     "series": "lenovo-thinkpad-e16-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -62610,7 +62646,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:39+00:00",
+    "scraped_at": "2026-07-13T15:39:49+00:00",
     "series": "lenovo-thinkpad-e16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -62749,7 +62785,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:43+00:00",
+    "scraped_at": "2026-07-13T15:37:37+00:00",
     "series": "lenovo-thinkpad-l-series",
     "storage_adj": {
       "1TB SSD": 20,
@@ -63425,7 +63461,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:45+00:00",
+    "scraped_at": "2026-07-13T15:37:39+00:00",
     "series": "lenovo-thinkpad-l-series",
     "storage_adj": {
       "1TB SSD": 30,
@@ -63868,7 +63904,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:45+00:00",
+    "scraped_at": "2026-07-13T15:37:40+00:00",
     "series": "lenovo-thinkpad-l-series",
     "storage_adj": {
       "1TB SSD": 20,
@@ -64224,7 +64260,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:13+00:00",
+    "scraped_at": "2026-07-13T15:39:22+00:00",
     "series": "lenovo-thinkpad-l-series",
     "storage_adj": {
       "1TB SSD": 30,
@@ -64418,7 +64454,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:50+00:00",
+    "scraped_at": "2026-07-13T15:37:46+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -64517,7 +64553,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:50+00:00",
+    "scraped_at": "2026-07-13T15:37:47+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -64673,7 +64709,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:50+00:00",
+    "scraped_at": "2026-07-13T15:37:47+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -64848,7 +64884,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:51+00:00",
+    "scraped_at": "2026-07-13T15:37:48+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -65045,7 +65081,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:51+00:00",
+    "scraped_at": "2026-07-13T15:37:48+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -65221,7 +65257,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:51+00:00",
+    "scraped_at": "2026-07-13T15:37:49+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -65333,7 +65369,7 @@
       "32GB RAM": 30,
       "64GB RAM": 60
     },
-    "scraped_at": "2026-07-13T05:31:52+00:00",
+    "scraped_at": "2026-07-13T15:37:49+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -65436,7 +65472,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:52+00:00",
+    "scraped_at": "2026-07-13T15:37:49+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -65558,7 +65594,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:52+00:00",
+    "scraped_at": "2026-07-13T15:37:50+00:00",
     "series": "lenovo-thinkpad-p-series-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -65685,7 +65721,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:24+00:00",
+    "scraped_at": "2026-07-13T15:37:16+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 35,
@@ -65818,7 +65854,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:24+00:00",
+    "scraped_at": "2026-07-13T15:37:16+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 30,
@@ -65962,7 +65998,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:24+00:00",
+    "scraped_at": "2026-07-13T15:37:16+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 50,
@@ -66102,7 +66138,7 @@
       "32GB RAM": 40,
       "64GB RAM": 80
     },
-    "scraped_at": "2026-07-13T05:33:01+00:00",
+    "scraped_at": "2026-07-13T15:39:09+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 40,
@@ -66244,7 +66280,7 @@
       "64GB RAM": 80,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:01+00:00",
+    "scraped_at": "2026-07-13T15:39:09+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 40,
@@ -66381,7 +66417,7 @@
       "64GB RAM": 120,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:01+00:00",
+    "scraped_at": "2026-07-13T15:39:09+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 60,
@@ -66524,7 +66560,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:02+00:00",
+    "scraped_at": "2026-07-13T15:39:09+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 50,
@@ -66670,7 +66706,7 @@
       "32GB RAM": 100,
       "64GB RAM": 200
     },
-    "scraped_at": "2026-07-13T05:33:49+00:00",
+    "scraped_at": "2026-07-13T15:39:59+00:00",
     "series": "lenovo-thinkpad-p1",
     "storage_adj": {
       "1TB SSD": 100,
@@ -66796,7 +66832,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:02+00:00",
+    "scraped_at": "2026-07-13T15:39:10+00:00",
     "series": "lenovo-thinkpad-p14s",
     "storage_adj": {
       "1TB SSD": 30,
@@ -66923,7 +66959,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:03+00:00",
+    "scraped_at": "2026-07-13T15:39:10+00:00",
     "series": "lenovo-thinkpad-p14s",
     "storage_adj": {
       "1TB SSD": 30,
@@ -67060,7 +67096,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:03+00:00",
+    "scraped_at": "2026-07-13T15:39:10+00:00",
     "series": "lenovo-thinkpad-p14s",
     "storage_adj": {
       "1TB SSD": 30,
@@ -67196,7 +67232,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:03+00:00",
+    "scraped_at": "2026-07-13T15:39:11+00:00",
     "series": "lenovo-thinkpad-p14s",
     "storage_adj": {
       "1TB SSD": 40,
@@ -67340,7 +67376,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:04+00:00",
+    "scraped_at": "2026-07-13T15:39:11+00:00",
     "series": "lenovo-thinkpad-p14s",
     "storage_adj": {
       "1TB SSD": 50,
@@ -67506,7 +67542,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:59+00:00",
+    "scraped_at": "2026-07-13T15:40:12+00:00",
     "series": "lenovo-thinkpad-p14s",
     "storage_adj": {
       "1TB SSD": 50,
@@ -67674,7 +67710,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:04+00:00",
+    "scraped_at": "2026-07-13T15:39:11+00:00",
     "series": "lenovo-thinkpad-p15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -67832,7 +67868,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:05+00:00",
+    "scraped_at": "2026-07-13T15:39:12+00:00",
     "series": "lenovo-thinkpad-p15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -67965,7 +68001,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:05+00:00",
+    "scraped_at": "2026-07-13T15:39:13+00:00",
     "series": "lenovo-thinkpad-p15s",
     "storage_adj": {
       "1TB SSD": 30,
@@ -68072,7 +68108,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:06+00:00",
+    "scraped_at": "2026-07-13T15:39:13+00:00",
     "series": "lenovo-thinkpad-p15s",
     "storage_adj": {
       "1TB SSD": 50,
@@ -68203,7 +68239,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:06+00:00",
+    "scraped_at": "2026-07-13T15:39:13+00:00",
     "series": "lenovo-thinkpad-p15v",
     "storage_adj": {
       "1TB SSD": 30,
@@ -68346,7 +68382,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:06+00:00",
+    "scraped_at": "2026-07-13T15:39:13+00:00",
     "series": "lenovo-thinkpad-p15v",
     "storage_adj": {
       "1TB SSD": 30,
@@ -68493,7 +68529,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:06+00:00",
+    "scraped_at": "2026-07-13T15:39:14+00:00",
     "series": "lenovo-thinkpad-p15v",
     "storage_adj": {
       "1TB SSD": 40,
@@ -68645,7 +68681,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:11+00:00",
+    "scraped_at": "2026-07-13T15:39:19+00:00",
     "series": "lenovo-thinkpad-p16",
     "storage_adj": {
       "1TB SSD": 50,
@@ -68802,7 +68838,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:11+00:00",
+    "scraped_at": "2026-07-13T15:39:19+00:00",
     "series": "lenovo-thinkpad-p16",
     "storage_adj": {
       "1TB SSD": 50,
@@ -68964,7 +69000,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:59+00:00",
+    "scraped_at": "2026-07-13T15:40:12+00:00",
     "series": "lenovo-thinkpad-p16",
     "storage_adj": {
       "1TB SSD": 50,
@@ -69110,7 +69146,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:11+00:00",
+    "scraped_at": "2026-07-13T15:39:19+00:00",
     "series": "lenovo-thinkpad-p16s",
     "storage_adj": {
       "1TB SSD": 40,
@@ -69251,7 +69287,7 @@
       "64GB RAM": 125,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:11+00:00",
+    "scraped_at": "2026-07-13T15:39:19+00:00",
     "series": "lenovo-thinkpad-p16s",
     "storage_adj": {
       "1TB SSD": 50,
@@ -69393,7 +69429,7 @@
       "8GB RAM": 0,
       "96GB RAM": 200
     },
-    "scraped_at": "2026-07-13T05:33:12+00:00",
+    "scraped_at": "2026-07-13T15:39:21+00:00",
     "series": "lenovo-thinkpad-p16s",
     "storage_adj": {
       "1TB SSD": 75,
@@ -69552,7 +69588,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:39+00:00",
+    "scraped_at": "2026-07-13T15:39:50+00:00",
     "series": "lenovo-thinkpad-p16s",
     "storage_adj": {
       "1TB SSD": 50,
@@ -69732,7 +69768,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:12+00:00",
+    "scraped_at": "2026-07-13T15:39:20+00:00",
     "series": "lenovo-thinkpad-p16v",
     "storage_adj": {
       "1TB SSD": 50,
@@ -69890,7 +69926,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:12+00:00",
+    "scraped_at": "2026-07-13T15:39:20+00:00",
     "series": "lenovo-thinkpad-p16v",
     "storage_adj": {
       "1TB SSD": 50,
@@ -70021,7 +70057,7 @@
       "32GB RAM": 75,
       "64GB RAM": 150
     },
-    "scraped_at": "2026-07-13T05:33:49+00:00",
+    "scraped_at": "2026-07-13T15:39:59+00:00",
     "series": "lenovo-thinkpad-p16v",
     "storage_adj": {
       "1TB SSD": 75,
@@ -70157,7 +70193,7 @@
       "64GB RAM": 80,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:53+00:00",
+    "scraped_at": "2026-07-13T15:37:50+00:00",
     "series": "lenovo-thinkpad-p17-series",
     "storage_adj": {
       "1TB SSD": 40,
@@ -70364,7 +70400,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:28+00:00",
+    "scraped_at": "2026-07-13T15:38:31+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "128GB SSD": 0,
@@ -70799,7 +70835,7 @@
       "48GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:29+00:00",
+    "scraped_at": "2026-07-13T15:38:31+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "128GB SSD": 0,
@@ -71223,7 +71259,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:42+00:00",
+    "scraped_at": "2026-07-13T15:39:52+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "1TB SSD": 50,
@@ -71325,7 +71361,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:26+00:00",
+    "scraped_at": "2026-07-13T15:38:29+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "128GB SSD": 0,
@@ -71440,7 +71476,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:27+00:00",
+    "scraped_at": "2026-07-13T15:38:29+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "128GB SSD": 10,
@@ -71569,7 +71605,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:27+00:00",
+    "scraped_at": "2026-07-13T15:38:29+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "128GB SSD": 0,
@@ -71706,7 +71742,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:27+00:00",
+    "scraped_at": "2026-07-13T15:38:30+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "128GB SSD": 0,
@@ -71829,7 +71865,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:28+00:00",
+    "scraped_at": "2026-07-13T15:38:30+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "128GB SSD": 0,
@@ -71934,7 +71970,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:28+00:00",
+    "scraped_at": "2026-07-13T15:38:30+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "1TB SSD": 30,
@@ -72037,7 +72073,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:28+00:00",
+    "scraped_at": "2026-07-13T15:38:30+00:00",
     "series": "lenovo-thinkpad-t-series-14",
     "storage_adj": {
       "1TB SSD": 30,
@@ -72137,7 +72173,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:31+00:00",
+    "scraped_at": "2026-07-13T15:38:32+00:00",
     "series": "lenovo-thinkpad-t-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -72290,7 +72326,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:39+00:00",
+    "scraped_at": "2026-07-13T15:39:49+00:00",
     "series": "lenovo-thinkpad-t-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -72414,7 +72450,7 @@
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-t-series-15/lenovo-thinkpad-t15g"
   },
   "lenovo-thinkpad-t-series-15/lenovo-thinkpad-t15p": {
-    "base_price": 160,
+    "base_price": 130,
     "battery_adj": {
       "good": 0,
       "poor": -75
@@ -72431,7 +72467,7 @@
         "label": "Intel Core i5 10th Gen."
       },
       {
-        "adj": 60,
+        "adj": 50,
         "attrs": {
           "processor_type": "[intel-core-i7-10th-gen]"
         },
@@ -72448,7 +72484,7 @@
     "display_adj": {
       "Full HD (Non-Touchscreen)": 0,
       "Full HD (Touchscreen)": 20,
-      "Ultra HD": 40
+      "Ultra HD": 50
     },
     "done": true,
     "iwm_name": "Sell your Lenovo ThinkPad T15p for More Cash Online",
@@ -72459,17 +72495,17 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:31+00:00",
+    "scraped_at": "2026-07-13T15:38:33+00:00",
     "series": "lenovo-thinkpad-t-series-15",
     "storage_adj": {
-      "1TB SSD": 30,
+      "1TB SSD": 20,
       "256GB SSD": 0,
-      "2TB SSD": 50,
-      "512GB SSD": 15
+      "2TB SSD": 30,
+      "512GB SSD": 10
     },
     "submodels": {
       "t15p-gen-1": {
-        "base_price": 160,
+        "base_price": 130,
         "battery_adj": {
           "good": 0,
           "poor": -75
@@ -72486,7 +72522,7 @@
             "label": "Intel Core i5 10th Gen."
           },
           {
-            "adj": 60,
+            "adj": 50,
             "attrs": {
               "processor_type": "[intel-core-i7-10th-gen]"
             },
@@ -72503,7 +72539,7 @@
         "display_adj": {
           "Full HD (Non-Touchscreen)": 0,
           "Full HD (Touchscreen)": 20,
-          "Ultra HD": 40
+          "Ultra HD": 50
         },
         "model_label": "T15p Gen 1",
         "ram_adj": {
@@ -72513,14 +72549,14 @@
           "8GB RAM": 0
         },
         "storage_adj": {
-          "1TB SSD": 30,
+          "1TB SSD": 20,
           "256GB SSD": 0,
-          "2TB SSD": 50,
-          "512GB SSD": 15
+          "2TB SSD": 30,
+          "512GB SSD": 10
         }
       },
       "t15p-gen-2": {
-        "base_price": 220,
+        "base_price": 190,
         "battery_adj": {
           "good": 0,
           "poor": -75
@@ -72537,7 +72573,7 @@
             "label": "Intel Core i5 11th Gen."
           },
           {
-            "adj": 60,
+            "adj": 50,
             "attrs": {
               "processor_type": "[intel-core-i7-11th-gen]"
             },
@@ -72546,15 +72582,15 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -110,
-          "good": -50,
+          "fair": -120,
+          "good": -55,
           "mint": 0,
           "sealed": 20
         },
         "display_adj": {
           "Full HD (Non-Touchscreen)": 0,
           "Full HD (Touchscreen)": 20,
-          "Ultra HD": 40
+          "Ultra HD": 50
         },
         "model_label": "T15p Gen 2",
         "ram_adj": {
@@ -72597,15 +72633,15 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -110,
-          "good": -55,
+          "fair": -135,
+          "good": -60,
           "mint": 0,
           "sealed": 25
         },
         "display_adj": {
           "Full HD (Non-Touchscreen)": 0,
           "Full HD (Touchscreen)": 20,
-          "Ultra HD": 40
+          "Ultra HD": 60
         },
         "model_label": "T15p Gen 3",
         "ram_adj": {
@@ -72668,7 +72704,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:29+00:00",
+    "scraped_at": "2026-07-13T15:38:32+00:00",
     "series": "lenovo-thinkpad-t-series-15",
     "storage_adj": {
       "128GB SSD": 0,
@@ -72773,7 +72809,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:29+00:00",
+    "scraped_at": "2026-07-13T15:38:32+00:00",
     "series": "lenovo-thinkpad-t-series-15",
     "storage_adj": {
       "128GB SSD": 0,
@@ -72878,7 +72914,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:29+00:00",
+    "scraped_at": "2026-07-13T15:38:32+00:00",
     "series": "lenovo-thinkpad-t-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -72994,7 +73030,7 @@
       "48GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:24+00:00",
+    "scraped_at": "2026-07-13T15:38:26+00:00",
     "series": "lenovo-thinkpad-t-series-16",
     "storage_adj": {
       "1TB SSD": 50,
@@ -73278,7 +73314,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:16+00:00",
+    "scraped_at": "2026-07-13T15:39:25+00:00",
     "series": "lenovo-thinkpad-x1-series",
     "storage_adj": {
       "1TB SSD": 50,
@@ -73440,7 +73476,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:41+00:00",
+    "scraped_at": "2026-07-13T15:37:35+00:00",
     "series": "lenovo-thinkpad-x1-series",
     "storage_adj": {
       "128GB SSD": 0,
@@ -73996,7 +74032,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:31:42+00:00",
+    "scraped_at": "2026-07-13T15:37:36+00:00",
     "series": "lenovo-thinkpad-x1-series",
     "storage_adj": {
       "1TB SSD": 50,
@@ -74341,7 +74377,7 @@
       "32GB RAM": 80,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:13+00:00",
+    "scraped_at": "2026-07-13T15:39:22+00:00",
     "series": "lenovo-thinkpad-x1-series",
     "storage_adj": {
       "1TB SSD": 80,
@@ -74452,7 +74488,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:31:42+00:00",
+    "scraped_at": "2026-07-13T15:37:36+00:00",
     "series": "lenovo-thinkpad-x1-series",
     "storage_adj": {
       "1TB SSD": 50,
@@ -74643,7 +74679,7 @@
       "32GB RAM": 40,
       "64GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:31:42+00:00",
+    "scraped_at": "2026-07-13T15:37:36+00:00",
     "series": "lenovo-thinkpad-x1-series",
     "storage_adj": {
       "1TB SSD": 40,
@@ -74760,7 +74796,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:42+00:00",
+    "scraped_at": "2026-07-13T15:37:35+00:00",
     "series": "lenovo-thinkpad-x1-series",
     "storage_adj": {
       "1TB SSD": 50,
@@ -75169,7 +75205,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:32+00:00",
+    "scraped_at": "2026-07-13T15:38:34+00:00",
     "series": "lenovo-thinkpad-x13-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -75565,7 +75601,7 @@
       "16GB RAM": 0,
       "32GB RAM": 25
     },
-    "scraped_at": "2026-07-13T05:34:00+00:00",
+    "scraped_at": "2026-07-13T15:40:15+00:00",
     "series": "lenovo-thinkpad-x13-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -75662,7 +75698,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:32+00:00",
+    "scraped_at": "2026-07-13T15:38:34+00:00",
     "series": "lenovo-thinkpad-x13-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -75890,7 +75926,7 @@
       "32GB RAM": 70,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:32+00:00",
+    "scraped_at": "2026-07-13T15:38:34+00:00",
     "series": "lenovo-thinkpad-x13-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -75970,7 +76006,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:39+00:00",
+    "scraped_at": "2026-07-13T15:37:32+00:00",
     "series": "lenovo-thinkpad-x390-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -76126,7 +76162,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:18+00:00",
+    "scraped_at": "2026-07-13T15:39:28+00:00",
     "series": "lenovo-thinkpad-x9-series-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -76291,7 +76327,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:04+00:00",
+    "scraped_at": "2026-07-13T15:38:04+00:00",
     "series": "lenovo-thinkpad-z-series",
     "storage_adj": {
       "1TB SSD": 30,
@@ -76444,7 +76480,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:05+00:00",
+    "scraped_at": "2026-07-13T15:38:04+00:00",
     "series": "lenovo-thinkpad-z-series",
     "storage_adj": {
       "1TB SSD": 30,
@@ -76562,7 +76598,7 @@
     "url": "https://www.itsworthmore.com/sell/lenovo-thinkpad-z-series/lenovo-thinkpad-z16"
   },
   "lenovo-yoga-desktop/lenovo-yoga-a940": {
-    "base_price": 95,
+    "base_price": 115,
     "battery_adj": {},
     "charger_adj": {
       "hdmi": 1,
@@ -76580,7 +76616,7 @@
         "label": "Intel Core i5 8th Gen."
       },
       {
-        "adj": 30,
+        "adj": 35,
         "attrs": {
           "model_year": "[2019]",
           "processor_type": "[intel-core-i5-9th-gen]"
@@ -76596,7 +76632,7 @@
         "label": "Intel Core i7 8th Gen."
       },
       {
-        "adj": 105,
+        "adj": 95,
         "attrs": {
           "model_year": "[2019]",
           "processor_type": "[intel-core-i7-9th-gen]"
@@ -76612,7 +76648,7 @@
         "label": "Intel Core i9 8th Gen."
       },
       {
-        "adj": 135,
+        "adj": 150,
         "attrs": {
           "model_year": "[2019]",
           "processor_type": "[intel-core-i9-9th-gen]"
@@ -76634,7 +76670,7 @@
       "16GB RAM": 0,
       "32GB RAM": 25
     },
-    "scraped_at": "2026-07-13T05:31:43+00:00",
+    "scraped_at": "2026-07-13T15:37:38+00:00",
     "series": "lenovo-yoga-desktop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -76643,7 +76679,7 @@
     },
     "submodels": {
       "": {
-        "base_price": 95,
+        "base_price": 115,
         "battery_adj": {},
         "charger_adj": {
           "hdmi": 1,
@@ -76661,7 +76697,7 @@
             "label": "Intel Core i5 8th Gen."
           },
           {
-            "adj": 30,
+            "adj": 35,
             "attrs": {
               "model_year": "[2019]",
               "processor_type": "[intel-core-i5-9th-gen]"
@@ -76677,7 +76713,7 @@
             "label": "Intel Core i7 8th Gen."
           },
           {
-            "adj": 105,
+            "adj": 95,
             "attrs": {
               "model_year": "[2019]",
               "processor_type": "[intel-core-i7-9th-gen]"
@@ -76693,7 +76729,7 @@
             "label": "Intel Core i9 8th Gen."
           },
           {
-            "adj": 135,
+            "adj": 150,
             "attrs": {
               "model_year": "[2019]",
               "processor_type": "[intel-core-i9-9th-gen]"
@@ -76763,7 +76799,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:45+00:00",
+    "scraped_at": "2026-07-13T15:37:40+00:00",
     "series": "lenovo-yoga-desktop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -76820,7 +76856,7 @@
     "url": "https://www.itsworthmore.com/sell/lenovo-yoga-desktop/lenovo-yoga-aio-7"
   },
   "lenovo-yoga-desktop/lenovo-yoga-aio-9i": {
-    "base_price": 640,
+    "base_price": 575,
     "battery_adj": {},
     "charger_adj": {
       "hdmi": 1,
@@ -76840,8 +76876,8 @@
     ],
     "condition_adj": {
       "broken": 0,
-      "fair": -240,
-      "good": -80,
+      "fair": -200,
+      "good": -90,
       "mint": 0,
       "sealed": 25,
       "verygood": -40
@@ -76857,7 +76893,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:20+00:00",
+    "scraped_at": "2026-07-13T15:39:30+00:00",
     "series": "lenovo-yoga-desktop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -76865,7 +76901,7 @@
     },
     "submodels": {
       "": {
-        "base_price": 640,
+        "base_price": 575,
         "battery_adj": {},
         "charger_adj": {
           "hdmi": 1,
@@ -76885,8 +76921,8 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -240,
-          "good": -80,
+          "fair": -200,
+          "good": -90,
           "mint": 0,
           "sealed": 25,
           "verygood": -40
@@ -76970,7 +77006,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:34+00:00",
+    "scraped_at": "2026-07-13T15:38:38+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -77173,7 +77209,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:38+00:00",
+    "scraped_at": "2026-07-13T15:38:41+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -77361,7 +77397,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:34+00:00",
+    "scraped_at": "2026-07-13T15:38:38+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -77469,7 +77505,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:36+00:00",
+    "scraped_at": "2026-07-13T15:38:38+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -77587,7 +77623,7 @@
       "24GB RAM": 20,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:34:03+00:00",
+    "scraped_at": "2026-07-13T15:40:18+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -77747,7 +77783,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:36+00:00",
+    "scraped_at": "2026-07-13T15:38:40+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -77896,7 +77932,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:32:36+00:00",
+    "scraped_at": "2026-07-13T15:38:38+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -78065,7 +78101,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:36+00:00",
+    "scraped_at": "2026-07-13T15:38:40+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -78242,7 +78278,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:14+00:00",
+    "scraped_at": "2026-07-13T15:39:22+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -78357,7 +78393,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:32:37+00:00",
+    "scraped_at": "2026-07-13T15:38:40+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -78464,7 +78500,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:32:37+00:00",
+    "scraped_at": "2026-07-13T15:38:40+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -78572,7 +78608,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:32:37+00:00",
+    "scraped_at": "2026-07-13T15:38:41+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -78678,7 +78714,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:32:37+00:00",
+    "scraped_at": "2026-07-13T15:38:41+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -78801,7 +78837,7 @@
       "4GB RAM": 0,
       "8GB RAM": 10
     },
-    "scraped_at": "2026-07-13T05:32:38+00:00",
+    "scraped_at": "2026-07-13T15:38:41+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -78917,7 +78953,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:14+00:00",
+    "scraped_at": "2026-07-13T15:39:23+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -79042,7 +79078,7 @@
       "32GB RAM": 50,
       "64GB RAM": 90
     },
-    "scraped_at": "2026-07-13T05:33:15+00:00",
+    "scraped_at": "2026-07-13T15:39:23+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -79185,7 +79221,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:14+00:00",
+    "scraped_at": "2026-07-13T15:39:23+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -79300,7 +79336,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:09+00:00",
+    "scraped_at": "2026-07-13T15:39:16+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -79456,7 +79492,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:18+00:00",
+    "scraped_at": "2026-07-13T15:39:28+00:00",
     "series": "lenovo-yoga-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -79608,7 +79644,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:26+00:00",
+    "scraped_at": "2026-07-13T15:37:17+00:00",
     "series": "lg-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -80190,7 +80226,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:19+00:00",
+    "scraped_at": "2026-07-13T15:39:29+00:00",
     "series": "lg-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -80421,7 +80457,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:19+00:00",
+    "scraped_at": "2026-07-13T15:39:29+00:00",
     "series": "lg-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -80794,7 +80830,7 @@
       "32GB RAM": 55,
       "64GB RAM": 80
     },
-    "scraped_at": "2026-07-13T05:33:00+00:00",
+    "scraped_at": "2026-07-13T15:39:08+00:00",
     "series": "msi-desktop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -81331,7 +81367,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:00+00:00",
+    "scraped_at": "2026-07-13T15:39:08+00:00",
     "series": "msi-desktop",
     "storage_adj": {
       "1TB HDD": -25,
@@ -81738,7 +81774,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:00+00:00",
+    "scraped_at": "2026-07-13T15:39:08+00:00",
     "series": "msi-desktop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -82027,7 +82063,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:33:43+00:00",
+    "scraped_at": "2026-07-13T15:39:53+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -82183,7 +82219,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:27+00:00",
+    "scraped_at": "2026-07-13T15:39:36+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -82485,7 +82521,7 @@
       "32GB RAM": 0,
       "64GB RAM": 75
     },
-    "scraped_at": "2026-07-13T05:33:26+00:00",
+    "scraped_at": "2026-07-13T15:39:36+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -82620,7 +82656,7 @@
       "32GB RAM": 30,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:50+00:00",
+    "scraped_at": "2026-07-13T15:38:56+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -82857,7 +82893,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:50+00:00",
+    "scraped_at": "2026-07-13T15:38:57+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -83215,7 +83251,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:44+00:00",
+    "scraped_at": "2026-07-13T15:37:39+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -83895,7 +83931,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:04+00:00",
+    "scraped_at": "2026-07-13T15:38:04+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -84155,7 +84191,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:44+00:00",
+    "scraped_at": "2026-07-13T15:37:38+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB HDD": 20,
@@ -84897,7 +84933,7 @@
       "32GB RAM": 0,
       "64GB RAM": 150
     },
-    "scraped_at": "2026-07-13T05:31:40+00:00",
+    "scraped_at": "2026-07-13T15:37:33+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -85753,7 +85789,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:31:39+00:00",
+    "scraped_at": "2026-07-13T15:37:33+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -86852,7 +86888,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:50+00:00",
+    "scraped_at": "2026-07-13T15:38:57+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -87139,7 +87175,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:44+00:00",
+    "scraped_at": "2026-07-13T15:37:38+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -87679,7 +87715,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:31:39+00:00",
+    "scraped_at": "2026-07-13T15:37:32+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB HDD": -20,
@@ -88295,7 +88331,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:32:50+00:00",
+    "scraped_at": "2026-07-13T15:38:56+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -88925,7 +88961,7 @@
       "32GB RAM": 0,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:28+00:00",
+    "scraped_at": "2026-07-13T15:39:39+00:00",
     "series": "msi-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -89572,7 +89608,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:54+00:00",
+    "scraped_at": "2026-07-13T15:39:01+00:00",
     "series": "precision-3000-series-desktop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -89719,7 +89755,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:54+00:00",
+    "scraped_at": "2026-07-13T15:39:01+00:00",
     "series": "precision-3000-series-desktop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -89847,7 +89883,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:03+00:00",
+    "scraped_at": "2026-07-13T15:38:03+00:00",
     "series": "precision-3000-series-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -90056,7 +90092,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:04+00:00",
+    "scraped_at": "2026-07-13T15:38:03+00:00",
     "series": "precision-3000-series-laptop",
     "storage_adj": {
       "1TB SSD": 20,
@@ -90904,7 +90940,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:02+00:00",
+    "scraped_at": "2026-07-13T15:38:02+00:00",
     "series": "precision-5000-series-14",
     "storage_adj": {
       "1TB SSD": 40,
@@ -91040,7 +91076,7 @@
       "32GB RAM": 40,
       "64GB RAM": 80
     },
-    "scraped_at": "2026-07-13T05:31:31+00:00",
+    "scraped_at": "2026-07-13T15:37:23+00:00",
     "series": "precision-5000-series-14",
     "storage_adj": {
       "1TB SSD": 50,
@@ -91179,7 +91215,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:09+00:00",
+    "scraped_at": "2026-07-13T15:39:16+00:00",
     "series": "precision-5000-series-14",
     "storage_adj": {
       "1TB SSD": 30,
@@ -91311,7 +91347,7 @@
       "32GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:12+00:00",
+    "scraped_at": "2026-07-13T15:38:13+00:00",
     "series": "precision-5000-series-15",
     "storage_adj": {
       "1TB SSD": 20,
@@ -91432,7 +91468,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:12+00:00",
+    "scraped_at": "2026-07-13T15:38:13+00:00",
     "series": "precision-5000-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -91567,7 +91603,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:12+00:00",
+    "scraped_at": "2026-07-13T15:38:15+00:00",
     "series": "precision-5000-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -91717,7 +91753,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:12+00:00",
+    "scraped_at": "2026-07-13T15:38:15+00:00",
     "series": "precision-5000-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -91863,7 +91899,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:13+00:00",
+    "scraped_at": "2026-07-13T15:38:15+00:00",
     "series": "precision-5000-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -92009,7 +92045,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:13+00:00",
+    "scraped_at": "2026-07-13T15:38:15+00:00",
     "series": "precision-5000-series-15",
     "storage_adj": {
       "1TB SSD": 40,
@@ -92154,7 +92190,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:14+00:00",
+    "scraped_at": "2026-07-13T15:38:16+00:00",
     "series": "precision-5000-series-15",
     "storage_adj": {
       "1TB SSD": 40,
@@ -92299,7 +92335,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:45+00:00",
+    "scraped_at": "2026-07-13T15:38:51+00:00",
     "series": "precision-5000-series-16",
     "storage_adj": {
       "1TB SSD": 50,
@@ -92450,7 +92486,7 @@
       "32GB RAM": 30,
       "64GB RAM": 60
     },
-    "scraped_at": "2026-07-13T05:33:02+00:00",
+    "scraped_at": "2026-07-13T15:39:10+00:00",
     "series": "precision-5000-series-16",
     "storage_adj": {
       "1TB SSD": 30,
@@ -92602,7 +92638,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:11+00:00",
+    "scraped_at": "2026-07-13T15:38:12+00:00",
     "series": "precision-5000-series-17",
     "storage_adj": {
       "1TB SSD": 20,
@@ -92756,7 +92792,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:11+00:00",
+    "scraped_at": "2026-07-13T15:38:12+00:00",
     "series": "precision-5000-series-17",
     "storage_adj": {
       "1TB SSD": 30,
@@ -92905,7 +92941,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:11+00:00",
+    "scraped_at": "2026-07-13T15:38:12+00:00",
     "series": "precision-5000-series-17",
     "storage_adj": {
       "1TB SSD": 50,
@@ -93042,7 +93078,7 @@
       "64GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:08+00:00",
+    "scraped_at": "2026-07-13T15:38:09+00:00",
     "series": "precision-7000-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -93167,7 +93203,7 @@
       "64GB RAM": 45,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:09+00:00",
+    "scraped_at": "2026-07-13T15:38:10+00:00",
     "series": "precision-7000-series-15",
     "storage_adj": {
       "1TB SSD": 25,
@@ -93306,7 +93342,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:09+00:00",
+    "scraped_at": "2026-07-13T15:38:10+00:00",
     "series": "precision-7000-series-15",
     "storage_adj": {
       "1TB HDD": 15,
@@ -93457,7 +93493,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:09+00:00",
+    "scraped_at": "2026-07-13T15:38:10+00:00",
     "series": "precision-7000-series-15",
     "storage_adj": {
       "1TB SSD": 40,
@@ -93606,7 +93642,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:10+00:00",
+    "scraped_at": "2026-07-13T15:38:11+00:00",
     "series": "precision-7000-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -93768,7 +93804,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:10+00:00",
+    "scraped_at": "2026-07-13T15:38:12+00:00",
     "series": "precision-7000-series-15",
     "storage_adj": {
       "1TB SSD": 30,
@@ -93922,7 +93958,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:02+00:00",
+    "scraped_at": "2026-07-13T15:38:02+00:00",
     "series": "precision-7000-series-16",
     "storage_adj": {
       "1TB SSD": 40,
@@ -94075,7 +94111,7 @@
       "64GB RAM": 80,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:08+00:00",
+    "scraped_at": "2026-07-13T15:38:08+00:00",
     "series": "precision-7000-series-16",
     "storage_adj": {
       "1TB SSD": 40,
@@ -94218,7 +94254,7 @@
       "64GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:05+00:00",
+    "scraped_at": "2026-07-13T15:38:05+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "128GB SSD": 0,
@@ -94343,7 +94379,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:05+00:00",
+    "scraped_at": "2026-07-13T15:38:06+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "1TB SSD": 30,
@@ -94487,7 +94523,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:06+00:00",
+    "scraped_at": "2026-07-13T15:38:06+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "1TB SSD": 30,
@@ -94652,7 +94688,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:07+00:00",
+    "scraped_at": "2026-07-13T15:38:07+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "1TB SSD": 40,
@@ -94813,7 +94849,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:07+00:00",
+    "scraped_at": "2026-07-13T15:38:07+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "1TB SSD": 30,
@@ -94974,7 +95010,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:07+00:00",
+    "scraped_at": "2026-07-13T15:38:07+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "1TB SSD": 40,
@@ -95131,7 +95167,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:07+00:00",
+    "scraped_at": "2026-07-13T15:38:08+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "1TB SSD": 50,
@@ -95281,7 +95317,7 @@
       "64GB RAM": 80,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:08+00:00",
+    "scraped_at": "2026-07-13T15:38:08+00:00",
     "series": "precision-7000-series-17",
     "storage_adj": {
       "1TB SSD": 40,
@@ -95408,7 +95444,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:23+00:00",
+    "scraped_at": "2026-07-13T15:39:33+00:00",
     "series": "proart-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -95505,7 +95541,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:23+00:00",
+    "scraped_at": "2026-07-13T15:39:33+00:00",
     "series": "proart-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -95595,7 +95631,7 @@
       "32GB RAM": 25,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:24+00:00",
+    "scraped_at": "2026-07-13T15:39:33+00:00",
     "series": "proart-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -95679,7 +95715,7 @@
       "32GB RAM": 0,
       "64GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:34:01+00:00",
+    "scraped_at": "2026-07-13T15:40:16+00:00",
     "series": "proart-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -95766,7 +95802,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:24+00:00",
+    "scraped_at": "2026-07-13T15:39:34+00:00",
     "series": "proart-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -95860,7 +95896,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:24+00:00",
+    "scraped_at": "2026-07-13T15:39:33+00:00",
     "series": "proart-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -95955,7 +95991,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:22+00:00",
+    "scraped_at": "2026-07-13T15:37:14+00:00",
     "series": "razer-blade-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -96137,7 +96173,7 @@
       "32GB RAM": 100,
       "64GB RAM": 200
     },
-    "scraped_at": "2026-07-13T05:31:25+00:00",
+    "scraped_at": "2026-07-13T15:37:16+00:00",
     "series": "razer-blade-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -96390,7 +96426,7 @@
     "iwm_name": "Sell Your Razer Blade 15 Laptop for the Most Cash",
     "model": "razer-blade-15",
     "ram_adj": {},
-    "scraped_at": "2026-07-13T05:31:22+00:00",
+    "scraped_at": "2026-07-13T15:37:14+00:00",
     "series": "razer-blade-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -96915,7 +96951,7 @@
       "32GB RAM": 0,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:31:23+00:00",
+    "scraped_at": "2026-07-13T15:37:15+00:00",
     "series": "razer-blade-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -97126,7 +97162,7 @@
       "16GB RAM": 0,
       "32GB RAM": 30
     },
-    "scraped_at": "2026-07-13T05:31:23+00:00",
+    "scraped_at": "2026-07-13T15:37:15+00:00",
     "series": "razer-blade-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -97399,7 +97435,7 @@
       "64GB RAM": 200,
       "96GB RAM": 350
     },
-    "scraped_at": "2026-07-13T05:31:22+00:00",
+    "scraped_at": "2026-07-13T15:37:14+00:00",
     "series": "razer-blade-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -97560,7 +97596,7 @@
       "16GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:30+00:00",
+    "scraped_at": "2026-07-13T15:37:22+00:00",
     "series": "razer-book",
     "storage_adj": {
       "1TB SSD": 40,
@@ -103426,7 +103462,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:24+00:00",
+    "scraped_at": "2026-07-13T15:37:15+00:00",
     "series": "samsung-laptop",
     "storage_adj": {
       "256GB SSD": 0,
@@ -103827,7 +103863,7 @@
     "iwm_name": "Sell your Samsung Galaxy Book2 Series for More Cash Online",
     "model": "galaxy-book2",
     "ram_adj": {},
-    "scraped_at": "2026-07-13T05:31:33+00:00",
+    "scraped_at": "2026-07-13T15:37:25+00:00",
     "series": "samsung-laptop",
     "storage_adj": {},
     "submodels": {
@@ -104050,7 +104086,7 @@
     "iwm_name": "Sell your Samsung Galaxy Book3 Series for More Cash Online",
     "model": "galaxy-book3",
     "ram_adj": {},
-    "scraped_at": "2026-07-13T05:31:41+00:00",
+    "scraped_at": "2026-07-13T15:37:34+00:00",
     "series": "samsung-laptop",
     "storage_adj": {},
     "submodels": {
@@ -104293,7 +104329,7 @@
       "16GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:32+00:00",
+    "scraped_at": "2026-07-13T15:37:24+00:00",
     "series": "samsung-laptop",
     "storage_adj": {
       "512GB SSD": 0
@@ -104580,7 +104616,7 @@
     "ram_adj": {
       "16GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:15+00:00",
+    "scraped_at": "2026-07-13T15:39:24+00:00",
     "series": "samsung-laptop",
     "storage_adj": {
       "512GB SSD": 0
@@ -104736,7 +104772,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "samsung-chromebook",
-    "scraped_at": "2026-07-13T05:31:43+00:00",
+    "scraped_at": "2026-07-13T15:37:37+00:00",
     "series": "samsung-laptop",
     "url": "https://www.itsworthmore.com/sell/samsung-laptop/samsung-chromebook"
   },
@@ -104816,7 +104852,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:48+00:00",
+    "scraped_at": "2026-07-13T15:39:57+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -105006,7 +105042,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:07+00:00",
+    "scraped_at": "2026-07-13T15:39:15+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -105218,7 +105254,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:07+00:00",
+    "scraped_at": "2026-07-13T15:39:15+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -105417,7 +105453,7 @@
       "24GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:07+00:00",
+    "scraped_at": "2026-07-13T15:39:15+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -105568,7 +105604,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:48+00:00",
+    "scraped_at": "2026-07-13T15:39:59+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 0,
@@ -105737,7 +105773,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:07+00:00",
+    "scraped_at": "2026-07-13T15:39:15+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -105949,7 +105985,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:33:48+00:00",
+    "scraped_at": "2026-07-13T15:39:58+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -106143,7 +106179,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:09+00:00",
+    "scraped_at": "2026-07-13T15:39:16+00:00",
     "series": "the-ultimate-force-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -106266,7 +106302,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "tuf-fx504-laptop",
-    "scraped_at": "2026-07-13T05:33:07+00:00",
+    "scraped_at": "2026-07-13T15:39:14+00:00",
     "series": "the-ultimate-force-laptop",
     "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-fx504-laptop"
   },
@@ -106274,7 +106310,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "tuf-fx505-laptop",
-    "scraped_at": "2026-07-13T05:33:07+00:00",
+    "scraped_at": "2026-07-13T15:39:15+00:00",
     "series": "the-ultimate-force-laptop",
     "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-fx505-laptop"
   },
@@ -106282,7 +106318,7 @@
     "done": true,
     "error": "no_pricing",
     "model": "tuf-fx705-laptop",
-    "scraped_at": "2026-07-13T05:33:07+00:00",
+    "scraped_at": "2026-07-13T15:39:15+00:00",
     "series": "the-ultimate-force-laptop",
     "url": "https://www.itsworthmore.com/sell/the-ultimate-force-laptop/tuf-fx705-laptop"
   },
@@ -107847,7 +107883,7 @@
       "24GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:14+00:00",
+    "scraped_at": "2026-07-13T15:38:16+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -108039,7 +108075,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:14+00:00",
+    "scraped_at": "2026-07-13T15:38:16+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -108215,7 +108251,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:16+00:00",
+    "scraped_at": "2026-07-13T15:38:18+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -108348,7 +108384,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:15+00:00",
+    "scraped_at": "2026-07-13T15:38:18+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -108477,7 +108513,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:16+00:00",
+    "scraped_at": "2026-07-13T15:38:19+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -108623,7 +108659,7 @@
       "4GB RAM": 0,
       "8GB RAM": 15
     },
-    "scraped_at": "2026-07-13T05:32:15+00:00",
+    "scraped_at": "2026-07-13T15:38:17+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -108763,7 +108799,7 @@
       "16GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:16+00:00",
+    "scraped_at": "2026-07-13T15:38:19+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -108873,7 +108909,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:15+00:00",
+    "scraped_at": "2026-07-13T15:39:23+00:00",
     "series": "vivobook-14-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -109039,7 +109075,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:16+00:00",
+    "scraped_at": "2026-07-13T15:38:19+00:00",
     "series": "vivobook-15-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -109238,7 +109274,7 @@
       "16GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:18+00:00",
+    "scraped_at": "2026-07-13T15:38:21+00:00",
     "series": "vivobook-15-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -109415,7 +109451,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:17+00:00",
+    "scraped_at": "2026-07-13T15:38:20+00:00",
     "series": "vivobook-15-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -109580,7 +109616,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:18+00:00",
+    "scraped_at": "2026-07-13T15:38:21+00:00",
     "series": "vivobook-15-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -109760,7 +109796,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:17+00:00",
+    "scraped_at": "2026-07-13T15:38:20+00:00",
     "series": "vivobook-15-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -109936,7 +109972,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:18+00:00",
+    "scraped_at": "2026-07-13T15:38:21+00:00",
     "series": "vivobook-16-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -110079,7 +110115,7 @@
       "32GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:19+00:00",
+    "scraped_at": "2026-07-13T15:38:21+00:00",
     "series": "vivobook-16-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -110223,7 +110259,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:19+00:00",
+    "scraped_at": "2026-07-13T15:38:22+00:00",
     "series": "vivobook-16-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -110330,7 +110366,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:20+00:00",
+    "scraped_at": "2026-07-13T15:38:22+00:00",
     "series": "vivobook-16-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -110460,7 +110496,7 @@
       "24GB RAM": 20,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:33:20+00:00",
+    "scraped_at": "2026-07-13T15:39:31+00:00",
     "series": "vivobook-16-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -110606,7 +110642,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:19+00:00",
+    "scraped_at": "2026-07-13T15:38:22+00:00",
     "series": "vivobook-16-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -110916,7 +110952,7 @@
       "32GB RAM": 10,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:09+00:00",
+    "scraped_at": "2026-07-13T15:39:17+00:00",
     "series": "xps-desktop",
     "storage_adj": {
       "1TB HDD": 10,
@@ -110975,7 +111011,7 @@
     "url": "https://www.itsworthmore.com/sell/xps-desktop/xps-8920-desktop"
   },
   "xps-desktop/xps-8930-desktop": {
-    "base_price": 5,
+    "base_price": 10,
     "battery_adj": {},
     "charger_adj": {},
     "chips": [
@@ -110988,7 +111024,7 @@
         "label": "Intel Core i7 8th Gen."
       },
       {
-        "adj": 5,
+        "adj": 10,
         "attrs": {
           "model": "[8930]",
           "processor_type": "[intel-core-i7-9th-gen]"
@@ -110998,8 +111034,8 @@
     ],
     "condition_adj": {
       "broken": 0,
-      "fair": -80,
-      "good": -30,
+      "fair": -40,
+      "good": -15,
       "mint": 0,
       "sealed": 15
     },
@@ -111022,7 +111058,7 @@
       "64GB RAM": 35,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:10+00:00",
+    "scraped_at": "2026-07-13T15:39:18+00:00",
     "series": "xps-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -111036,7 +111072,7 @@
     },
     "submodels": {
       "": {
-        "base_price": 5,
+        "base_price": 10,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -111049,7 +111085,7 @@
             "label": "Intel Core i7 8th Gen."
           },
           {
-            "adj": 5,
+            "adj": 10,
             "attrs": {
               "model": "[8930]",
               "processor_type": "[intel-core-i7-9th-gen]"
@@ -111059,8 +111095,8 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -80,
-          "good": -30,
+          "fair": -40,
+          "good": -15,
           "mint": 0,
           "sealed": 15
         },
@@ -111096,7 +111132,7 @@
     "url": "https://www.itsworthmore.com/sell/xps-desktop/xps-8930-desktop"
   },
   "xps-desktop/xps-8940-desktop": {
-    "base_price": 140,
+    "base_price": 125,
     "battery_adj": {},
     "charger_adj": {},
     "chips": [
@@ -111109,7 +111145,7 @@
         "label": "Intel Core i5 10th Gen."
       },
       {
-        "adj": 40,
+        "adj": 50,
         "attrs": {
           "model": "[8940]",
           "processor_type": "[intel-core-i5-11th-gen]"
@@ -111117,7 +111153,7 @@
         "label": "Intel Core i5 11th Gen."
       },
       {
-        "adj": 40,
+        "adj": 65,
         "attrs": {
           "model": "[8940]",
           "processor_type": "[intel-core-i7-10th-gen]"
@@ -111125,7 +111161,7 @@
         "label": "Intel Core i7 10th Gen."
       },
       {
-        "adj": 60,
+        "adj": 100,
         "attrs": {
           "model": "[8940]",
           "processor_type": "[intel-core-i7-11th-gen]"
@@ -111133,7 +111169,7 @@
         "label": "Intel Core i7 11th Gen."
       },
       {
-        "adj": 120,
+        "adj": 145,
         "attrs": {
           "model": "[8940]",
           "processor_type": "[intel-core-i9-10th-gen]"
@@ -111141,7 +111177,7 @@
         "label": "Intel Core i9 10th Gen."
       },
       {
-        "adj": 160,
+        "adj": 200,
         "attrs": {
           "model": "[8940]",
           "processor_type": "[intel-core-i9-11th-gen]"
@@ -111151,8 +111187,8 @@
     ],
     "condition_adj": {
       "broken": 0,
-      "fair": -150,
-      "good": -50,
+      "fair": -100,
+      "good": -40,
       "mint": 0,
       "sealed": 25
     },
@@ -111176,7 +111212,7 @@
       "64GB RAM": 50,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:10+00:00",
+    "scraped_at": "2026-07-13T15:39:18+00:00",
     "series": "xps-desktop",
     "storage_adj": {
       "1TB HDD": 0,
@@ -111189,7 +111225,7 @@
     },
     "submodels": {
       "": {
-        "base_price": 140,
+        "base_price": 125,
         "battery_adj": {},
         "charger_adj": {},
         "chips": [
@@ -111202,7 +111238,7 @@
             "label": "Intel Core i5 10th Gen."
           },
           {
-            "adj": 40,
+            "adj": 50,
             "attrs": {
               "model": "[8940]",
               "processor_type": "[intel-core-i5-11th-gen]"
@@ -111210,7 +111246,7 @@
             "label": "Intel Core i5 11th Gen."
           },
           {
-            "adj": 40,
+            "adj": 65,
             "attrs": {
               "model": "[8940]",
               "processor_type": "[intel-core-i7-10th-gen]"
@@ -111218,7 +111254,7 @@
             "label": "Intel Core i7 10th Gen."
           },
           {
-            "adj": 60,
+            "adj": 100,
             "attrs": {
               "model": "[8940]",
               "processor_type": "[intel-core-i7-11th-gen]"
@@ -111226,7 +111262,7 @@
             "label": "Intel Core i7 11th Gen."
           },
           {
-            "adj": 120,
+            "adj": 145,
             "attrs": {
               "model": "[8940]",
               "processor_type": "[intel-core-i9-10th-gen]"
@@ -111234,7 +111270,7 @@
             "label": "Intel Core i9 10th Gen."
           },
           {
-            "adj": 160,
+            "adj": 200,
             "attrs": {
               "model": "[8940]",
               "processor_type": "[intel-core-i9-11th-gen]"
@@ -111244,8 +111280,8 @@
         ],
         "condition_adj": {
           "broken": 0,
-          "fair": -150,
-          "good": -50,
+          "fair": -100,
+          "good": -40,
           "mint": 0,
           "sealed": 25
         },
@@ -111342,7 +111378,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:10+00:00",
+    "scraped_at": "2026-07-13T15:39:18+00:00",
     "series": "xps-desktop",
     "storage_adj": {
       "1TB HDD": 20,
@@ -111504,7 +111540,7 @@
       "64GB RAM": 100,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:10+00:00",
+    "scraped_at": "2026-07-13T15:39:18+00:00",
     "series": "xps-desktop",
     "storage_adj": {
       "1TB HDD": 20,
@@ -111817,7 +111853,7 @@
       "4GB RAM": -20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:34+00:00",
+    "scraped_at": "2026-07-13T15:37:27+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "128GB SSD": -20,
@@ -113345,7 +113381,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:31:31+00:00",
+    "scraped_at": "2026-07-13T15:37:23+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -113603,7 +113639,7 @@
       "64GB RAM": 60,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:35+00:00",
+    "scraped_at": "2026-07-13T15:37:27+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "128GB SSD": 0,
@@ -114306,7 +114342,7 @@
       "32GB RAM": 50,
       "64GB RAM": 100
     },
-    "scraped_at": "2026-07-13T05:31:31+00:00",
+    "scraped_at": "2026-07-13T15:37:23+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -114547,7 +114583,7 @@
       "64GB RAM": 75,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:31:35+00:00",
+    "scraped_at": "2026-07-13T15:37:27+00:00",
     "series": "xps-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -114945,7 +114981,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:20+00:00",
+    "scraped_at": "2026-07-13T15:38:23+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -115283,7 +115319,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:22+00:00",
+    "scraped_at": "2026-07-13T15:38:24+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -115633,7 +115669,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:23+00:00",
+    "scraped_at": "2026-07-13T15:38:25+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -115824,7 +115860,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:24+00:00",
+    "scraped_at": "2026-07-13T15:38:26+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -115973,7 +116009,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:33:22+00:00",
+    "scraped_at": "2026-07-13T15:39:32+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -116176,7 +116212,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:23+00:00",
+    "scraped_at": "2026-07-13T15:38:25+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -116378,7 +116414,7 @@
       "16GB RAM": 20,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:21+00:00",
+    "scraped_at": "2026-07-13T15:38:23+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -116516,7 +116552,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:24+00:00",
+    "scraped_at": "2026-07-13T15:38:26+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -116664,7 +116700,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:23+00:00",
+    "scraped_at": "2026-07-13T15:38:25+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -116808,7 +116844,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:24+00:00",
+    "scraped_at": "2026-07-13T15:38:26+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -116972,7 +117008,7 @@
       "16GB RAM": 15,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:25+00:00",
+    "scraped_at": "2026-07-13T15:38:27+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 25,
@@ -117093,7 +117129,7 @@
       "16GB RAM": 0,
       "32GB RAM": 40
     },
-    "scraped_at": "2026-07-13T05:32:25+00:00",
+    "scraped_at": "2026-07-13T15:38:27+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -117191,7 +117227,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:32:31+00:00",
+    "scraped_at": "2026-07-13T15:38:33+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -117303,7 +117339,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:31+00:00",
+    "scraped_at": "2026-07-13T15:38:34+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -117450,7 +117486,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:26+00:00",
+    "scraped_at": "2026-07-13T15:38:28+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -117637,7 +117673,7 @@
       "32GB RAM": 30,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:21+00:00",
+    "scraped_at": "2026-07-13T15:38:23+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 30,
@@ -117795,7 +117831,7 @@
       "32GB RAM": 40,
       "8GB RAM": 0
     },
-    "scraped_at": "2026-07-13T05:32:22+00:00",
+    "scraped_at": "2026-07-13T15:38:24+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 40,
@@ -117910,7 +117946,7 @@
       "16GB RAM": 0,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:23+00:00",
+    "scraped_at": "2026-07-13T15:39:32+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 50,
@@ -118034,7 +118070,7 @@
       "24GB RAM": 25,
       "32GB RAM": 50
     },
-    "scraped_at": "2026-07-13T05:33:22+00:00",
+    "scraped_at": "2026-07-13T15:39:32+00:00",
     "series": "zenbook-laptop",
     "storage_adj": {
       "1TB SSD": 50,

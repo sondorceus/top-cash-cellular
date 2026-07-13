@@ -24787,7 +24787,7 @@
     ]
   },
   "doptiplex5000": {
-    "base_price": 210,
+    "base_price": 135,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -24809,14 +24809,14 @@
         "sub": ""
       },
       {
-        "adj": 10,
+        "adj": 15,
         "id": "r16",
         "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 25,
+        "adj": 30,
         "id": "r32",
         "label": "32GB RAM",
         "multiplier": 1.0,
@@ -24825,14 +24825,14 @@
     ],
     "processors": [
       {
-        "adj": 210,
+        "adj": 135,
         "id": "intel_core_i5_13th_gen",
         "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 270,
+        "adj": 175,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
@@ -24864,7 +24864,7 @@
     ]
   },
   "doptiplex7010": {
-    "base_price": 210,
+    "base_price": 135,
     "battery_adj": {},
     "charger_adj": {},
     "condition_adj": {
@@ -24886,14 +24886,14 @@
         "sub": ""
       },
       {
-        "adj": 10,
+        "adj": 15,
         "id": "r16",
         "label": "16GB RAM",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 25,
+        "adj": 30,
         "id": "r32",
         "label": "32GB RAM",
         "multiplier": 1.0,
@@ -24902,14 +24902,14 @@
     ],
     "processors": [
       {
-        "adj": 210,
+        "adj": 135,
         "id": "intel_core_i5_13th_gen",
         "label": "Intel Core i5 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 270,
+        "adj": 175,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
@@ -32195,7 +32195,7 @@
     ]
   },
   "hpomen40": {
-    "base_price": 225,
+    "base_price": 300,
     "battery_adj": {},
     "charger_adj": {
       "hdmi": 1,
@@ -32302,49 +32302,49 @@
     ],
     "processors": [
       {
-        "adj": 225,
+        "adj": 300,
         "id": "amd_ryzen_7_5800x",
         "label": "AMD Ryzen 7 5800X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 375,
+        "adj": 425,
         "id": "amd_ryzen_7_7700x",
         "label": "AMD Ryzen 7 7700X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 275,
+        "adj": 375,
         "id": "amd_ryzen_9_5900x",
         "label": "AMD Ryzen 9 5900X",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 225,
+        "adj": 300,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 400,
+        "adj": 470,
         "id": "intel_core_i7_14th_gen",
         "label": "Intel Core i7 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 300,
+        "adj": 360,
         "id": "intel_core_i9_12th_gen",
         "label": "Intel Core i9 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 450,
+        "adj": 500,
         "id": "intel_core_i9_14th_gen",
         "label": "Intel Core i9 14th Gen.",
         "multiplier": 1.0,
@@ -32353,14 +32353,14 @@
     ],
     "storage": [
       {
-        "adj": 15,
+        "adj": 20,
         "id": "1tb",
         "label": "1TB SSD",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 30,
+        "adj": 40,
         "id": "2tb",
         "label": "2TB SSD",
         "multiplier": 1.0,
@@ -50976,7 +50976,7 @@
     ]
   },
   "lnlegion7dtwr": {
-    "base_price": 310,
+    "base_price": 260,
     "battery_adj": {},
     "charger_adj": {
       "hdmi": 1,
@@ -51043,14 +51043,14 @@
         "sub": ""
       },
       {
-        "adj": 150,
+        "adj": 100,
         "id": "nvidia_geforce_rtx_3080",
         "label": "NVIDIA GeForce RTX 3080",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 180,
+        "adj": 175,
         "id": "nvidia_geforce_rtx_3080_ti",
         "label": "NVIDIA GeForce RTX 3080 ti",
         "multiplier": 1.0,
@@ -51064,14 +51064,14 @@
         "sub": ""
       },
       {
-        "adj": 150,
+        "adj": 300,
         "id": "nvidia_geforce_rtx_4080",
         "label": "NVIDIA GeForce RTX 4080",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 300,
+        "adj": 500,
         "id": "nvidia_geforce_rtx_4090",
         "label": "NVIDIA GeForce RTX 4090",
         "multiplier": 1.0,
@@ -51111,58 +51111,72 @@
     ],
     "processors": [
       {
-        "adj": 310,
+        "adj": 260,
         "id": "intel_core_i7_10th_gen",
         "label": "Intel Core i7 10th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 390,
+        "adj": 300,
         "id": "intel_core_i7_11th_gen",
         "label": "Intel Core i7 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 460,
+        "adj": 400,
         "id": "intel_core_i7_12th_gen",
         "label": "Intel Core i7 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 560,
+        "adj": 480,
         "id": "intel_core_i7_13th_gen",
         "label": "Intel Core i7 13th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 400,
+        "adj": 575,
+        "id": "intel_core_i7_14th_gen",
+        "label": "Intel Core i7 14th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 310,
         "id": "intel_core_i9_10th_gen",
         "label": "Intel Core i9 10th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 475,
+        "adj": 380,
         "id": "intel_core_i9_11th_gen",
         "label": "Intel Core i9 11th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 550,
+        "adj": 470,
         "id": "intel_core_i9_12th_gen",
         "label": "Intel Core i9 12th Gen.",
         "multiplier": 1.0,
         "sub": ""
       },
       {
-        "adj": 650,
+        "adj": 560,
         "id": "intel_core_i9_13th_gen",
         "label": "Intel Core i9 13th Gen.",
+        "multiplier": 1.0,
+        "sub": ""
+      },
+      {
+        "adj": 640,
+        "id": "intel_core_i9_14th_gen",
+        "label": "Intel Core i9 14th Gen.",
         "multiplier": 1.0,
         "sub": ""
       }
