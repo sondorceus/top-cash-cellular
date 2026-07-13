@@ -18,7 +18,7 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   // n=28, 16 Plus 128 n=40, 16 Pro 256 n=6) — raises the broken/mint caps
   // so the owner's IWM-parity broken cells can breathe.
   "iPhone 16 Pro Max": 743, "iPhone 16 Pro": 640, "iPhone 16 Plus": 515, "iPhone 16": 520,
-  "iPhone 15 Pro Max": 525, "iPhone 15 Pro": 528, "iPhone 15": 349,
+  "iPhone 15 Pro Max": 525, "iPhone 15 Pro": 550, "iPhone 15": 349, // 15 Pro: eBay used 256 med n=12, 2026-07-12
   "iPhone 14 Pro Max": 417, "iPhone 14 Pro": 358, "iPhone 14": 268,
   // 13-family recalibrated 2026-07-11 (Skywalker-approved): the May comps were
   // stale-low and the margin cap was squashing good-condition offers to

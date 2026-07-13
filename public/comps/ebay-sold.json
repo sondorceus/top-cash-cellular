@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-07-13T00:29:59.947444+00:00",
+  "scraped_at": "2026-07-13T01:18:05.956636+00:00",
   "source": "eBay sold-listings (LH_Sold=1, LH_Complete=1)",
   "note": "Median/mean of completed-listing prices. Accessory + sibling-tier filtered. Use as resale reference vs Atlas wholesale.",
   "models": {
@@ -777,131 +777,48 @@
       "scraped_at": "2026-05-19T20:23:45.214441+00:00"
     },
     "ip14": {
+      "by_cell": {},
+      "samples": [],
+      "unmatched": 0,
+      "outliers_rejected": 0,
+      "label": "iPhone 14",
+      "family": "iphone 14",
+      "scraped_at": "2026-07-13T01:16:28.968114+00:00"
+    },
+    "ip14p": {
       "by_cell": {
         "128": {
           "used": {
-            "count": 13,
-            "average": 235.3,
-            "median": 236.99,
-            "net_average": 194.31,
-            "net_median": 195.78,
-            "min": 180.0,
-            "max": 285.0,
-            "rejected_outliers": 2
-          },
-          "sealed": {
-            "count": 3,
-            "average": 343.32,
-            "median": 329.99,
-            "net_average": 288.29,
-            "net_median": 276.69,
-            "min": 299.99,
-            "max": 399.98,
+            "count": 10,
+            "average": 335.8,
+            "median": 332.0,
+            "net_average": 281.75,
+            "net_median": 278.44,
+            "min": 250.0,
+            "max": 389.93,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 7,
+            "average": 381.86,
+            "median": 370.0,
+            "net_average": 321.82,
+            "net_median": 311.5,
+            "min": 290.0,
+            "max": 500.0,
             "rejected_outliers": 0
           }
         },
         "512": {
           "used": {
             "count": 1,
-            "average": 250.0,
-            "median": 250.0,
-            "net_average": 207.1,
-            "net_median": 207.1,
-            "min": 250.0,
-            "max": 250.0,
-            "rejected_outliers": 0
-          }
-        },
-        "256": {
-          "used": {
-            "count": 2,
-            "average": 273.97,
-            "median": 273.97,
-            "net_average": 227.95,
-            "net_median": 227.95,
-            "min": 214.95,
-            "max": 332.99,
-            "rejected_outliers": 0
-          }
-        }
-      },
-      "samples": [
-        {
-          "price": 219.99,
-          "title": "Apple iPhone 14 - 128 GB - Midnight (Unlocked)",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 180.0,
-          "title": "Apple iPhone 14 - 128 GB - Midnight (Unlocked) - Bat 89% - Works - Read First",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 399.98,
-          "title": "Apple iPhone 14 - 128 GB - Midnight (Unlocked) NIB Unopened Box Model A2649",
-          "cond": "Brand New \u00b7 Apple iPhone 14 \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 329.99,
-          "title": "Apple iPhone 14 - 128 GB - Blue (Unlocked)",
-          "cond": "Open Box \u00b7 Apple iPhone 14 \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 250.0,
-          "title": "Apple iPhone 14 512GB White GOOD CONDITION/UNLOCKED ANY CARRIER",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 \u00b7 512 GB"
-        },
-        {
-          "price": 214.95,
-          "title": "Apple iPhone 14, 256GB, Midnight - Unlocked Battery Service",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 332.99,
-          "title": "Apple iPhone 14 A2649 (AT&T LOCKED) 256GB Starlight (Excellent)",
-          "cond": "Excellent - Refurbished \u00b7 Apple iPhone 14 \u00b7 256 GB \u00b7 AT&T"
-        }
-      ],
-      "unmatched": 7,
-      "outliers_rejected": 2,
-      "label": "iPhone 14",
-      "family": "iphone 14",
-      "scraped_at": "2026-05-19T20:23:55.761865+00:00"
-    },
-    "ip14p": {
-      "by_cell": {
-        "256": {
-          "used": {
-            "count": 4,
-            "average": 333.13,
-            "median": 338.77,
-            "net_average": 279.42,
-            "net_median": 284.33,
-            "min": 255.0,
-            "max": 399.99,
-            "rejected_outliers": 0
-          }
-        },
-        "128": {
-          "used": {
-            "count": 7,
-            "average": 325.0,
-            "median": 325.0,
-            "net_average": 272.35,
-            "net_median": 272.35,
-            "min": 250.0,
-            "max": 375.0,
-            "rejected_outliers": 1
-          }
-        },
-        "512": {
-          "used": {
-            "count": 2,
-            "average": 424.5,
-            "median": 424.5,
-            "net_average": 358.92,
-            "net_median": 358.92,
-            "min": 350.0,
+            "average": 499.0,
+            "median": 499.0,
+            "net_average": 423.73,
+            "net_median": 423.73,
+            "min": 499.0,
             "max": 499.0,
             "rejected_outliers": 0
           }
@@ -909,41 +826,36 @@
       },
       "samples": [
         {
-          "price": 255.0,
-          "title": "iPhone 14 Pro 256GB AT&T",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 256 GB \u00b7 AT&T"
-        },
-        {
-          "price": 327.55,
-          "title": "iPhone 14 Pro Space Black 256GB AT&T - EXCELLENT CONDITON - Works Perfectly",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 256 GB \u00b7 AT&T"
-        },
-        {
-          "price": 325.0,
-          "title": "Apple iPhone 14 Pro Purple 128GB 48MP Dual SIM 6.1\" iOS Smartphone Used",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 128 GB"
-        },
-        {
-          "price": 299.99,
-          "title": "Apple iPhone 14 Pro - 128 GB - Deep Purple (Unlocked) Good -A2650",
+          "price": 360.0,
+          "title": "iPhone 14 Pro Unlocked 128GB",
           "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 499.0,
-          "title": "Mint and rare. Black IPhone 14 Pro 512gb with physical SIM card tray.",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 512 GB \u00b7 Unlocked"
+          "price": 300.0,
+          "title": "iPhone 14 Pro 128gb Space Black AT&T Locked No Cables CLEAN PHONE",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 128 GB \u00b7 AT&T"
         },
         {
-          "price": 350.0,
-          "title": "Apple iPhone 14 Pro - 512 GB - Deep Purple (AT&T)",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 512 GB \u00b7 AT&T"
+          "price": 500.0,
+          "title": "Apple iPhone 14 Pro 256GB Black iOS 12MP w/ Box, Unlocked, New Battery \ud83d\udd0b",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 256 GB"
+        },
+        {
+          "price": 374.0,
+          "title": "Apple iPhone 14 Pro - 256GB - Deep Purple (Unlocked) - Very Good Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 499.0,
+          "title": "Apple iPhone 14 Pro - 512G- Unlocked",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro \u00b7 512 GB \u00b7 Unlocked"
         }
       ],
-      "unmatched": 7,
-      "outliers_rejected": 1,
+      "unmatched": 0,
+      "outliers_rejected": 0,
       "label": "iPhone 14 Pro",
       "family": "iphone 14 pro",
-      "scraped_at": "2026-05-19T20:24:06.010640+00:00"
+      "scraped_at": "2026-07-13T01:16:18.023769+00:00"
     },
     "ip14plus": {
       "by_cell": {
@@ -1076,320 +988,237 @@
       "by_cell": {
         "128": {
           "used": {
-            "count": 37,
-            "average": 405.73,
-            "median": 400.0,
-            "net_average": 342.59,
+            "count": 26,
+            "average": 394.88,
+            "median": 399.995,
+            "net_average": 333.15,
             "net_median": 337.6,
-            "min": 279.0,
-            "max": 499.88,
+            "min": 280.0,
+            "max": 507.99,
+            "rejected_outliers": 5
+          },
+          "sealed": {
+            "count": 2,
+            "average": 300.0,
+            "median": 300.0,
+            "net_average": 250.6,
+            "net_median": 250.6,
+            "min": 300.0,
+            "max": 300.0,
+            "rejected_outliers": 0
+          }
+        },
+        "256": {
+          "used": {
+            "count": 16,
+            "average": 448.5,
+            "median": 427.5,
+            "net_average": 379.8,
+            "net_median": 361.53,
+            "min": 380.0,
+            "max": 569.0,
             "rejected_outliers": 1
           },
           "sealed": {
             "count": 1,
-            "average": 400.0,
-            "median": 400.0,
-            "net_average": 337.6,
-            "net_median": 337.6,
-            "min": 400.0,
-            "max": 400.0,
+            "average": 599.99,
+            "median": 599.99,
+            "net_average": 511.59,
+            "net_median": 511.59,
+            "min": 599.99,
+            "max": 599.99,
             "rejected_outliers": 0
           }
         },
-        "256": {
+        "512": {
           "used": {
-            "count": 25,
-            "average": 463.25,
-            "median": 463.39,
-            "net_average": 392.63,
-            "net_median": 392.75,
-            "min": 299.0,
-            "max": 637.49,
-            "rejected_outliers": 1
+            "count": 7,
+            "average": 411.42,
+            "median": 398.0,
+            "net_average": 347.54,
+            "net_median": 335.86,
+            "min": 356.0,
+            "max": 470.0,
+            "rejected_outliers": 0
           },
           "sealed": {
-            "count": 2,
-            "average": 751.95,
-            "median": 751.9549999999999,
-            "net_average": 643.8,
-            "net_median": 643.8,
-            "min": 721.24,
-            "max": 782.67,
+            "count": 1,
+            "average": 228.99,
+            "median": 228.99,
+            "net_average": 188.82,
+            "net_median": 188.82,
+            "min": 228.99,
+            "max": 228.99,
             "rejected_outliers": 0
           }
         },
         "1tb": {
+          "sealed": {
+            "count": 1,
+            "average": 599.99,
+            "median": 599.99,
+            "net_average": 511.59,
+            "net_median": 511.59,
+            "min": 599.99,
+            "max": 599.99,
+            "rejected_outliers": 0
+          },
           "used": {
             "count": 3,
-            "average": 484.37,
-            "median": 473.11,
-            "net_average": 411.0,
-            "net_median": 401.21,
-            "min": 459.99,
-            "max": 520.0,
+            "average": 531.67,
+            "median": 549.0,
+            "net_average": 452.15,
+            "net_median": 467.23,
+            "min": 380.0,
+            "max": 666.0,
             "rejected_outliers": 0
-          }
-        },
-        "512": {
-          "used": {
-            "count": 9,
-            "average": 499.57,
-            "median": 499.99,
-            "net_average": 424.23,
-            "net_median": 424.59,
-            "min": 399.99,
-            "max": 551.24,
-            "rejected_outliers": 1
           }
         }
       },
       "samples": [
         {
-          "price": 299.99,
-          "title": "Apple iPhone 14 Pro Max 128GB Spectrum ONLY *Fair Condition* | Fully Functional",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Spectrum"
-        },
-        {
-          "price": 420.0,
-          "title": "iphone 14 pro max unlocked 128gb E498",
+          "price": 400.0,
+          "title": "Apple iPhone 14 Pro Max 128GB Deep Purple Unlocked",
           "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 400.0,
-          "title": "Apple iPhone 14 Pro Max 128GB Black Smartphone iOS Wi-Fi Bluetooth Open Box",
-          "cond": "Open Box \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB"
+          "price": 399.99,
+          "title": "Apple iPhone 14 Pro Max Deep Purple 128GB Unlocked",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 450.0,
-          "title": "Apple iPhone 14 Pro Max 256GB Gold Unlocked",
+          "price": 300.0,
+          "title": "Black iPhone 14 Pro Max 128gb Unlocked",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 300.0,
+          "title": "Black iPhone 14 Pro Max 128gb Unlocked",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Pro Max \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 425.0,
+          "title": "Apple iPhone 14 Pro Max Silver 256GB Unlocked Very Good Condition",
           "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 400.0,
-          "title": "iPhone 14 Pro Max 256gb Unlocked",
+          "price": 419.99,
+          "title": "iphone 14 pro max unlocked 256gb",
           "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 782.67,
-          "title": "Apple iPhone 14 Pro Max, Unlocked Smartphone, 128GB, 256GB - SYDNEY STOCK",
-          "cond": "Brand New \u00b7 Apple"
+          "price": 599.99,
+          "title": "Apple iPhone 14 Pro Max - 256GB - Space Black (Unlocked) - Open Box",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Pro Max \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 721.24,
-          "title": "Apple iPhone 14 Pro Max 256GB Unlocked Open Box All Colors",
-          "cond": "Open Box"
-        },
-        {
-          "price": 520.0,
-          "title": "Apple iPhone 14 Pro Max, 1TB, Deep Purple, Carrier Unlocked, Excellent!!",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 459.99,
-          "title": "Apple iPhone 14 Pro Max 128GB 256GB 512GB 1TB Unlocked Smartphone - Good",
-          "cond": "Good - Refurbished"
-        },
-        {
-          "price": 499.99,
-          "title": "Apple iPhone 14 Pro Max 128GB 256GB 512GB Unlocked Smartphone - Very Good",
-          "cond": "Pre-Owned"
-        },
-        {
-          "price": 490.0,
-          "title": "Apple iPhone 14 Pro Max 512GB Unlocked Gold & Box -Fully Functional",
+          "price": 449.95,
+          "title": "Apple iPhone 14 Pro Max 512GB 6.7 Inch Screen Space Black UNLOCKED 98% Battery",
           "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 430.0,
+          "title": "iPhone 14 Pro Max Unlocked Smartphone 512GB",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 228.99,
+          "title": "New Apple Iphone 13 Mini/14/Iphone 14 Pro Max 128GB-512GB Factory Unlocked",
+          "cond": "Brand New"
+        },
+        {
+          "price": 599.99,
+          "title": "Apple iPhone 14 Pro Max, 1TB, Silver - Unlocked 89% Battery",
+          "cond": "Open Box \u00b7 Apple iPhone 14 Pro Max \u00b7 1 TB \u00b7 Unlocked"
+        },
+        {
+          "price": 549.0,
+          "title": "Apple iPhone 14 Pro Max 1 Tb - Unlocked",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 14 Pro Max \u00b7 1 TB \u00b7 Unlocked"
         }
       ],
-      "unmatched": 24,
-      "outliers_rejected": 3,
+      "unmatched": 36,
+      "outliers_rejected": 6,
       "label": "iPhone 14 Pro Max",
       "family": "iphone 14 pro max",
-      "scraped_at": "2026-05-19T20:24:26.967715+00:00"
+      "scraped_at": "2026-07-13T01:16:02.264515+00:00"
     },
     "ip15": {
-      "by_cell": {
-        "256": {
-          "used": {
-            "count": 4,
-            "average": 383.0,
-            "median": 372.495,
-            "net_average": 322.81,
-            "net_median": 313.67,
-            "min": 289.99,
-            "max": 497.0,
-            "rejected_outliers": 0
-          },
-          "sealed": {
-            "count": 2,
-            "average": 422.0,
-            "median": 421.995,
-            "net_average": 356.74,
-            "net_median": 356.74,
-            "min": 225.0,
-            "max": 618.99,
-            "rejected_outliers": 0
-          }
-        },
-        "128": {
-          "used": {
-            "count": 18,
-            "average": 330.23,
-            "median": 332.49,
-            "net_average": 276.9,
-            "net_median": 278.87,
-            "min": 249.95,
-            "max": 400.31,
-            "rejected_outliers": 4
-          },
-          "sealed": {
-            "count": 2,
-            "average": 512.27,
-            "median": 512.275,
-            "net_average": 435.27,
-            "net_median": 435.28,
-            "min": 507.0,
-            "max": 517.55,
-            "rejected_outliers": 0
-          }
-        },
-        "512": {
-          "used": {
-            "count": 4,
-            "average": 409.68,
-            "median": 397.555,
-            "net_average": 346.02,
-            "net_median": 335.47,
-            "min": 356.1,
-            "max": 487.49,
-            "rejected_outliers": 0
-          }
-        }
-      },
-      "samples": [
-        {
-          "price": 289.99,
-          "title": "Apple iPhone 15 - 256 GB - Blue (Unlocked) 79% BH *READ",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 415.0,
-          "title": "Apple iPhone 15 - 256 GB - Blue (Unlocked) (Model A2846)",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 225.0,
-          "title": "Apple iPhone 15 - 256 GB - Black (Unlocked)",
-          "cond": "Brand New \u00b7 Apple iPhone 15 \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 618.99,
-          "title": "iPhone 15 256GB Black Factory Unlocked Sealed New eSim Only Global Cell Phone",
-          "cond": "Brand New \u00b7 Apple iPhone 15 \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 400.31,
-          "title": "Apple iPhone 15 Unlocked 128GB Black MTMH3VC/A",
-          "cond": "Pre-Owned"
-        },
-        {
-          "price": 289.95,
-          "title": "Apple iPhone 15 - 128GB - Black (Unlocked) eSIM Only A2846 MTLV3LL/A Poor Used",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 517.55,
-          "title": "iphone 15 128gb unlocked",
-          "cond": "Brand New \u00b7 Apple iPhone 15 \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 507.0,
-          "title": "Apple iPhone 15 Unlocked 128GB Black - Open Box - New",
-          "cond": "Open Box \u00b7 Apple iPhone 15 \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 387.86,
-          "title": "Apple iPhone 15 128/256/512GB Unlocked Good All Colors",
-          "cond": "Good - Refurbished"
-        },
-        {
-          "price": 407.25,
-          "title": "Apple iPhone 15 128/256/512GB Unlocked Very Good All Colors",
-          "cond": "Very Good - Refurbished"
-        }
-      ],
-      "unmatched": 13,
-      "outliers_rejected": 4,
+      "by_cell": {},
+      "samples": [],
+      "unmatched": 0,
+      "outliers_rejected": 0,
       "label": "iPhone 15",
       "family": "iphone 15",
-      "scraped_at": "2026-05-19T20:24:37.464807+00:00"
+      "scraped_at": "2026-07-13T01:15:43.869967+00:00"
     },
     "ip15p": {
       "by_cell": {
         "256": {
           "used": {
-            "count": 5,
-            "average": 546.99,
-            "median": 549.99,
-            "net_average": 465.48,
-            "net_median": 468.09,
-            "min": 524.99,
-            "max": 579.99,
-            "rejected_outliers": 2
-          }
-        },
-        "128": {
-          "used": {
-            "count": 16,
-            "average": 431.69,
-            "median": 427.495,
-            "net_average": 365.17,
-            "net_median": 361.52,
-            "min": 339.99,
-            "max": 556.99,
+            "count": 12,
+            "average": 555.88,
+            "median": 550.0,
+            "net_average": 473.22,
+            "net_median": 468.1,
+            "min": 499.99,
+            "max": 634.99,
             "rejected_outliers": 1
           },
           "sealed": {
             "count": 1,
-            "average": 537.5,
-            "median": 537.5,
-            "net_average": 457.23,
-            "net_median": 457.23,
-            "min": 537.5,
-            "max": 537.5,
+            "average": 625.99,
+            "median": 625.99,
+            "net_average": 534.21,
+            "net_median": 534.21,
+            "min": 625.99,
+            "max": 625.99,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 15,
+            "average": 462.78,
+            "median": 455.0,
+            "net_average": 392.22,
+            "net_median": 385.45,
+            "min": 350.0,
+            "max": 546.99,
+            "rejected_outliers": 2
+          },
+          "sealed": {
+            "count": 1,
+            "average": 555.0,
+            "median": 555.0,
+            "net_average": 472.45,
+            "net_median": 472.45,
+            "min": 555.0,
+            "max": 555.0,
             "rejected_outliers": 0
           }
         },
         "512": {
           "used": {
             "count": 3,
-            "average": 585.56,
-            "median": 579.69,
-            "net_average": 499.04,
-            "net_median": 493.93,
-            "min": 575.0,
-            "max": 601.99,
-            "rejected_outliers": 2
+            "average": 619.33,
+            "median": 615.0,
+            "net_average": 528.42,
+            "net_median": 524.65,
+            "min": 549.0,
+            "max": 693.99,
+            "rejected_outliers": 0
           }
         },
         "1tb": {
           "used": {
-            "count": 5,
-            "average": 577.69,
-            "median": 595.99,
-            "net_average": 492.19,
-            "net_median": 508.11,
-            "min": 359.0,
-            "max": 750.0,
-            "rejected_outliers": 0
-          },
-          "sealed": {
             "count": 1,
-            "average": 760.99,
-            "median": 760.99,
-            "net_average": 651.66,
-            "net_median": 651.66,
-            "min": 760.99,
-            "max": 760.99,
+            "average": 539.99,
+            "median": 539.99,
+            "net_average": 459.39,
+            "net_median": 459.39,
+            "min": 539.99,
+            "max": 539.99,
             "rejected_outliers": 0
           }
         }
@@ -1397,60 +1226,55 @@
       "samples": [
         {
           "price": 550.0,
-          "title": "Apple iPhone 15 Pro, 256GB, White, Titanium Unlocked",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 256 GB \u00b7 T-Mobile"
+          "title": "Apple iPhone 15 Pro 256GB White Titanium Unlocked- Any Carrier- Great Condition",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 549.99,
-          "title": "Factory Unlocked Apple iPhone 15 Pro 256GB White Titanium MTQT3LL/A",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 256 GB \u00b7 Factory Unlocked"
+          "price": 519.99,
+          "title": "Apple iPhone 15 Pro 256GB Unlocked Black titanium 87% BH Icloud Off - Used A",
+          "cond": "Pre-Owned"
         },
         {
-          "price": 390.0,
-          "title": "Apple iPhone 15 Pro 128GB, T-Mobile Only, Black, Very Good Condition",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 128 GB \u00b7 T-Mobile"
+          "price": 625.99,
+          "title": "Apple iPhone 15 Pro Unlocked, 256GB, Natural Titanium",
+          "cond": "Open Box \u00b7 Apple iPhone 15 Pro \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 450.0,
-          "title": "iPhone 15 Pro 128 Unlock For Carrier And Never Repair",
+          "price": 474.0,
+          "title": "Apple iPhone 15 Pro Unlocked 128 GB Natural Titanium Grade A",
           "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 537.5,
-          "title": "Apple iPhone 15 Pro - 128 GB - Natural Titanium (Unlocked)",
-          "cond": "Open Box \u00b7 Apple iPhone 15 Pro \u00b7 128 GB \u00b7 Unlocked"
+          "price": 457.0,
+          "title": "Apple iPhone 15 Pro 128GB Smartphone A2848 (Unlocked) - Black Titanium",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 575.0,
-          "title": "iPhone 15 Pro 512GB Blue Titanium Unlocked - With Accessories",
+          "price": 555.0,
+          "title": "Apple iPhone 15 Pro 128GB Natural Titanium LTE Cellular MTQP3LL/A",
+          "cond": "Open Box"
+        },
+        {
+          "price": 549.0,
+          "title": "APPLE IPHONE 15 PRO UNLOCKED 512GB BLUE EXCELLENT CONDITION",
           "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 579.69,
-          "title": "Apple iPhone 15 Pro A2848 512GB Natural Titanium Unlocked 100% battery health",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 512 GB \u00b7 Unlocked"
+          "price": 693.99,
+          "title": "Apple iPhone 15 Pro A2848 512GB Unlocked - Excellent Refurbished",
+          "cond": "Excellent - Refurbished"
         },
         {
-          "price": 359.0,
-          "title": "Apple iPhone 15 Pro eSIM A2848 - Unlocked 1TB Blue *NON-OEM LCD/ BAD WIFI*",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 712.49,
-          "title": "iPhone 15 Pro 128GB 256GB 512GB 1TB Verizon AT&T T-Mobile Unlocked (Excellent)",
-          "cond": "Very Good - Refurbished"
-        },
-        {
-          "price": 760.99,
-          "title": "New in Sealed Box Apple iPhone 15 PRO A2848 256/512GB 1TB Unlocked Smartphone US",
-          "cond": "Brand New"
+          "price": 539.99,
+          "title": "Apple iPhone 15 Pro 128GB 256GB 512GB 1TB Unlocked Smartphone - All Colors, Good",
+          "cond": "Good - Refurbished"
         }
       ],
-      "unmatched": 18,
-      "outliers_rejected": 5,
+      "unmatched": 16,
+      "outliers_rejected": 3,
       "label": "iPhone 15 Pro",
       "family": "iphone 15 pro",
-      "scraped_at": "2026-05-19T20:24:47.590993+00:00"
+      "scraped_at": "2026-07-13T01:15:32.094689+00:00"
     },
     "ip15plus": {
       "by_cell": {
@@ -1570,101 +1394,13 @@
       "scraped_at": "2026-05-19T20:24:58.064387+00:00"
     },
     "ip15pm": {
-      "by_cell": {
-        "256": {
-          "used": {
-            "count": 44,
-            "average": 554.6,
-            "median": 550.0,
-            "net_average": 472.1,
-            "net_median": 468.1,
-            "min": 459.99,
-            "max": 661.32,
-            "rejected_outliers": 5
-          },
-          "sealed": {
-            "count": 3,
-            "average": 703.0,
-            "median": 709.99,
-            "net_average": 601.21,
-            "net_median": 607.29,
-            "min": 650.0,
-            "max": 749.0,
-            "rejected_outliers": 0
-          }
-        },
-        "512": {
-          "used": {
-            "count": 9,
-            "average": 666.51,
-            "median": 660.0,
-            "net_average": 569.46,
-            "net_median": 563.8,
-            "min": 582.25,
-            "max": 759.95,
-            "rejected_outliers": 1
-          }
-        },
-        "1tb": {
-          "used": {
-            "count": 8,
-            "average": 645.39,
-            "median": 644.265,
-            "net_average": 551.09,
-            "net_median": 550.11,
-            "min": 599.0,
-            "max": 713.99,
-            "rejected_outliers": 1
-          }
-        }
-      },
-      "samples": [
-        {
-          "price": 460.0,
-          "title": "Apple iPhone 15 Pro Max - 256GB Black Titanium (Unlocked) Non OEM Screen",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 550.0,
-          "title": "Apple iPhone 15 Pro Max 256GB silver iOS 6.7in 3-Camera.",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 709.99,
-          "title": "Apple iPhone 15 Pro Max - 256GB - Black Titanium (Unlocked) - Open Box",
-          "cond": "Open Box \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 749.0,
-          "title": "Apple iPhone 15 Pro Max 256GB Natural Titanium Unlocked A2849",
-          "cond": "Open Box \u00b7 Apple iPhone 15 Pro Max \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 660.0,
-          "title": "Apple iPhone 15 Pro Max 512GB Unlocked Natural Titanium Gray Excellent Condition",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 512 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 649.69,
-          "title": "Apple iPhone 15 Pro Max A2849 512GB Black 100% battery health Unlocked phone",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 512 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 640.0,
-          "title": "Apple iPhone 15 Pro Max (1 TB) White (Unlocked) With Extras",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 599.0,
-          "title": "Apple iPhone 15 Pro Max - 1 TB - Blue Titanium (Unlocked)",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 15 Pro Max \u00b7 1 TB \u00b7 Unlocked"
-        }
-      ],
-      "unmatched": 27,
-      "outliers_rejected": 7,
+      "by_cell": {},
+      "samples": [],
+      "unmatched": 0,
+      "outliers_rejected": 0,
       "label": "iPhone 15 Pro Max",
       "family": "iphone 15 pro max",
-      "scraped_at": "2026-05-19T20:25:08.409862+00:00"
+      "scraped_at": "2026-07-13T01:15:14.736303+00:00"
     },
     "ip16": {
       "by_cell": {
@@ -1823,408 +1559,344 @@
     },
     "ip16p": {
       "by_cell": {
-        "128": {
-          "used": {
-            "count": 8,
-            "average": 654.64,
-            "median": 646.995,
-            "net_average": 559.14,
-            "net_median": 552.49,
-            "min": 598.0,
-            "max": 724.99,
-            "rejected_outliers": 0
-          }
-        },
         "512": {
-          "sealed": {
-            "count": 1,
-            "average": 869.99,
-            "median": 869.99,
-            "net_average": 746.49,
-            "net_median": 746.49,
-            "min": 869.99,
-            "max": 869.99,
-            "rejected_outliers": 0
-          },
           "used": {
             "count": 2,
-            "average": 824.5,
-            "median": 824.5,
-            "net_average": 706.91,
-            "net_median": 706.91,
+            "average": 824.48,
+            "median": 824.475,
+            "net_average": 706.9,
+            "net_median": 706.89,
             "min": 799.0,
-            "max": 850.0,
-            "rejected_outliers": 0
+            "max": 849.95,
+            "rejected_outliers": 1
           }
         },
         "256": {
           "used": {
-            "count": 4,
-            "average": 708.19,
-            "median": 707.495,
-            "net_average": 605.73,
-            "net_median": 605.12,
-            "min": 689.99,
-            "max": 727.78,
+            "count": 6,
+            "average": 715.67,
+            "median": 640.0,
+            "net_average": 612.23,
+            "net_median": 546.4,
+            "min": 614.0,
+            "max": 910.0,
             "rejected_outliers": 0
           },
           "sealed": {
             "count": 1,
-            "average": 999.99,
-            "median": 999.99,
-            "net_average": 859.59,
-            "net_median": 859.59,
-            "min": 999.99,
-            "max": 999.99,
+            "average": 725.0,
+            "median": 725.0,
+            "net_average": 620.35,
+            "net_median": 620.35,
+            "min": 725.0,
+            "max": 725.0,
             "rejected_outliers": 0
           }
         },
-        "1tb": {
+        "128": {
           "used": {
-            "count": 1,
-            "average": 745.0,
-            "median": 745.0,
-            "net_average": 637.75,
-            "net_median": 637.75,
-            "min": 745.0,
-            "max": 745.0,
-            "rejected_outliers": 0
+            "count": 5,
+            "average": 550.19,
+            "median": 549.95,
+            "net_average": 468.27,
+            "net_median": 468.06,
+            "min": 477.0,
+            "max": 634.99,
+            "rejected_outliers": 1
           }
         }
       },
       "samples": [
         {
-          "price": 689.99,
-          "title": "Apple iPhone 16 Pro - 128GB - Black Titanium (Unlocked) - 100% Battery Health",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 724.99,
-          "title": "Apple iPhone 16 Pro - 128 GB - Natural Titanium",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 869.99,
-          "title": "Apple iPhone 16 Pro - 512 GB - Desert Titanium (Unlocked)",
-          "cond": "Open Box \u00b7 Apple iPhone 16 Pro \u00b7 512 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 850.0,
-          "title": "Apple iPhone 16 Pro - 512 GB - Natural Titanium (Unlocked)",
+          "price": 849.95,
+          "title": "Apple iPhone 16 Pro 512GB Great Condition | White | UNLOCKED + Accessories",
           "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 512 GB \u00b7 Unlocked"
         },
         {
           "price": 799.0,
-          "title": "Apple iPhone 16 Pro 512GB Unlocked Black Bar Smartphone 48MP Camera w/ Box",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 512 GB \u00b7 Unlocked"
+          "title": "APPLE IPHONE 16 PRO BLACK 512 GB",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 512 GB"
         },
         {
-          "price": 715.0,
-          "title": "Apple iPhone 16 Pro - 256 GB - Black Titanium UNLOCKED 97% Battery Life LikeNEW",
+          "price": 614.0,
+          "title": "Apple iPhone 16 Pro - 256 GB - Black Titanium (Unlocked) (Used)",
           "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 689.99,
-          "title": "Unlocked Apple iPhone 16 Pro A3083 256GB Desert Titanium 100% BH 78 Cycle",
+          "price": 630.0,
+          "title": "Apple iPhone 16 Pro - 256 GB - Black Titanium (Unlocked) Excellent Condition.",
           "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 999.99,
-          "title": "Apple iPhone 16 Pro 256GB Desert Titanium Unlocked - NEW & SEALED",
-          "cond": "Brand New \u00b7 Apple iPhone 16 Pro \u00b7 256 GB \u00b7 Unlocked"
+          "price": 725.0,
+          "title": "iPhone 16 Pro \u2013 256GB Storage \u2013 White Titanium (Unlocked) EXCELLENT Condition",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Pro \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 745.0,
-          "title": "Apple iPhone 16 Pro - 128GB 256GB 512GB 1TB - All Colors - Good Condition",
-          "cond": "Good - Refurbished"
+          "price": 549.95,
+          "title": "Apple iPhone 16 Pro 128GB - Black - Verizon - Excellent Condition 90% BH",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 590.0,
+          "title": "Apple iPhone 16 Pro 128GB Smartphone A3083 (Unlocked) - Natural Titanium",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro \u00b7 128 GB \u00b7 Unlocked"
         }
       ],
-      "unmatched": 7,
-      "outliers_rejected": 0,
+      "unmatched": 3,
+      "outliers_rejected": 2,
       "label": "iPhone 16 Pro",
       "family": "iphone 16 pro",
-      "scraped_at": "2026-05-19T20:25:39.614235+00:00"
+      "scraped_at": "2026-07-13T00:55:34.002274+00:00"
     },
     "ip16plus": {
       "by_cell": {
-        "256": {
+        "128": {
           "used": {
-            "count": 5,
-            "average": 504.99,
-            "median": 500.0,
-            "net_average": 428.94,
-            "net_median": 424.6,
-            "min": 425.0,
-            "max": 599.99,
+            "count": 40,
+            "average": 501.68,
+            "median": 515.495,
+            "net_average": 426.06,
+            "net_median": 438.08,
+            "min": 321.0,
+            "max": 700.0,
             "rejected_outliers": 0
           },
           "sealed": {
             "count": 2,
-            "average": 661.49,
-            "median": 661.49,
-            "net_average": 565.1,
-            "net_median": 565.1,
-            "min": 632.98,
-            "max": 690.0,
+            "average": 625.0,
+            "median": 625.0,
+            "net_average": 533.35,
+            "net_median": 533.35,
+            "min": 460.0,
+            "max": 790.0,
             "rejected_outliers": 0
           }
         },
-        "128": {
+        "256": {
           "used": {
-            "count": 45,
-            "average": 493.65,
-            "median": 489.99,
-            "net_average": 419.08,
-            "net_median": 415.89,
-            "min": 339.87,
-            "max": 634.99,
-            "rejected_outliers": 3
+            "count": 10,
+            "average": 578.57,
+            "median": 607.49,
+            "net_average": 492.96,
+            "net_median": 518.12,
+            "min": 429.0,
+            "max": 650.0,
+            "rejected_outliers": 0
           },
           "sealed": {
-            "count": 8,
-            "average": 554.61,
-            "median": 579.4449999999999,
-            "net_average": 472.11,
-            "net_median": 493.72,
-            "min": 340.0,
-            "max": 699.0,
+            "count": 3,
+            "average": 682.99,
+            "median": 719.99,
+            "net_average": 583.8,
+            "net_median": 615.99,
+            "min": 599.0,
+            "max": 729.99,
             "rejected_outliers": 0
           }
         },
         "512": {
           "used": {
-            "count": 2,
-            "average": 653.74,
-            "median": 653.74,
-            "net_average": 558.35,
-            "net_median": 558.35,
-            "min": 629.99,
-            "max": 677.49,
-            "rejected_outliers": 0
-          },
-          "sealed": {
-            "count": 1,
-            "average": 853.45,
-            "median": 853.45,
-            "net_average": 732.1,
-            "net_median": 732.1,
-            "min": 853.45,
-            "max": 853.45,
+            "count": 5,
+            "average": 606.13,
+            "median": 584.99,
+            "net_average": 516.93,
+            "net_median": 498.54,
+            "min": 500.0,
+            "max": 695.67,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 444.99,
-          "title": "Sprint/T-Mobile Apple iPhone 16 Plus 256GB A3082 BH90% 256GB Pink",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 256 GB"
+          "price": 509.99,
+          "title": "Apple iPhone 16 plus 128GB Black Factory Unlocked Dual SIM iOS 12MP Camera",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 15 \u00b7 128 GB"
         },
         {
-          "price": 554.99,
-          "title": "Apple iPhone 16 Plus 128GB 256GB Unlocked Smartphone - Good",
-          "cond": "Good - Refurbished"
+          "price": 399.99,
+          "title": "Apple iPhone 16 Plus - 128 GB - Black (T-Mobile) 100% BATT - EXTRAS! #1093",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 T-Mobile"
         },
         {
-          "price": 690.0,
-          "title": "iPhone 16 Plus Unlocked Smartphone 256GB",
-          "cond": "Brand New \u00b7 Apple iPhone 16 Plus \u00b7 256 GB \u00b7 Unlocked"
+          "price": 460.0,
+          "title": "Apple iPhone 16 Plus 128GB Black (Verizon Locked)",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 Verizon"
         },
         {
-          "price": 632.98,
-          "title": "Apple iPhone 16 Plus - 256 GB - Black (Unlocked)",
-          "cond": "Open Box \u00b7 Apple iPhone 16 Plus \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 500.0,
-          "title": "Apple iPhone 16 Plus 128GB Black Unlocked iOS Smartphone 48MP Camera",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 479.99,
-          "title": "Apple iPhone 16 Plus 128GB Storage Blue Unlocked Dual SIM 97% Battery Life",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 128 GB"
-        },
-        {
-          "price": 699.0,
-          "title": "Apple iPhone 16 Plus 128gb Unlocked Brand New Sealed In Box \u2705 Not Activated!!! \u2705",
+          "price": 790.0,
+          "title": "Apple iPhone 16 Plus 128GB Factory Unlocked Brand New Sealed Teal",
           "cond": "Brand New \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 650.0,
-          "title": "Apple iPhone 16 Plus - 128 GB - Black (Unlocked)",
-          "cond": "Open Box \u00b7 Apple iPhone 16 Plus \u00b7 128 GB \u00b7 Unlocked"
+          "price": 550.0,
+          "title": "Apple iPhone 16 Plus 256 GB Pink (T-Mobile)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 629.99,
-          "title": "Apple iPhone 16 Plus, 128/256/512GB, - Unlocked - All colors - Used Excellent",
-          "cond": "Pre-Owned"
+          "price": 429.0,
+          "title": "iphone 16 plus 256gb unlocked (READ)",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 677.49,
-          "title": "iPhone 16 Plus 128GB 256GB 512GB Verizon AT&T T-Mobile Unlocked (Good)",
-          "cond": "Good - Refurbished"
+          "price": 719.99,
+          "title": "Apple iPhone 16 Plus - 256GB - Ultramarine (Unlocked) -Open Box",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Plus \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 853.45,
-          "title": "Apple iPhone 16 Plus - 512 GB - White (Unlocked)",
-          "cond": "Brand New \u00b7 Apple iPhone 16 Plus \u00b7 512 GB \u00b7 Unlocked"
+          "price": 729.99,
+          "title": "Apple iPhone 16 Plus - 256GB - Teal (Unlocked) - Open Box",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Plus \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 695.67,
+          "title": "Apple iPhone 16 Plus - 128GB 256GB 512GB - All Colours - Unlocked - Very Good",
+          "cond": "Very Good - Refurbished"
+        },
+        {
+          "price": 675.0,
+          "title": "Apple iPhone 16 Plus A3082 512GB CDMA/GSM Unlocked - SPACE GRAY - MINT CONDITION",
+          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Plus \u00b7 512 GB \u00b7 Gsm Unlocked"
         }
       ],
-      "unmatched": 29,
-      "outliers_rejected": 3,
+      "unmatched": 27,
+      "outliers_rejected": 0,
       "label": "iPhone 16 Plus",
       "family": "iphone 16 plus",
-      "scraped_at": "2026-05-19T20:25:50.176117+00:00"
+      "scraped_at": "2026-07-13T00:55:49.532015+00:00"
     },
     "ip16pm": {
       "by_cell": {
         "256": {
           "used": {
-            "count": 22,
-            "average": 743.07,
-            "median": 755.245,
-            "net_average": 636.07,
-            "net_median": 646.66,
-            "min": 500.0,
-            "max": 940.0,
+            "count": 28,
+            "average": 755.42,
+            "median": 743.0,
+            "net_average": 646.82,
+            "net_median": 636.01,
+            "min": 549.0,
+            "max": 989.0,
             "rejected_outliers": 1
           },
           "sealed": {
-            "count": 3,
-            "average": 869.67,
-            "median": 811.0,
-            "net_average": 746.21,
-            "net_median": 695.17,
-            "min": 699.0,
-            "max": 1099.0,
+            "count": 2,
+            "average": 800.0,
+            "median": 799.995,
+            "net_average": 685.6,
+            "net_median": 685.6,
+            "min": 779.99,
+            "max": 820.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 8,
+            "average": 841.35,
+            "median": 852.49,
+            "net_average": 721.57,
+            "net_median": 731.27,
+            "min": 769.99,
+            "max": 907.99,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 4,
+            "average": 734.24,
+            "median": 750.495,
+            "net_average": 628.39,
+            "net_median": 642.53,
+            "min": 499.0,
+            "max": 936.95,
             "rejected_outliers": 0
           }
         },
         "1tb": {
           "used": {
             "count": 3,
-            "average": 879.66,
-            "median": 859.99,
-            "net_average": 754.9,
-            "net_median": 737.79,
-            "min": 849.0,
-            "max": 929.99,
-            "rejected_outliers": 0
-          },
-          "sealed": {
-            "count": 1,
-            "average": 1029.99,
-            "median": 1029.99,
-            "net_average": 885.69,
-            "net_median": 885.69,
-            "min": 1029.99,
-            "max": 1029.99,
-            "rejected_outliers": 0
-          }
-        },
-        "512": {
-          "used": {
-            "count": 7,
-            "average": 841.18,
-            "median": 850.0,
-            "net_average": 721.43,
-            "net_median": 729.1,
-            "min": 780.0,
-            "max": 899.99,
+            "average": 874.99,
+            "median": 869.99,
+            "net_average": 750.84,
+            "net_median": 746.49,
+            "min": 844.99,
+            "max": 909.99,
             "rejected_outliers": 1
           },
           "sealed": {
-            "count": 2,
-            "average": 732.38,
-            "median": 732.375,
-            "net_average": 626.77,
-            "net_median": 626.77,
-            "min": 650.0,
-            "max": 814.75,
-            "rejected_outliers": 0
-          }
-        },
-        "128": {
-          "sealed": {
             "count": 1,
-            "average": 400.0,
-            "median": 400.0,
-            "net_average": 337.6,
-            "net_median": 337.6,
-            "min": 400.0,
-            "max": 400.0,
+            "average": 980.0,
+            "median": 980.0,
+            "net_average": 842.2,
+            "net_median": 842.2,
+            "min": 980.0,
+            "max": 980.0,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 500.0,
-          "title": "Apple iPhone 16 Pro Max 256GB Unlocked Smartphone Gold Rose t-mobile iPhone",
+          "price": 600.0,
+          "title": "iPhone 16 Pro Max",
           "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 256 GB \u00b7 T-Mobile"
         },
         {
-          "price": 780.0,
-          "title": "Apple iPhone 16 Pro Max 256GB Black Unlocked Smartphone iOS Wi-Fi Used",
+          "price": 900.0,
+          "title": "iPhone 16 pro max 256gb unlocked E Sim (No Box)",
           "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 811.0,
-          "title": "Apple iPhone 16 Pro Max 256GB Verizon A3084 Open Box",
-          "cond": "Open Box \u00b7 Apple iPhone 16 Pro Max \u00b7 256 GB \u00b7 Verizon"
-        },
-        {
-          "price": 699.0,
-          "title": "Apple iPhone 16 Pro Max 256GB Desert Titanium LTE Cellular 3N526LL/A",
+          "price": 779.99,
+          "title": "Apple iPhone 16 Pro Max - 256GB - Desert Titanium (T-Mobile ONLY) - Open Box",
           "cond": "Open Box \u00b7 Apple iPhone 16 Pro Max \u00b7 256 GB \u00b7 T-Mobile"
         },
         {
-          "price": 849.0,
-          "title": "Apple iPhone 16 Pro Max GREAT CONDITION - 1 TB - Black Titanium (Unlocked)",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 1 TB \u00b7 Unlocked"
+          "price": 820.0,
+          "title": "iphone 16 pro max 256gb unlocked",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Pro Max \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 929.99,
-          "title": "Apple iPhone 16 Pro Max 1TB Natural Unlocked Worldwide Excellent (95% Battery)",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 1 TB \u00b7 Unlocked"
+          "price": 799.0,
+          "title": "Apple iPhone 16 Pro Max 512GB White Titanium (Unlocked / A3084) AC+ Theft & Loss",
+          "cond": "Very Good - Refurbished \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 1029.99,
-          "title": "Apple iPhone 16 pro max 1 TB Unlocked Black titanium color",
-          "cond": "Open Box"
-        },
-        {
-          "price": 780.0,
-          "title": "Apple iPhone 16 Pro Max Silver, 512 GB Storage, Used",
-          "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB"
-        },
-        {
-          "price": 899.99,
-          "title": "Apple iPhone 16 Pro Max - 512GB - Desert Titanium (Unlocked) Excellent Condition",
+          "price": 769.99,
+          "title": "Apple iPhone 16 Pro Max - 512GB - Black Titanium (Unlocked) - Fair Condition",
           "cond": "Pre-Owned \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 814.75,
-          "title": "\u26a0\ufe0fREAD THE DESCRIPTION BEFORE BUYING\u26a0\ufe0f Apple iPhone 16 Pro Max 512GB - Sealed",
-          "cond": "Brand New"
-        },
-        {
-          "price": 650.0,
-          "title": "Apple iPhone 16 Pro Max Unlocked 512GB Silver",
+          "price": 936.95,
+          "title": "Apple iPhone 16 Pro Max 512GB Black 5G A3084 Pro Dual SIM Factory Unlocked",
           "cond": "Open Box \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 400.0,
-          "title": "Apple iPhone 16 Pro Max 128GB Black/Silver/White/Gold 48MP 6in+ iOS Smartphone",
-          "cond": "Brand New \u00b7 Apple iPhone 16 Pro Max \u00b7 128 GB"
+          "price": 590.99,
+          "title": "Apple iPhone 16 Pro Max 512 GB - Desert Titanium (Unlocked) Excellent Condition",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Pro Max \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 844.99,
+          "title": "Apple iPhone 16 Pro Max, 1TB, Titanium US Version - e-Sim - Unlocked - Very Good",
+          "cond": "Very Good - Refurbished"
+        },
+        {
+          "price": 909.99,
+          "title": "Apple iPhone 16 Pro Max, 1TB, Titanium US Version - e-Sim - Unlocked - Excellent",
+          "cond": "Excellent - Refurbished"
+        },
+        {
+          "price": 980.0,
+          "title": "Apple iPhone 16 Pro Max - 1TB - White Titanium (Unlocked) - Open Box",
+          "cond": "Open Box \u00b7 Apple iPhone 16 Pro Max \u00b7 1 TB \u00b7 Unlocked"
         }
       ],
-      "unmatched": 19,
-      "outliers_rejected": 2,
+      "unmatched": 8,
+      "outliers_rejected": 3,
       "label": "iPhone 16 Pro Max",
       "family": "iphone 16 pro max",
-      "scraped_at": "2026-05-19T20:26:00.957299+00:00"
+      "scraped_at": "2026-07-13T00:56:05.337926+00:00"
     },
     "ip17": {
       "by_cell": {
@@ -2696,140 +2368,147 @@
     },
     "gs24u": {
       "by_cell": {
-        "1tb": {
-          "used": {
-            "count": 3,
-            "average": 551.01,
-            "median": 453.04,
-            "net_average": 468.98,
-            "net_median": 383.74,
-            "min": 299.99,
-            "max": 899.99,
-            "rejected_outliers": 0
-          },
-          "sealed": {
-            "count": 2,
-            "average": 754.0,
-            "median": 753.995,
-            "net_average": 645.58,
-            "net_median": 645.58,
-            "min": 647.99,
-            "max": 860.0,
-            "rejected_outliers": 0
-          }
-        },
         "512": {
-          "used": {
-            "count": 23,
-            "average": 546.7,
-            "median": 544.0,
-            "net_average": 465.23,
-            "net_median": 462.88,
-            "min": 464.0,
-            "max": 605.47,
-            "rejected_outliers": 1
-          },
           "sealed": {
             "count": 10,
-            "average": 663.11,
-            "median": 662.905,
-            "net_average": 566.51,
-            "net_median": 566.33,
-            "min": 647.99,
-            "max": 678.42,
-            "rejected_outliers": 2
+            "average": 613.46,
+            "median": 615.975,
+            "net_average": 523.31,
+            "net_median": 525.5,
+            "min": 599.0,
+            "max": 626.99,
+            "rejected_outliers": 3
+          },
+          "used": {
+            "count": 6,
+            "average": 548.49,
+            "median": 554.995,
+            "net_average": 466.79,
+            "net_median": 472.45,
+            "min": 459.0,
+            "max": 657.95,
+            "rejected_outliers": 0
           }
         },
         "256": {
           "used": {
-            "count": 15,
-            "average": 502.45,
-            "median": 519.0,
-            "net_average": 426.73,
-            "net_median": 441.13,
-            "min": 399.0,
-            "max": 589.99,
+            "count": 23,
+            "average": 507.58,
+            "median": 510.0,
+            "net_average": 431.19,
+            "net_median": 433.3,
+            "min": 373.0,
+            "max": 594.99,
+            "rejected_outliers": 2
+          },
+          "sealed": {
+            "count": 7,
+            "average": 609.28,
+            "median": 615.55,
+            "net_average": 519.67,
+            "net_median": 525.13,
+            "min": 589.99,
+            "max": 619.99,
+            "rejected_outliers": 3
+          }
+        },
+        "128": {
+          "sealed": {
+            "count": 1,
+            "average": 264.99,
+            "median": 264.99,
+            "net_average": 220.14,
+            "net_median": 220.14,
+            "min": 264.99,
+            "max": 264.99,
+            "rejected_outliers": 0
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 1,
+            "average": 506.34,
+            "median": 506.34,
+            "net_average": 430.12,
+            "net_median": 430.12,
+            "min": 506.34,
+            "max": 506.34,
             "rejected_outliers": 0
           },
           "sealed": {
-            "count": 9,
-            "average": 653.39,
-            "median": 661.42,
-            "net_average": 558.05,
-            "net_median": 565.04,
-            "min": 609.99,
-            "max": 673.88,
-            "rejected_outliers": 3
+            "count": 1,
+            "average": 633.99,
+            "median": 633.99,
+            "net_average": 541.17,
+            "net_median": 541.17,
+            "min": 633.99,
+            "max": 633.99,
+            "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 899.99,
-          "title": "Samsung Galaxy S24 Ultra 1TB Titanium Blue Unlocked Excellent Condition",
-          "cond": "Excellent - Refurbished \u00b7 Samsung Galaxy S24 Ultra \u00b7 1 TB \u00b7 Unlocked"
+          "price": 599.0,
+          "title": "Samsung Galaxy S24 Ultra 512GB Plus 45w Charge Block & Cord - AT&T ONLY",
+          "cond": "Open Box \u00b7 Samsung Galaxy S24 Ultra \u00b7 512 GB \u00b7 AT&T"
         },
         {
-          "price": 299.99,
-          "title": "Samsung Galaxy S24 Ultra 1TB [SM-S928U] Gray (Unlocked) - *READ*",
-          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 Ultra \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 647.99,
-          "title": "SAMSUNG GALAXY S24 ULTRA 256GB 512GB 1TB SM-S928U1 FACTORY UNLOCKED - New in Box",
+          "price": 617.99,
+          "title": "New & Sealed Samsung Galaxy S24 Ultra 5G SM-S928U 256GB/512GB Factory Unlocked",
           "cond": "Brand New"
         },
         {
-          "price": 860.0,
-          "title": "Samsung Galaxy S24 Ultra 1TB Factory Unlocked AT&T T-Mobile Verizon GSM 7635156",
-          "cond": "Open Box \u00b7 Samsung Galaxy S24 Ultra \u00b7 1 TB \u00b7 Unlocked"
+          "price": 474.0,
+          "title": "Samsung Galaxy S24 Ultra Yellow Factory Unlocked AT&T T-Mobile Verizon 7639399",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 Ultra \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 544.0,
-          "title": "Samsung Galaxy S24 Ultra 512GB SM-S928U1 Gray Unlocked #A277",
-          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S24 Ultra \u00b7 512 GB \u00b7 Unlocked"
+          "price": 569.99,
+          "title": "Samsung Galaxy S24 Ultra SM-S928U 512GB Unlocked Very Good Condition",
+          "cond": "Very Good - Refurbished"
         },
         {
-          "price": 529.0,
-          "title": "Samsung Galaxy S24 Ultra 512GB SM-S928U1 Gray Unlocked #A419",
-          "cond": "Good - Refurbished \u00b7 Samsung Galaxy S24 Ultra \u00b7 512 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 659.28,
-          "title": "New Samsung Galaxy S24 Ultra (5G) S928U 256GB/512GB Factory Unlocked Smartphone",
-          "cond": "Brand New"
-        },
-        {
-          "price": 662.55,
-          "title": "New Samsung Galaxy S24 Ultra (5G) S928U 256GB/512GB Factory Unlocked Smartphone",
-          "cond": "Brand New"
-        },
-        {
-          "price": 529.95,
-          "title": "Samsung Galaxy S24 Ultra - 256GB - Titanium Black (Unlocked) - Good Condition",
+          "price": 515.0,
+          "title": "Samsung Galaxy S24 Ultra",
           "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 Ultra \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 520.0,
-          "title": "Samsung Galaxy S24 Ultra 256GB, Factory Unlocked",
-          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 Ultra \u00b7 256 GB \u00b7 Unlocked"
+          "price": 549.99,
+          "title": "Samsung Galaxy S24 Ultra 5G 256GB",
+          "cond": "Pre-Owned \u00b7 Samsung Galaxy S24 Ultra \u00b7 256 GB \u00b7 AT&T"
         },
         {
-          "price": 659.99,
-          "title": "New Sealed Samsung Galaxy S24 Ultra 5G 12+256GB Fully Unlocked Smartphone US",
+          "price": 615.55,
+          "title": "New Samsung Galaxy S24 Ultra 5G 256GB Factory Unlocked Verizon AT&T T-Mobile",
           "cond": "Brand New"
         },
         {
-          "price": 662.88,
-          "title": "Samsung Galaxy S24 Ultra 5G 256GB (Factory Unlocked) - All Colors - \u2756NEW SEALED\u2756",
+          "price": 616.66,
+          "title": "New Samsung Galaxy S24 Ultra 5G 256GB SM-S928U Factory Unlocked",
+          "cond": "Brand New"
+        },
+        {
+          "price": 264.99,
+          "title": "\u2728NEW\u2728 Samsung Galaxy S24 Ultra/S23 Ultra/S22 Ultra 5G 128GB (Factory Unlocked)",
+          "cond": "Brand New"
+        },
+        {
+          "price": 506.34,
+          "title": "Samsung Galaxy S24 Ultra 5G 256/512/1TB Unlocked Good",
+          "cond": "Good - Refurbished"
+        },
+        {
+          "price": 633.99,
+          "title": "Samsung Galaxy S24 Ultra 5G SM-S928U 256GB 512GB 1TB Unlocked \u2728New Sealed \u2728",
           "cond": "Brand New"
         }
       ],
-      "unmatched": 28,
-      "outliers_rejected": 6,
+      "unmatched": 32,
+      "outliers_rejected": 8,
       "label": "Galaxy S24 Ultra",
       "family": "galaxy s24 ultra",
-      "scraped_at": "2026-05-19T20:27:13.621993+00:00"
+      "scraped_at": "2026-07-13T01:16:59.653036+00:00"
     },
     "gs25": {
       "by_cell": {
@@ -3014,52 +2693,13 @@
       "scraped_at": "2026-05-19T20:27:34.537145+00:00"
     },
     "gs25u": {
-      "by_cell": {
-        "256": {
-          "used": {
-            "count": 4,
-            "average": 698.37,
-            "median": 701.745,
-            "net_average": 597.18,
-            "net_median": 600.12,
-            "min": 650.0,
-            "max": 739.99,
-            "rejected_outliers": 0
-          },
-          "sealed": {
-            "count": 1,
-            "average": 779.99,
-            "median": 779.99,
-            "net_average": 668.19,
-            "net_median": 668.19,
-            "min": 779.99,
-            "max": 779.99,
-            "rejected_outliers": 0
-          }
-        }
-      },
-      "samples": [
-        {
-          "price": 739.99,
-          "title": "Unlocked Samsung Galaxy S25 Ultra 12GB RAM 256GB SM-S938U1 Silverblue",
-          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 Ultra \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 710.0,
-          "title": "Samsung Galaxy S25 Ultra - 256 GB - Network Unlocked",
-          "cond": "Pre-Owned \u00b7 Samsung Galaxy S25 Ultra \u00b7 256 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 779.99,
-          "title": "New Verizon Samsung Galaxy S25 Ultra 12GB RAM 256GB SM-S938U Black",
-          "cond": "Brand New \u00b7 Samsung Galaxy S25 Ultra \u00b7 256 GB"
-        }
-      ],
-      "unmatched": 3,
+      "by_cell": {},
+      "samples": [],
+      "unmatched": 0,
       "outliers_rejected": 0,
       "label": "Galaxy S25 Ultra",
       "family": "galaxy s25 ultra",
-      "scraped_at": "2026-05-19T20:27:44.812028+00:00"
+      "scraped_at": "2026-07-13T01:16:42.298414+00:00"
     },
     "gzflip5": {
       "by_cell": {
@@ -4699,240 +4339,242 @@
       "by_cell": {
         "256": {
           "sealed": {
-            "count": 22,
-            "average": 751.86,
-            "median": 743.995,
-            "net_average": 643.72,
-            "net_median": 636.88,
-            "min": 549.99,
-            "max": 899.99,
-            "rejected_outliers": 0
+            "count": 31,
+            "average": 761.77,
+            "median": 779.99,
+            "net_average": 652.34,
+            "net_median": 668.19,
+            "min": 500.0,
+            "max": 950.0,
+            "rejected_outliers": 1
           },
           "used": {
-            "count": 45,
-            "average": 596.11,
-            "median": 612.98,
-            "net_average": 508.22,
-            "net_median": 522.89,
-            "min": 399.99,
-            "max": 759.99,
+            "count": 28,
+            "average": 615.86,
+            "median": 642.485,
+            "net_average": 525.4,
+            "net_median": 548.56,
+            "min": 479.0,
+            "max": 721.0,
             "rejected_outliers": 2
           }
         },
         "512": {
           "sealed": {
-            "count": 7,
-            "average": 944.71,
-            "median": 948.0,
-            "net_average": 811.5,
-            "net_median": 814.36,
-            "min": 885.0,
-            "max": 999.99,
-            "rejected_outliers": 1
+            "count": 8,
+            "average": 926.12,
+            "median": 949.995,
+            "net_average": 795.32,
+            "net_median": 816.1,
+            "min": 799.98,
+            "max": 1000.0,
+            "rejected_outliers": 3
           },
           "used": {
             "count": 6,
-            "average": 750.35,
-            "median": 749.065,
-            "net_average": 642.4,
-            "net_median": 641.29,
-            "min": 670.0,
-            "max": 829.99,
+            "average": 807.57,
+            "median": 784.0,
+            "net_average": 692.19,
+            "net_median": 671.68,
+            "min": 577.45,
+            "max": 999.99,
             "rejected_outliers": 0
           }
         },
         "1tb": {
           "sealed": {
             "count": 1,
-            "average": 979.99,
-            "median": 979.99,
-            "net_average": 842.19,
-            "net_median": 842.19,
-            "min": 979.99,
-            "max": 979.99,
-            "rejected_outliers": 0
-          },
-          "used": {
-            "count": 1,
-            "average": 989.95,
-            "median": 989.95,
-            "net_average": 850.86,
-            "net_median": 850.86,
-            "min": 989.95,
-            "max": 989.95,
+            "average": 1150.0,
+            "median": 1150.0,
+            "net_average": 990.1,
+            "net_median": 990.1,
+            "min": 1150.0,
+            "max": 1150.0,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 549.99,
-          "title": "Google Pixel 10 Pro XL 256 GB Obsidian Black | AT&T Locked | Excellent",
-          "cond": "Open Box \u00b7 Google Pixel 10 Pro XL \u00b7 256 GB \u00b7 AT&T"
+          "price": 799.98,
+          "title": "Google pixel 10 pro xl 256gb Moonstone unlocked!! With 2 accessories",
+          "cond": "Brand New \u00b7 Google Pixel XL \u00b7 256 GB \u00b7 Unlocked"
         },
         {
           "price": 750.0,
-          "title": "Google Pixel 10 Pro XL 256GB - Verizon - Obsidian - Factory Sealed",
-          "cond": "Brand New \u00b7 Google Pixel XL \u00b7 256 GB \u00b7 Verizon"
+          "title": "Google Sealed Pixel 10 Pro XL 6.8\", 256 GB Jade",
+          "cond": "Brand New \u00b7 Google Pixel XL \u00b7 256 MB"
         },
         {
-          "price": 644.99,
-          "title": "Google Pixel 10 Pro XL 256 GB Obsidian Black - Unlocked - Very Good",
-          "cond": "Very Good - Refurbished \u00b7 Google Pixel 10 Pro XL \u00b7 256 GB \u00b7 Unlocked"
+          "price": 650.0,
+          "title": "Google Pixel 10 Pro XL - 256 GB - Moonstone (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Google Pixel 10 Pro XL \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 679.99,
-          "title": "Google Pixel 10 Pro XL 256 GB Jade Green - Unlocked - Excellent",
-          "cond": "Excellent - Refurbished \u00b7 Google Pixel 10 Pro XL \u00b7 256 GB \u00b7 Unlocked"
+          "price": 671.15,
+          "title": "Google Pixel 10 Pro XL- 256GB Moonstone- Good Condition- Unlocked",
+          "cond": "Pre-Owned"
+        },
+        {
+          "price": 1000.0,
+          "title": "Google Pixel 10 Pro XL 512GB Unlocked Smartphone Brand New Sealed Obsidian",
+          "cond": "Brand New \u00b7 Google Pixel 10 Pro XL \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 950.0,
+          "title": "Google Pixel 10 Pro XL 512GB New Unlocked \u2013 White Porcelain 16GB of RAM",
+          "cond": "Brand New \u00b7 Google Pixel XL \u00b7 512 GB \u00b7 Unlocked"
         },
         {
           "price": 999.99,
-          "title": "Google Pixel 10 Pro XL 512GB - Obsidian - UNLOCKED (BRAND NEW!)",
-          "cond": "Brand New \u00b7 Google Pixel XL \u00b7 512 GB \u00b7 Unlocked"
+          "title": "Google Pixel 10 Pro XL 512GB Obsidian AT&T Excellent Condition",
+          "cond": "Pre-Owned \u00b7 Google Pixel XL \u00b7 512 GB \u00b7 AT&T"
         },
         {
-          "price": 948.0,
-          "title": "Google Pixel 10 Pro XL 512GB - Obsidian - UNLOCKED (BRAND NEW!)",
-          "cond": "Brand New \u00b7 Google Pixel XL \u00b7 512 GB \u00b7 Unlocked"
+          "price": 829.0,
+          "title": "Google Pixel 10 Pro XL 512gb Unlocked (Excellent)",
+          "cond": "Pre-Owned \u00b7 Google Pixel 10 Pro XL \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 749.99,
-          "title": "Google Pixel 10 Pro XL 512 GB Moonstone Blue Factory Unlocked VERY GOOD",
-          "cond": "Very Good - Refurbished \u00b7 Google Pixel XL \u00b7 512 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 729.0,
-          "title": "Google Pixel 10 Pro XL - GA09877-US - Factory Unlocked - 512GB - Free Shipping",
-          "cond": "Pre-Owned \u00b7 Google Pixel XL \u00b7 512 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 979.99,
-          "title": "Brand New in Box Google Pixel 10 Pro XL 1TB 16GB USA Unlocked Smartphone",
-          "cond": "Brand New"
-        },
-        {
-          "price": 989.95,
-          "title": "Google Pixel 10 Pro XL - UNLOCKED 1TB GUL82 - Obsidian Black - VERY GOOD Cond.",
-          "cond": "Pre-Owned \u00b7 Google Pixel 10 Pro XL \u00b7 1 TB \u00b7 Unlocked"
+          "price": 1150.0,
+          "title": "Google Pixel 10 Pro XL 1TB Moonstone Factory Unlocked Brand New No Box",
+          "cond": "Open Box \u00b7 Google Pixel XL \u00b7 1 TB \u00b7 Unlocked"
         }
       ],
       "unmatched": 22,
-      "outliers_rejected": 3,
+      "outliers_rejected": 6,
       "label": "Google Pixel 10 Pro XL",
       "family": "pixel 10 pro xl",
-      "scraped_at": "2026-05-19T20:29:27.715151+00:00"
+      "scraped_at": "2026-07-13T01:17:14.866861+00:00"
     },
     "px10p": {
       "by_cell": {
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 685.0,
+            "median": 685.0,
+            "net_average": 585.55,
+            "net_median": 585.55,
+            "min": 685.0,
+            "max": 685.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 2,
+            "average": 814.0,
+            "median": 814.0,
+            "net_average": 697.78,
+            "net_median": 697.78,
+            "min": 729.0,
+            "max": 899.0,
+            "rejected_outliers": 0
+          }
+        },
         "128": {
           "used": {
-            "count": 3,
-            "average": 530.33,
-            "median": 531.99,
-            "net_average": 450.99,
-            "net_median": 452.43,
-            "min": 524.0,
-            "max": 534.99,
-            "rejected_outliers": 2
+            "count": 8,
+            "average": 541.87,
+            "median": 539.99,
+            "net_average": 461.03,
+            "net_median": 459.39,
+            "min": 500.0,
+            "max": 600.0,
+            "rejected_outliers": 1
           },
           "sealed": {
             "count": 3,
-            "average": 692.98,
-            "median": 720.0,
-            "net_average": 592.49,
-            "net_median": 616.0,
-            "min": 629.99,
-            "max": 728.96,
+            "average": 549.73,
+            "median": 565.21,
+            "net_average": 467.87,
+            "net_median": 481.33,
+            "min": 514.98,
+            "max": 569.0,
             "rejected_outliers": 0
           }
         },
         "256": {
           "used": {
-            "count": 3,
-            "average": 506.66,
-            "median": 549.99,
-            "net_average": 430.39,
-            "net_median": 468.09,
-            "min": 400.0,
-            "max": 569.99,
-            "rejected_outliers": 0
-          },
-          "sealed": {
             "count": 2,
-            "average": 783.98,
-            "median": 783.975,
-            "net_average": 671.66,
-            "net_median": 671.66,
-            "min": 679.95,
-            "max": 888.0,
+            "average": 617.54,
+            "median": 617.54,
+            "net_average": 526.86,
+            "net_median": 526.86,
+            "min": 535.09,
+            "max": 699.99,
             "rejected_outliers": 0
           }
         },
-        "512": {
+        "1tb": {
           "used": {
             "count": 1,
-            "average": 759.95,
-            "median": 759.95,
-            "net_average": 650.76,
-            "net_median": 650.76,
-            "min": 759.95,
-            "max": 759.95,
+            "average": 706.51,
+            "median": 706.51,
+            "net_average": 604.26,
+            "net_median": 604.26,
+            "min": 706.51,
+            "max": 706.51,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 534.99,
-          "title": "Google Pixel 10 Pro 128 GB Moonstone Blue - Unlocked from Verizon - Very Good",
-          "cond": "Very Good - Refurbished \u00b7 Google Pixel \u00b7 128 GB \u00b7 Unlocked"
+          "price": 685.0,
+          "title": "Google Pixel 10 Pro Max 512GB Black Unlocked Excellent Condition",
+          "cond": "Pre-Owned \u00b7 Google Pixel XL \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 531.99,
-          "title": "Google Pixel 10 Pro - 128GB Gemini AI Assistant Obsidian Unlocked - Excellent",
-          "cond": "Excellent - Refurbished \u00b7 Google Pixel \u00b7 128 GB \u00b7 Unlocked"
+          "price": 899.0,
+          "title": "Google Pixel 10 Pro - 512GB - UNLOCKED Obsidian Black - (SEALED) With Warranty",
+          "cond": "Brand New \u00b7 Google Pixel \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 728.96,
-          "title": "Google Smartphone Pixel 10 Pro 128GB LTE (Verizon) GA10276-US - Moonstone",
-          "cond": "Brand New \u00b7 Google Pixel \u00b7 128 GB \u00b7 Verizon"
+          "price": 729.0,
+          "title": "Google Pixel 10 Pro 512GB Moonstone Unlocked - EXCELLENT",
+          "cond": "Open Box \u00b7 Google Pixel \u00b7 512 GB \u00b7 Factory Unlocked"
         },
         {
-          "price": 629.99,
-          "title": "Google Pixel 10 Pro - 128GB - Porcelain (Unlocked) - Open Box",
-          "cond": "Open Box \u00b7 Google Pixel \u00b7 128 GB \u00b7 Unlocked"
+          "price": 500.0,
+          "title": "Google Pixel 10 Pro - Obsidian (128GB, Unlocked, Good)",
+          "cond": "Pre-Owned \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 549.99,
-          "title": "Google Pixel 10 Pro 256GB Great Condition | Moonstone | VERIZON ONLY",
-          "cond": "Pre-Owned \u00b7 Google Pixel \u00b7 256 GB \u00b7 Verizon"
+          "price": 600.0,
+          "title": "Google Pixel 10 Pro with 2 Dbrand skins",
+          "cond": "Pre-Owned \u00b7 Google Pixel 10 Pro \u00b7 128 GB \u00b7 Unlocked"
         },
         {
-          "price": 400.0,
-          "title": "Google Pixel 10 Pro Gray 256GB - Unlocked for any carrier",
-          "cond": "Pre-Owned \u00b7 Google Pixel \u00b7 256 GB"
+          "price": 514.98,
+          "title": "Google Pixel 10 Pro - 128GB 6.3\" - 5G Dual SIM - Obsidian (Verizon)",
+          "cond": "Open Box \u00b7 Google Pixel \u00b7 128 GB \u00b7 Verizon"
         },
         {
-          "price": 888.0,
-          "title": "Google Pixel 10 Pro 256GB, 16GB, JADE, Gemini AI Assistant, NEW sealed Unlocked",
-          "cond": "Brand New \u00b7 Google Pixel \u00b7 256 GB \u00b7 Unlocked"
+          "price": 565.21,
+          "title": "Google Pixel 10 Pro 128 GB - Obsidian - Unlocked - Brand New - Sealed",
+          "cond": "Brand New"
         },
         {
-          "price": 679.95,
-          "title": "Google Pixel 10 Pro - UNLOCKED 256GB - G4QUR - Obsidian Black - EXCELLENT Cond.",
-          "cond": "Open Box \u00b7 Google Pixel 10 Pro \u00b7 256 GB \u00b7 Unlocked"
+          "price": 535.09,
+          "title": "Google Pixel 10 Pro G4QUR 256GB AT&T - Good",
+          "cond": "Good - Refurbished"
         },
         {
-          "price": 759.95,
-          "title": "Google Pixel 10 Pro - UNLOCKED 512GB - G4QUR - Moonstone Gray - VERY GOOD Cond.",
-          "cond": "Pre-Owned \u00b7 Google Pixel 10 Pro \u00b7 512 GB \u00b7 Unlocked"
+          "price": 699.99,
+          "title": "Google Pixel 10 Pro - 256GB - Unlocked - Jade - Excellent Refurbished",
+          "cond": "Excellent - Refurbished \u00b7 Google Pixel \u00b7 256 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 706.51,
+          "title": "Google Pixel 10 Pro (GEHN3) - 1TB Unlocked Obsidian 100% Battery Warranty - Fair",
+          "cond": "Pre-Owned"
         }
       ],
-      "unmatched": 4,
-      "outliers_rejected": 2,
+      "unmatched": 2,
+      "outliers_rejected": 1,
       "label": "Google Pixel 10 Pro",
       "family": "pixel 10 pro",
-      "scraped_at": "2026-05-19T20:29:38.212768+00:00"
+      "scraped_at": "2026-07-13T01:17:29.657343+00:00"
     },
     "px10": {
       "by_cell": {
@@ -4984,152 +4626,162 @@
     },
     "px9pxl": {
       "by_cell": {
-        "128": {
-          "sealed": {
-            "count": 4,
-            "average": 515.73,
-            "median": 516.475,
-            "net_average": 438.29,
-            "net_median": 438.93,
-            "min": 429.95,
-            "max": 600.0,
-            "rejected_outliers": 1
-          },
-          "used": {
-            "count": 18,
-            "average": 366.34,
-            "median": 358.14,
-            "net_average": 308.32,
-            "net_median": 301.18,
-            "min": 265.0,
-            "max": 479.99,
-            "rejected_outliers": 1
-          }
-        },
         "256": {
           "used": {
-            "count": 45,
-            "average": 415.05,
-            "median": 425.0,
-            "net_average": 350.69,
-            "net_median": 359.35,
-            "min": 279.2,
-            "max": 600.0,
-            "rejected_outliers": 1
+            "count": 34,
+            "average": 438.2,
+            "median": 449.40999999999997,
+            "net_average": 370.83,
+            "net_median": 380.59,
+            "min": 279.25,
+            "max": 565.2,
+            "rejected_outliers": 2
           },
           "sealed": {
-            "count": 6,
-            "average": 544.66,
-            "median": 543.495,
-            "net_average": 463.45,
-            "net_median": 462.44,
-            "min": 527.0,
-            "max": 577.0,
-            "rejected_outliers": 3
-          }
-        },
-        "1tb": {
-          "used": {
-            "count": 2,
-            "average": 695.0,
-            "median": 694.995,
-            "net_average": 594.25,
-            "net_median": 594.25,
-            "min": 669.99,
-            "max": 720.0,
-            "rejected_outliers": 0
-          },
-          "sealed": {
-            "count": 1,
-            "average": 825.0,
-            "median": 825.0,
-            "net_average": 707.35,
-            "net_median": 707.35,
-            "min": 825.0,
-            "max": 825.0,
-            "rejected_outliers": 0
+            "count": 14,
+            "average": 598.13,
+            "median": 594.0,
+            "net_average": 509.97,
+            "net_median": 506.38,
+            "min": 566.98,
+            "max": 649.99,
+            "rejected_outliers": 5
           }
         },
         "512": {
           "used": {
-            "count": 10,
-            "average": 496.16,
-            "median": 513.5,
-            "net_average": 421.26,
-            "net_median": 436.35,
-            "min": 407.0,
-            "max": 557.0,
+            "count": 9,
+            "average": 510.39,
+            "median": 528.0,
+            "net_average": 433.64,
+            "net_median": 448.96,
+            "min": 400.0,
+            "max": 583.0,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 2,
+            "average": 810.43,
+            "median": 810.4300000000001,
+            "net_average": 694.67,
+            "net_median": 694.67,
+            "min": 720.87,
+            "max": 899.99,
+            "rejected_outliers": 0
+          }
+        },
+        "128": {
+          "used": {
+            "count": 23,
+            "average": 402.21,
+            "median": 439.99,
+            "net_average": 339.52,
+            "net_median": 372.39,
+            "min": 255.0,
+            "max": 508.0,
+            "rejected_outliers": 1
+          },
+          "sealed": {
+            "count": 5,
+            "average": 484.98,
+            "median": 509.95,
+            "net_average": 411.53,
+            "net_median": 433.26,
+            "min": 370.0,
+            "max": 569.99,
+            "rejected_outliers": 0
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 1,
+            "average": 673.99,
+            "median": 673.99,
+            "net_average": 575.97,
+            "net_median": 575.97,
+            "min": 673.99,
+            "max": 673.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 1,
+            "average": 940.0,
+            "median": 940.0,
+            "net_average": 807.4,
+            "net_median": 807.4,
+            "min": 940.0,
+            "max": 940.0,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 600.0,
-          "title": "Google - Pixel 9 Pro XL 128GB (Unlocked) - Obsidian",
-          "cond": "Brand New \u00b7 Google Pixel 9 Pro XL \u00b7 128 GB \u00b7 Unlocked"
+          "price": 349.0,
+          "title": "Google Pixel 9 Pro XL 256GB Obsidian Black - T-Mobile Locked - Very Good",
+          "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 256 GB \u00b7 T-Mobile"
         },
         {
-          "price": 485.0,
-          "title": "Google Pixel 9 Pro XL Factory Unlocked ATT TMobile Verizon Unlockable BL 7636114",
-          "cond": "Open Box \u00b7 Google Pixel 9 Pro XL \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 479.99,
-          "title": "Google Pixel 9 Pro XL 128GB Porcelain Unlocked",
-          "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 329.99,
-          "title": "Google Pixel 9 Pro XL 128GB - Black Obsidian - Spectrum Only - Good",
-          "cond": "Good - Refurbished \u00b7 Google Pixel 9 Pro XL \u00b7 128 GB \u00b7 Spectrum"
-        },
-        {
-          "price": 281.0,
-          "title": "Google Pixel 9 Pro XL - 256GB - Obsidian Black - Verizon",
-          "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 256 GB \u00b7 Verizon"
-        },
-        {
-          "price": 448.83,
-          "title": "Google Pixel 9 Pro XL 256GB Obsidian GGX8B (Carrier Unlocked) DG8454",
+          "price": 490.0,
+          "title": "Google Pixel 9 Pro XL - Unlocked - 256GB - Excellent Condition",
           "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 527.0,
-          "title": "Google Pixel 9 Pro XL Black - Carrier Unlocked AT&T T-Mobile Verizon GSM 7635362",
-          "cond": "Open Box \u00b7 Google Pixel 9 Pro XL \u00b7 256 GB \u00b7 Unlocked"
+          "price": 595.0,
+          "title": "NEW SEALED Google Pixel 9 Pro XL 128GB/256GB FACTORY UNLOCKED ALL COLOR GSM+CDMA",
+          "cond": "Brand New"
         },
         {
-          "price": 549.99,
-          "title": "Google Pixel 9 Pro XL - 256GB - Obsidian Black - (GOOGLE ED. Unlocked)",
-          "cond": "Open Box \u00b7 Google Pixel 9 Pro XL \u00b7 256 GB \u00b7 Unlocked"
+          "price": 593.0,
+          "title": "Brand NEW Google Pixel 9 Pro XL 128GB/256GB Smartphone Unlocked Sealed Box US",
+          "cond": "Brand New"
         },
         {
-          "price": 669.99,
-          "title": "Google Pixel 9 Pro XL - 1 TB - Black Obsidian - Unlocked - Very Good + More",
-          "cond": "Very Good - Refurbished \u00b7 Google Pixel 9 Pro XL \u00b7 1 TB \u00b7 Unlocked"
+          "price": 429.95,
+          "title": "Google Pixel 9 Pro XL - 512GB - Obsidian Black (Verizon) - Excellent Condition",
+          "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 512 GB \u00b7 Verizon"
         },
         {
-          "price": 720.0,
-          "title": "Google Pixel 9 Pro XL Factory Unlocked ATT TMobile Verizon Unlockable BL 7633104",
-          "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 825.0,
-          "title": "Google Pixel 9 Pro XL Factory Unlocked ATT TMobile Verizon Unlockable BL 7636480",
-          "cond": "Open Box \u00b7 Google Pixel 9 Pro XL \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 439.98,
-          "title": "Google Pixel 9 Pro XL - 256GB - Obsidian - (Bootloader Unlocked) Screen Burn",
+          "price": 400.0,
+          "title": "Google Pixel 9 Pro XL 512GB Memory Fair condition *READ DESCRIPTION*",
           "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 720.87,
+          "title": "Open Box Google Pixel 9 Pro XL - 512 GB - Obsidian (Unlocked)",
+          "cond": "Open Box \u00b7 Google Pixel 9 Pro XL \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 899.99,
+          "title": "Google Pixel 9 Pro XL - 512GB - Unlocked - Obsidian - New",
+          "cond": "Brand New \u00b7 Google Pixel 9 Pro XL \u00b7 512 GB"
+        },
+        {
+          "price": 299.99,
+          "title": "Google Pixel 9 Pro XL 128GB Slate Gray 12GB RAM 6.7\" Android Octa-Core",
+          "cond": "Pre-Owned \u00b7 Google Pixel 9 Pro XL \u00b7 128 GB"
+        },
+        {
+          "price": 439.99,
+          "title": "Unlocked Google Pixel 9 Pro XL - 128GB - Obsidian - GA05900-US",
+          "cond": "Excellent - Refurbished \u00b7 Google Pixel 9 Pro XL \u00b7 128 GB \u00b7 Factory Unlocked"
+        },
+        {
+          "price": 509.95,
+          "title": "Google Pixel 9 Pro XL 128GB Unlocked GSM CDMA Excellent In-Box Obsidian / Hazel",
+          "cond": "Open Box"
+        },
+        {
+          "price": 370.0,
+          "title": "Google Pixel 9 Pro XL Green - Spectrum Smartphone w/Warranty 7637617",
+          "cond": "Open Box \u00b7 Google Pixel 9 Pro XL \u00b7 128 GB \u00b7 Spectrum"
         }
       ],
-      "unmatched": 15,
-      "outliers_rejected": 6,
+      "unmatched": 14,
+      "outliers_rejected": 8,
       "label": "Google Pixel 9 Pro XL",
       "family": "pixel 9 pro xl",
-      "scraped_at": "2026-05-19T20:29:59.138206+00:00"
+      "scraped_at": "2026-07-13T01:17:45.378346+00:00"
     },
     "px9p": {
       "by_cell": {
@@ -5325,132 +4977,140 @@
     },
     "px8p": {
       "by_cell": {
-        "1tb": {
+        "256": {
           "used": {
-            "count": 2,
-            "average": 421.97,
-            "median": 421.97,
-            "net_average": 356.71,
-            "net_median": 356.71,
-            "min": 398.95,
-            "max": 444.99,
+            "count": 8,
+            "average": 312.09,
+            "median": 325.995,
+            "net_average": 261.12,
+            "net_median": 273.22,
+            "min": 219.95,
+            "max": 379.99,
+            "rejected_outliers": 0
+          },
+          "sealed": {
+            "count": 3,
+            "average": 359.3,
+            "median": 339.95,
+            "net_average": 302.19,
+            "net_median": 285.36,
+            "min": 339.95,
+            "max": 398.0,
             "rejected_outliers": 0
           }
         },
         "128": {
           "used": {
-            "count": 15,
-            "average": 254.91,
-            "median": 269.99,
-            "net_average": 211.37,
-            "net_median": 224.49,
-            "min": 179.99,
-            "max": 308.99,
-            "rejected_outliers": 0
-          }
-        },
-        "256": {
-          "used": {
-            "count": 6,
-            "average": 325.82,
-            "median": 327.47,
-            "net_average": 273.06,
-            "net_median": 274.5,
-            "min": 299.99,
-            "max": 349.99,
-            "rejected_outliers": 2
+            "count": 12,
+            "average": 267.79,
+            "median": 268.2,
+            "net_average": 222.58,
+            "net_median": 222.93,
+            "min": 199.99,
+            "max": 317.99,
+            "rejected_outliers": 1
           },
           "sealed": {
             "count": 2,
-            "average": 339.95,
-            "median": 339.95,
-            "net_average": 285.36,
-            "net_median": 285.36,
-            "min": 339.95,
-            "max": 339.95,
+            "average": 385.5,
+            "median": 385.5,
+            "net_average": 324.99,
+            "net_median": 324.99,
+            "min": 385.0,
+            "max": 386.0,
             "rejected_outliers": 0
           }
         },
         "512": {
           "used": {
-            "count": 1,
-            "average": 288.99,
-            "median": 288.99,
-            "net_average": 241.02,
-            "net_median": 241.02,
-            "min": 288.99,
-            "max": 288.99,
-            "rejected_outliers": 0
+            "count": 3,
+            "average": 383.33,
+            "median": 399.99,
+            "net_average": 323.1,
+            "net_median": 337.59,
+            "min": 349.99,
+            "max": 400.0,
+            "rejected_outliers": 1
           },
           "sealed": {
-            "count": 1,
-            "average": 414.0,
-            "median": 414.0,
-            "net_average": 349.78,
-            "net_median": 349.78,
-            "min": 414.0,
-            "max": 414.0,
+            "count": 2,
+            "average": 385.5,
+            "median": 385.5,
+            "net_average": 324.99,
+            "net_median": 324.99,
+            "min": 385.0,
+            "max": 386.0,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 398.95,
-          "title": "Google Pixel 8 Pro 1TB Obsidian G1MNW (Unlocked) GSM World Phone VF5887",
-          "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 444.99,
-          "title": "Google Pixel 8 Pro 1TB Obsidian Black - Factory Unlocked - Very Good + More",
-          "cond": "Very Good - Refurbished \u00b7 Google Pixel 8 Pro \u00b7 1 TB \u00b7 Unlocked"
-        },
-        {
-          "price": 240.0,
-          "title": "Google Pixel 8 Pro - 128GB - Bay (Unlocked) - Average Condition",
-          "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 128 GB \u00b7 Unlocked"
-        },
-        {
-          "price": 259.99,
-          "title": "Unlocked Google Pixel 8 Pro 128GB Just Black G1MNW",
-          "cond": "Pre-Owned \u00b7 128 GB"
-        },
-        {
-          "price": 345.0,
-          "title": "Google Pixel 8 Pro - 256GB - Obsidian (Unlocked) Excellent Condition",
+          "price": 343.79,
+          "title": "Google Pixel 8 Pro G1MNW 256GB Obsidian Verizon+GSM Unlocked phone",
           "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 256 GB \u00b7 Unlocked"
         },
         {
-          "price": 299.99,
-          "title": "Google Pixel 8 Pro - 256GB - Obisidan Black - Factory Unlocked - Good + More",
-          "cond": "Good - Refurbished \u00b7 Google Pixel 8 Pro \u00b7 256 GB \u00b7 Unlocked"
+          "price": 219.95,
+          "title": "Google Pixel 8 Pro - 256GB - Bay (Verizon) Smartphone",
+          "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 256 GB \u00b7 Verizon"
         },
         {
           "price": 339.95,
-          "title": "Google Pixel 8 Pro 5G 256GB 128GB Factory Unlocked Any Carrier Excellent In-Box",
+          "title": "Google Pixel 8 Pro 5G 256GB 128GB Unlocked Any Carrier Excellent In-Box",
           "cond": "Open Box"
         },
         {
-          "price": 339.95,
-          "title": "Google Pixel 8 Pro 128GB 256GB 5G Unlocked, 6.7\", Excellent Condition, In-Box",
-          "cond": "Open Box"
+          "price": 398.0,
+          "title": "Brand New Google Pixel 8 Pro 5G 256GB (Unlocked) All Colors *US STOCK*",
+          "cond": "Brand New"
         },
         {
-          "price": 288.99,
-          "title": "Google Pixel 8 Pro - 512 GB - Porcelain White - Unlocked - Screen Issue",
+          "price": 250.0,
+          "title": "Google Pixel 8 Pro - 128 GB - Bay (Unlocked)",
+          "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 290.0,
+          "title": "Google Pixel 8 Pro - 128 GB - Bay Blue (Verizon, unlocked)",
+          "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 128 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 385.0,
+          "title": "\ud83d\udd25New Sealed Google Pixel 8 Pro 5G 128GB G1MNW Factory Unlocked All \ud83d\udd25",
+          "cond": "Brand New"
+        },
+        {
+          "price": 386.0,
+          "title": "NEW SEALED GOOGLE PIXEL 8 PRO 5G 128GB FACTORY UNLOCKED ALL COLOR & MEMORY",
+          "cond": "Brand New"
+        },
+        {
+          "price": 399.99,
+          "title": "Google Pixel 8 Pro - 512GB - Obsidian - Unlocked - Gently Used",
           "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 512 GB \u00b7 Unlocked"
         },
         {
-          "price": 414.0,
+          "price": 400.0,
+          "title": "Google Pixel 8 Pro Factory Unlocked ATT TMobile Verizon Unlockable BL 7638249",
+          "cond": "Pre-Owned \u00b7 Google Pixel 8 Pro \u00b7 512 GB \u00b7 Unlocked"
+        },
+        {
+          "price": 385.0,
+          "title": "New Sealed Google Pixel 8 Pro 5G 128/256/512GB Factory Unlocked 2 YEAR WARRANTY",
+          "cond": "Brand New"
+        },
+        {
+          "price": 386.0,
           "title": "New Sealed Google Pixel 8 Pro 5G 128/256/512GB Factory Unlocked 2 YEAR WARRANTY",
           "cond": "Brand New"
         }
       ],
-      "unmatched": 11,
+      "unmatched": 6,
       "outliers_rejected": 2,
       "label": "Google Pixel 8 Pro",
       "family": "pixel 8 pro",
-      "scraped_at": "2026-05-19T20:30:30.319105+00:00"
+      "scraped_at": "2026-07-13T01:18:01.074918+00:00"
     },
     "ps5pro": {
       "by_cell": {
