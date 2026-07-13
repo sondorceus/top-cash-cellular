@@ -52,13 +52,13 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   // iPads — Skipped most (TCC pays above Atlas wholesale). Only the M3 13"
   // Air has enough margin headroom for a safe cap.
   "iPad Air 13\" (M3)": 515,
-  // Consoles — Xbox values refreshed 2026-05-19 to match current eBay
-  // sold (Series X has held steady at ~$300+; Series S at ~$180+).
-  // Skywalker caught the old 220/130 numbers flagging both consoles
-  // as loss-risk on /admin/prices when they're actually fine margins.
-  "PlayStation 5 Pro": 680, "PlayStation 5 Slim": 310, "PlayStation 5": 347,
-  "Xbox Series X": 320, "Xbox Series S": 180,
-  "Nintendo Switch 2": 370, "Nintendo Switch OLED": 180,
+  // Consoles — refreshed 2026-07-12 from fresh eBay sold medians (console
+  // market ROSE since May: Series X used now ~$450 n=61, PS5 Pro used 2TB
+  // ~$775 n=38). ps5slim/nswoled kept at May-19 medians (July scrape
+  // returned empty pages for those two queries); PS5 kept (n=2 too weak).
+  "PlayStation 5 Pro": 775, "PlayStation 5 Slim": 399, "PlayStation 5": 347,
+  "Xbox Series X": 450, "Xbox Series S": 240,
+  "Nintendo Switch 2": 413, "Nintendo Switch OLED": 195,
   // MacBook
   "MacBook Pro 16\" M4": 1500, "MacBook Pro 14\" M4": 1000, "MacBook Pro 16\" M3": 1100,
   "MacBook Pro 14\" M3": 700, "MacBook Air M4": 600, "MacBook Air M3": 450,

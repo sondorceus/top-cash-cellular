@@ -283,7 +283,7 @@ export const DEVICES: Device[] = [
 
   // ── Google Pixel Standard / a-series ──
   { slug: "pixel-10", name: "Pixel 10", category: "Pixel", price: 206, year: 2025 },
-  { slug: "pixel-10a", name: "Pixel 10a", category: "Pixel", price: 273, year: 2025 },
+  { slug: "pixel-10a", name: "Pixel 10a", category: "Pixel", price: 173, year: 2025 },
   { slug: "pixel-9", name: "Pixel 9", category: "Pixel", price: 137, year: 2024 },
   { slug: "pixel-9a", name: "Pixel 9a", category: "Pixel", price: 237, year: 2024 },
   { slug: "pixel-8", name: "Pixel 8", category: "Pixel", price: 214, year: 2023 },
@@ -350,17 +350,17 @@ export const DEVICES: Device[] = [
   { slug: "ipad-9th-gen", name: "iPad 9th Gen", category: "iPad", price: 119, year: 2021 },
 
   // ── Consoles ──
-  { slug: "playstation-5-pro", name: "PlayStation 5 Pro", category: "Console", price: 495, year: 2024 },
-  { slug: "playstation-5-slim", name: "PlayStation 5 Slim", category: "Console", price: 252, year: 2023 },
-  { slug: "playstation-5", name: "PlayStation 5", category: "Console", price: 270, year: 2020 },
-  { slug: "playstation-4-pro", name: "PlayStation 4 Pro", category: "Console", price: 135, year: 2016 },
-  { slug: "playstation-4", name: "PlayStation 4", category: "Console", price: 63, year: 2013 },
-  { slug: "xbox-series-x", name: "Xbox Series X", category: "Console", price: 428, year: 2020 },
-  { slug: "xbox-series-s", name: "Xbox Series S", category: "Console", price: 220, year: 2020 },
-  { slug: "xbox-one", name: "Xbox One", category: "Console", price: 117, year: 2013 },
-  { slug: "nintendo-switch-oled", name: "Nintendo Switch OLED", category: "Console", price: 112, year: 2021 },
-  { slug: "nintendo-switch-v2", name: "Nintendo Switch V2", category: "Console", price: 108, year: 2019 },
-  { slug: "nintendo-switch-lite", name: "Nintendo Switch Lite", category: "Console", price: 68, year: 2019 },
+  { slug: "playstation-5-pro", name: "PlayStation 5 Pro", category: "Console", price: 506, year: 2024 },
+  { slug: "playstation-5-slim", name: "PlayStation 5 Slim", category: "Console", price: 260, year: 2023 },
+  { slug: "playstation-5", name: "PlayStation 5", category: "Console", price: 226, year: 2020 },
+  { slug: "playstation-4-pro", name: "PlayStation 4 Pro", category: "Console", price: 108, year: 2016 },
+  { slug: "playstation-4", name: "PlayStation 4", category: "Console", price: 108, year: 2013 },
+  { slug: "xbox-series-x", name: "Xbox Series X", category: "Console", price: 294, year: 2020 },
+  { slug: "xbox-series-s", name: "Xbox Series S", category: "Console", price: 157, year: 2020 },
+  { slug: "xbox-one", name: "Xbox One", category: "Console", price: 67, year: 2013 },
+  { slug: "nintendo-switch-oled", name: "Nintendo Switch OLED", category: "Console", price: 148, year: 2021 },
+  { slug: "nintendo-switch-v2", name: "Nintendo Switch V2", category: "Console", price: 104, year: 2019 },
+  { slug: "nintendo-switch-lite", name: "Nintendo Switch Lite", category: "Console", price: 58, year: 2019 },
 
   // ── Apple Watch ──
   { slug: "apple-watch-ultra-3", name: "Apple Watch Ultra 3", category: "Watch", price: 319, year: 2025 },

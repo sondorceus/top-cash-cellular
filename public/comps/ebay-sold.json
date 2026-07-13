@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-05-19T20:47:26.186208+00:00",
+  "scraped_at": "2026-07-13T00:29:59.947444+00:00",
   "source": "eBay sold-listings (LH_Sold=1, LH_Complete=1)",
   "note": "Median/mean of completed-listing prices. Accessory + sibling-tier filtered. Use as resale reference vs Atlas wholesale.",
   "models": {
@@ -5456,295 +5456,185 @@
       "by_cell": {
         "2tb": {
           "sealed": {
-            "count": 24,
-            "average": 741.45,
-            "median": 730.495,
-            "net_average": 619.66,
-            "net_median": 610.13,
-            "min": 610.0,
-            "max": 889.0,
-            "rejected_outliers": 2
+            "count": 25,
+            "average": 806.29,
+            "median": 800.0,
+            "net_average": 676.07,
+            "net_median": 670.6,
+            "min": 500.0,
+            "max": 999.0,
+            "rejected_outliers": 0
           },
           "used": {
-            "count": 41,
-            "average": 691.09,
-            "median": 684.99,
-            "net_average": 575.85,
-            "net_median": 570.54,
-            "min": 599.99,
-            "max": 828.0,
+            "count": 38,
+            "average": 766.97,
+            "median": 775.0,
+            "net_average": 641.86,
+            "net_median": 648.85,
+            "min": 539.99,
+            "max": 999.99,
             "rejected_outliers": 2
+          }
+        },
+        "1tb": {
+          "used": {
+            "count": 1,
+            "average": 999.0,
+            "median": 999.0,
+            "net_average": 843.73,
+            "net_median": 843.73,
+            "min": 999.0,
+            "max": 999.0,
+            "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 855.0,
-          "title": "SEALED BOX NEW Sony PlayStation 5 Pro 2TB Video Game Console PS5 Pro",
+          "price": 649.0,
+          "title": "\ud83e\udd11Sony PlayStation 5 Pro Disk-Free Console 2TB\ud83e\udd11",
           "cond": "Brand New \u00b7 Sony PlayStation 5"
         },
         {
-          "price": 799.99,
-          "title": "Sony Playstation 5 Pro 2TB Digital Edition Game Console PS5 (CFI-7019) | White",
+          "price": 710.0,
+          "title": "Sony PlayStation 5 Pro PS5 2TB",
           "cond": "Open Box \u00b7 Sony PlayStation 5"
         },
         {
-          "price": 699.99,
-          "title": "Sony PlayStation 5 Pro Digital PS5 2TB White Console Gaming System CFI-7119",
+          "price": 775.0,
+          "title": "Sony PlayStation 5 Pro Console 2TB 4K HDR DualSense Controller WORKS",
           "cond": "Pre-Owned \u00b7 Sony PlayStation 5"
         },
         {
-          "price": 599.99,
-          "title": "Sony PS5 PRO PlayStation 5 Pro - 2 TB SSD - Game Console - White CFI-7019",
+          "price": 785.0,
+          "title": "Sony PlayStation 5 Pro Console 2TB w/ Controller, HDMI, & Cables",
+          "cond": "Pre-Owned \u00b7 Sony PlayStation 5"
+        },
+        {
+          "price": 999.0,
+          "title": "Sony PlayStation 5 Pro with disc drive and an extra 1TB internal (3TB total)",
           "cond": "Pre-Owned \u00b7 Sony PlayStation 5"
         }
       ],
-      "unmatched": 19,
-      "outliers_rejected": 4,
+      "unmatched": 25,
+      "outliers_rejected": 2,
       "label": "PlayStation 5 Pro",
       "family": "playstation 5 pro",
-      "scraped_at": "2026-05-19T20:30:40.532043+00:00"
+      "scraped_at": "2026-07-13T00:27:56.311271+00:00"
     },
     "ps5slim": {
-      "by_cell": {
-        "1tb": {
-          "used": {
-            "count": 34,
-            "average": 396.24,
-            "median": 399.475,
-            "net_average": 319.33,
-            "net_median": 322.14,
-            "min": 320.0,
-            "max": 479.99,
-            "rejected_outliers": 5
-          },
-          "sealed": {
-            "count": 10,
-            "average": 474.99,
-            "median": 474.99,
-            "net_average": 387.84,
-            "net_median": 387.84,
-            "min": 424.99,
-            "max": 534.0,
-            "rejected_outliers": 1
-          }
-        }
-      },
-      "samples": [
-        {
-          "price": 320.0,
-          "title": "sony playstation 5 slim digital edition ps5 1tb",
-          "cond": "Pre-Owned \u00b7 Sony PlayStation 5 \u00b7 Sony PlayStation 5 Slim Digital Edition"
-        },
-        {
-          "price": 398.59,
-          "title": "Sony PlayStation 5 Slim Disc PS5 1TB White Console Gaming System CFI-2015",
-          "cond": "Pre-Owned"
-        },
-        {
-          "price": 479.99,
-          "title": "Sony Playstation 5 Slim Digital Edition 1TB CFI-2015 White PS5",
-          "cond": "Open Box \u00b7 Sony PlayStation 5 \u00b7 Sony PlayStation 5 Digital Edition"
-        },
-        {
-          "price": 519.95,
-          "title": "Sony PlayStation 5 Slim Digital Edition Console 1TB \u2013 White",
-          "cond": "Brand New \u00b7 Sony PlayStation 5 \u00b7 Sony PlayStation 5 Slim Digital Edition"
-        }
-      ],
-      "unmatched": 27,
-      "outliers_rejected": 6,
+      "by_cell": {},
+      "samples": [],
+      "unmatched": 0,
+      "outliers_rejected": 0,
       "label": "PlayStation 5 Slim",
       "family": "playstation 5 slim",
-      "scraped_at": "2026-05-19T20:30:51.018978+00:00"
+      "scraped_at": "2026-07-13T00:28:07.966649+00:00"
     },
     "ps5": {
-      "by_cell": {
-        "1tb": {
-          "sealed": {
-            "count": 2,
-            "average": 561.48,
-            "median": 561.475,
-            "net_average": 463.09,
-            "net_median": 463.08,
-            "min": 510.0,
-            "max": 612.95,
-            "rejected_outliers": 0
-          },
-          "used": {
-            "count": 2,
-            "average": 353.05,
-            "median": 353.05,
-            "net_average": 281.75,
-            "net_median": 281.75,
-            "min": 316.11,
-            "max": 389.99,
-            "rejected_outliers": 0
-          }
-        }
-      },
-      "samples": [
-        {
-          "price": 510.0,
-          "title": "Sony PlayStation 5 Console 1TB Fornite Disc version",
-          "cond": "Brand New \u00b7 Sony PlayStation 5"
-        },
-        {
-          "price": 612.95,
-          "title": "Sony PlayStation 5 Disc PS5 1TB White Console Gaming System CFI-2115 **NEW**",
-          "cond": "Brand New \u00b7 Sony PlayStation 5"
-        },
-        {
-          "price": 389.99,
-          "title": "Sony PlayStation 5 Disc Edition CFI-2015 1TB White Gaming System w/Controller",
-          "cond": "Pre-Owned \u00b7 Sony PlayStation 5"
-        },
-        {
-          "price": 316.11,
-          "title": "Sony PlayStation 5 PS5 Digital Edition + 1TB NVMe SSD WD_BLACK + Controller",
-          "cond": "Pre-Owned \u00b7 Sony PlayStation 5 \u00b7 Sony PlayStation 5 Digital Edition"
-        }
-      ],
-      "unmatched": 32,
+      "by_cell": {},
+      "samples": [],
+      "unmatched": 0,
       "outliers_rejected": 0,
       "label": "PlayStation 5",
       "family": "playstation 5",
-      "scraped_at": "2026-05-19T20:31:01.464146+00:00"
+      "scraped_at": "2026-07-13T00:28:21.428331+00:00"
     },
     "nsw2": {
       "by_cell": {
         "256": {
           "sealed": {
-            "count": 1,
-            "average": 442.99,
-            "median": 442.99,
-            "net_average": 360.0,
-            "net_median": 360.0,
-            "min": 442.99,
-            "max": 442.99,
+            "count": 7,
+            "average": 440.42,
+            "median": 449.99,
+            "net_average": 357.77,
+            "net_median": 366.09,
+            "min": 400.0,
+            "max": 489.0,
             "rejected_outliers": 0
           },
           "used": {
-            "count": 7,
-            "average": 395.0,
-            "median": 399.99,
-            "net_average": 318.25,
-            "net_median": 322.59,
-            "min": 365.0,
-            "max": 415.0,
-            "rejected_outliers": 1
+            "count": 6,
+            "average": 431.33,
+            "median": 413.0,
+            "net_average": 349.86,
+            "net_median": 333.91,
+            "min": 395.0,
+            "max": 500.0,
+            "rejected_outliers": 0
           }
         },
-        "512": {
+        "128": {
+          "used": {
+            "count": 1,
+            "average": 300.0,
+            "median": 300.0,
+            "net_average": 235.6,
+            "net_median": 235.6,
+            "min": 300.0,
+            "max": 300.0,
+            "rejected_outliers": 0
+          }
+        },
+        "32": {
           "sealed": {
             "count": 1,
-            "average": 574.99,
-            "median": 574.99,
-            "net_average": 474.84,
-            "net_median": 474.84,
-            "min": 574.99,
-            "max": 574.99,
+            "average": 439.99,
+            "median": 439.99,
+            "net_average": 357.39,
+            "net_median": 357.39,
+            "min": 439.99,
+            "max": 439.99,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 442.99,
-          "title": "NEW Nintendo Switch 2 Costco Bundle 256GB microSD + 12 Month Online Expansion",
+          "price": 459.0,
+          "title": "Nintendo Switch 2 Mario Kart World Bundle 256GB Handheld Gaming Console BEE-001",
           "cond": "Brand New \u00b7 Nintendo Switch"
         },
         {
-          "price": 415.0,
-          "title": "Nintendo Switch 2 + Pro Controller + 256GB Micro SD",
+          "price": 449.99,
+          "title": "Nintendo Switch 2 BEE-001 Handheld Console 256GB",
+          "cond": "Brand New \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
+        },
+        {
+          "price": 466.99,
+          "title": "Nintendo Switch 2 System + Pro Gamepad + 256GB microSD express card",
           "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
         },
         {
-          "price": 399.99,
-          "title": "Nintendo Switch 2 System Handheld Console Black 256GB w/ Controllers *Read*",
+          "price": 400.0,
+          "title": "Nintendo Switch 2 Fantastic Condition With Accessories 256gb Express Memory Card",
           "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
         },
         {
-          "price": 574.99,
-          "title": "Nintendo Switch 2 Console Mario Kart World Bundle 512gb Micro SD International",
+          "price": 300.0,
+          "title": "Nintendo Switch 2 Black 128gb Gently Used",
+          "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
+        },
+        {
+          "price": 439.99,
+          "title": "Nintendo Switch 2 Gray 32GB Console w/ Dock, Box, Game Download, 1080p HDMI",
           "cond": "Brand New \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
         }
       ],
-      "unmatched": 65,
-      "outliers_rejected": 1,
+      "unmatched": 49,
+      "outliers_rejected": 0,
       "label": "Nintendo Switch 2",
       "family": "nintendo switch 2",
-      "scraped_at": "2026-05-19T20:31:11.600381+00:00"
+      "scraped_at": "2026-07-13T00:29:55.129903+00:00"
     },
     "nswoled": {
-      "by_cell": {
-        "64": {
-          "sealed": {
-            "count": 5,
-            "average": 292.14,
-            "median": 295.99,
-            "net_average": 228.76,
-            "net_median": 232.11,
-            "min": 275.0,
-            "max": 300.0,
-            "rejected_outliers": 1
-          },
-          "used": {
-            "count": 18,
-            "average": 194.96,
-            "median": 195.0,
-            "net_average": 144.22,
-            "net_median": 144.25,
-            "min": 160.0,
-            "max": 230.0,
-            "rejected_outliers": 3
-          }
-        },
-        "256": {
-          "used": {
-            "count": 1,
-            "average": 214.99,
-            "median": 214.99,
-            "net_average": 161.64,
-            "net_median": 161.64,
-            "min": 214.99,
-            "max": 214.99,
-            "rejected_outliers": 0
-          }
-        }
-      },
-      "samples": [
-        {
-          "price": 300.0,
-          "title": "Nintendo Switch OLED Model HEG-001 Handheld Console - 64GB - White",
-          "cond": "Brand New \u00b7 Nintendo Switch \u00b7 Nintendo Switch (OLED Model)"
-        },
-        {
-          "price": 300.0,
-          "title": "Nintendo Switch OLED Handheld Console - 64GB - Black/Neon Red/Neon Blue",
-          "cond": "Open Box \u00b7 Nintendo Switch \u00b7 Nintendo Switch (OLED Model)"
-        },
-        {
-          "price": 160.0,
-          "title": "Nintendo Switch OLED Model HEG-001 Handheld Console - 64GB - White",
-          "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch (OLED Model)"
-        },
-        {
-          "price": 200.0,
-          "title": "Nintendo Switch OLED Model HEG-001 Handheld Console - 64GB - White",
-          "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch (OLED Model)"
-        },
-        {
-          "price": 214.99,
-          "title": "Nintendo Switch OLED Handheld Console 256GB w/Dock and Cords (Tested & Working)",
-          "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
-        }
-      ],
-      "unmatched": 70,
-      "outliers_rejected": 4,
+      "by_cell": {},
+      "samples": [],
+      "unmatched": 0,
+      "outliers_rejected": 0,
       "label": "Nintendo Switch OLED",
       "family": "nintendo switch oled",
-      "scraped_at": "2026-05-19T20:31:21.936213+00:00"
+      "scraped_at": "2026-07-13T00:29:06.743973+00:00"
     },
     "gs22": {
       "by_cell": {
@@ -9801,93 +9691,76 @@
       "by_cell": {
         "32": {
           "used": {
-            "count": 19,
-            "average": 113.28,
-            "median": 114.95,
-            "net_average": 73.15,
-            "net_median": 74.61,
-            "min": 80.06,
-            "max": 155.0,
+            "count": 14,
+            "average": 106.49,
+            "median": 110.0,
+            "net_average": 67.25,
+            "net_median": 70.3,
+            "min": 70.0,
+            "max": 136.1,
             "rejected_outliers": 0
           },
           "sealed": {
-            "count": 2,
-            "average": 182.49,
-            "median": 182.49,
-            "net_average": 133.37,
-            "net_median": 133.37,
-            "min": 149.99,
-            "max": 214.99,
+            "count": 3,
+            "average": 197.82,
+            "median": 180.0,
+            "net_average": 146.7,
+            "net_median": 131.2,
+            "min": 153.5,
+            "max": 259.97,
             "rejected_outliers": 0
           }
         },
         "128": {
           "used": {
-            "count": 7,
-            "average": 109.28,
-            "median": 105.0,
-            "net_average": 69.67,
-            "net_median": 65.95,
+            "count": 5,
+            "average": 108.99,
+            "median": 109.99,
+            "net_average": 69.42,
+            "net_median": 70.29,
             "min": 80.0,
-            "max": 144.95,
-            "rejected_outliers": 0
-          }
-        },
-        "64": {
-          "used": {
-            "count": 1,
-            "average": 129.0,
-            "median": 129.0,
-            "net_average": 86.83,
-            "net_median": 86.83,
-            "min": 129.0,
-            "max": 129.0,
-            "rejected_outliers": 0
+            "max": 129.99,
+            "rejected_outliers": 1
           }
         }
       },
       "samples": [
         {
-          "price": 119.99,
-          "title": "Nintendo Switch Lite Turquoise Teal 32GB Handheld Console Bundle W Charging Cord",
+          "price": 93.49,
+          "title": "Nintendo Switch Lite Blue Handheld Console 32GB Wi\u2011Fi 720p HD (2020)",
           "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch Lite"
         },
         {
-          "price": 135.0,
-          "title": "Nintendo Switch Lite - Gray - 32GB",
-          "cond": "Good - Refurbished"
+          "price": 95.0,
+          "title": "Nintendo Switch Lite Gray Handheld System 32GB 720p Wi-Fi USB-C HDH-001",
+          "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch Lite"
         },
         {
-          "price": 149.99,
-          "title": "Nintendo Switch Lite HDH-001 Handheld Console - 32GB - Blue",
+          "price": 153.5,
+          "title": "Nintendo Switch Lite Blue 32GB Handheld Console Complete CIB",
           "cond": "Open Box \u00b7 Nintendo Switch \u00b7 Nintendo Switch Lite"
         },
         {
-          "price": 214.99,
-          "title": "Nintendo Switch Lite 32GB Handheld Game Console (New) Free 2 Day Shipping in USA",
-          "cond": "Brand New"
+          "price": 259.97,
+          "title": "Nintendo Switch Lite 32 GB Legend of Zelda Hyrule Edition Video Game Console USA",
+          "cond": "Brand New \u00b7 Nintendo Switch \u00b7 Nintendo Switch Lite"
         },
         {
-          "price": 100.0,
-          "title": "Nintendo Switch Lite Blue Handheld System Console including 128 GB SD Card",
+          "price": 109.99,
+          "title": "Nintendo Switch Lite Purple Handheld Console HDH-001 w/ 128GB SD & Case",
           "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch Lite"
         },
         {
-          "price": 80.0,
-          "title": "Nintendo Switch Lite Blue Handheld Console 128GB MicroSD Expansion HDH-001",
-          "cond": "Pre-Owned \u00b7 Nintendo Switch"
-        },
-        {
-          "price": 129.0,
-          "title": "Nintendo Switch Lite Turquoise Console + Zelda 64GB SD + USB-C Cable",
-          "cond": "Pre-Owned \u00b7 Nintendo Switch"
+          "price": 125.0,
+          "title": "Nintendo Switch Lite 32GB Handheld Gaming Console Yellow W Charger & 128GB SD Ca",
+          "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch Lite"
         }
       ],
-      "unmatched": 70,
-      "outliers_rejected": 0,
+      "unmatched": 62,
+      "outliers_rejected": 1,
       "label": "Nintendo Switch Lite",
       "family": "nintendo switch lite",
-      "scraped_at": "2026-05-19T20:40:24.646268+00:00"
+      "scraped_at": "2026-07-13T00:29:39.786323+00:00"
     },
     "awu1": {
       "by_cell": {
@@ -11451,91 +11324,91 @@
       "by_cell": {
         "512": {
           "used": {
-            "count": 39,
-            "average": 233.4,
-            "median": 230.0,
-            "net_average": 177.66,
-            "net_median": 174.7,
-            "min": 179.5,
-            "max": 279.99,
-            "rejected_outliers": 2
+            "count": 57,
+            "average": 237.91,
+            "median": 239.99,
+            "net_average": 181.58,
+            "net_median": 183.39,
+            "min": 134.99,
+            "max": 346.0,
+            "rejected_outliers": 1
           },
           "sealed": {
-            "count": 1,
-            "average": 269.99,
-            "median": 269.99,
-            "net_average": 209.49,
-            "net_median": 209.49,
-            "min": 269.99,
-            "max": 269.99,
+            "count": 4,
+            "average": 322.25,
+            "median": 309.995,
+            "net_average": 254.96,
+            "net_median": 244.3,
+            "min": 289.0,
+            "max": 380.0,
             "rejected_outliers": 0
           }
         },
         "1tb": {
-          "used": {
-            "count": 4,
-            "average": 316.24,
-            "median": 312.495,
-            "net_average": 249.73,
-            "net_median": 246.47,
-            "min": 289.99,
-            "max": 349.99,
-            "rejected_outliers": 1
-          },
           "sealed": {
-            "count": 2,
-            "average": 322.5,
-            "median": 322.495,
-            "net_average": 255.18,
-            "net_median": 255.17,
-            "min": 319.99,
-            "max": 325.0,
+            "count": 1,
+            "average": 378.99,
+            "median": 378.99,
+            "net_average": 304.32,
+            "net_median": 304.32,
+            "min": 378.99,
+            "max": 378.99,
+            "rejected_outliers": 0
+          },
+          "used": {
+            "count": 7,
+            "average": 327.13,
+            "median": 329.99,
+            "net_average": 259.2,
+            "net_median": 261.69,
+            "min": 269.99,
+            "max": 359.99,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 224.99,
-          "title": "Microsoft Xbox Series S 512GB Console Gaming System Only Robot White 1883",
-          "cond": "Pre-Owned"
+          "price": 199.0,
+          "title": "Microsoft Xbox Series S 512GB Video Game Console - White - Tested Working",
+          "cond": "Pre-Owned \u00b7 Microsoft Xbox Series X \u00b7 Microsoft Xbox Series S"
         },
         {
-          "price": 224.99,
-          "title": "Microsoft Xbox Series S 512GB Console System Only White 1883",
-          "cond": "Pre-Owned"
+          "price": 264.95,
+          "title": "Microsoft Xbox Series S 512GB Console w/ Controller And Cables, Custom Skin !",
+          "cond": "Pre-Owned \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series S"
         },
         {
-          "price": 269.99,
-          "title": "Xbox Series S 512GB Console - White - Open Box",
+          "price": 310.0,
+          "title": "Microsoft Xbox Series S 512GB 2 Controllers and External SSD",
           "cond": "Open Box \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series S"
         },
         {
-          "price": 325.0,
-          "title": "Microsoft Xbox Series S 1TB Console Gaming System Black 1883",
-          "cond": "Pre-Owned \u00b7 Microsoft Xbox"
+          "price": 380.0,
+          "title": "Console Xbox Series S White 512 GB *NEW SEALED*",
+          "cond": "Brand New \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series S"
         },
         {
-          "price": 289.99,
-          "title": "Microsoft Xbox Series S 1TB-Black",
+          "price": 378.99,
+          "title": "Microsoft Xbox Series S 1TB Console w/ Controller, Wi-Fi, USB-C, White/Black",
+          "cond": "Brand New \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series S"
+        },
+        {
+          "price": 300.0,
+          "title": "Microsoft Xbox Series S 1TB All-Digital Gaming Console with Controller Black",
+          "cond": "Pre-Owned \u00b7 Microsoft Xbox Series X \u00b7 Microsoft Xbox Series S"
+        },
+        {
+          "price": 349.99,
+          "title": "Microsoft Xbox Series S 1TB Black Console Wi-Fi w/ Controller & Cables",
           "cond": "Pre-Owned \u00b7 Microsoft Xbox Series X|S \u00b7 Microsoft Xbox Series S"
-        },
-        {
-          "price": 319.99,
-          "title": "Microsoft Xbox Series S 1TB Video Game Console - Black",
-          "cond": "Open Box \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series S"
-        },
-        {
-          "price": 325.0,
-          "title": "Microsoft Xbox Series S White 1TB",
-          "cond": "Open Box \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series S"
         }
       ],
-      "unmatched": 24,
-      "outliers_rejected": 3,
+      "unmatched": 11,
+      "outliers_rejected": 1,
       "label": "Xbox Series S",
       "family": "xbox series s",
-      "scraped_at": "2026-05-19T20:43:02.776063+00:00"
+      "scraped_at": "2026-07-13T00:28:54.906379+00:00"
     },
     "aws10": {
       "by_cell": {},
@@ -12638,141 +12511,126 @@
       "by_cell": {
         "32": {
           "used": {
-            "count": 3,
-            "average": 123.32,
-            "median": 120.0,
-            "net_average": 81.89,
-            "net_median": 79.0,
-            "min": 99.95,
-            "max": 150.0,
-            "rejected_outliers": 0
-          }
-        },
-        "64": {
-          "used": {
-            "count": 1,
-            "average": 161.49,
-            "median": 161.49,
-            "net_average": 115.1,
-            "net_median": 115.1,
-            "min": 161.49,
-            "max": 161.49,
+            "count": 4,
+            "average": 181.0,
+            "median": 169.995,
+            "net_average": 132.07,
+            "net_median": 122.5,
+            "min": 105.0,
+            "max": 279.0,
             "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
-          "price": 120.0,
-          "title": "Nintendo Switch V2 32GB Handheld System - Gray",
-          "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
+          "price": 114.99,
+          "title": "Nintendo Switch V2 32GB Handheld System - Red And Blue -Console & Jo (FVS037302)",
+          "cond": "Pre-Owned \u00b7 Nintendo Switch"
         },
         {
-          "price": 99.95,
-          "title": "Nintendo Switch V2 32GB HAC-001(-01) Handheld Home Video Game Console Only",
-          "cond": "Good - Refurbished \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
-        },
-        {
-          "price": 161.49,
-          "title": "Nintendo Switch V2 HAC-001(-01) Neon Blue Red Joy-Con Bundle 64GB Micro SD Card",
+          "price": 105.0,
+          "title": "Nintendo Switch V2 Console Neon Blue and Red Joy-Con, 32GB",
           "cond": "Pre-Owned \u00b7 Nintendo Switch \u00b7 Nintendo Switch"
         }
       ],
-      "unmatched": 25,
+      "unmatched": 17,
       "outliers_rejected": 0,
       "label": "Nintendo Switch V2",
       "family": "nintendo switch v2",
-      "scraped_at": "2026-05-19T20:47:11.691184+00:00"
+      "scraped_at": "2026-07-13T00:29:24.336663+00:00"
     },
     "xsx": {
       "by_cell": {
-        "2tb": {
+        "1tb": {
           "used": {
-            "count": 1,
-            "average": 550.0,
-            "median": 550.0,
-            "net_average": 453.1,
-            "net_median": 453.1,
-            "min": 550.0,
-            "max": 550.0,
-            "rejected_outliers": 0
+            "count": 61,
+            "average": 439.58,
+            "median": 449.99,
+            "net_average": 357.03,
+            "net_median": 366.09,
+            "min": 295.0,
+            "max": 580.0,
+            "rejected_outliers": 2
           },
           "sealed": {
-            "count": 2,
-            "average": 658.75,
-            "median": 658.75,
-            "net_average": 547.71,
-            "net_median": 547.71,
-            "min": 367.5,
-            "max": 950.0,
+            "count": 25,
+            "average": 559.51,
+            "median": 580.0,
+            "net_average": 461.37,
+            "net_median": 479.2,
+            "min": 295.0,
+            "max": 699.99,
             "rejected_outliers": 0
           }
         },
-        "1tb": {
-          "used": {
-            "count": 55,
-            "average": 402.48,
-            "median": 399.99,
-            "net_average": 324.76,
-            "net_median": 322.59,
-            "min": 345.0,
-            "max": 459.99,
-            "rejected_outliers": 11
-          },
+        "2tb": {
           "sealed": {
-            "count": 14,
-            "average": 465.97,
-            "median": 479.475,
-            "net_average": 379.99,
-            "net_median": 391.74,
-            "min": 300.0,
-            "max": 579.99,
-            "rejected_outliers": 1
+            "count": 2,
+            "average": 962.5,
+            "median": 962.495,
+            "net_average": 811.98,
+            "net_median": 811.97,
+            "min": 899.99,
+            "max": 1025.0,
+            "rejected_outliers": 0
+          }
+        },
+        "512": {
+          "used": {
+            "count": 1,
+            "average": 250.0,
+            "median": 250.0,
+            "net_average": 192.1,
+            "net_median": 192.1,
+            "min": 250.0,
+            "max": 250.0,
+            "rejected_outliers": 0
           }
         }
       },
       "samples": [
         {
+          "price": 370.0,
+          "title": "Microsoft Xbox Series X 1TB Video Game Console - Black",
+          "cond": "Pre-Owned \u00b7 Microsoft Xbox Series X \u00b7 Microsoft Xbox Series X"
+        },
+        {
           "price": 550.0,
-          "title": "Microsoft Xbox Series X 1TB SSD Home Console - Black + 2TB SSD + GAME BUNDLE",
+          "title": "Microsoft Xbox Series X 1TB Black 4K Console Bundle",
           "cond": "Pre-Owned \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series X"
         },
         {
-          "price": 950.0,
-          "title": "Microsoft - Xbox Series X 2TB Console - Galaxy Black Special Edition",
-          "cond": "Brand New \u00b7 Microsoft Xbox Series X|S"
+          "price": 599.99,
+          "title": "Microsoft Xbox Series X Video Game System 1TB Black 1882",
+          "cond": "Open Box"
         },
         {
-          "price": 367.5,
-          "title": "Microsoft Xbox Series X 2TB SSD Galaxy Black 4K UHD Wi-Fi HDMI Console",
-          "cond": "Brand New \u00b7 Microsoft Xbox Series X|S \u00b7 Microsoft Xbox Series X"
+          "price": 471.0,
+          "title": "Microsoft Xbox Series X 1TB SSD Home Console Black 4K UHD Wi-Fi HDMI USB-A",
+          "cond": "Open Box \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series X"
         },
         {
-          "price": 345.0,
-          "title": "Microsoft Xbox Series X 1TB Black Console w/ Controller 4K UHD Wi\u2011Fi",
-          "cond": "Pre-Owned \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series X"
-        },
-        {
-          "price": 419.99,
-          "title": "Microsoft Xbox Series X 1TB Console Gaming System Carbon Black 1882",
-          "cond": "Pre-Owned"
-        },
-        {
-          "price": 519.98,
-          "title": "Xbox Series X Disk Drive Edition 1TB SSD Video Game Console - Black *OPEN BOX*",
-          "cond": "Open Box \u00b7 Microsoft Xbox Series X|S \u00b7 Microsoft Xbox Series X"
-        },
-        {
-          "price": 469.0,
-          "title": "BRAND NEW Mirosoft Xbox Series X 1TB Video Game Console - Black",
+          "price": 1025.0,
+          "title": "Xbox Series X 2TB - Galaxy Black Edition + 40 games",
           "cond": "Brand New \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series X"
+        },
+        {
+          "price": 899.99,
+          "title": "Microsoft Xbox Series X 2TB Video Game Console - Galaxy Black Special Edition",
+          "cond": "Brand New \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series X"
+        },
+        {
+          "price": 250.0,
+          "title": "Xbox Series S (512GB) - Console{XBSERIES]*PREOWNED* (Microsoft Xbox Series X)",
+          "cond": "Pre-Owned \u00b7 Microsoft Xbox \u00b7 Microsoft Xbox Series X"
         }
       ],
-      "unmatched": 22,
-      "outliers_rejected": 12,
+      "unmatched": 19,
+      "outliers_rejected": 2,
       "label": "Xbox Series X",
       "family": "xbox series x",
-      "scraped_at": "2026-05-19T20:47:22.013736+00:00"
+      "scraped_at": "2026-07-13T00:28:39.527365+00:00"
     }
   }
 }

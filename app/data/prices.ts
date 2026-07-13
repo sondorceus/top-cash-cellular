@@ -456,15 +456,15 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "512": { broken: 9, fair: 140, good: 171, mint: 212, sealed: 261 } },
   // === CONSOLES (10% below IWM) ===
   ps5pro: {
-    "base": { broken: 8, fair: 297, good: 378, mint: 450, sealed: 495 } },
+    "base": { broken: 8, fair: 432, good: 513, mint: 585, sealed: 621 } },
   ps5slim: {
-    "base": { broken: 8, fair: 99, good: 171, mint: 225, sealed: 252 } },
+    "base": { broken: 8, fair: 234, good: 284, mint: 338, sealed: 369 } },
   ps5: {
-    "base": { broken: 8, fair: 112, good: 180, mint: 238, sealed: 270 } },
+    "base": { broken: 8, fair: 234, good: 306, mint: 360, sealed: 396 } },
   nsw2: {
-    "base": { broken: 54, fair: 153, good: 225, mint: 248, sealed: 279 } },
+    "base": { broken: 45, fair: 162, good: 207, mint: 252, sealed: 288 } },
   nswoled: {
-    "base": { broken: 21, fair: 36, good: 72, mint: 90, sealed: 112 } },
+    "base": { broken: 21, fair: 45, good: 90, mint: 126, sealed: 148 } },
   // === AUDIT FIXES — devices that were >15% off with multiplier fallback ===
   gs23u: {
     "1tb": { broken: 8, fair: 98, good: 209, mint: 217, sealed: 289 },
@@ -689,11 +689,11 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 7, fair: 65, good: 110, mint: 133, sealed: 202 },
     "512": { broken: 7, fair: 101, good: 146, mint: 169, sealed: 248 } },
   switch: {
-    "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108 } },
+    "base": { broken: 21, fair: 32, good: 50, mint: 76, sealed: 104 } },
   switchlite: {
-    "base": { broken: 21, fair: 22, good: 36, mint: 50, sealed: 68 } },
+    "base": { broken: 9, fair: 9, good: 27, mint: 36, sealed: 58 } },
   xone: {
-    "base": { broken: 21, fair: 54, good: 81, mint: 99, sealed: 117 } },
+    "base": { broken: 9, fair: 18, good: 31, mint: 49, sealed: 67 } },
 
   // === MACBOOKS + WATCHES + REMAINING ===
   // Apple Watch — IWM Flawless × 0.85 (watches run at 85%, tighter margin
@@ -748,8 +748,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   mbp16m4: {
     "2tb": { fair: 1490, good: 1588, mint: 1688, sealed: 1732 } },
   xss: {
-    "base": { broken: 21, fair: 54, good: 90, mint: 135, sealed: 158 },
-    "carbonblack": { broken: 43, fair: 86, good: 148, mint: 184, sealed: 220 } },
+    "base": { broken: 22, fair: 82, good: 136, mint: 181, sealed: 208 },
+    "carbonblack": { broken: 22, fair: 100, good: 163, mint: 208, sealed: 239 } },
   // Apple Watch Series 7-10 / SE 2 — IWM Flawless × 0.85 (see Ultra note above).
   aws10: {
     "base": { fair: 17, good: 51, mint: 85, sealed: 106 } },
@@ -785,9 +785,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "2tb": { fair: 882, good: 981, mint: 1080, sealed: 1125 },
     "512": { fair: 657, good: 756, mint: 855, sealed: 900 } },
   ps4: {
-    "base": { broken: 8, fair: 14, good: 27, mint: 45, sealed: 63 } },
+    "base": { broken: 8, fair: 31, good: 63, mint: 81, sealed: 108 } },
   ps4pro: {
-    "base": { broken: 21, fair: 45, good: 86, mint: 108, sealed: 135 } },
+    "base": { broken: 21, fair: 40, good: 72, mint: 90, sealed: 108 } },
   // === WATCHES + DESKTOPS + CONSOLES (IWM scrape) ===
   macminim4p: {
     "1tb": { fair: 626, good: 680, mint: 742, sealed: 788 },
@@ -890,10 +890,10 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   sgwu25: {
     "base": { fair: 72, good: 112, mint: 144, sealed: 176 } },
   switchv2: {
-    "base": { broken: 21, fair: 32, good: 54, mint: 81, sealed: 108 } },
+    "base": { broken: 21, fair: 32, good: 50, mint: 76, sealed: 104 } },
   xsx: {
-    "1tb": { broken: 8, fair: 162, good: 225, mint: 274, sealed: 315 },
-    "2tb": { broken: 8, fair: 252, good: 342, mint: 387, sealed: 428 } },
+    "1tb": { broken: 13, fair: 266, good: 342, mint: 410, sealed: 454 },
+    "2tb": { broken: 13, fair: 346, good: 400, mint: 477, sealed: 522 } },
   // === SAMSUNG TABLETS (10% below IWM) ===
   stabs11u: {
     "1tb": { broken: 104, fair: 450, good: 549, mint: 594, sealed: 680 },
