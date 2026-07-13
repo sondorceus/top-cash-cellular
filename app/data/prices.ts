@@ -138,35 +138,59 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
 // locked exit (a guaranteed loss). Gaps below mirror IWM's live per-section
 // carrier deltas (scraped 2026-07-12):
 //   used  = flawless/good/fair sections; broken = broken section.
-// Sealed + locked is NOT auto-quotable: the Atlas NIB locked gap runs $310
-// (256GB) to $610 (2TB) — per-storage, too wide for a flat gap — so it
-// routes to manual review and the owner prices it against the Atlas sheet.
+// Sealed + locked uses PER-STORAGE gaps (sealedLocked): the Atlas NIB locked
+// sheet doesn't scale with storage the way unlocked does, so the gap runs
+// $190 (256GB) to $410 (2TB) on the 17PM. Each gap is sized so the locked
+// sealed OFFER = Atlas NIB locked − $250 — the same flat-profit play the
+// unlocked sealed ladder runs against the unlocked sheet (owner 2026-07-12:
+// "we can get a price for it" — was briefly manual-review). A storage tier
+// missing from sealedLocked still falls back to manual review. "Other"
+// carrier docks the sealed gap + $100 (owner's other = gap + $100 rule).
 // Verizon: unlocked pays full; locked falls back to the att gap (same rule
 // as CARRIER_DEDUCTIONS).
 export type CondCarrierGaps = {
   used: Record<string, number>;
   broken: Record<string, number>;
-  sealedLocked: "manual";
+  // storage id -> $ gap for att/tmobile/verizon-locked on SEALED units.
+  sealedLocked: Record<string, number>;
 };
 export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
-  ip17pm: { used: { att: 120, tmobile: 105, other: 500 }, broken: { att: 100, tmobile: 75, other: 250 }, sealedLocked: "manual" },
-  ip17p:  { used: { att: 150, tmobile: 75,  other: 450 }, broken: { att: 50,  tmobile: 75, other: 200 }, sealedLocked: "manual" },
+  ip17pm: {
+    used: { att: 120, tmobile: 105, other: 500 },
+    broken: { att: 100, tmobile: 75, other: 250 },
+    // unlocked sealed offers 750/860/1050/1250 − gaps = 560/665/730/840
+    // = Atlas NIB locked (810/915/980/1090) − $250.
+    sealedLocked: { "256": 190, "512": 195, "1tb": 320, "2tb": 410 },
+  },
+  ip17p: {
+    used: { att: 150, tmobile: 75, other: 450 },
+    broken: { att: 50, tmobile: 75, other: 200 },
+    // unlocked sealed offers 610/665/720 − gaps = 450/580/670
+    // = Atlas NIB locked (700/830/920) − $250.
+    sealedLocked: { "256": 160, "512": 85, "1tb": 50 },
+  },
 };
 
-// Resolve the carrier gap for a (model, carrier, condition). Returns null
-// when the model has no condition-dependent entry (callers fall back to the
-// flat CARRIER_DEDUCTIONS). `manual: true` means don't auto-quote this combo.
+// Resolve the carrier gap for a (model, carrier, condition, storage).
+// Returns null when the model has no condition-dependent entry (callers
+// fall back to the flat CARRIER_DEDUCTIONS). `manual: true` means don't
+// auto-quote this combo (sealed+locked on a storage tier with no gap).
 export function carrierGapForCondition(
   modelId: string,
   carrier: string | undefined,
   conditionId: string | undefined,
   verizonLocked: boolean,
+  storageId?: string | undefined,
 ): { gap: number; manual: boolean } | null {
   const m = CARRIER_GAPS_BY_COND[modelId];
   if (!m) return null;
   const c = carrier === "verizon" ? (verizonLocked ? "att" : "unlocked") : (carrier || "unlocked");
   if (c === "unlocked") return { gap: 0, manual: false };
-  if (conditionId === "sealed") return { gap: 0, manual: true };
+  if (conditionId === "sealed") {
+    const g = storageId != null ? m.sealedLocked[storageId] : undefined;
+    if (g === undefined) return { gap: 0, manual: true };
+    return { gap: c === "other" ? g + 100 : g, manual: false };
+  }
   const tier = conditionId === "broken" ? m.broken : m.used;
   return { gap: tier[c] ?? tier.att ?? 0, manual: false };
 }

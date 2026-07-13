@@ -5889,7 +5889,7 @@ export default function Home() {
   // CARRIER_GAPS_BY_COND in data/prices.ts). Skywalker 2026-07-12 after a
   // T-Mobile broken 17PM auto-quoted the full unlocked $342 vs IWM's $300.
   const condCarrierGap = carrierModelId
-    ? carrierGapForCondition(carrierModelId, carrier?.id, condition?.id, carrierLock?.id === "yes")
+    ? carrierGapForCondition(carrierModelId, carrier?.id, condition?.id, carrierLock?.id === "yes", storage?.id)
     : null;
   const isSealedLockedPremium = !!condCarrierGap?.manual;
   const carrierDeduction = condCarrierGap != null
