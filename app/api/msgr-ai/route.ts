@@ -324,6 +324,7 @@ const SYSTEM = (lang: string) =>
     "ICLOUD-LOCKED / FMI-ON / ACTIVATION-LOCKED — the parts play, in the owner's own words: 'I don't normally buy locked ones but when I do they're just for parts — I can check if we can use the parts. Have an idea of what you want for them?' Sets expectations (parts money, way under clean prices), gets THEIR number, never refuses outright and never quotes a number yourself. His other real move on locked/broken lots: ask for the IMEI — 'you got the IMEI? I can run them and maybe by luck it'll be okay' — then check_imei when it comes. Then 'One sec, let me see what I can do' and notify_team with the lot marked ICLOUD LOCKED — PARTS ONLY plus their ask. The owner decides if the parts math works.",
     "LOCATION — NEVER volunteer where we're located. Don't say 'we're local in Austin' unless they ASK where you are or a meetup is actually being set up. When it IS relevant: 'Austin area — I'm out meeting people today, if you can come to me we can get it done today' (if they can't: 'no worries, what area are you in'). Someone asking a price does not need a geography lesson.",
     "THE OWNER TEXTS IN THIS SAME THREAD from his phone — some page-side messages in the transcript are HIM, not you (a price, meetup plans, personal lines). To the customer it's all one person, so everything the page side already said STANDS: never re-ask it, never restate it, never contradict it. If a price was already named, that IS the number — never ask 'what number you looking to get' after it. If a meetup is already being arranged, stay out of the logistics. When the customer's reply is clearly aimed at something the owner is personally handling, [NO_REPLY] beats butting in.",
+    "RETURNING LEADS — SAME PERSON COMING BACK: a customer who already messaged you (even days ago, even if a fresh 'we buy iPhones / replied to an ad' greeting just fired) is NOT a new lead — the whole thread above is one ongoing relationship. Before you reply, READ the older turns: if you already qualified a device, or the page already put a number on one, do NOT restart the intake, do NOT greet them like a stranger, and NEVER re-ask a spec they already answered earlier in the thread (real failure 2026-07-13: Abigail came back about the SAME iPhone 17 Pro Max the page had already offered 650 for two days earlier, and the bot re-ran the whole intake + 'one sec, let me see what I can do' as if brand new — the owner had to jump in with 'I gave you a price already, you didn't let me know'). Instead acknowledge you've talked before in his short voice ('hey we talked the other day — you still looking to sell your 17 pro max?') and, the moment you know which device they mean, call notify_team so the owner picks the deal right back up. Don't announce or restate the old number yourself — delivering the price is still the owner's move — just make sure he knows they're back.",
     "TRAVEL IS THE OWNER'S PRIVATE LOGISTICS — HARD RULE: NEVER name cities or areas you 'drive to', 'go to often', or 'cover' (no 'I drive to Houston', no 'I'm in Dallas a lot', nothing like it — real failure 2026-07-07: bot told a Killeen seller 'I drive to Houston and Dallas often', wrong direction AND leaked his routes). You do not know where the owner drives and must never invent it. Out-of-town seller: take their area + specs + their number like normal, keep it neutral ('got it, let me see what I can do'), and notify_team with the area flagged — whether a deal is worth a drive is the OWNER's call alone, he only travels for exceptional deals. Never promise or hint that distance is no problem, and never use travel talk to keep a lead warm.",
     "PHOTOS: the message sometimes includes photos the customer sent — look at them like the owner would. Identify what you can SEE (model if recognizable, color, sealed box, cracks/wear, what's on the screen or the box label) and move the intake forward in ONE short line ('that's a 13 Pro right? what storage' / 'ok that crack isn't bad — is it unlocked?'). Whatever the photo already answers, never re-ask it. A condition read from a photo is provisional — the real check happens at the meetup, so never promise or imply a number off a picture. If the photo is too blurry or ambiguous, just ask plainly what it is. NEVER say you can't see pics when a photo is attached, and never talk about 'analyzing the image' — you're just a guy looking at a picture on his phone. ASKING for a pic is a real intake tool too — when the condition is vague or the device is unusual, ask ONCE the way the owner does: 'can you send a quick pic so I can get an idea'.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
@@ -907,7 +908,7 @@ export async function POST(req: NextRequest) {
   const ctxHistory = decodeCtx(body.ctx);
   let priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
   if (psid) {
-    const thread = await threadFromGraph(psid, deep ? 25 : 12);
+    const thread = await threadFromGraph(psid, deep ? 25 : 18);
     // Graph already delivered the message we're answering — drop trailing copies
     // of it (and, when answering a photo, its "📷 (photo)" placeholder) so the
     // "append current turn" step below doesn't double it.
@@ -938,6 +939,49 @@ export async function POST(req: NextRequest) {
       priorTurns = thread.map(({ role, content }) => ({ role, content }));
     }
   }
+
+  // ── RETURNING LEAD detection (deterministic backstop for the prompt rule) ──
+  // A customer who already messaged — often days later via a fresh ad-reply —
+  // is one ongoing relationship, not a new chat. The model, drilled on the
+  // intake script, will re-run the whole qualify → 'one sec' as if brand new
+  // (real failure 2026-07-13: Abigail came back about the SAME 17 Pro Max the
+  // page had already offered 650 for; the bot re-interviewed her, the owner had
+  // to jump in with 'I gave you a price already'). We detect it in code so the
+  // fix never depends on the model skimming the history.
+  const greetingRe = /we buy iphones|replied to an ad|cash paid same day/i;
+  // A price the page side already named EARLIER in the thread (not the latest
+  // turn) — mirrors the never-quote guard's number rules (skip storage sizes /
+  // model years / gb-tb-% figures; a real offer is ≥ $45).
+  const priceIn = (s: string): string | null => {
+    for (const m of s.matchAll(/(?<![\d.$])(\d{3,4})(?!\d|\s?(?:gb|tb|g\b|%|mah|mp))/gi)) {
+      const n = m[1];
+      const v = Number(n);
+      if (["128", "256", "512", "1024"].includes(n) || (v >= 2018 && v <= 2027) || v < 45) continue;
+      return n;
+    }
+    return null;
+  };
+  const earlierQuoted =
+    priorTurns
+      .filter((t) => t.role === "assistant")
+      .slice(0, -1) // exclude the most recent assistant turn
+      .map((t) => priceIn(t.content))
+      .find(Boolean) || null;
+  // A fresh ad-greeting deeper than the opening turns = they re-entered the
+  // funnel after earlier conversation (the first 1-2 turns of any thread are
+  // naturally the greeting, so only a greeting further down counts as a return).
+  let lastGreetIdx = -1;
+  priorTurns.forEach((t, i) => {
+    if (t.role === "assistant" && greetingRe.test(t.content)) lastGreetIdx = i;
+  });
+  const reEntered = lastGreetIdx >= 2;
+  // Dynamic system note — appended AFTER the cached prompt so the big prompt
+  // stays cached and this per-conversation hint is never skimmed past.
+  const returnNote = reEntered
+    ? `RETURNING LEAD — this customer messaged before and has come back (a fresh greeting fired above after earlier conversation). The whole thread is ONE ongoing relationship, not a new chat. Do NOT greet them like a stranger, do NOT restart the intake, and NEVER re-ask a spec they already answered earlier.${earlierQuoted ? " You already worked a number for them earlier — do not re-run intake on that same device." : ""} Acknowledge you've talked before in the owner's short voice ("hey we talked the other day — you still looking to sell your 17 pro max?"), and as soon as you know which device they mean, call notify_team so the owner picks the deal back up instead of running "one sec, let me see what I can do" like it's the first time.`
+    : "";
+  const sysFor = (l: string) =>
+    returnNote ? [...cachedSystem(l), { type: "text" as const, text: returnNote }] : cachedSystem(l);
 
   // Newest assistant turn — used by the natural-stop guards (below the
   // kill-switch/hours/mute gates) and the anti-loop guard further down.
@@ -1081,7 +1125,7 @@ export async function POST(req: NextRequest) {
           model: MSGR_MODEL,
           max_tokens: 150,
           ...THINKING_OFF,
-          system: cachedSystem(lang),
+          system: sysFor(lang),
           tools: TOOLS as never,
           messages: messages as never,
         });
@@ -1136,7 +1180,7 @@ export async function POST(req: NextRequest) {
         model: MSGR_MODEL,
         max_tokens: 150,
         ...THINKING_OFF,
-        system: cachedSystem(lang),
+        system: sysFor(lang),
         messages: [...priorTurns, { role: "user", content: textForCtx }] as never,
       });
       replyText = (retry.content as unknown as AnyBlock[]).filter((b) => b.type === "text").map((b) => b.text).join("\n").trim();
@@ -1275,12 +1319,15 @@ export async function POST(req: NextRequest) {
   // zero lead signals — "I got a new client but didn't get the mute email"
   // must never happen again.
   const firstContact = psid ? !(await everAlerted(psid)) : priorTurns.length === 0;
-  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || sig.resched || firstContact);
+  // A returning lead is never firstContact (we alerted the first time), so
+  // without this a re-engagement with no other signal would ping the owner
+  // NOTHING — exactly the "I didn't know they came back" gap.
+  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || sig.resched || firstContact || reEntered);
   if (alertNeeded || lang === "es") {
     const isHot = sig.hot || sig.intent || sig.resched || (!!lastQuote && (!!contact || !!teamNotified));
     const what =
       teamNotified?.summary ||
-      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : firstContact ? "🆕 new conversation" : "active chat");
+      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : reEntered ? `🔁 RETURNING LEAD — messaged before${earlierQuoted ? `, already quoted (~$${earlierQuoted})` : ""}, check the thread before re-quoting` : firstContact ? "🆕 new conversation" : "active chat");
     // One-tap mute link: Sonny replies from Business Suite (which neither
     // ManyChat's pause nor the bot can see), so his takeover signal is this
     // link in the alert — tap it and the bot goes silent for this customer.
