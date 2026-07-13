@@ -303,7 +303,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 137, fair: 289, good: 357, mint: 360, sealed: 383 },
     "512": { broken: 146, fair: 302, good: 375, mint: 376, sealed: 400 } },
   ip16: {
-    "128": { broken: 137, fair: 251, good: 315, mint: 317, sealed: 353 },
+    // 128 broken: owner's exact number 2026-07-12 ("I can pay 158 for
+    // standard 128gb") — offer $158 = cell 133 + $25 bonus.
+    "128": { broken: 133, fair: 251, good: 315, mint: 317, sealed: 353 },
     "256": { broken: 173, fair: 277, good: 336, mint: 338, sealed: 383 },
     "512": { broken: 209, fair: 289, good: 353, mint: 355, sealed: 434 } },
   ip16e: {
@@ -327,9 +329,13 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "512": { broken: 241, fair: 311, good: 404, mint: 406, sealed: 502 } },
   ip16pm: {
     // 1TB sealed capped 874 → 540 (= resell $721 × 0.75 MARGIN_FLOOR). 2026-05-24.
-    "1tb": { broken: 263, fair: 468, good: 566, mint: 568, sealed: 591 },
-    "256": { broken: 200, fair: 417, good: 519, mint: 521, sealed: 684 },
-    "512": { broken: 227, fair: 438, good: 540, mint: 542, sealed: 779 } },
+    // Broken raised to IWM PARITY (owner 2026-07-12: "I can go higher on
+    // broken price for 16 pro max") — cells target IWM's 250/280/320 offers.
+    // The 512/1TB pin at the margin cap (~259 on the May $721 resell comp)
+    // until a fresh 16PM working comp raises it; they climb automatically.
+    "1tb": { broken: 295, fair: 468, good: 566, mint: 568, sealed: 591 },
+    "256": { broken: 225, fair: 417, good: 519, mint: 521, sealed: 684 },
+    "512": { broken: 255, fair: 438, good: 540, mint: 542, sealed: 779 } },
   // iPhone 17 PRICE_TABLE — Atlas Mobile wholesale buy sheet minus $100
   // buffer. Unlocked headlines; per-carrier deductions live in
   // CARRIER_DEDUCTIONS above. Skywalker 2026-05-18 — replaces older
