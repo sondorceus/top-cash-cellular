@@ -161,6 +161,22 @@ export const galaxyPriceDrop = (modelId?: string | null): number =>
   (!!modelId && (/^gs2[3-6]/.test(modelId) || /^gz(flip|fold)[5-7]$/.test(modelId))) ? 75 : 0;
 
 /**
+ * Apply the Galaxy drop with a monotone floor. The raw threshold rule
+ * (drop only offers >= $250) paid a better config LESS than a worse one at
+ * the boundary — a $268 sealed top config dropped to $193 while a $223 mint
+ * mid config kept its full $223. Offers below the threshold keep full
+ * value; offers at/above it take the drop but never land below
+ * GALAXY_DROP_MIN_OFFER − 1, so the ladder stays nondecreasing.
+ * Skywalker-approved 2026-07-13. ALL drop applications must go through
+ * this helper — page.tsx funnel, getMaxPrice cards, quote.ts bot.
+ */
+export const applyGalaxyDrop = (offer: number, modelId?: string | null): number => {
+  const gd = galaxyPriceDrop(modelId);
+  if (gd <= 0 || offer < GALAXY_DROP_MIN_OFFER) return offer;
+  return Math.max(offer - gd, GALAXY_DROP_MIN_OFFER - 1);
+};
+
+/**
  * "Pricey only" floor for the Galaxy −$75: only apply the drop when the
  * offer is at least this much, so cheap S23 / FE / Flip5 (a ~$100-160 offer)
  * don't crater to the $25 minimum. Skywalker 2026-07-05.

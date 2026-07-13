@@ -116,9 +116,11 @@ IWM_URLS = {
     "xss": ("microsoft-game-console", "xbox-series-s"),
     "xsx": ("microsoft-game-console", "xbox-series-x"),
 
-    # Switch — /sell/nintendo-game-console. IWM folded the V2 revision into
-    # the base "switch" page, so switch + switchv2 share it.
-    "switch":   ("nintendo-game-console", "switch"),
+    # Switch — /sell/nintendo-game-console. ⚠️ The "switch" variant card IS
+    # the OLED (label/image/base/PRICE_TABLE row all OLED — see prices.ts),
+    # so it audits against the switch-oled page. switchv2 covers the V2
+    # revision on IWM's base "switch" page (V1 folded in).
+    "switch":   ("nintendo-game-console", "switch-oled"),
     "switchv2": ("nintendo-game-console", "switch"),
     "switchlite":("nintendo-game-console", "switch-lite"),
     "nswoled":  ("nintendo-game-console", "switch-oled"),

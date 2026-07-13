@@ -1,10 +1,13 @@
 name: IWM laptop spec weekly refresh
 
-# Smart tracking system per Skywalker 2026-05-18. Pulls fresh IWM
-# prices for every priced laptop variant every Monday morning, diffs
-# vs the current pc-laptop-specs.json, applies any meaningful changes,
-# and posts a summary to MC comms. Uses the head-scrape tool (no
-# headless browser needed) so the whole run takes < 2 min.
+# Smart tracking system per Skywalker 2026-05-18, repointed 2026-07-13 to
+# the sitemap pipeline (the old weekly-iwm-refresh.py walked the
+# pre-June-2026 IWM URL space, which 404s, and carried a hardcoded MC key).
+# Chain: sitemap scrape (fresh, no cache in CI) -> rebuild variant specs
+# (stale-URL variants keep prior pricing) -> re-apply page bases.
+# MC comms posting was dropped with the old script — the commit diff is
+# the summary. To restore it, add MC_API_KEY as an Actions secret first;
+# never hardcode it.
 
 on:
   schedule:
@@ -12,15 +15,10 @@ on:
     - cron: "0 13 * * 1"
   # Manual trigger from the Actions tab
   workflow_dispatch:
-    inputs:
-      brand:
-        description: "Brand filter (e.g. legion, omen) — leave blank for all"
-        required: false
-        default: ""
 
 jobs:
   laptop-spec-refresh:
-    name: Refresh laptop spec prices from IWM
+    name: Refresh laptop prices from IWM sitemap
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -35,27 +33,31 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run weekly refresh (apply + post MC)
-        env:
-          BRAND: ${{ github.event.inputs.brand }}
-        run: |
-          ARGS="--apply --post-mc"
-          if [ -n "$BRAND" ]; then ARGS="$ARGS --brand $BRAND"; fi
-          python scripts/weekly-iwm-refresh.py $ARGS
-        timeout-minutes: 10
+      - name: Scrape IWM sitemap (full laptop catalog)
+        run: python scripts/scrape-iwm-sitemap.py
+        timeout-minutes: 20
+
+      - name: Rebuild variant specs (preserves stale-URL variants)
+        run: python scripts/build-pc-laptop-specs.py
+        timeout-minutes: 5
+
+      - name: Re-apply page bases
+        run: python scripts/apply-iwm-pc-laptop-prices.py
+        timeout-minutes: 5
 
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/comps/pc-laptop-specs.json
+          git add app/page.tsx pc-laptop-iwm-adjustments.json \
+                  public/comps/iwm-pc-laptop-prices.json \
+                  public/comps/pc-laptop-specs.json
           if git diff --cached --quiet; then
             echo "No changes — nothing to commit."
             exit 0
           fi
-          git commit -m "weekly IWM laptop spec refresh ($(date +%Y-%m-%d))
+          git commit -m "weekly IWM laptop refresh ($(date +%Y-%m-%d))
 
-          Automated weekly diff vs IWM. See the matching MC comms message
-          for which models moved + by how much.
+          Automated sitemap scrape -> spec rebuild -> base re-apply.
           "
           git push

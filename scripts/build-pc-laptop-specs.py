@@ -570,8 +570,19 @@ def main():
         matched += 1
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    # Preserve prior entries whose variants didn't rebuild this run (IWM URL
+    # went stale / bridge miss) — same keep-stale philosophy as the sitemap
+    # scraper. A rebuild must never silently un-price a live funnel page
+    # (2026-07-13: a clean rebuild dropped 27 priced variants).
+    preserved = 0
+    if OUT.exists():
+        prior = json.loads(OUT.read_text())
+        for vid, spec in prior.items():
+            if vid not in out:
+                out[vid] = spec
+                preserved += 1
     OUT.write_text(json.dumps(out, indent=2, sort_keys=True))
-    print(f"Built specs for {matched} page.tsx variants -> {OUT}")
+    print(f"Built specs for {matched} page.tsx variants (+{preserved} preserved stale) -> {OUT}")
     print(f"Total adj entries: {len(adj)}, with specs: {sum(1 for v in adj.values() if v.get('base_price'))}")
 
 

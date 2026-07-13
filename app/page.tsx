@@ -2,7 +2,7 @@
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import { track as vercelTrack } from "@vercel/analytics";
 import { BRAND_ICONS } from "./components/brand-icons";
-import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT, galaxyPriceDrop, GALAXY_DROP_MIN_OFFER } from "./lib/resell-estimates";
+import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT, applyGalaxyDrop } from "./lib/resell-estimates";
 import SKU_LABELS from "./data/sku-labels.json";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
@@ -2762,9 +2762,7 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   if (resell != null) {
     val = Math.min(val, Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT));
   }
-  const gd = galaxyPriceDrop(m.id);
-  if (gd > 0 && val >= GALAXY_DROP_MIN_OFFER) val = Math.max(MIN_OFFER, val - gd);
-  return val;
+  return applyGalaxyDrop(val, m.id);
 };
 
 const PAYOUTS = [
@@ -6014,13 +6012,9 @@ export default function Home() {
   // basically every non-iPhone device for manual review.
   const needsMarginReview = marginCap != null && marginCap < MIN_OFFER;
   // Galaxy S23+ blanket −$75 (Atlas doesn't really buy Galaxy). Applied after
-  // the cap so it lands on the live offer; only trims real priced offers
-  // (above MIN_OFFER) and floors at MIN_OFFER so it never manufactures a
-  // manual-review on a cheap tier. Skywalker 2026-07-05.
-  const _galaxyDrop = galaxyPriceDrop(model?.id);
-  const quote = (_galaxyDrop > 0 && quoteAfterCap >= GALAXY_DROP_MIN_OFFER)
-    ? Math.max(MIN_OFFER, quoteAfterCap - _galaxyDrop)
-    : quoteAfterCap;
+  // the cap so it lands on the live offer. Monotone floor 2026-07-13: see
+  // applyGalaxyDrop — a better config must never quote below a worse one.
+  const quote = applyGalaxyDrop(quoteAfterCap, model?.id);
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.

@@ -29,8 +29,7 @@ import {
   resellMultiplierForCondition,
   MARGIN_FLOOR_MULT,
   EBAY_FEE_MULT,
-  galaxyPriceDrop,
-  GALAXY_DROP_MIN_OFFER,
+  applyGalaxyDrop,
 } from "./resell-estimates";
 
 const BLOB_KEY = "prices/overrides.json";
@@ -203,12 +202,9 @@ export async function quoteDevice(
     const marginCap = estResellNow != null ? Math.round(estResellNow * EBAY_FEE_MULT * MARGIN_FLOOR_MULT) : null;
     const capped = marginCap != null && rawQuote > marginCap;
     const cappedQuote = capped ? marginCap! : rawQuote;
-    // Galaxy S23+ blanket −$75 (mirror of the funnel). After the cap, floored
-    // at MIN_OFFER so it only trims real offers. Skywalker 2026-07-05.
-    const galaxyDrop = galaxyPriceDrop(id);
-    const postGalaxy = (galaxyDrop > 0 && cappedQuote >= GALAXY_DROP_MIN_OFFER)
-      ? Math.max(MIN_OFFER, cappedQuote - galaxyDrop)
-      : cappedQuote;
+    // Galaxy S23+ blanket −$75 (mirror of the funnel). Monotone floor
+    // 2026-07-13: see applyGalaxyDrop in resell-estimates.
+    const postGalaxy = applyGalaxyDrop(cappedQuote, id);
     // Sealed premium is added LAST — guaranteed past the resell margin cap,
     // because an unopened unit genuinely resells above the mint comp the cap is
     // built on. Only on real offers (a $0 base stays $0, not a lone $45).
