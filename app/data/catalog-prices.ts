@@ -10,14 +10,14 @@
 // scripts/regen-up-to.py (see repo scripts) after any PRICE_TABLE recab.
 // =========================================================================
 export const CATALOG_PRICE_BY_MODEL_ID: Record<string, number> = {
-  aw_s10: 106,
-  aw_s7: 38,
-  aw_s8: 60,
+  aw_s10: 194,
+  aw_s7: 52,
+  aw_s8: 65,
   aw_s9: 75,
-  aw_se2022: 38,
+  aw_se2022: 46,
   aw_ultra: 130,
-  aw_ultra2: 204,
-  aw_ultra3: 319,
+  aw_ultra2: 216,
+  aw_ultra3: 338,
   gnote10: 137,
   gnote10p: 197,
   gnote10p5g: 201,

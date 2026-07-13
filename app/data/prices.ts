@@ -702,7 +702,7 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   switch: {
     "base": { broken: 21, fair: 32, good: 50, mint: 76, sealed: 104 } },
   switchlite: {
-    "base": { broken: 9, fair: 9, good: 27, mint: 36, sealed: 58 } },
+    "base": { broken: 21, fair: 9, good: 27, mint: 36, sealed: 58 } },
   xone: {
     "base": { broken: 9, fair: 18, good: 31, mint: 49, sealed: 67 } },
 
@@ -712,15 +712,15 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   // GPS / smallest-case config; titanium / cellular / 46mm / band adds live
   // in APPLE_WATCH_SPECS (also × 0.85). Series 11 / SE 3 added 2026-07-05.
   awu1: {
-    "base": { fair: 34, good: 81, mint: 119, sealed: 136 } },
+    "base": { fair: 36, good: 86, mint: 126, sealed: 144 } },
   awu2: {
-    "base": { fair: 85, good: 128, mint: 170, sealed: 204 } },
+    "base": { fair: 90, good: 135, mint: 180, sealed: 216 } },
   awu3: {
-    "base": { broken: 43, fair: 162, good: 238, mint: 285, sealed: 319 } },
+    "base": { broken: 43, fair: 171, good: 252, mint: 302, sealed: 338 } },
   aws11: {
-    "base": { fair: 30, good: 68, mint: 106, sealed: 123 } },
+    "base": { fair: 126, good: 176, mint: 216, sealed: 252 } },
   awse3: {
-    "base": { fair: 13, good: 34, mint: 51, sealed: 72 } },
+    "base": { fair: 41, good: 64, mint: 82, sealed: 104 } },
   mba13m3: {
     "1tb": { fair: 320, good: 418, mint: 518, sealed: 562 },
     "2tb": { fair: 432, good: 531, mint: 630, sealed: 675 } },
@@ -763,15 +763,15 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "carbonblack": { broken: 22, fair: 100, good: 163, mint: 208, sealed: 239 } },
   // Apple Watch Series 7-10 / SE 2 — IWM Flawless × 0.85 (see Ultra note above).
   aws10: {
-    "base": { fair: 17, good: 51, mint: 85, sealed: 106 } },
+    "base": { fair: 68, good: 117, mint: 158, sealed: 194 } },
   aws7: {
-    "base": { good: 9, mint: 26, sealed: 38 } },
+    "base": { good: 28, mint: 46, sealed: 59 } },
   aws8: {
-    "base": { good: 17, mint: 38, sealed: 60 } },
+    "base": { good: 37, mint: 59, sealed: 82 } },
   aws9: {
-    "base": { fair: 13, good: 38, mint: 60, sealed: 77 } },
+    "base": { fair: 45, good: 76, mint: 104, sealed: 130 } },
   awse2: {
-    "base": { good: 9, mint: 17, sealed: 38 } },
+    "base": { good: 25, mint: 34, sealed: 57 } },
   mba13m2: {
     "1tb": { fair: 194, good: 292, mint: 392, sealed: 436 },
     "256": { fair: 126, good: 225, mint: 324, sealed: 369 },
@@ -882,17 +882,17 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   pw2: {
     "base": { fair: 4, good: 9, mint: 18, sealed: 32 } },
   pw3: {
-    "pixelwatch3bluetoothwifi": { fair: 4, good: 18, mint: 27, sealed: 54 },
-    "pixelwatch3bluetoothwifi4glte": { broken: 4, fair: 9, good: 22, mint: 32, sealed: 58 } },
+    "pixelwatch3bluetoothwifi": { fair: 9, good: 24, mint: 32, sealed: 60 },
+    "pixelwatch3bluetoothwifi4glte": { broken: 10, fair: 14, good: 28, mint: 37, sealed: 64 } },
   pw4: {
-    "pixelwatch4bluetoothwifi": { fair: 27, good: 72, mint: 108, sealed: 144 },
-    "pixelwatch4bluetoothwifi4glte": { broken: 9, fair: 36, good: 81, mint: 117, sealed: 153 } },
+    "pixelwatch4bluetoothwifi": { fair: 37, good: 82, mint: 118, sealed: 154 },
+    "pixelwatch4bluetoothwifi4glte": { broken: 19, fair: 46, good: 91, mint: 127, sealed: 163 } },
   sgw7: {
-    "bluetoothwifi": { good: 9, mint: 18, sealed: 32 },
-    "bluetoothwifi4glte": { fair: 4, good: 14, mint: 22, sealed: 36 } },
+    "bluetoothwifi": { good: 14, mint: 24, sealed: 37 },
+    "bluetoothwifi4glte": { fair: 10, good: 19, mint: 28, sealed: 41 } },
   sgw8: {
-    "bluetoothwifi": { fair: 18, good: 45, mint: 63, sealed: 86 },
-    "bluetoothwifi4glte": { fair: 27, good: 54, mint: 72, sealed: 94 } },
+    "bluetoothwifi": { fair: 23, good: 50, mint: 68, sealed: 92 },
+    "bluetoothwifi4glte": { fair: 32, good: 59, mint: 77, sealed: 100 } },
   sgw8c: {
     "bluetoothwifi": { fair: 54, good: 76, mint: 99, sealed: 122 },
     "bluetoothwifi4glte": { fair: 63, good: 86, mint: 108, sealed: 130 } },

@@ -573,12 +573,12 @@ const LENOVO_TP_X1_VARIANTS = [
   { id: "ln_tp_x1_titanium_yoga", label: "ThinkPad X1 Titanium Yoga", base: 356, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
 const LENOVO_TP_X13_VARIANTS = [
-  { id: "ln_tp_x13_g6", label: "ThinkPad X13 Gen 6", base: 720, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_x13_g5", label: "ThinkPad X13 Gen 5", base: 720, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_x13_g4", label: "ThinkPad X13 Gen 4", base: 720, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_x13_g3", label: "ThinkPad X13 Gen 3", base: 720, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_x13_g2", label: "ThinkPad X13 Gen 2", base: 720, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_x13_g1", label: "ThinkPad X13 Gen 1", base: 720, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_x13_g6", label: "ThinkPad X13 Gen 6", base: 734, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_x13_g5", label: "ThinkPad X13 Gen 5", base: 734, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_x13_g4", label: "ThinkPad X13 Gen 4", base: 734, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_x13_g3", label: "ThinkPad X13 Gen 3", base: 734, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_x13_g2", label: "ThinkPad X13 Gen 2", base: 734, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_x13_g1", label: "ThinkPad X13 Gen 1", base: 734, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_x13_yoga_g4", label: "ThinkPad X13 Yoga Gen 4", base: 414, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_x13_yoga_g3", label: "ThinkPad X13 Yoga Gen 3", base: 414, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_x13_yoga_g2", label: "ThinkPad X13 Yoga Gen 2", base: 414, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
@@ -601,40 +601,40 @@ const LENOVO_TP_Z_VARIANTS = [
   { id: "ln_tp_z13_g1", label: "ThinkPad Z13 Gen 1", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
 const LENOVO_TP_P_VARIANTS = [
-  { id: "ln_tp_p50", label: "ThinkPad P50", base: 144, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_p50", label: "ThinkPad P50", base: 171, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p51", label: "ThinkPad P51", base: 248, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p52", label: "ThinkPad P52", base: 338, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p53", label: "ThinkPad P53", base: 585, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p70", label: "ThinkPad P70", base: 328, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_p71", label: "ThinkPad P71", base: 328, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_p71", label: "ThinkPad P71", base: 418, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_p72", label: "ThinkPad P72", base: 360, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_p73", label: "ThinkPad P73", base: 562, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_p73", label: "ThinkPad P73", base: 558, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
 const LENOVO_TP_L_VARIANTS = [
-  { id: "ln_tp_l13_g5", label: "ThinkPad L13 Gen 5", base: 526, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l13_g4", label: "ThinkPad L13 Gen 4", base: 526, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l13_g3", label: "ThinkPad L13 Gen 3", base: 526, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l13_g2", label: "ThinkPad L13 Gen 2", base: 526, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l13_g1", label: "ThinkPad L13 Gen 1", base: 526, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l14_g6", label: "ThinkPad L14 Gen 6", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l14_g5", label: "ThinkPad L14 Gen 5", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l14_g4", label: "ThinkPad L14 Gen 4", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l14_g3", label: "ThinkPad L14 Gen 3", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l14_g2", label: "ThinkPad L14 Gen 2", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l14_g1", label: "ThinkPad L14 Gen 1", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l13_g5", label: "ThinkPad L13 Gen 5", base: 544, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l13_g4", label: "ThinkPad L13 Gen 4", base: 544, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l13_g3", label: "ThinkPad L13 Gen 3", base: 544, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l13_g2", label: "ThinkPad L13 Gen 2", base: 544, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l13_g1", label: "ThinkPad L13 Gen 1", base: 544, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l14_g6", label: "ThinkPad L14 Gen 6", base: 504, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l14_g5", label: "ThinkPad L14 Gen 5", base: 504, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l14_g4", label: "ThinkPad L14 Gen 4", base: 504, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l14_g3", label: "ThinkPad L14 Gen 3", base: 504, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l14_g2", label: "ThinkPad L14 Gen 2", base: 504, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l14_g1", label: "ThinkPad L14 Gen 1", base: 504, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_l15_g4", label: "ThinkPad L15 Gen 4", base: 338, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_l15_g3", label: "ThinkPad L15 Gen 3", base: 338, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_l15_g2", label: "ThinkPad L15 Gen 2", base: 338, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_tp_l15_g1", label: "ThinkPad L15 Gen 1", base: 338, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l16_g2", label: "ThinkPad L16 Gen 2", base: 450, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_tp_l16_g1", label: "ThinkPad L16 Gen 1", base: 450, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l16_g2", label: "ThinkPad L16 Gen 2", base: 513, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_tp_l16_g1", label: "ThinkPad L16 Gen 1", base: 513, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
 const LENOVO_TP_T_VARIANTS = [
   { id: "ln_tp_t", label: "ThinkPad T-Series", base: 81, inquiryOnly: false, image: "/devices/ln_tp_t.png" },
 ];
 const LENOVO_TP_E_VARIANTS = [
   { id: "ln_tp_e14_g7", label: "ThinkPad E14 Gen 7", base: 486, inquiryOnly: false, image: "/devices/ln_tp_e14_g7.png" },
-  { id: "ln_tp_e14_g6", label: "ThinkPad E14 Gen 6", base: 414, inquiryOnly: false, image: "/devices/ln_tp_e14_g6.png" },
+  { id: "ln_tp_e14_g6", label: "ThinkPad E14 Gen 6", base: 423, inquiryOnly: false, image: "/devices/ln_tp_e14_g6.png" },
   { id: "ln_tp_e14_g5", label: "ThinkPad E14 Gen 5", base: 306, inquiryOnly: false, image: "/devices/ln_tp_e14_g5.png" },
   { id: "ln_tp_e15", label: "ThinkPad E15", base: 261, inquiryOnly: false, image: "/devices/ln_tp_e15.png" },
   { id: "ln_tp_e16_g3", label: "ThinkPad E16 Gen 3", base: 540, inquiryOnly: false, image: "/devices/ln_tp_e16_g3.png" },
@@ -669,17 +669,17 @@ const LENOVO_TB_16_VARIANTS = [
 
 const LENOVO_IDEAPAD_VARIANTS = [
   { id: "ln_ideapad_5", label: "IdeaPad 5", base: 266, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_ideapad_3", label: "IdeaPad 3", base: 171, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_ideapad_3", label: "IdeaPad 3", base: 198, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_3i", label: "IdeaPad 3i", base: 266, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_ideapad_5i_2in1", label: "IdeaPad 5i 2-in-1", base: 356, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_ideapad_5i_2in1", label: "IdeaPad 5i 2-in-1", base: 392, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_flex_5", label: "IdeaPad Flex 5", base: 234, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_flex_5i", label: "IdeaPad Flex 5i", base: 270, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_slim_7", label: "IdeaPad Slim 7", base: 230, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_gaming_3", label: "IdeaPad Gaming 3", base: 454, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_ideapad_gaming_3i", label: "IdeaPad Gaming 3i", base: 333, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_ideapad_gaming_3i", label: "IdeaPad Gaming 3i", base: 369, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_330s", label: "IdeaPad 330s", base: 112, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_l340", label: "IdeaPad L340", base: 158, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_ideapad_s340", label: "IdeaPad S340", base: 81, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_ideapad_s340", label: "IdeaPad S340", base: 86, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_ideapad_s540", label: "IdeaPad S540", base: 117, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
 
@@ -691,13 +691,13 @@ const LENOVO_LEGION_VARIANTS = [
   { id: "ln_legion_7i_pro", label: "Legion 7i Pro", base: 1328, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_slim_7", label: "Legion Slim 7", base: 666, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_slim_7i", label: "Legion Slim 7i", base: 801, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_legion_5", label: "Legion 5", base: 832, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_legion_5", label: "Legion 5", base: 819, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_5i", label: "Legion 5i", base: 1040, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_5_pro", label: "Legion 5 Pro", base: 968, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_5i_pro", label: "Legion 5i Pro", base: 1058, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_slim_5", label: "Legion Slim 5", base: 878, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_legion_slim_5i", label: "Legion Slim 5i", base: 576, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_legion_y740", label: "Legion Y740", base: 356, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_legion_slim_5i", label: "Legion Slim 5i", base: 585, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_legion_y740", label: "Legion Y740", base: 392, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y730", label: "Legion Y730", base: 166, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y545", label: "Legion Y545", base: 297, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_legion_y540", label: "Legion Y540", base: 428, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
@@ -714,28 +714,28 @@ const LENOVO_SLIM_VARIANTS = [
   { id: "ln_slim_pro_9i", label: "Slim Pro 9i", base: 639, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_slim_pro_7", label: "Slim Pro 7", base: 508, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_slim_7i_pro_x", label: "Slim 7i Pro X", base: 324, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_slim_7_pro_x", label: "Slim 7 Pro X", base: 495, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_slim_7_pro_x", label: "Slim 7 Pro X", base: 490, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_slim_7i", label: "Slim 7i", base: 486, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_slim_7", label: "Slim 7", base: 374, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
 
 const LENOVO_YOGA_VARIANTS = [
-  { id: "ln_yoga_9i", label: "Yoga 9i", base: 801, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_yoga_9i", label: "Yoga 9i", base: 788, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_pro_9i", label: "Yoga Pro 9i", base: 1004, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_yoga_slim_9i", label: "Yoga Slim 9i", base: 666, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_yoga_slim_9i", label: "Yoga Slim 9i", base: 657, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_book_9i", label: "Yoga Book 9i", base: 774, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_7", label: "Yoga 7", base: 464, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_7i", label: "Yoga 7i", base: 378, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_pro_7", label: "Yoga Pro 7", base: 436, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_slim_7i", label: "Yoga Slim 7i", base: 432, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_yoga_slim_7x", label: "Yoga Slim 7x", base: 450, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_yoga_slim_7x", label: "Yoga Slim 7x", base: 423, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_6", label: "Yoga 6", base: 252, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_c940", label: "Yoga C940", base: 256, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_c930", label: "Yoga C930", base: 176, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_yoga_c740", label: "Yoga C740", base: 194, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_yoga_c640", label: "Yoga C640", base: 130, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_yoga_c740", label: "Yoga C740", base: 189, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_yoga_c640", label: "Yoga C640", base: 117, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_c630", label: "Yoga C630", base: 81, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
-  { id: "ln_yoga_920", label: "Yoga 920", base: 189, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
+  { id: "ln_yoga_920", label: "Yoga 920", base: 158, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_720", label: "Yoga 720", base: 112, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
   { id: "ln_yoga_710", label: "Yoga 710", base: 117, inquiryOnly: false, image: "/devices/lenovo-laptop-generic.svg" },
 ];
@@ -777,8 +777,8 @@ const ALIENWARE_M_SERIES_VARIANTS = [
   { id: "awm18r2", label: "Alienware m18 R2", base: 1822, inquiryOnly: false, image: "/devices/alienware-m18.webp" },
   { id: "awm18r1", label: "Alienware m18 R1", base: 1822, inquiryOnly: false, image: "/devices/alienware-m18.webp" },
   { id: "awm17r5", label: "Alienware m17 R5 (AMD flagship)", base: 981, inquiryOnly: false, image: "/devices/alienware-m17.webp" },
-  { id: "awm16r2", label: "Alienware m16 R2", base: 1192, inquiryOnly: false, image: "/devices/alienware-m16.webp" },
-  { id: "awm16r1", label: "Alienware m16 R1", base: 1552, inquiryOnly: false, image: "/devices/alienware-m16.webp" },
+  { id: "awm16r2", label: "Alienware m16 R2", base: 1228, inquiryOnly: false, image: "/devices/alienware-m16.webp" },
+  { id: "awm16r1", label: "Alienware m16 R1", base: 1508, inquiryOnly: false, image: "/devices/alienware-m16.webp" },
   { id: "awm15r7", label: "Alienware m15 R7", base: 1012, inquiryOnly: false, image: "/devices/alienware-m15.webp" },
   { id: "awm15r6", label: "Alienware m15 R6", base: 814, inquiryOnly: false, image: "/devices/alienware-m15.webp" },
   { id: "awm15r5_ryzen", label: "Alienware m15 R5 (Ryzen)", base: 675, inquiryOnly: false, image: "/devices/alienware-m15.webp" },
@@ -794,7 +794,7 @@ const ALIENWARE_X_SERIES_VARIANTS = [
   { id: "awx14r1", label: "Alienware x14 R1", base: 612, inquiryOnly: false, image: "/devices/alienware-x14.webp" },
 ];
 const ALIENWARE_AREA_SERIES_VARIANTS = [
-  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 2340, inquiryOnly: false, image: "/devices/alienware-18-area-51.webp" },
+  { id: "aw18_a51_2026", label: "Alienware 18 Area-51 (2026)", base: 2349, inquiryOnly: false, image: "/devices/alienware-18-area-51.webp" },
   { id: "aw16_a51_2026", label: "Alienware 16 Area-51 (2026)", base: 2700, inquiryOnly: false, image: "/devices/alienware-16-area-51.webp" },
   { id: "aw_a51m_r2", label: "Alienware Area-51m R2", base: 788, inquiryOnly: false, image: "/devices/alienware-area-51m.webp" },
   { id: "aw_a51m_r1", label: "Alienware Area-51m R1", base: 688, inquiryOnly: false, image: "/devices/alienware-area-51m.webp" },
@@ -815,7 +815,7 @@ const ALIENWARE_15_VARIANTS = [
   { id: "aw15r2", label: "Alienware 15 R2", base: 184, inquiryOnly: false, image: "/devices/alienware-15-r2.webp" },
 ];
 const ALIENWARE_13_VARIANTS = [
-  { id: "aw13r3", label: "Alienware 13 R3", base: 261, inquiryOnly: false, image: "/devices/alienware-13-r3.webp" },
+  { id: "aw13r3", label: "Alienware 13 R3", base: 234, inquiryOnly: false, image: "/devices/alienware-13-r3.webp" },
   { id: "aw13r2", label: "Alienware 13 R2", base: 117, inquiryOnly: false, image: "/devices/alienware-13-r2.webp" },
 ];
 const ALIENWARE_SERIES = [
@@ -853,11 +853,11 @@ const HP_ELITEBOOK_STD_VARIANTS = [
   { id: "hp_eb_g7", label: "EliteBook G7", base: 207, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g7.png" },
   { id: "hp_eb_g6", label: "EliteBook G6", base: 171, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g6.png" },
   { id: "hp_eb_g5", label: "EliteBook G5", base: 166, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g5.png" },
-  { id: "hp_eb_g4", label: "EliteBook G4", base: 135, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g4.png" },
+  { id: "hp_eb_g4", label: "EliteBook G4", base: 126, inquiryOnly: false, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g4.png" },
 ];
 const HP_ELITEBOOK_ULTRA_VARIANTS = [
-  { id: "hp_eb_ultra_g1q", label: "EliteBook Ultra G1q", base: 351, inquiryOnly: false, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
-  { id: "hp_eb_ultra_g1i", label: "EliteBook Ultra G1i", base: 540, inquiryOnly: false, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1i.png" },
+  { id: "hp_eb_ultra_g1q", label: "EliteBook Ultra G1q", base: 360, inquiryOnly: false, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1q.png" },
+  { id: "hp_eb_ultra_g1i", label: "EliteBook Ultra G1i", base: 608, inquiryOnly: false, image: "/devices/hp-elitebook-eb_ultra-hp-elitebook-ultra-g1i.png" },
 ];
 const HP_ELITEBOOK_SUB_SERIES = [
   { id: "hp_eb_std", label: "EliteBook", year: "Standard line", topPrice: 702, variants: HP_ELITEBOOK_STD_VARIANTS, image: "/devices/hp-elitebook-eb_std-hp-elitebook-g1a.png" },
@@ -893,15 +893,15 @@ const HP_OMEN_SUB_SERIES = [
 const HP_OMNIBOOK_VARIANTS = [
   { id: "hp_omni_x", label: "OmniBook X", base: 450, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-x.png" },
   { id: "hp_omni_x_flip", label: "OmniBook X Flip", base: 500, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-x-flip.png" },
-  { id: "hp_omni_7", label: "OmniBook 7", base: 594, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-7.png" },
-  { id: "hp_omni_7_aero", label: "OmniBook 7 Aero", base: 459, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-7-aero.png" },
-  { id: "hp_omni_7_flip", label: "OmniBook 7 Flip", base: 428, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-7-flip.png" },
+  { id: "hp_omni_7", label: "OmniBook 7", base: 634, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-7.png" },
+  { id: "hp_omni_7_aero", label: "OmniBook 7 Aero", base: 450, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-7-aero.png" },
+  { id: "hp_omni_7_flip", label: "OmniBook 7 Flip", base: 454, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-7-flip.png" },
   { id: "hp_omni_3", label: "OmniBook 3", base: 338, inquiryOnly: false, image: "/devices/hp-omnibook-hp-omnibook-3.png" },
 ];
 const HP_PAVILION_VARIANTS = [
   { id: "hp_pav_gaming", label: "Pavilion Gaming", base: 112, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-gaming.png" },
   { id: "hp_pav_14", label: "Pavilion 14", base: 45, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-14.png" },
-  { id: "hp_pav_16", label: "Pavilion 16", base: 405, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-16.png" },
+  { id: "hp_pav_16", label: "Pavilion 16", base: 418, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-16.png" },
   { id: "hp_pav_x360", label: "Pavilion x360", base: 306, inquiryOnly: false, image: "/devices/hp-pavilion-hp-pavilion-x360.png" },
 ];
 const HP_PROBOOK_VARIANTS = [
@@ -924,11 +924,11 @@ const HP_VICTUS_VARIANTS = [
 ];
 const HP_ZBOOK_VARIANTS = [
   { id: "hp_zb_g11", label: "ZBook G11", base: 2048, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g11.png" },
-  { id: "hp_zb_g10", label: "ZBook G10", base: 1742, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g10.png" },
+  { id: "hp_zb_g10", label: "ZBook G10", base: 1688, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g10.png" },
   { id: "hp_zb_g9", label: "ZBook G9", base: 1292, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g9.png" },
   { id: "hp_zb_g8", label: "ZBook G8", base: 801, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g8.png" },
   { id: "hp_zb_g7", label: "ZBook G7", base: 526, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g7.png" },
-  { id: "hp_zb_g6", label: "ZBook G6", base: 513, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g6.png" },
+  { id: "hp_zb_g6", label: "ZBook G6", base: 522, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g6.png" },
   { id: "hp_zb_g5", label: "ZBook G5", base: 369, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g5.png" },
   { id: "hp_zb_g4", label: "ZBook G4", base: 248, inquiryOnly: false, image: "/devices/hp-zbook-hp-zbook-g4.png" },
 ];
@@ -980,12 +980,12 @@ const SAMSUNG_BOOK5_VARIANTS = [
   { id: "sgbk_5_pro_360", label: "Galaxy Book5 Pro 360", base: 698, inquiryOnly: false, image: "/devices/sgbk_5_pro_360.png" },
 ];
 const SAMSUNG_BOOK4_VARIANTS = [
-  { id: "sgbk_4", label: "Galaxy Book4", base: 243, inquiryOnly: false, image: "/devices/sgbk_4.png" },
-  { id: "sgbk_4_360", label: "Galaxy Book4 360", base: 360, inquiryOnly: false, image: "/devices/sgbk_4_360.png" },
-  { id: "sgbk_4_pro", label: "Galaxy Book4 Pro", base: 495, inquiryOnly: false, image: "/devices/sgbk_4_pro.png" },
-  { id: "sgbk_4_pro_360", label: "Galaxy Book4 Pro 360", base: 495, inquiryOnly: false, image: "/devices/sgbk_4_pro_360.png" },
-  { id: "sgbk_4_ultra", label: "Galaxy Book4 Ultra", base: 1012, inquiryOnly: false, image: "/devices/sgbk_4_ultra.png" },
-  { id: "sgbk_4_edge", label: "Galaxy Book4 Edge", base: 472, inquiryOnly: false, image: "/devices/sgbk_4_edge.png" },
+  { id: "sgbk_4", label: "Galaxy Book4", base: 225, inquiryOnly: false, image: "/devices/sgbk_4.png" },
+  { id: "sgbk_4_360", label: "Galaxy Book4 360", base: 338, inquiryOnly: false, image: "/devices/sgbk_4_360.png" },
+  { id: "sgbk_4_pro", label: "Galaxy Book4 Pro", base: 472, inquiryOnly: false, image: "/devices/sgbk_4_pro.png" },
+  { id: "sgbk_4_pro_360", label: "Galaxy Book4 Pro 360", base: 482, inquiryOnly: false, image: "/devices/sgbk_4_pro_360.png" },
+  { id: "sgbk_4_ultra", label: "Galaxy Book4 Ultra", base: 1035, inquiryOnly: false, image: "/devices/sgbk_4_ultra.png" },
+  { id: "sgbk_4_edge", label: "Galaxy Book4 Edge", base: 436, inquiryOnly: false, image: "/devices/sgbk_4_edge.png" },
 ];
 const SAMSUNG_BOOK3_VARIANTS = [
   { id: "sgbk_3", label: "Galaxy Book3", base: 630, inquiryOnly: false, image: "/devices/sgbk_3.png" },
@@ -995,10 +995,10 @@ const SAMSUNG_BOOK3_VARIANTS = [
   { id: "sgbk_3_ultra", label: "Galaxy Book3 Ultra", base: 630, inquiryOnly: false, image: "/devices/sgbk_3_ultra.png" },
 ];
 const SAMSUNG_BOOK2_VARIANTS = [
-  { id: "sgbk_2", label: "Galaxy Book2", base: 531, inquiryOnly: false, image: "/devices/sgbk_2.png" },
-  { id: "sgbk_2_360", label: "Galaxy Book2 360", base: 284, inquiryOnly: false, image: "/devices/sgbk_2_360.png" },
-  { id: "sgbk_2_pro", label: "Galaxy Book2 Pro", base: 284, inquiryOnly: false, image: "/devices/sgbk_2_pro.png" },
-  { id: "sgbk_2_pro_360", label: "Galaxy Book2 Pro 360", base: 531, inquiryOnly: false, image: "/devices/sgbk_2_pro_360.png" },
+  { id: "sgbk_2", label: "Galaxy Book2", base: 486, inquiryOnly: false, image: "/devices/sgbk_2.png" },
+  { id: "sgbk_2_360", label: "Galaxy Book2 360", base: 248, inquiryOnly: false, image: "/devices/sgbk_2_360.png" },
+  { id: "sgbk_2_pro", label: "Galaxy Book2 Pro", base: 248, inquiryOnly: false, image: "/devices/sgbk_2_pro.png" },
+  { id: "sgbk_2_pro_360", label: "Galaxy Book2 Pro 360", base: 486, inquiryOnly: false, image: "/devices/sgbk_2_pro_360.png" },
 ];
 const SAMSUNG_BOOK1_VARIANTS = [
   { id: "sgbk_1", label: "Galaxy Book", base: 180, inquiryOnly: false, image: "/devices/sgbk_1.png" },
@@ -1025,29 +1025,29 @@ const SAMSUNG_PC_SERIES = [
 // UltraGear (gaming) aren't on IWM, so they're dropped per the
 // comp-mirror request.
 const LG_GRAM_14_VARIANTS = [
-  { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 594, inquiryOnly: false, image: "/devices/lg_gr14_24.png" },
-  { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 594, inquiryOnly: false, image: "/devices/lg_gr14_23.png" },
-  { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 594, inquiryOnly: false, image: "/devices/lg_grstyle14.png" },
+  { id: "lg_gr14_24", label: "LG Gram 14 (14Z90S, 2024)", base: 572, inquiryOnly: false, image: "/devices/lg_gr14_24.png" },
+  { id: "lg_gr14_23", label: "LG Gram 14 (14Z90R, 2023)", base: 572, inquiryOnly: false, image: "/devices/lg_gr14_23.png" },
+  { id: "lg_grstyle14", label: "LG Gram Style 14 (14Z90RS, 2023)", base: 572, inquiryOnly: false, image: "/devices/lg_grstyle14.png" },
 ];
 const LG_GRAM_14_2IN1_VARIANTS = [
-  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 495, inquiryOnly: false, image: "/devices/lg_gr14t_24.png" },
-  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 495, inquiryOnly: false, image: "/devices/lg_gr14t_23.png" },
+  { id: "lg_gr14t_24", label: "LG Gram 14 2-in-1 (14T90S, 2024)", base: 450, inquiryOnly: false, image: "/devices/lg_gr14t_24.png" },
+  { id: "lg_gr14t_23", label: "LG Gram 14 2-in-1 (14T90R, 2023)", base: 450, inquiryOnly: false, image: "/devices/lg_gr14t_23.png" },
 ];
 const LG_GRAM_15_VARIANTS = [
-  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 594, inquiryOnly: false, image: "/devices/lg_gr15_23.png" },
+  { id: "lg_gr15_23", label: "LG Gram 15 (15Z90R, 2023)", base: 572, inquiryOnly: false, image: "/devices/lg_gr15_23.png" },
 ];
 const LG_GRAM_16_VARIANTS = [
-  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 594, inquiryOnly: false, image: "/devices/lg_gr16_24.png" },
-  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 594, inquiryOnly: false, image: "/devices/lg_gr16_23.png" },
-  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 594, inquiryOnly: false, image: "/devices/lg_grstyle16.png" },
+  { id: "lg_gr16_24", label: "LG Gram 16 (16Z90S, 2024)", base: 572, inquiryOnly: false, image: "/devices/lg_gr16_24.png" },
+  { id: "lg_gr16_23", label: "LG Gram 16 (16Z90R, 2023)", base: 572, inquiryOnly: false, image: "/devices/lg_gr16_23.png" },
+  { id: "lg_grstyle16", label: "LG Gram Style 16 (16Z90RS, 2023)", base: 572, inquiryOnly: false, image: "/devices/lg_grstyle16.png" },
 ];
 const LG_GRAM_16_2IN1_VARIANTS = [
-  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 392, inquiryOnly: false, image: "/devices/lg_gr16t_24.png" },
-  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 392, inquiryOnly: false, image: "/devices/lg_gr16t_23.png" },
+  { id: "lg_gr16t_24", label: "LG Gram 16 2-in-1 (16T90S, 2024)", base: 432, inquiryOnly: false, image: "/devices/lg_gr16t_24.png" },
+  { id: "lg_gr16t_23", label: "LG Gram 16 2-in-1 (16T90R, 2023)", base: 432, inquiryOnly: false, image: "/devices/lg_gr16t_23.png" },
 ];
 const LG_GRAM_17_VARIANTS = [
-  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 594, inquiryOnly: false, image: "/devices/lg_gr17_24.png" },
-  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 594, inquiryOnly: false, image: "/devices/lg_gr17_23.png" },
+  { id: "lg_gr17_24", label: "LG Gram 17 (17Z90S, 2024)", base: 572, inquiryOnly: false, image: "/devices/lg_gr17_24.png" },
+  { id: "lg_gr17_23", label: "LG Gram 17 (17Z90R, 2023)", base: 572, inquiryOnly: false, image: "/devices/lg_gr17_23.png" },
 ];
 const LG_GRAM_PRO_16_VARIANTS = [
   { id: "lg_grpro16_25", label: "LG Gram Pro 16 (16Z90TR, 2025)", base: 760, inquiryOnly: false, image: "/devices/lg_grpro16_25.png" },
@@ -1061,7 +1061,7 @@ const LG_GRAM_PRO_17_VARIANTS = [
   { id: "lg_grpro17_24", label: "LG Gram Pro 17 (17Z90SP, 2024)", base: 760, inquiryOnly: false, image: "/devices/lg_grpro17_24.png" },
 ];
 const LG_GRAM_SUPERSLIM_15_VARIANTS = [
-  { id: "lg_grultra15", label: "LG Gram SuperSlim 15 (15Z90RT, 2023)", base: 513, inquiryOnly: false, image: "/devices/lg_grultra15.png" },
+  { id: "lg_grultra15", label: "LG Gram SuperSlim 15 (15Z90RT, 2023)", base: 495, inquiryOnly: false, image: "/devices/lg_grultra15.png" },
 ];
 
 const LG_GRAM_SUB_SERIES = [
@@ -1226,18 +1226,18 @@ const ASUS_TUF_VARIANTS = [
   { id: "as_tuf_a18", label: "TUF A18", base: 922, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a18-laptop.png" },
   { id: "as_tuf_a17", label: "TUF A17", base: 626, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a17-laptop.png" },
   { id: "as_tuf_a16", label: "TUF A16", base: 864, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a16-laptop.png" },
-  { id: "as_tuf_a15", label: "TUF A15", base: 549, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a15-laptop.png" },
-  { id: "as_tuf_a14", label: "TUF A14", base: 788, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a14-laptop.png" },
+  { id: "as_tuf_a15", label: "TUF A15", base: 540, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a15-laptop.png" },
+  { id: "as_tuf_a14", label: "TUF A14", base: 819, inquiryOnly: false, image: "/devices/asus-tuf-tuf-a14-laptop.png" },
   { id: "as_tuf_f17", label: "TUF F17", base: 572, inquiryOnly: false, image: "/devices/asus-tuf-tuf-f17-laptop.png" },
   { id: "as_tuf_f16", label: "TUF F16", base: 819, inquiryOnly: false, image: "/devices/asus-tuf-tuf-f16-laptop.png" },
   { id: "as_tuf_f15", label: "TUF F15", base: 796, inquiryOnly: false, image: "/devices/asus-tuf-tuf-f15-laptop.png" },
 ];
 const ASUS_PROART_VARIANTS = [
   { id: "as_proart_studiobook_pro_16", label: "ProArt Studiobook Pro 16", base: 1462, inquiryOnly: false, image: "/devices/asus-proart-proart-studiobook-pro-16.png" },
-  { id: "as_proart_studiobook_16", label: "ProArt Studiobook 16", base: 1130, inquiryOnly: false, image: "/devices/asus-proart-proart-studiobook-16.png" },
+  { id: "as_proart_studiobook_16", label: "ProArt Studiobook 16", base: 1094, inquiryOnly: false, image: "/devices/asus-proart-proart-studiobook-16.png" },
   { id: "as_proart_p16", label: "ProArt P16", base: 1755, inquiryOnly: false, image: "/devices/asus-proart-proart-p16.png" },
   { id: "as_proart_px13", label: "ProArt PX13", base: 999, inquiryOnly: false, image: "/devices/asus-proart-proart-px13.png" },
-  { id: "as_proart_pz13", label: "ProArt PZ13", base: 518, inquiryOnly: false, image: "/devices/asus-proart-proart-pz13.png" },
+  { id: "as_proart_pz13", label: "ProArt PZ13", base: 540, inquiryOnly: false, image: "/devices/asus-proart-proart-pz13.png" },
 ];
 const ASUS_VIVOBOOK_VARIANTS = [
   { id: "as_vivobook_16", label: "Vivobook 16", base: 225, inquiryOnly: false, image: "/devices/asus-vivobook.webp" },
@@ -1316,10 +1316,10 @@ const DELL_XPS_17_VARIANTS = [
 const DELL_LATITUDE_3000_VARIANTS = [
   { id: "d_lat_3500", label: "Latitude 3500 Series", base: 99, inquiryOnly: false, image: "/devices/dell-latitude-latitude_3000-3000_latitude-3000-15.png" },
   { id: "d_lat_3400", label: "Latitude 3400 Series", base: 86, inquiryOnly: false, image: "/devices/dell-latitude-latitude_3000-3000_latitude-3000-14.png" },
-  { id: "d_lat_3300", label: "Latitude 3300 Series", base: 243, inquiryOnly: false, image: "/devices/dell-latitude-latitude_3000-3000_latitude-3000-13.png" },
+  { id: "d_lat_3300", label: "Latitude 3300 Series", base: 230, inquiryOnly: false, image: "/devices/dell-latitude-latitude_3000-3000_latitude-3000-13.png" },
 ];
 const DELL_LATITUDE_5000_VARIANTS = [
-  { id: "d_lat_5500", label: "Latitude 5500 Series", base: 144, inquiryOnly: false, image: "/devices/dell-latitude-latitude_5000-5000_latitude-5000-15.png" },
+  { id: "d_lat_5500", label: "Latitude 5500 Series", base: 135, inquiryOnly: false, image: "/devices/dell-latitude-latitude_5000-5000_latitude-5000-15.png" },
   { id: "d_lat_5400", label: "Latitude 5400 Series", base: 112, inquiryOnly: false, image: "/devices/dell-latitude-latitude_5000-5000_latitude-5000-14.png" },
   { id: "d_lat_5300", label: "Latitude 5300 Series", base: 148, inquiryOnly: false, image: "/devices/dell-latitude-latitude_5000-5000_latitude-5000-13.png" },
   { id: "d_lat_5200", label: "Latitude 5200 Series", base: 72, inquiryOnly: false, image: "/devices/dell-latitude-latitude_5000-5000_latitude-5000-12.png" },
@@ -1327,9 +1327,9 @@ const DELL_LATITUDE_5000_VARIANTS = [
 const DELL_LATITUDE_7000_VARIANTS = [
   { id: "d_lat_7600", label: "Latitude 7600 Series", base: 472, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-16.png" },
   { id: "d_lat_7500", label: "Latitude 7500 Series", base: 189, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-15.png" },
-  { id: "d_lat_7400", label: "Latitude 7400 Series", base: 90, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-14.png" },
+  { id: "d_lat_7400", label: "Latitude 7400 Series", base: 104, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-14.png" },
   { id: "d_lat_7300", label: "Latitude 7300 Series", base: 99, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-13.png" },
-  { id: "d_lat_7200", label: "Latitude 7200 Series", base: 158, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-12.png" },
+  { id: "d_lat_7200", label: "Latitude 7200 Series", base: 130, inquiryOnly: false, image: "/devices/dell-latitude-latitude_7000-7000_latitude-7000-12.png" },
 ];
 const DELL_LATITUDE_9000_VARIANTS = [
   { id: "d_lat_9500", label: "Latitude 9500 Series", base: 266, inquiryOnly: false, image: "/devices/dell-latitude-latitude_9000-9000_latitude-9000-15.png" },
@@ -1338,14 +1338,14 @@ const DELL_LATITUDE_9000_VARIANTS = [
 ];
 const DELL_INSPIRON_3000_VARIANTS = [
   { id: "d_insp_3700", label: "Inspiron 3700 Series", base: 112, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_3000-3000_inspiron-3000-17.png" },
-  { id: "d_insp_3500", label: "Inspiron 3500 Series", base: 243, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_3000-3000_inspiron-3000-15.png" },
-  { id: "d_insp_3400", label: "Inspiron 3400 Series", base: 112, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_3000-3000_inspiron-3000-14.png" },
+  { id: "d_insp_3500", label: "Inspiron 3500 Series", base: 202, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_3000-3000_inspiron-3000-15.png" },
+  { id: "d_insp_3400", label: "Inspiron 3400 Series", base: 122, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_3000-3000_inspiron-3000-14.png" },
 ];
 const DELL_INSPIRON_5000_VARIANTS = [
   { id: "d_insp_5700", label: "Inspiron 5700 Series", base: 144, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-17.png" },
-  { id: "d_insp_5600", label: "Inspiron 5600 Series", base: 279, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-16.png" },
-  { id: "d_insp_5500", label: "Inspiron 5500 Series", base: 198, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-15.png" },
-  { id: "d_insp_5400", label: "Inspiron 5400 Series", base: 256, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-14.png" },
+  { id: "d_insp_5600", label: "Inspiron 5600 Series", base: 288, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-16.png" },
+  { id: "d_insp_5500", label: "Inspiron 5500 Series", base: 216, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-15.png" },
+  { id: "d_insp_5400", label: "Inspiron 5400 Series", base: 252, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-14.png" },
   { id: "d_insp_5300", label: "Inspiron 5300 Series", base: 171, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_5000-5000_inspiron-5000-13.png" },
 ];
 const DELL_INSPIRON_7000_VARIANTS = [
@@ -1353,31 +1353,31 @@ const DELL_INSPIRON_7000_VARIANTS = [
   { id: "d_insp_7600", label: "Inspiron 7600 Series", base: 608, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_7000-7000_inspiron-7000-16.png" },
   { id: "d_insp_7500", label: "Inspiron 7500 Series", base: 248, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_7000-7000_inspiron-7000-15.png" },
   { id: "d_insp_7400", label: "Inspiron 7400 Series", base: 382, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_7000-7000_inspiron-7000-14.png" },
-  { id: "d_insp_7300", label: "Inspiron 7300 Series", base: 194, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_7000-7000_inspiron-7000-13.png" },
+  { id: "d_insp_7300", label: "Inspiron 7300 Series", base: 198, inquiryOnly: false, image: "/devices/dell-inspiron-inspiron_7000-7000_inspiron-7000-13.png" },
 ];
 const DELL_PRECISION_3000_VARIANTS = [
-  { id: "d_prec_3500", label: "Precision 3500 Series", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_3500", label: "Precision 3500 Series", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
   { id: "d_prec_3400", label: "Precision 3400 Series", base: 454, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-14.png" },
 ];
 const DELL_PRECISION_5000_VARIANTS = [
-  { id: "d_prec_5560", label: "Precision 5560", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
-  { id: "d_prec_5550", label: "Precision 5550", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
-  { id: "d_prec_5540", label: "Precision 5540", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_5560", label: "Precision 5560", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_5550", label: "Precision 5550", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_5540", label: "Precision 5540", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
 ];
 const DELL_PRECISION_7000_VARIANTS = [
-  { id: "d_prec_7780", label: "Precision 7780", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
-  { id: "d_prec_7770", label: "Precision 7770", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
-  { id: "d_prec_7760", label: "Precision 7760", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
-  { id: "d_prec_7560", label: "Precision 7560", base: 1166, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_7780", label: "Precision 7780", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_7770", label: "Precision 7770", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_7760", label: "Precision 7760", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
+  { id: "d_prec_7560", label: "Precision 7560", base: 1058, inquiryOnly: false, image: "/devices/dell-precision-precision_3000-3000_precision-3000-series-15.png" },
 ];
 const DELL_VOSTRO_3000_VARIANTS = [
-  { id: "d_vostro_3535", label: "Vostro 3535", base: 144, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3535.png" },
-  { id: "d_vostro_3530", label: "Vostro 3530", base: 207, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3530.png" },
-  { id: "d_vostro_3520", label: "Vostro 3520", base: 162, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3520.png" },
+  { id: "d_vostro_3535", label: "Vostro 3535", base: 158, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3535.png" },
+  { id: "d_vostro_3530", label: "Vostro 3530", base: 234, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3530.png" },
+  { id: "d_vostro_3520", label: "Vostro 3520", base: 130, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3520.png" },
   { id: "d_vostro_3510", label: "Vostro 3510", base: 126, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3510.png" },
   { id: "d_vostro_3500", label: "Vostro 3500", base: 324, inquiryOnly: false, image: "/devices/dell-latitude-latitude_3000-3000_latitude-3000-15.png" },
-  { id: "d_vostro_3430", label: "Vostro 3430", base: 171, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3430.png" },
-  { id: "d_vostro_3420", label: "Vostro 3420", base: 153, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3420.png" },
+  { id: "d_vostro_3430", label: "Vostro 3430", base: 184, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3430.png" },
+  { id: "d_vostro_3420", label: "Vostro 3420", base: 126, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3420.png" },
   { id: "d_vostro_3591", label: "Vostro 3591", base: 54, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3591.png" },
   { id: "d_vostro_3590", label: "Vostro 3590", base: 270, inquiryOnly: false, image: "/devices/dell-vostro-vostro_3000-3000_3590.png" },
 ];
@@ -1530,17 +1530,17 @@ const DELL_PC_ALL_SUB_SERIES = [
 ];
 
 const ALIENWARE_DESKTOP_MODELS = [
-  { id: "awaurorar16", label: "Aurora R16", base: 1575, image: "/devices/alienware-aurora-r16.webp" },
+  { id: "awaurorar16", label: "Aurora R16", base: 1544, inquiryOnly: false, image: "/devices/alienware-aurora-r16.webp" },
   // R15 / R13 prices scraped from IWM via head scraper 2026-05-17.
   // Base = i7 / 1TB SSD / Flawless × 0.90 (mid-tier chip + storage):
   //   R15 i7 1TB Flawless $785 → $706
   //   R13 i7 1TB Flawless $340 → $306
   // Higher-spec configs scale up via storage multipliers downstream.
-  { id: "awaurorar15", label: "Aurora R15", base: 1426, inquiryOnly: false, image: "/devices/alienware-aurora-r15.webp" },
-  { id: "awaurorar14", label: "Aurora R14", base: 783, inquiryOnly: false, image: "/devices/alienware-aurora-r14.webp" },
-  { id: "awaurorar13", label: "Aurora R13", base: 639, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
-  { id: "awaurorar12", label: "Aurora R12", base: 729, inquiryOnly: false, image: "/devices/alienware-aurora-r12.webp" },
-  { id: "awaurorar10", label: "Aurora R10", base: 405, inquiryOnly: false, image: "/devices/alienware-aurora-r10.webp" },
+  { id: "awaurorar15", label: "Aurora R15", base: 1170, inquiryOnly: false, image: "/devices/alienware-aurora-r15.webp" },
+  { id: "awaurorar14", label: "Aurora R14", base: 698, inquiryOnly: false, image: "/devices/alienware-aurora-r14.webp" },
+  { id: "awaurorar13", label: "Aurora R13", base: 648, inquiryOnly: false, image: "/devices/alienware-aurora-r13.webp" },
+  { id: "awaurorar12", label: "Aurora R12", base: 446, inquiryOnly: false, image: "/devices/alienware-aurora-r12.webp" },
+  { id: "awaurorar10", label: "Aurora R10", base: 400, inquiryOnly: false, image: "/devices/alienware-aurora-r10.webp" },
   { id: "awarea51desktop", label: "Area-51 Desktop", base: 1647, inquiryOnly: false, image: "/devices/alienware-area-51-desktop.webp" },
 ];
 
@@ -1554,21 +1554,21 @@ const ALIENWARE_DESKTOP_MODELS = [
 // labels so the lead body carries the SKU IWM would price against.
 const MSI_DESKTOP_MODELS = [
   // Aegis flagship gaming
-  { id: "msiaegisrs",  label: "Aegis RS",  base: 810, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegisrs", label: "Aegis RS", base: 1017, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
   { id: "msiaegisr",   label: "Aegis R",   base: 729, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
-  { id: "msiaegiszs",  label: "Aegis ZS",  base: 500, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegiszs", label: "Aegis ZS", base: 580, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
   { id: "msiaegisrs2", label: "Aegis RS2", base: 387, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
   { id: "msiaegisr2",  label: "Aegis R2",  base: 387, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
   { id: "msiaegisti5", label: "Aegis Ti5", base: 333, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
   { id: "msiaegiszs2", label: "Aegis ZS2", base: 333, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
-  { id: "msiaegisse",  label: "Aegis SE",  base: 243, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
+  { id: "msiaegisse", label: "Aegis SE", base: 279, inquiryOnly: false, image: "/devices/msi-aegis.webp" },
   // Trident compact gaming
   { id: "msitridentx",  label: "Trident X",  base: 644, inquiryOnly: false, image: "/devices/msi-trident.webp" },
   { id: "msitridentas", label: "Trident AS", base: 464, inquiryOnly: false, image: "/devices/msi-trident.webp" },
   { id: "msiinfinity",  label: "Trident X2", base: 387, inquiryOnly: false, image: "/devices/msi-trident.webp" },
   { id: "msitrident",   label: "Trident 3",  base: 346, inquiryOnly: false, image: "/devices/msi-trident.webp" },
   // Codex entry/mid gaming
-  { id: "msicodexr2",   label: "Codex R2",   base: 495, inquiryOnly: false, image: "/devices/msi-codex.webp" },
+  { id: "msicodexr2", label: "Codex R2", base: 518, inquiryOnly: false, image: "/devices/msi-codex.webp" },
   { id: "msinightblade", label: "Codex R",   base: 446, inquiryOnly: false, image: "/devices/msi-codex.webp" },
   { id: "msicodex5",    label: "Codex Z",    base: 342, inquiryOnly: false, image: "/devices/msi-codex.webp" },
   // PRO line — IWM doesn't list, manual only
@@ -1649,12 +1649,12 @@ const APPLEWATCH_MODELS = [
   { id: "awu3", label: "Apple Watch Ultra 3", base: 302, image: "/devices/apple-watch-ultra-3.webp" },
   { id: "awu2", label: "Apple Watch Ultra 2", base: 180, image: "/devices/apple-watch-ultra-2.webp" },
   { id: "awu1", label: "Apple Watch Ultra", base: 126, image: "/devices/apple-watch-ultra.webp" },
-  { id: "aws11", label: "Apple Watch Series 11", base: 123, image: "/devices/apple-watch-series-10.webp" },
+  { id: "aws11", label: "Apple Watch Series 11", base: 216, image: "/devices/apple-watch-series-10.webp" },
   { id: "aws10", label: "Apple Watch Series 10", base: 158, image: "/devices/apple-watch-series-10.webp" },
   { id: "aws9", label: "Apple Watch Series 9", base: 104, image: "/devices/apple-watch-series-9.webp" },
   { id: "aws8", label: "Apple Watch Series 8", base: 59, image: "/devices/apple-watch-series-8.webp" },
   { id: "aws7", label: "Apple Watch Series 7", base: 46, image: "/devices/apple-watch-series-7.webp" },
-  { id: "awse3", label: "Apple Watch SE 3", base: 72, image: "/devices/apple-watch-se-2.webp" },
+  { id: "awse3", label: "Apple Watch SE 3", base: 82, image: "/devices/apple-watch-se-2.webp" },
   { id: "awse2", label: "Apple Watch SE (2nd Gen)", base: 34, image: "/devices/apple-watch-se-2.webp" },
   { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, inquiryOnly: true, image: "/devices/apple-watch-se-1.webp" },
 ];
@@ -1709,9 +1709,9 @@ const APPLE_WATCH_SPECS: Record<string, AppleWatchSpec> = {
 };
 
 const PIXELWATCH_MODELS = [
-  { id: "pw3", label: "Pixel Watch 3", base: 200, image: "/devices/pixel-watch.jpg" },
-  { id: "pw2", label: "Pixel Watch 2", base: 130, image: "/devices/pixel-watch.jpg" },
-  { id: "pw1", label: "Pixel Watch", base: 80, image: "/devices/pixel-watch.jpg" },
+  { id: "pw3", label: "Pixel Watch 3", base: 37, image: "/devices/pixel-watch.jpg" },
+  { id: "pw2", label: "Pixel Watch 2", base: 18, image: "/devices/pixel-watch.jpg" },
+  { id: "pw1", label: "Pixel Watch", base: 18, image: "/devices/pixel-watch.jpg" },
 ];
 
 // Garmin & Samsung Watch variants — auto-generated from IWM scrape

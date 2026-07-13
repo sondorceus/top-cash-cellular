@@ -363,22 +363,22 @@ export const DEVICES: Device[] = [
   { slug: "nintendo-switch-lite", name: "Nintendo Switch Lite", category: "Console", price: 58, year: 2019 },
 
   // ── Apple Watch ──
-  { slug: "apple-watch-ultra-3", name: "Apple Watch Ultra 3", category: "Watch", price: 319, year: 2025 },
-  { slug: "apple-watch-ultra-2", name: "Apple Watch Ultra 2", category: "Watch", price: 204, year: 2023 },
+  { slug: "apple-watch-ultra-3", name: "Apple Watch Ultra 3", category: "Watch", price: 338, year: 2025 },
+  { slug: "apple-watch-ultra-2", name: "Apple Watch Ultra 2", category: "Watch", price: 216, year: 2023 },
   { slug: "apple-watch-ultra", name: "Apple Watch Ultra", category: "Watch", price: 130, year: 2022 },
-  { slug: "apple-watch-series-10", name: "Apple Watch Series 10", category: "Watch", price: 106, year: 2024 },
+  { slug: "apple-watch-series-10", name: "Apple Watch Series 10", category: "Watch", price: 194, year: 2024 },
   { slug: "apple-watch-series-9", name: "Apple Watch Series 9", category: "Watch", price: 75, year: 2023 },
-  { slug: "apple-watch-series-8", name: "Apple Watch Series 8", category: "Watch", price: 60, year: 2022 },
-  { slug: "apple-watch-series-7", name: "Apple Watch Series 7", category: "Watch", price: 38, year: 2021 },
-  { slug: "apple-watch-se-2nd-gen", name: "Apple Watch SE (2nd Gen)", category: "Watch", price: 38, year: 2022 },
+  { slug: "apple-watch-series-8", name: "Apple Watch Series 8", category: "Watch", price: 65, year: 2022 },
+  { slug: "apple-watch-series-7", name: "Apple Watch Series 7", category: "Watch", price: 52, year: 2021 },
+  { slug: "apple-watch-se-2nd-gen", name: "Apple Watch SE (2nd Gen)", category: "Watch", price: 46, year: 2022 },
   { slug: "apple-watch-se-1st-gen", name: "Apple Watch SE (1st Gen)", category: "Watch", price: 80, year: 2020 },
 
   // ── Samsung Watch ──
   { slug: "galaxy-watch-ultra", name: "Galaxy Watch Ultra", category: "Watch", price: 112, year: 2024 },
-  { slug: "galaxy-watch-7", name: "Galaxy Watch 7", category: "Watch", price: 36, year: 2024 },
+  { slug: "galaxy-watch-7", name: "Galaxy Watch 7", category: "Watch", price: 41, year: 2024 },
 
   // ── Pixel Watch ──
-  { slug: "pixel-watch-3", name: "Pixel Watch 3", category: "Watch", price: 58, year: 2024 },
+  { slug: "pixel-watch-3", name: "Pixel Watch 3", category: "Watch", price: 64, year: 2024 },
   { slug: "pixel-watch-2", name: "Pixel Watch 2", category: "Watch", price: 32, year: 2023 },
   { slug: "pixel-watch", name: "Pixel Watch", category: "Watch", price: 32, year: 2022 },
 
