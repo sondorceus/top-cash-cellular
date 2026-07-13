@@ -81,12 +81,20 @@ VID_MAP = {
     "awu3":   ("apple-watch/apple-watch-ultra-3", None, None),
     "awu2":   ("apple-watch/apple-watch-ultra-2", None, None),
     "awu1":   ("apple-watch/apple-watch-ultra", None, None),
+    "aws11":  ("apple-watch/apple-watch-series-11", None, None),
     "aws10":  ("apple-watch/apple-watch-series-10", None, None),
     "aws9":   ("apple-watch/apple-watch-series-9", None, None),
     "aws8":   ("apple-watch/apple-watch-series-8", None, None),
     "aws7":   ("apple-watch/apple-watch-series-7", None, None),
+    "awse3":  ("apple-watch/apple-watch-se-3", None, None),
     "awse2":  ("apple-watch/apple-watch-se-2nd-gen", None, None),
     "awse1":  ("apple-watch/apple-watch-se", None, None),
+    # Pixel Watches — pages moved to google-watch/* in the 2026 restructure.
+    # pw1 is NOT mapped: IWM's pixel-watch page no longer serves a price
+    # blob (they stopped buying it); its base is hand-aligned to the funnel.
+    "pw4":    ("google-watch/pixel-watch-4", None, None),
+    "pw3":    ("google-watch/pixel-watch-3", None, None),
+    "pw2":    ("google-watch/pixel-watch-2", None, None),
     "sgwu25": ("samsung-watch/samsung-galaxy-watch-ultra-2025", None, None),
     "sgwu":   ("samsung-watch/samsung-galaxy-watch-ultra", None, None),
     "sgw8c":  ("samsung-watch/samsung-galaxy-watch-8-classic", None, None),

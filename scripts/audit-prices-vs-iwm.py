@@ -105,73 +105,85 @@ IWM_URLS = {
     "px10pfold":("google-phone", "google-pixel-10-pro-fold"),
     "pxfold":   ("google-phone", "google-pixel-fold"),
 
-    # PlayStation — /sell/sony-playstation
-    "ps4":     ("sony-playstation", "sony-playstation-4"),
-    "ps4pro":  ("sony-playstation", "sony-playstation-4-pro"),
-    "ps5":     ("sony-playstation", "sony-playstation-5"),
-    "ps5slim": ("sony-playstation", "sony-playstation-5-slim"),
-    "ps5pro":  ("sony-playstation", "sony-playstation-5-pro"),
+    # PlayStation — /sell/sony-game-console (July-2026 URL restructure)
+    "ps4":     ("sony-game-console", "playstation-4"),
+    "ps4pro":  ("sony-game-console", "playstation-4-pro"),
+    "ps5":     ("sony-game-console", "playstation-5"),
+    "ps5slim": ("sony-game-console", "playstation-5-slim"),
+    "ps5pro":  ("sony-game-console", "playstation-5-pro"),
 
-    # Xbox
-    "xss": ("microsoft-xbox", "microsoft-xbox-series-s"),
-    "xsx": ("microsoft-xbox", "microsoft-xbox-series-x"),
+    # Xbox — /sell/microsoft-game-console
+    "xss": ("microsoft-game-console", "xbox-series-s"),
+    "xsx": ("microsoft-game-console", "xbox-series-x"),
 
-    # Switch — /sell/nintendo-switch
-    "switch":   ("nintendo-switch", "nintendo-switch"),
-    "switchv2": ("nintendo-switch", "nintendo-switch-v2"),
-    "switchlite":("nintendo-switch", "nintendo-switch-lite"),
-    "nswoled":  ("nintendo-switch", "nintendo-switch-oled"),
-    "nsw2":     ("nintendo-switch", "nintendo-switch-2"),
+    # Switch — /sell/nintendo-game-console. IWM folded the V2 revision into
+    # the base "switch" page, so switch + switchv2 share it.
+    "switch":   ("nintendo-game-console", "switch"),
+    "switchv2": ("nintendo-game-console", "switch"),
+    "switchlite":("nintendo-game-console", "switch-lite"),
+    "nswoled":  ("nintendo-game-console", "switch-oled"),
+    "nsw2":     ("nintendo-game-console", "nintendo-switch-2"),
 
-    # Xbox One (older)
-    "xone":     ("microsoft-xbox", "microsoft-xbox-one"),
+    # Xbox One (older) — IWM dropped the plain One; the One S is the
+    # volume model and their cheapest One SKU (safe payout anchor).
+    "xone":     ("microsoft-game-console", "xbox-one-s"),
 
-    # Apple Watch
+    # Apple Watch — URLs live, but these pages are material-picker/additive
+    # shapes; extract_price_grid may return partial grids. Full-condition
+    # scraping uses iwm-head-scrape.extract_grid (see 2026-07-13 recab).
     "aws7":   ("apple-watch", "apple-watch-series-7"),
     "aws8":   ("apple-watch", "apple-watch-series-8"),
     "aws9":   ("apple-watch", "apple-watch-series-9"),
     "aws10":  ("apple-watch", "apple-watch-series-10"),
+    "aws11":  ("apple-watch", "apple-watch-series-11"),
     "awse2":  ("apple-watch", "apple-watch-se-2nd-gen"),
+    "awse3":  ("apple-watch", "apple-watch-se-3"),
     "awu1":   ("apple-watch", "apple-watch-ultra"),
     "awu2":   ("apple-watch", "apple-watch-ultra-2"),
     "awu3":   ("apple-watch", "apple-watch-ultra-3"),
 
-    # Pixel Watch
-    "pw1": ("google-pixel-watch", "google-pixel-watch"),
-    "pw2": ("google-pixel-watch", "google-pixel-watch-2"),
-    "pw3": ("google-pixel-watch", "google-pixel-watch-3"),
-    "pw4": ("google-pixel-watch", "google-pixel-watch-4"),
+    # Pixel Watch — moved to google-watch/* (2026 restructure). pw1's page
+    # no longer serves a price blob (IWM stopped buying it).
+    "pw2": ("google-watch", "pixel-watch-2"),
+    "pw3": ("google-watch", "pixel-watch-3"),
+    "pw4": ("google-watch", "pixel-watch-4"),
 
-    # Samsung Watch
-    "sgw7":   ("samsung-galaxy-watch", "samsung-galaxy-watch-7"),
-    "sgw8":   ("samsung-galaxy-watch", "samsung-galaxy-watch-8"),
-    "sgw8c":  ("samsung-galaxy-watch", "samsung-galaxy-watch-8-classic"),
-    "sgwu":   ("samsung-galaxy-watch", "samsung-galaxy-watch-ultra"),
-    "sgwu25": ("samsung-galaxy-watch", "samsung-galaxy-watch-ultra-2025"),
+    # Samsung Watch — moved to samsung-watch/* (old URLs redirect but the
+    # redirected pages parse partially; use the canonical slugs).
+    "sgw7":   ("samsung-watch", "samsung-galaxy-watch-7"),
+    "sgw8":   ("samsung-watch", "samsung-galaxy-watch-8"),
+    "sgw8c":  ("samsung-watch", "samsung-galaxy-watch-8-classic"),
+    "sgwu":   ("samsung-watch", "samsung-galaxy-watch-ultra"),
+    "sgwu25": ("samsung-watch", "samsung-galaxy-watch-ultra-2025"),
 
-    # Samsung Tabs
-    "stabs9":   ("samsung-galaxy-tab", "samsung-galaxy-tab-s9"),
-    "stabs10u": ("samsung-galaxy-tab", "samsung-galaxy-tab-s10-ultra"),
-    "stabs11":  ("samsung-galaxy-tab", "samsung-galaxy-tab-s11"),
-    "stabs11u": ("samsung-galaxy-tab", "samsung-galaxy-tab-s11-ultra"),
+    # Samsung Tabs — moved to samsung-tablet/* (2026 restructure)
+    "stabs9":   ("samsung-tablet", "galaxy-tab-s9"),
+    "stabs10u": ("samsung-tablet", "galaxy-tab-s10-ultra"),
+    "stabs11":  ("samsung-tablet", "galaxy-tab-s11"),
+    "stabs11u": ("samsung-tablet", "galaxy-tab-s11-ultra"),
 
-    # MacBook Air/Pro
-    "mba13m2":   ("macbook", "apple-macbook-air-13-m2"),
-    "mba15m2":   ("macbook", "apple-macbook-air-15-m2"),
-    "mba13m3":   ("macbook", "apple-macbook-air-13-m3"),
-    "mba15m3":   ("macbook", "apple-macbook-air-15-m3"),
-    "mba_m4_2025": ("macbook", "apple-macbook-air-2025"),
-    "mba_m5_2026": ("macbook", "apple-macbook-air-2026"),
-    "mbp13m1":   ("macbook", "apple-macbook-pro-13-m1"),
-    "mbp14m2":   ("macbook", "apple-macbook-pro-14-m2"),
-    "mbp14m3":   ("macbook", "apple-macbook-pro-14-m3"),
-    "mbp14m4":   ("macbook", "apple-macbook-pro-14-m4"),
-    "mbp14_m5_2025":      ("macbook", "apple-macbook-pro-14-m5"),
-    "mbp14_m5pmax_2026":  ("macbook", "apple-macbook-pro-14-m5-pro-max-2026"),
-    "mbp16m2":   ("macbook", "apple-macbook-pro-16-m2"),
-    "mbp16m3":   ("macbook", "apple-macbook-pro-16-m3"),
-    "mbp16m4":   ("macbook", "apple-macbook-pro-16-m4"),
-    "mbp16_m5pmax_2026":  ("macbook", "apple-macbook-pro-16-m5-pro-max-2026"),
+    # iPad Air M4 (IWM added mid-2026)
+    "ipadair11m4": ("ipad-air", "ipad-air-11-inch-m4"),
+    "ipadair13m4": ("ipad-air", "ipad-air-13-inch-m4"),
+
+    # MacBook Air/Pro — year-based slugs under new series (June-2026
+    # restructure). M5 Pro/Max share the M5 page (chip is a submodel).
+    "mba13m2":   ("macbook-air-2021-m", "macbook-air-13-2022"),
+    "mba15m2":   ("macbook-air-2021-m", "macbook-air-15"),
+    "mba13m3":   ("macbook-air-2021-m", "macbook-air-13-2024"),
+    "mba15m3":   ("macbook-air-2021-m", "macbook-air-15-2024"),
+    "mba_m4_2025": ("macbook-air-2021-m", "macbook-air-13-2025"),
+    "mba_m5_2026": ("macbook-air-2021-m", "macbook-air-13-m5"),
+    "mbp13m1":   ("macbook-pro-m1", "macbook-pro-13"),
+    "mbp14m2":   ("macbook-pro-m1", "macbook-pro-14-m2"),
+    "mbp14m3":   ("macbook-pro-m1", "macbook-pro-14-m3"),
+    "mbp14m4":   ("macbook-pro-m1", "macbook-pro-14-m4"),
+    "mbp14_m5_2025":      ("macbook-pro-m1", "macbook-pro-14-m5"),
+    "mbp14_m5pmax_2026":  ("macbook-pro-m1", "macbook-pro-14-m5"),
+    "mbp16m2":   ("macbook-pro-m1", "macbook-pro-16-m2"),
+    "mbp16m3":   ("macbook-pro-m1", "macbook-pro-16-m3"),
+    "mbp16m4":   ("macbook-pro-m1", "macbook-pro-16-m4"),
+    "mbp16_m5pmax_2026":  ("macbook-pro-m1", "macbook-pro-16-m5"),
 
     # iPads — IWM splits by series: /sell/{ipad-original|ipad-air|ipad-mini|
     # ipad-pro}/{slug}. (The old "apple-tablet/apple-ipad-*" slugs 404'd, so
@@ -193,19 +205,20 @@ IWM_URLS = {
     "ipadpro11m5":   ("ipad-pro", "ipad-pro-11-inch-m5"),
     "ipadpro13m5":   ("ipad-pro", "ipad-pro-13-inch-m5"),
 
-    # Apple desktops
-    "imac24m1":     ("apple-imac", "apple-imac-24-m1"),
-    "imac24m3":     ("apple-imac", "apple-imac-24-m3"),
-    "imac24m4":     ("apple-imac", "apple-imac-24-m4"),
-    "macminim1":    ("apple-mac-mini", "apple-mac-mini-m1"),
-    "macminim2":    ("apple-mac-mini", "apple-mac-mini-m2"),
-    "macminim4":    ("apple-mac-mini", "apple-mac-mini-m4"),
-    "macminim4p":   ("apple-mac-mini", "apple-mac-mini-m4-pro"),
-    "macstudiom2m": ("apple-mac-studio", "apple-mac-studio-m2-max"),
-    "macstudiom2u": ("apple-mac-studio", "apple-mac-studio-m2-ultra"),
-    "macstudiom4m": ("apple-mac-studio", "apple-mac-studio-m4-max"),
-    "macstudiom4u": ("apple-mac-studio", "apple-mac-studio-m4-ultra"),
-    "macprom2u":    ("apple-mac-pro", "apple-mac-pro-m2-ultra"),
+    # Apple desktops — year-based slugs (2026 restructure). Chip variants
+    # (M4 Pro mini, Max/Ultra Studio) are submodels on the shared page.
+    "imac24m1":     ("imac", "imac-24"),
+    "imac24m3":     ("imac", "imac-24-m3"),
+    "imac24m4":     ("imac", "imac-24-m4"),
+    "macminim1":    ("mac-mini", "mac-mini-2020"),
+    "macminim2":    ("mac-mini", "mac-mini-2023"),
+    "macminim4":    ("mac-mini", "mac-mini-2024"),
+    "macminim4p":   ("mac-mini", "mac-mini-2024"),
+    "macstudiom2m": ("mac-studio", "mac-studio-2023"),
+    "macstudiom2u": ("mac-studio", "mac-studio-2023"),
+    "macstudiom4m": ("mac-studio", "mac-studio-2025"),
+    "macstudiom4u": ("mac-studio", "mac-studio-2025"),
+    "macprom2u":    ("mac-pro", "mac-pro-2023"),
 }
 
 # Phones default to apple-phone for ip*, otherwise specific series above.
