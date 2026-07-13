@@ -700,7 +700,11 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 7, fair: 90, good: 135, mint: 158, sealed: 202 },
     "512": { broken: 7, fair: 126, good: 171, mint: 194, sealed: 248 } },
   switch: {
-    "base": { broken: 21, fair: 32, good: 50, mint: 76, sealed: 104 } },
+    // The "switch" variant card IS the OLED (label "Nintendo Switch OLED",
+    // switch-oled.webp, base from IWM switch-oled) — but this row held plain
+    // Switch money, underpaying OLED sellers ~30% vs IWM. Mirrors the
+    // (card-less) nswoled row = fresh IWM switch-oled x 0.90. 2026-07-13.
+    "base": { broken: 21, fair: 45, good: 90, mint: 126, sealed: 148 } },
   switchlite: {
     "base": { broken: 21, fair: 9, good: 27, mint: 36, sealed: 58 } },
   xone: {
