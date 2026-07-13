@@ -317,16 +317,21 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     // the shrinking sealed-over-mint trend: +34 @128, +9 @256, ~+4 @512). (bug fix)
     "512": { broken: 74, fair: 227, good: 285, mint: 346, sealed: 365 } },
   ip16p: {
-    "128": { broken: 223, fair: 315, good: 417, mint: 419, sealed: 504 },
+    // Broken to IWM-parity targets (owner 2026-07-12, same directive as
+    // 16PM). Offers pin at the broken margin cap (~$230 on the fresh $640
+    // eBay comp) and climb automatically if the comp rises.
+    "128": { broken: 250, fair: 315, good: 417, mint: 419, sealed: 504 },
     // 1TB sealed capped down from 646 → 478 (= resell $638 × MARGIN_FLOOR_MULT 0.75)
     // to stop bait-and-switch: runtime clipped 646 silently. 2026-05-24.
-    "1tb": { broken: 290, fair: 430, good: 468, mint: 470, sealed: 478 },
-    "256": { broken: 231, fair: 341, good: 438, mint: 440, sealed: 551 },
-    "512": { broken: 267, fair: 353, good: 455, mint: 457, sealed: 598 } },
+    "1tb": { broken: 325, fair: 430, good: 468, mint: 470, sealed: 478 },
+    "256": { broken: 260, fair: 341, good: 438, mint: 440, sealed: 551 },
+    "512": { broken: 300, fair: 353, good: 455, mint: 457, sealed: 598 } },
   ip16plus: {
-    "128": { broken: 169, fair: 264, good: 353, mint: 355, sealed: 409 },
-    "256": { broken: 205, fair: 285, good: 379, mint: 381, sealed: 459 },
-    "512": { broken: 241, fair: 311, good: 404, mint: 406, sealed: 502 } },
+    // Broken to IWM-parity targets (owner 2026-07-12). Fresh $515 eBay comp
+    // (n=40) lifts the broken cap to ~$185 — offers rise from the old $153.
+    "128": { broken: 190, fair: 264, good: 353, mint: 355, sealed: 409 },
+    "256": { broken: 230, fair: 285, good: 379, mint: 381, sealed: 459 },
+    "512": { broken: 270, fair: 311, good: 404, mint: 406, sealed: 502 } },
   ip16pm: {
     // 1TB sealed capped 874 → 540 (= resell $721 × 0.75 MARGIN_FLOOR). 2026-05-24.
     // Broken raised to IWM PARITY (owner 2026-07-12: "I can go higher on

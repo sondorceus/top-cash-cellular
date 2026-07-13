@@ -14,7 +14,10 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   // margin) to stay competitive — a resell entry here would let the margin cap
   // claw those sealed offers back to resell × 0.75. See [[resell-cap-footgun]].
   "iPhone 17 Pro": 949, "iPhone 17": 695,
-  "iPhone 16 Pro Max": 721, "iPhone 16 Pro": 638, "iPhone 16 Plus": 428, "iPhone 16": 520,
+  // 16-family refreshed 2026-07-12 from fresh eBay used medians (16PM 256
+  // n=28, 16 Plus 128 n=40, 16 Pro 256 n=6) — raises the broken/mint caps
+  // so the owner's IWM-parity broken cells can breathe.
+  "iPhone 16 Pro Max": 743, "iPhone 16 Pro": 640, "iPhone 16 Plus": 515, "iPhone 16": 520,
   "iPhone 15 Pro Max": 525, "iPhone 15 Pro": 528, "iPhone 15": 349,
   "iPhone 14 Pro Max": 417, "iPhone 14 Pro": 358, "iPhone 14": 268,
   // 13-family recalibrated 2026-07-11 (Skywalker-approved): the May comps were
