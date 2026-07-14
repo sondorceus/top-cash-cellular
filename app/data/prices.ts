@@ -195,12 +195,15 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
   // −100 unlock-question, T-Mobile −125 −100; broken −50/−75 + −50; sealed
   // −50/−75 + −300) with the standing tmo +25 / att −35 split applied.
   // Unlocked cells already sit within $100 of IWM (mint −45/−5/+20 by
-  // tier) so they stay put; these gaps land locked offers at IWM−20 to
-  // IWM−80 — well inside the owner's floor. 1TB used-locked runs slightly
-  // over the buyer sheet's locked column: accepted (see checker).
+  // tier) so they stay put; these gaps land locked offers inside the
+  // owner's IWM−100 floor. 1TB used-locked runs slightly over the buyer
+  // sheet's locked column: accepted (see checker). AT&T (and Verizon-
+  // locked, which rides the att gap) + Other docked a further $25 on
+  // owner's follow-up ("bit too high with att verizon and others −25");
+  // T-Mobile untouched.
   ip17air: {
-    used: { att: 235, tmobile: 200, other: 450 },
-    broken: { att: 135, tmobile: 100, other: 150 },
+    used: { att: 260, tmobile: 200, other: 475 },
+    broken: { att: 160, tmobile: 100, other: 175 },
     sealedLocked: { "256": 390, "512": 390, "1tb": 390 },
   },
   ip17p: {
