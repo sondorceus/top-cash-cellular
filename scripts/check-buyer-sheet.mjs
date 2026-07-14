@@ -50,6 +50,11 @@ const ACCEPTED = [
   // Sealed locked legacy: the sheet pays $35-65 for sealed 11/12-era locked
   // units — cutting quotes that far kills the lead for near-zero volume.
   "ip11 LOCKED sealed", "ip12 LOCKED sealed",
+  // 17 Air anchors to ItsWorthMore − $100 (owner 2026-07-14: "we are paying
+  // way too low for 17 air — do 100 below itsworth"); the buyer sheet
+  // craters on Airs and they exit elsewhere. 1TB used-locked runs over the
+  // sheet's locked column by design.
+  "ip17air LOCKED",
 ];
 const isAccepted = (id, st, lock, cond) =>
   ACCEPTED.some((a) => `${id} ${lock} ${cond}`.startsWith(a) || `${id} ${lock}`.startsWith(a) && a.split(" ").length === 2);

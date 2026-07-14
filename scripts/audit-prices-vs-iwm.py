@@ -398,6 +398,11 @@ def extract_price_grid(tree):
             ("brand new", "sealed"),
             ("sealed", "sealed"),
             ("flawless", "mint"),
+            # IWM's July 2026 restructure renamed used sections
+            # "Flawless/Good/Fair" -> "Excellent/Good/Fair" — without this
+            # the mint tier silently vanishes from the grid (found on the
+            # 17 Air, 2026-07-14).
+            ("excellent", "mint"),
             ("mint", "mint"),
             ("good", "good"),
             ("very good", "verygood"),

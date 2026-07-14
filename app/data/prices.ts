@@ -38,7 +38,12 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // IWM pays $300 locked).
   ip17pm: { att: 0, tmobile: 0, other: 0 },
   ip17p:  { att: 0, tmobile: 0, other: 0 },
-  ip17air: { att: 390, tmobile: 330, other: 455 },
+  // ip17air zeroed 2026-07-14 (owner: "we are paying way too low for 17
+  // air — do 100 below itsworth for the air"). The old flat 355 gap was
+  // sized on the SEALED Atlas gap and crushed used-locked Airs to $170-330
+  // while IWM pays $380-540 locked. Condition-dependent gaps mirroring
+  // IWM's own carrier deltas live in CARRIER_GAPS_BY_COND below.
+  ip17air: { att: 0, tmobile: 0, other: 0 },
   ip17:   { att: 230, tmobile: 170, other: 295 },
   ip17e:  { att: 235, tmobile: 175, other: 300 },
   // iPhone 16 series
@@ -183,6 +188,20 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
     // gaps land locked-sealed offers at 700/900/955/1015 — under the buyer
     // sheet's locked sealed (780/920/1030/1115 min-color) by 80/20/75/100.
     sealedLocked: { "256": 190, "512": 195, "1tb": 320, "2tb": 410 },
+  },
+  // ip17air (owner 2026-07-14: Air anchors to ItsWorthMore − $100, NOT the
+  // buyer sheet — the sheet craters on Airs and they exit elsewhere). Gaps
+  // mirror IWM's live carrier deltas (scraped 2026-07-14: used AT&T −100
+  // −100 unlock-question, T-Mobile −125 −100; broken −50/−75 + −50; sealed
+  // −50/−75 + −300) with the standing tmo +25 / att −35 split applied.
+  // Unlocked cells already sit within $100 of IWM (mint −45/−5/+20 by
+  // tier) so they stay put; these gaps land locked offers at IWM−20 to
+  // IWM−80 — well inside the owner's floor. 1TB used-locked runs slightly
+  // over the buyer sheet's locked column: accepted (see checker).
+  ip17air: {
+    used: { att: 235, tmobile: 200, other: 450 },
+    broken: { att: 135, tmobile: 100, other: 150 },
+    sealedLocked: { "256": 390, "512": 390, "1tb": 390 },
   },
   ip17p: {
     used: { att: 185, tmobile: 50, other: 450 },
@@ -372,6 +391,11 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   ip17: {
     "256": { broken: 209, fair: 396, good: 459, mint: 453, sealed: 558 },
     "512": { broken: 281, fair: 486, good: 549, mint: 521, sealed: 657 } },
+  // ip17air anchors to ITSWORTHMORE − $100 as a floor (owner 2026-07-14),
+  // not the buyer sheet. Unlocked offers already clear that floor at every
+  // cell (IWM 2026-07-14: mint 605/665/740, good 535/595/670, fair
+  // 470/530/605, broken 230/310/350, sealed 695/805/875) so cells are
+  // unchanged; the fix was the locked side (CARRIER_GAPS_BY_COND).
   ip17air: {
     "1tb": { broken: 290, fair: 544, good: 603, mint: 735, sealed: 788 },
     "256": { broken: 182, fair: 423, good: 482, mint: 535, sealed: 626 },
