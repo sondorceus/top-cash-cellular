@@ -4189,11 +4189,9 @@ export default function Home() {
         ? 2
         : isPhoneFlow
           ? (carrierAsksLock ? 5 : 4)
-          : isIpadCellular
-            ? (carrierAsksLock ? 6 : 5)
-            : isIpadFlow
-              ? 4
-              : 3;
+          : isIpadFlow
+            ? 4
+            : 3;
   const _chargerStepN = macHasGlassStep ? 7 : 6;
   const funnelStepNum = macSpecFlow ? (
     step === "processor" ? 1 :
@@ -6741,8 +6739,11 @@ export default function Home() {
             { label: "Connectivity", value: connectivity?.label, active: step === "connectivity", helpId: null as null,       onJump: editRow("connectivity"), show: deviceType === "ipad" },
             // Storage — standard flow (phones / iPad) asks it AFTER Condition.
             { label: "Storage",      value: storage?.label,      active: step === "storage",      helpId: "storage" as const, onJump: editRow("storage"),      show: !isNoStorageDevice && !macSpecFlow },
-            { label: "Carrier",      value: isManualQuote ? "N/A" : carrier?.label,      active: step === "carrier",      helpId: "carrier" as const, onJump: editRow("carrier"),      show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
-            { label: "Carrier Lock", value: isManualQuote ? "N/A" : carrierLock?.label,  active: step === "carrier-lock", helpId: null as null,       onJump: editRow("carrier-lock"), show: (isPhoneFlow || isIpadCellular) && !isManualQuote },
+            // Carrier rows are PHONES-ONLY — iPads no longer have a carrier
+            // step (owner 2026-07-14), and an empty row's edit button jumped
+            // into the orphaned step (the iPad Pro 13 M5 "force click" bug).
+            { label: "Carrier",      value: isManualQuote ? "N/A" : carrier?.label,      active: step === "carrier",      helpId: "carrier" as const, onJump: editRow("carrier"),      show: isPhoneFlow && !isManualQuote },
+            { label: "Carrier Lock", value: isManualQuote ? "N/A" : carrierLock?.label,  active: step === "carrier-lock", helpId: null as null,       onJump: editRow("carrier-lock"), show: isPhoneFlow && !isManualQuote },
           ].filter(row => row.show && (row.value || row.active)).map(row => {
             // Only rows that are filled in or currently being selected
             // show — not-yet-reached steps stay hidden so the panel
@@ -10749,7 +10750,12 @@ export default function Home() {
                           const estPrice = PRICE_TABLE[model.id]?.[s.id]?.[condition?.id ?? ""] ??
                             Math.round((model.base ?? 0) * storMult * (condition?.multiplier ?? 1));
                           const skipCarrier = estPrice < MIN_OFFER;
-                          const ns: Step = skipCarrier ? "quote" : (isPhone || isIpadCellular) ? "carrier" : "quote";
+                          // iPads NEVER route to carrier (owner 2026-07-14:
+                          // no carrier deduction exists for iPads — same
+                          // price across carriers; IWM doesn't ask either;
+                          // the step also hosted the iPad Pro 13 M5 click
+                          // bug where tapping AT&T force-selected Unlocked).
+                          const ns: Step = skipCarrier ? "quote" : isPhone ? "carrier" : "quote";
                           if (ns === "quote") { setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000); }
                           setStep(ns); pushHistory(ns);
                         });
