@@ -185,9 +185,11 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
     used: { att: 155, tmobile: 80, other: 500 },
     broken: { att: 135, tmobile: 50, other: 250 },
     // With the 2026-07-14 sheet−80 sealed cells (865/1070/1250/1400) these
-    // gaps land locked-sealed offers at 700/900/955/1015 — under the buyer
-    // sheet's locked sealed (780/920/1030/1115 min-color) by 80/20/75/100.
-    sealedLocked: { "256": 190, "512": 195, "1tb": 320, "2tb": 410 },
+    // gaps land locked-sealed offers under the buyer sheet's locked sealed
+    // (780/920/1030/1115 min-color). 256 trimmed 190→185 and 2TB 410→390
+    // so sealed-locked stays ABOVE Excellent T-Mobile (monotonic sweep
+    // 2026-07-14: 2TB sealed $1015 sat below Excellent tmo $1030).
+    sealedLocked: { "256": 185, "512": 195, "1tb": 320, "2tb": 390 },
   },
   // ip17air (owner 2026-07-14: Air anchors to ItsWorthMore − $100, NOT the
   // buyer sheet — the sheet craters on Airs and they exit elsewhere). Gaps
@@ -203,15 +205,23 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
   // T-Mobile untouched.
   ip17air: {
     used: { att: 260, tmobile: 200, other: 475 },
-    broken: { att: 160, tmobile: 100, other: 175 },
-    sealedLocked: { "256": 390, "512": 390, "1tb": 390 },
+    // broken.other matches used.other — a smaller broken gap let a BROKEN
+    // other-carrier Air quote above a FAIR one once fair floored to $0
+    // (2026-07-14 monotonic sweep). Both now floor to manual review.
+    broken: { att: 160, tmobile: 100, other: 475 },
+    // Per-storage, sized so sealed-locked stays ABOVE Excellent-locked —
+    // the flat 390 had a sealed AT&T Air at $261 vs Excellent $300
+    // (owner: "we are paying more on excellent than sealed").
+    sealedLocked: { "256": 290, "512": 285, "1tb": 250 },
   },
   ip17p: {
     used: { att: 185, tmobile: 50, other: 450 },
-    broken: { att: 85, tmobile: 50, other: 200 },
-    // unlocked sealed offers 610/665/720 − gaps = 450/580/670
-    // = Atlas NIB locked (700/830/920) − $250.
-    sealedLocked: { "256": 160, "512": 85, "1tb": 50 },
+    // broken.other raised 200→250: broken-other quoted above fair-other on
+    // 512/1TB (2026-07-14 monotonic sweep).
+    broken: { att: 85, tmobile: 50, other: 250 },
+    // 256 gap cut 160→90: sealed-locked ($450) sat below Excellent
+    // T-Mobile ($515). Sealed must top the ladder (monotonic sweep).
+    sealedLocked: { "256": 90, "512": 85, "1tb": 50 },
   },
 };
 
@@ -314,7 +324,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   ip14: {
     "128": { broken: 29, fair: 104, good: 144, mint: 166, sealed: 212 },
     "256": { broken: 33, fair: 135, good: 176, mint: 198, sealed: 234 },
-    "512": { broken: 35, fair: 202, good: 243, mint: 266, sealed: 256 } },
+    // 512 sealed (256) sat below mint (266). 2026-07-14 monotonic sweep.
+    "512": { broken: 35, fair: 202, good: 243, mint: 266, sealed: 296 } },
   ip14p: {
     "128": { broken: 87, fair: 184, good: 238, mint: 284, sealed: 306 },
     "1tb": { broken: 105, fair: 256, good: 310, mint: 356, sealed: 360 },
@@ -330,28 +341,28 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 137, fair: 266, good: 320, mint: 369, sealed: 405 },
     "512": { broken: 155, fair: 292, good: 346, mint: 396, sealed: 414 } },
   ip15: {
-    "128": { broken: 65, fair: 194, good: 230, mint: 215, sealed: 310 },
-    "256": { broken: 74, fair: 230, good: 266, mint: 232, sealed: 356 },
-    "512": { broken: 79, fair: 256, good: 292, mint: 249, sealed: 400 } },
+    "128": { broken: 65, fair: 194, good: 230, mint: 245, sealed: 310 },
+    "256": { broken: 74, fair: 230, good: 266, mint: 281, sealed: 356 },
+    "512": { broken: 79, fair: 256, good: 292, mint: 307, sealed: 400 } },
   ip15p: {
-    "128": { broken: 146, fair: 266, good: 310, mint: 283, sealed: 392 },
-    "1tb": { broken: 191, fair: 374, good: 418, mint: 334, sealed: 504 },
-    "256": { broken: 164, fair: 310, good: 356, mint: 300, sealed: 436 },
-    "512": { broken: 173, fair: 338, good: 382, mint: 317, sealed: 459 } },
+    "128": { broken: 146, fair: 266, good: 310, mint: 325, sealed: 392 },
+    "1tb": { broken: 191, fair: 374, good: 418, mint: 433, sealed: 504 },
+    "256": { broken: 164, fair: 310, good: 356, mint: 371, sealed: 436 },
+    "512": { broken: 173, fair: 338, good: 382, mint: 397, sealed: 459 } },
   ip15plus: {
-    "128": { broken: 105, fair: 216, good: 252, mint: 232, sealed: 378 },
-    "256": { broken: 115, fair: 238, good: 274, mint: 249, sealed: 423 },
-    "512": { broken: 123, fair: 288, good: 324, mint: 266, sealed: 446 } },
+    "128": { broken: 105, fair: 216, good: 252, mint: 267, sealed: 378 },
+    "256": { broken: 115, fair: 238, good: 274, mint: 289, sealed: 423 },
+    "512": { broken: 123, fair: 288, good: 324, mint: 339, sealed: 446 } },
   ip15pm: {
-    "1tb": { broken: 155, fair: 414, good: 472, mint: 394, sealed: 544 },
-    "256": { broken: 137, fair: 342, good: 400, mint: 360, sealed: 500 },
-    "512": { broken: 146, fair: 374, good: 432, mint: 376, sealed: 522 } },
+    "1tb": { broken: 155, fair: 414, good: 472, mint: 487, sealed: 544 },
+    "256": { broken: 137, fair: 342, good: 400, mint: 415, sealed: 500 },
+    "512": { broken: 146, fair: 374, good: 432, mint: 447, sealed: 522 } },
   ip16: {
     // 128 broken: owner's exact number 2026-07-12 ("I can pay 158 for
     // standard 128gb") — offer $158 = cell 133 + $25 bonus.
-    "128": { broken: 133, fair: 292, good: 346, mint: 317, sealed: 464 },
-    "256": { broken: 173, fair: 328, good: 382, mint: 338, sealed: 513 },
-    "512": { broken: 209, fair: 356, good: 410, mint: 355, sealed: 562 } },
+    "128": { broken: 133, fair: 292, good: 346, mint: 361, sealed: 464 },
+    "256": { broken: 173, fair: 328, good: 382, mint: 397, sealed: 513 },
+    "512": { broken: 209, fair: 356, good: 410, mint: 425, sealed: 562 } },
   ip16e: {
     // Sealed + 128/256 mint trimmed 2026-07-14: buyer-sheet check had sealed
     // offers $5-26 OVER the sheet's sealed unlocked (305/365/425) and mint
@@ -368,32 +379,32 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "128": { broken: 250, fair: 338, good: 414, mint: 419, sealed: 477 },
     // 1TB sealed capped down from 646 → 478 (= resell $638 × MARGIN_FLOOR_MULT 0.75)
     // to stop bait-and-switch: runtime clipped 646 silently. 2026-05-24.
-    "1tb": { broken: 325, fair: 472, good: 549, mint: 470, sealed: 612 },
-    "256": { broken: 260, fair: 382, good: 459, mint: 440, sealed: 522 },
-    "512": { broken: 300, fair: 418, good: 495, mint: 457, sealed: 567 } },
+    "1tb": { broken: 325, fair: 472, good: 549, mint: 564, sealed: 612 },
+    "256": { broken: 260, fair: 382, good: 459, mint: 474, sealed: 522 },
+    "512": { broken: 300, fair: 418, good: 495, mint: 510, sealed: 567 } },
   ip16plus: {
     // Broken to IWM-parity targets (owner 2026-07-12). Fresh $515 eBay comp
     // (n=40) lifts the broken cap to ~$185 — offers rise from the old $153.
-    "128": { broken: 190, fair: 338, good: 382, mint: 355, sealed: 446 },
-    "256": { broken: 230, fair: 374, good: 418, mint: 381, sealed: 490 },
-    "512": { broken: 270, fair: 405, good: 450, mint: 406, sealed: 536 } },
+    "128": { broken: 190, fair: 338, good: 382, mint: 397, sealed: 446 },
+    "256": { broken: 230, fair: 374, good: 418, mint: 433, sealed: 490 },
+    "512": { broken: 270, fair: 405, good: 450, mint: 465, sealed: 536 } },
   ip16pm: {
     // 1TB sealed capped 874 → 540 (= resell $721 × 0.75 MARGIN_FLOOR). 2026-05-24.
     // Broken raised to IWM PARITY (owner 2026-07-12: "I can go higher on
     // broken price for 16 pro max") — cells target IWM's 250/280/320 offers.
     // The 512/1TB pin at the margin cap (~259 on the May $721 resell comp)
     // until a fresh 16PM working comp raises it; they climb automatically.
-    "1tb": { broken: 295, fair: 644, good: 684, mint: 568, sealed: 801 },
-    "256": { broken: 225, fair: 518, good: 558, mint: 521, sealed: 621 },
-    "512": { broken: 255, fair: 567, good: 608, mint: 542, sealed: 711 } },
+    "1tb": { broken: 295, fair: 644, good: 684, mint: 699, sealed: 801 },
+    "256": { broken: 225, fair: 518, good: 558, mint: 573, sealed: 621 },
+    "512": { broken: 255, fair: 567, good: 608, mint: 623, sealed: 711 } },
   // iPhone 17 PRICE_TABLE — Atlas Mobile wholesale buy sheet minus $100
   // buffer. Unlocked headlines; per-carrier deductions live in
   // CARRIER_DEDUCTIONS above. Skywalker 2026-05-18 — replaces older
   // numbers that were under-paying on premium (Pro/Pro Max) and
   // over-paying on low-end (17/17e) relative to Atlas + buffer.
   ip17: {
-    "256": { broken: 209, fair: 396, good: 459, mint: 453, sealed: 558 },
-    "512": { broken: 281, fair: 486, good: 549, mint: 521, sealed: 657 } },
+    "256": { broken: 209, fair: 396, good: 459, mint: 474, sealed: 558 },
+    "512": { broken: 281, fair: 486, good: 549, mint: 564, sealed: 657 } },
   // ip17air anchors to ITSWORTHMORE − $100 as a floor (owner 2026-07-14),
   // not the buyer sheet. Unlocked offers already clear that floor at every
   // cell (IWM 2026-07-14: mint 605/665/740, good 535/595/670, fair
@@ -404,8 +415,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 182, fair: 423, good: 482, mint: 535, sealed: 626 },
     "512": { broken: 254, fair: 477, good: 536, mint: 635, sealed: 724 } },
   ip17e: {
-    "256": { broken: 65, fair: 225, good: 284, mint: 255, sealed: 374 },
-    "512": { broken: 83, fair: 270, good: 328, mint: 295, sealed: 423 } },
+    "256": { broken: 65, fair: 225, good: 284, mint: 299, sealed: 374 },
+    "512": { broken: 83, fair: 270, good: 328, mint: 343, sealed: 423 } },
   ip17p: {
     // Custom flat pricing (Skywalker, 2026-06): 17 Pro Max ladder minus $40 (excellent OFFER
     // $580 = base 555 + $25 bonus); +$55/tier; no carrier penalty. Broken left unchanged.
@@ -437,7 +448,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   gs24: {
     "128": { broken: 25, fair: 117, good: 162, mint: 189, sealed: 216 },
     "256": { broken: 29, fair: 144, good: 189, mint: 216, sealed: 248 },
-    "512": { fair: 117, good: 162, mint: 189, sealed: 216 } },
+    // 512 was a copy of the 128 row (no broken cell) — a 512 quoted UNDER
+    // a 256. Extended above the 256 row (~+12%/tier). 2026-07-14 monotonic sweep.
+    "512": { broken: 33, fair: 171, good: 216, mint: 243, sealed: 280 } },
   gs24u: {
     "1tb": { broken: 97, fair: 360, good: 432, mint: 477, sealed: 598 },
     "256": { broken: 87, fair: 288, good: 360, mint: 405, sealed: 441 },
@@ -445,7 +458,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   gs25: {
     "128": { broken: 29, fair: 189, good: 238, mint: 261, sealed: 297 },
     "256": { broken: 33, fair: 225, good: 274, mint: 297, sealed: 328 },
-    "512": { broken: 29, fair: 189, good: 238, mint: 261, sealed: 297 } },
+    // 512 was a copy of the 128 row — quoted under the 256. Extended above
+    // the 256 row. 2026-07-14 monotonic sweep.
+    "512": { broken: 37, fair: 261, good: 310, mint: 333, sealed: 360 } },
   gs25p: {
     "256": { broken: 47, fair: 261, good: 306, mint: 360, sealed: 396 },
     "512": { broken: 56, fair: 315, good: 360, mint: 414, sealed: 441 } },
@@ -633,7 +648,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     // 512GB filled in 2026-05-24 — previously only had broken/sealed which
     // returned undefined for fair/good/mint and crashed quote generation.
     // Interpolated from the 256GB row + a ~10% storage uplift.
-    "512": { broken: 11, fair: 9, good: 230, mint: 256, sealed: 274 } },
+    // fair was a "9" typo (99 intended) and broken/sealed sat BELOW the 256
+    // row. Re-interpolated 2026-07-14 monotonic sweep.
+    "512": { broken: 22, fair: 99, good: 230, mint: 256, sealed: 310 } },
   gzflip3: {
     "128": { broken: 1, fair: 14, good: 27, mint: 36, sealed: 58 },
     "256": { broken: 1, fair: 22, good: 36, mint: 45, sealed: 72 } },
@@ -666,7 +683,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "512": { broken: 86, fair: 212, good: 270, mint: 315, sealed: 356 } },
   ipadair13m2: {
     "128": { broken: 94, fair: 230, good: 274, mint: 320, sealed: 356 },
-    "1tb": { broken: 135, fair: 364, good: 410, mint: 454, sealed: 446 },
+    // 1tb sealed (446) sat below mint (454). 2026-07-14 monotonic sweep.
+    "1tb": { broken: 135, fair: 364, good: 410, mint: 454, sealed: 467 },
     "256": { broken: 117, fair: 274, good: 320, mint: 364, sealed: 400 },
     "512": { broken: 126, fair: 320, good: 364, mint: 410, sealed: 423 } },
   ipadair13m3: {
@@ -764,7 +782,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     // (card-less) nswoled row = fresh IWM switch-oled x 0.90. 2026-07-13.
     "base": { broken: 21, fair: 45, good: 90, mint: 126, sealed: 148 } },
   switchlite: {
-    "base": { broken: 21, fair: 9, good: 27, mint: 36, sealed: 58 } },
+    // fair (9) sat below broken (21) — condition ladder inversion. 2026-07-14.
+    "base": { broken: 21, fair: 24, good: 27, mint: 36, sealed: 58 } },
   xone: {
     "base": { broken: 9, fair: 18, good: 31, mint: 49, sealed: 67 } },
 
