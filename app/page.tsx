@@ -2,7 +2,7 @@
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import { track as vercelTrack } from "@vercel/analytics";
 import { BRAND_ICONS } from "./components/brand-icons";
-import { getResellEstimate, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT, applyGalaxyDrop } from "./lib/resell-estimates";
+import { getResellEstimateForModel, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT, applyGalaxyDrop } from "./lib/resell-estimates";
 import SKU_LABELS from "./data/sku-labels.json";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
@@ -2759,7 +2759,7 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   // sealed iPhone 17 PM, Ultra 2/3, consoles, …) aren't capped in the funnel
   // either, so they keep the raw headline.
   const label = (SKU_LABELS as Record<string, string>)[m.id];
-  const resell = label ? getResellEstimate(label) : null;
+  const resell = getResellEstimateForModel(m.id, label ?? null);
   if (resell != null) {
     val = Math.min(val, Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT));
   }
@@ -6011,7 +6011,9 @@ export default function Home() {
   // always keep a healthy margin. When resell is unknown for the
   // model, force manual review instead of guessing. Skywalker directive
   // 2026-05-17 after a live -$43 LOSS lead came in.
-  const workingResell = model ? getResellEstimate(model.label) : null;
+  // Exact-id resell lookup — the fuzzy label matcher is only a fallback
+  // for models without an id mapping (2026-07-14).
+  const workingResell = model ? getResellEstimateForModel(model.id, model.label) : null;
   const condMult = resellMultiplierForCondition(condition?.id, brokenGlass);
   const estResellNow = workingResell != null ? Math.round(workingResell * condMult) : null;
   // resell × eBay-net (−13% FVF) × margin floor — never quote over what eBay nets us.

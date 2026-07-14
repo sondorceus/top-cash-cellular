@@ -67,6 +67,41 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   "MacBook Pro 14\" M3": 700, "MacBook Air M4": 600, "MacBook Air M3": 450,
 };
 
+// Exact PRICE_TABLE-id → RESELL_ESTIMATES key. The label matcher below is
+// fuzzy by necessity (free-text lead bodies) and has bitten twice (the
+// trailing-token guard exists because "iPhone 17 Air" matched "iPhone 17");
+// funnel/bot callers know their model id, so they resolve HERE first and
+// only fall back to label matching for free-text (2026-07-14).
+export const RESELL_MODEL_IDS: Record<string, string> = {
+  ip17p: "iPhone 17 Pro", ip17: "iPhone 17",
+  ip16pm: "iPhone 16 Pro Max", ip16p: "iPhone 16 Pro", ip16plus: "iPhone 16 Plus", ip16: "iPhone 16",
+  ip15pm: "iPhone 15 Pro Max", ip15p: "iPhone 15 Pro", ip15: "iPhone 15",
+  ip14pm: "iPhone 14 Pro Max", ip14p: "iPhone 14 Pro", ip14: "iPhone 14",
+  ip13pm: "iPhone 13 Pro Max", ip13p: "iPhone 13 Pro", ip13: "iPhone 13",
+  gs26u: "Galaxy S26 Ultra", gs25u: "Galaxy S25 Ultra", gs24u: "Galaxy S24 Ultra",
+  gs26: "Galaxy S26", gs25: "Galaxy S25",
+  px10pxl: "Pixel 10 Pro XL", px10p: "Pixel 10 Pro", px10: "Pixel 10", px10a: "Pixel 10a",
+  px9pfold: "Pixel 9 Pro Fold", px9pxl: "Pixel 9 Pro XL", px9p: "Pixel 9 Pro", px9: "Pixel 9",
+  px8p: "Pixel 8 Pro", px6a: "Pixel 6a",
+  awse2: "Apple Watch SE (2nd Gen)",
+  aws7: "Apple Watch Series 7", aws8: "Apple Watch Series 8", aws9: "Apple Watch Series 9",
+  awu1: "Apple Watch Ultra",
+};
+
+/**
+ * Preferred lookup: exact model id first (no fuzzy matching), then the
+ * label matcher for anything unmapped. A model id that is deliberately
+ * absent from RESELL_ESTIMATES (17 Pro Max, Ultra 2/3 — see comments
+ * above) still returns null here because its label won't match either.
+ */
+export function getResellEstimateForModel(modelId: string | undefined | null, label: string | undefined | null): number | null {
+  if (modelId) {
+    const key = RESELL_MODEL_IDS[modelId];
+    if (key) return RESELL_ESTIMATES[key] ?? null;
+  }
+  return getResellEstimate(label);
+}
+
 /**
  * Look up a working-condition resell estimate by model label. Returns
  * null when the model isn't in our table — callers should treat null as

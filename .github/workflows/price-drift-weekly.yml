@@ -1,0 +1,33 @@
+# Weekly exit-anchored price-drift report → Mission Control.
+#
+# Runs TUESDAY 13:30 UTC — after Monday's comp refreshes (refresh-comps at
+# 06:00, iwm-laptop-spec at 13:00) so it reads the freshest exits. Compares
+# every iPhone cell against the buyer sheet + eBay sold net medians, flags
+# overpays (offer above best exit) and underbids (>$50 under IWM with
+# margin room), and posts the summary to Skywalker's MC feed. REPORT ONLY —
+# price changes still go through the invariant-gated editor / prices.ts.
+name: price-drift-weekly
+
+on:
+  schedule:
+    - cron: "30 13 * * 2"
+  workflow_dispatch:
+
+jobs:
+  drift-report:
+    name: Exit-anchored drift report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # ≥23.6 required — the report imports app/data/*.ts via native
+          # type stripping.
+          node-version: 24
+      - name: Run drift report and post to MC
+        env:
+          MC_API_KEY: ${{ secrets.MC_API_KEY }}
+        run: node scripts/drift-report.mjs --post-mc
+        # The report itself never fails the workflow — the MC post carries
+        # the findings either way.
+        continue-on-error: true

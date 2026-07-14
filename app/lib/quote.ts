@@ -25,7 +25,7 @@ import {
   MANUAL_REVIEW_DEVICES,
 } from "../data/prices";
 import {
-  getResellEstimate,
+  getResellEstimateForModel,
   resellMultiplierForCondition,
   MARGIN_FLOOR_MULT,
   EBAY_FEE_MULT,
@@ -215,7 +215,7 @@ export async function quoteDevice(
 
     // 25%-margin guardrail — never offer more than 75% of resell value. Only
     // applies when we have a resell comp for the label (matched by name).
-    const resell = getResellEstimate(spec.modelLabel);
+    const resell = getResellEstimateForModel(id, spec.modelLabel);
     const condMult = resellMultiplierForCondition(cond, spec.brokenGlass);
     const estResellNow = resell != null ? Math.round(resell * condMult) : null;
     // resell × eBay-net (−13% FVF) × margin floor — mirror of the funnel cap.
