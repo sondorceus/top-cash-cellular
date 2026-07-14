@@ -199,7 +199,7 @@ export async function POST(req: NextRequest) {
     return handleQuoteSave(req, data);
   }
   let { payout } = data;
-  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, referralCode, attestation } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, brokenFaceId, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, referralCode, attestation } = data;
   // Compliance attestation (18+ & legal ownership). The funnel makes the
   // customer tick a required box affirming both before submit. We record
   // the disposition + IP + timestamp in the immutable MC lead record as
@@ -562,6 +562,7 @@ export async function POST(req: NextRequest) {
     extras?: string[];
     brokenGlass?: "front" | "back" | "both" | null;
     brokenFunctional?: boolean | null;
+    brokenFaceId?: "yes" | "no" | null;
     paidOff?: boolean | null;
     imei?: string;
     imeiWarnings?: string[];
@@ -606,6 +607,8 @@ export async function POST(req: NextRequest) {
       if (d.brokenGlass === "front") specBits.push("Glass: FRONT (display) cracked");
       else if (d.brokenGlass === "back") specBits.push("Glass: BACK only cracked");
       else if (d.brokenGlass === "both") specBits.push("Glass: BOTH front and back cracked");
+      if (d.brokenFaceId === "no") specBits.push("Face ID: ⚠️ NOT WORKING (deduction applied in quote)");
+      else if (d.brokenFaceId === "yes") specBits.push("Face ID: working");
       for (const bit of specBits) multiLines.push(`     ${bit}`);
       if (Array.isArray(d.photos) && d.photos.length > 0) {
         multiLines.push(`     Photos: ${d.photos.join(" | ")}`);
@@ -635,6 +638,8 @@ export async function POST(req: NextRequest) {
   if (brokenGlass === "front") brokenLines.push("Glass: FRONT (display) cracked");
   else if (brokenGlass === "back") brokenLines.push("Glass: BACK only cracked (display intact)");
   else if (brokenGlass === "both") brokenLines.push("Glass: BOTH front and back cracked");
+  if (brokenFaceId === "no") brokenLines.push("Face ID: ⚠️ NOT WORKING (deduction applied in quote)");
+  else if (brokenFaceId === "yes") brokenLines.push("Face ID: working");
 
   // Full spec answers from the funnel — Skywalker 2026-05-17: "all
   // questions need to be in staff for accurate pricing not half". For

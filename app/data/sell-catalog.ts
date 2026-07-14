@@ -193,7 +193,7 @@ export function getOemComparison(slug: string, devicePrice: number): OemComparis
 
 export const DEVICES: Device[] = [
   // ── iPhone (synced from main catalog 2026-05-11) ──
-  { slug: "iphone-17-pro-max", name: "iPhone 17 Pro Max", category: "iPhone", price: 1250, year: 2025 },
+  { slug: "iphone-17-pro-max", name: "iPhone 17 Pro Max", category: "iPhone", price: 1425, year: 2025 },
   { slug: "iphone-17-pro", name: "iPhone 17 Pro", category: "iPhone", price: 619, year: 2025 },
   { slug: "iphone-17-air", name: "iPhone 17 Air", category: "iPhone", price: 813, year: 2025 },
   { slug: "iphone-17", name: "iPhone 17", category: "iPhone", price: 453, year: 2025 },
@@ -202,7 +202,7 @@ export const DEVICES: Device[] = [
   { slug: "iphone-16-pro", name: "iPhone 16 Pro", category: "iPhone", price: 418, year: 2024 },
   { slug: "iphone-16-plus", name: "iPhone 16 Plus", category: "iPhone", price: 336, year: 2024 },
   { slug: "iphone-16", name: "iPhone 16", category: "iPhone", price: 339, year: 2024 },
-  { slug: "iphone-16e", name: "iPhone 16E", category: "iPhone", price: 430, year: 2024 },
+  { slug: "iphone-16e", name: "iPhone 16E", category: "iPhone", price: 420, year: 2024 },
   { slug: "iphone-15-pro-max", name: "iPhone 15 Pro Max", category: "iPhone", price: 343, year: 2023 },
   { slug: "iphone-15-pro", name: "iPhone 15 Pro", category: "iPhone", price: 359, year: 2023 },
   { slug: "iphone-15-plus", name: "iPhone 15 Plus", category: "iPhone", price: 471, year: 2023 },

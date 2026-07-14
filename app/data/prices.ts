@@ -9,6 +9,26 @@
 // =========================================================================
 
 export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
+  // 2026-07-14 buyer-sheet recab (Skywalker-approved): gaps on 16e, 15/14/13
+  // (except ip13), 12 and 11 families raised so every LOCKED offer lands at
+  // least $15 under the wholesale buyer sheet's locked A/B/C/D prices —
+  // locked phones exit through that sheet, and the old $15-60 gaps had us
+  // quoting up to $146 OVER it (worst: locked mint 16e 512, $321 vs $175).
+  // The gap absorbs the unlocked-over-sheet allowance too, so low storage
+  // tiers land deeper under the sheet than $15 — a flat per-model gap can't
+  // fit every tier; hand-tune per-cell via /admin/prices where volume
+  // justifies it. Many locked legacy broken/fair cells now fall under
+  // MIN_OFFER → manual review, matching the sheet's $5-30 reality there.
+  // Checker: scripts/check-buyer-sheet.mjs. ip13 intentionally untouched
+  // (Sonny's live locked calibration 2026-07-11).
+  //
+  // T-MOBILE/ATT SPLIT (Skywalker 2026-07-14, "for tmobile we can pay extra
+  // 25 on each phone, -35 on att, all newer ones"): every 14-family-and-newer
+  // model quotes T-Mobile locked $25 ABOVE its sheet-derived baseline
+  // (T-Mobile units unlock easily; the buyer sheet itself pays a T-Mobile
+  // premium on new stock) and AT&T locked $35 BELOW it — implemented as
+  // tmobile = base−25, att = base+35. The checker allows T-Mobile up to $25
+  // over the sheet's locked column on these models.
   // iPhone 17 family — Atlas Mobile wholesale carrier-gap (NIB Sealed
   // Unlocked − Locked). "Other" = gap + $100 per Skywalker's rule.
   // Verizon and Unlocked: no entry → defaults to $0 deduction.
@@ -18,39 +38,40 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // IWM pays $300 locked).
   ip17pm: { att: 0, tmobile: 0, other: 0 },
   ip17p:  { att: 0, tmobile: 0, other: 0 },
-  ip17air: { att: 355, tmobile: 355, other: 455 },
-  ip17:   { att: 195, tmobile: 195, other: 295 },
-  ip17e:  { att: 200, tmobile: 200, other: 300 },
+  ip17air: { att: 390, tmobile: 330, other: 455 },
+  ip17:   { att: 230, tmobile: 170, other: 295 },
+  ip17e:  { att: 235, tmobile: 175, other: 300 },
   // iPhone 16 series
-  ip16pm: { att: 120, tmobile: 105, other: 500 },
-  ip16p:  { att: 100, tmobile: 90, other: 400 },
-  ip16plus: { att: 80, tmobile: 80, other: 300 },
-  ip16:   { att: 80, tmobile: 80, other: 300 },
-  ip16e:  { att: 50, tmobile: 60, other: 150 },
+  ip16pm: { att: 155, tmobile: 80, other: 500 },
+  ip16p:  { att: 135, tmobile: 65, other: 400 },
+  ip16plus: { att: 115, tmobile: 55, other: 300 },
+  ip16:   { att: 115, tmobile: 55, other: 300 },
+  ip16e:  { att: 246, tmobile: 186, other: 311 },
   // iPhone 15 series
-  ip15pm: { att: 100, tmobile: 100, other: 400 },
-  ip15p:  { att: 80, tmobile: 80, other: 300 },
-  ip15plus: { att: 70, tmobile: 70, other: 250 },
-  ip15:   { att: 60, tmobile: 60, other: 200 },
+  ip15pm: { att: 135, tmobile: 75, other: 400 },
+  ip15p:  { att: 178, tmobile: 118, other: 243 },
+  ip15plus: { att: 168, tmobile: 108, other: 233 },
+  ip15:   { att: 176, tmobile: 116, other: 241 },
   // iPhone 14 series
-  ip14pm: { att: 60, tmobile: 100, other: 200 },
-  ip14p:  { att: 50, tmobile: 80, other: 150 },
-  ip14plus: { att: 40, tmobile: 60, other: 100 },
-  ip14:   { att: 40, tmobile: 80, other: 100 },
+  ip14pm: { att: 171, tmobile: 111, other: 236 },
+  ip14p:  { att: 124, tmobile: 64, other: 189 },
+  ip14plus: { att: 165, tmobile: 105, other: 230 },
+  ip14:   { att: 193, tmobile: 133, other: 258 },
   // iPhone 13 series
-  ip13pm: { att: 50, tmobile: 80, other: 150 },
-  ip13p:  { att: 40, tmobile: 60, other: 100 },
+  ip13pm: { att: 112, tmobile: 112, other: 212 },
+  ip13p:  { att: 116, tmobile: 116, other: 216 },
   // ip13 att raised over tmobile 2026-07-11 — Sonny: "ATT and Verizon are a
   // bit lower right now because of locking issues" (verizon-locked falls back
   // to the att gap). T-Mobile 50 lands his exact $120 locked number.
   ip13:   { att: 55, tmobile: 50, other: 70 },
-  // Older iPhones — smaller deductions
-  ip12pm: { att: 30, tmobile: 40, other: 70 },
-  ip12p:  { att: 25, tmobile: 35, other: 50 },
-  ip12:   { att: 20, tmobile: 30, other: 50 },
-  ip11pm: { att: 20, tmobile: 30, other: 50 },
-  ip11p:  { att: 15, tmobile: 25, other: 40 },
-  ip11:   { att: 15, tmobile: 20, other: 40 },
+  // Older iPhones — buyer-sheet locked prices crater on these (a locked
+  // 12 Pro Max B-grade is $80 there), hence the big gaps.
+  ip12pm: { att: 166, tmobile: 166, other: 266 },
+  ip12p:  { att: 151, tmobile: 151, other: 251 },
+  ip12:   { att: 124, tmobile: 124, other: 224 },
+  ip11pm: { att: 151, tmobile: 151, other: 251 },
+  ip11p:  { att: 135, tmobile: 135, other: 235 },
+  ip11:   { att: 106, tmobile: 106, other: 206 },
   // Samsung S series
   gs26u:  { att: 90, tmobile: 125, other: 200 },
   gs25u:  { att: 90, tmobile: 125, other: 200 },
@@ -105,8 +126,8 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   gzfold5: { att: 40, tmobile: 60, other: 100 },
   gztrifold: { att: 100, tmobile: 120, other: 400 },
   // iPhone mini models
-  ip12mini: { att: 20, tmobile: 30, other: 50 },
-  ip13mini: { att: 40, tmobile: 60, other: 100 },
+  ip12mini: { att: 99, tmobile: 99, other: 199 },
+  ip13mini: { att: 165, tmobile: 165, other: 265 },
   // Pixel 10 series
   px10:    { att: 40, tmobile: 60, other: 100 },
   px10a:   { att: 40, tmobile: 60, other: 100 },
@@ -156,15 +177,16 @@ export type CondCarrierGaps = {
 };
 export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
   ip17pm: {
-    used: { att: 120, tmobile: 105, other: 500 },
-    broken: { att: 100, tmobile: 75, other: 250 },
-    // unlocked sealed offers 750/860/1050/1250 − gaps = 560/665/730/840
-    // = Atlas NIB locked (810/915/980/1090) − $250.
+    used: { att: 155, tmobile: 80, other: 500 },
+    broken: { att: 135, tmobile: 50, other: 250 },
+    // With the 2026-07-14 sheet−80 sealed cells (865/1070/1250/1400) these
+    // gaps land locked-sealed offers at 700/900/955/1015 — under the buyer
+    // sheet's locked sealed (780/920/1030/1115 min-color) by 80/20/75/100.
     sealedLocked: { "256": 190, "512": 195, "1tb": 320, "2tb": 410 },
   },
   ip17p: {
-    used: { att: 150, tmobile: 75, other: 450 },
-    broken: { att: 50, tmobile: 75, other: 200 },
+    used: { att: 185, tmobile: 50, other: 450 },
+    broken: { att: 85, tmobile: 50, other: 200 },
     // unlocked sealed offers 610/665/720 − gaps = 450/580/670
     // = Atlas NIB locked (700/830/920) − $250.
     sealedLocked: { "256": 160, "512": 85, "1tb": 50 },
@@ -309,13 +331,14 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 173, fair: 328, good: 382, mint: 338, sealed: 513 },
     "512": { broken: 209, fair: 356, good: 410, mint: 355, sealed: 562 } },
   ip16e: {
-    "128": { broken: 38, fair: 144, good: 202, mint: 232, sealed: 306 },
-    "256": { broken: 56, fair: 207, good: 266, mint: 299, sealed: 356 },
-    // 512 sealed was 357 — BELOW mint (361), so a factory-sealed unit paid less
-    // than mint. mint follows a clean +33 good→mint step across all tiers, so
-    // sealed was the low one. Raised to 365 (mint + a small premium continuing
-    // the shrinking sealed-over-mint trend: +34 @128, +9 @256, ~+4 @512). (bug fix)
-    "512": { broken: 74, fair: 252, good: 310, mint: 346, sealed: 405 } },
+    // Sealed + 128/256 mint trimmed 2026-07-14: buyer-sheet check had sealed
+    // offers $5-26 OVER the sheet's sealed unlocked (305/365/425) and mint
+    // over the open-activated price (sealed − 50) — new/open-box stock
+    // wholesales through that sheet, so those must stay under ("we have to
+    // make sure we still under them"). Offers now land $5 under.
+    "128": { broken: 38, fair: 144, good: 202, mint: 225, sealed: 275 },
+    "256": { broken: 56, fair: 207, good: 266, mint: 285, sealed: 335 },
+    "512": { broken: 74, fair: 252, good: 310, mint: 346, sealed: 395 } },
   ip16p: {
     // Broken to IWM-parity targets (owner 2026-07-12, same directive as
     // 16PM). Offers pin at the broken margin cap (~$230 on the fresh $640
@@ -363,18 +386,26 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 245, fair: 515, good: 535, mint: 540, sealed: 585 },
     "512": { broken: 353, fair: 570, good: 590, mint: 595, sealed: 640 } },
   ip17pm: {
-    // Custom flat pricing (Skywalker). Excellent OFFER $620 = base 595 + $25
-    // popular-phone bonus; mint/good/fair/broken unchanged.
-    // SEALED re-priced 2026-07-05 to Atlas NIB-sealed minus a flat $250 profit
-    // (unlocked): 256/512/1TB/2TB Atlas 1000/1110/1300/1500 -> offer
-    // 750/860/1050/1250. base = Atlas - 275, and the +$25 popular bonus at
-    // quote time restores the target offer. ip17pm is intentionally OUT of
-    // RESELL_ESTIMATES so these sub-25%-margin sealed offers aren't clawed
-    // back by the margin cap. NO carrier penalty (deductions zeroed above).
-    "1tb": { broken: 353, fair: 665, good: 685, mint: 690, sealed: 1025 },
-    "256": { broken: 290, fair: 555, good: 575, mint: 580, sealed: 725 },
-    "2tb": { broken: 425, fair: 720, good: 740, mint: 745, sealed: 1225 },
-    "512": { broken: 317, fair: 610, good: 630, mint: 635, sealed: 835 } },
+    // HIGHER-BID ladder (Skywalker 2026-07-14): used offers target the
+    // wholesale buyer sheet minus a flat $80 ("with the 17 pro max and
+    // higher devices 75-85 below is fine") — his exit for these is that
+    // sheet, cash, no fees, so thin flat margin at volume beats losing the
+    // unit. cell = sheet grade − 80 − $25 popular bonus. Grades map
+    // mint→A / good→B / fair→C / broken→D (sheet 2026-07-14, 2.pdf).
+    // SEALED moved to the same sheet−80 rule (was the 2026-07-05
+    // Atlas-NIB−$250 play, whose cells would have sat BELOW the new mint —
+    // a sealed unit must never quote under an Excellent one). Sheet sealed
+    // unlocked 970/1175/1355/1505 → offers 890/1095/1275/1425. Open-box
+    // check: MINT offers (780/910/1010/1110) stay under the sheet's
+    // open-activated prices (870/1075/1235/1355), and locked-sealed lands
+    // under page-1 sealed via the existing sealedLocked gaps (thinnest:
+    // 512 at $20 under). ip17pm stays OUT of RESELL_ESTIMATES so
+    // none of this is clawed back by the margin cap. Locked used lands
+    // ~sheet lock − 80 via CARRIER_GAPS_BY_COND.
+    "1tb": { broken: 545, fair: 795, good: 905, mint: 985, sealed: 1250 },
+    "256": { broken: 315, fair: 565, good: 715, mint: 755, sealed: 865 },
+    "2tb": { broken: 645, fair: 895, good: 1005, mint: 1085, sealed: 1400 },
+    "512": { broken: 445, fair: 695, good: 845, mint: 885, sealed: 1070 } },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
     "128": { broken: 25, fair: 117, good: 162, mint: 189, sealed: 216 },

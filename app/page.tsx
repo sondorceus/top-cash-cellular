@@ -13,6 +13,7 @@ import { HeaderSearch } from "./components/HeaderSearch";
 import Pic from "./components/Pic";
 import NextImage from "next/image";
 import { CARRIER_DEDUCTIONS, carrierGapForCondition, PRICE_TABLE, MIN_OFFER, MACBOOK_SPECS, type MacSpec, type MacSpecOption } from "./data/prices";
+import { deductionAmount } from "./data/deductions";
 import { CATALOG_PRICE_BY_MODEL_ID } from "./data/catalog-prices";
 
 import { BRAND, EMAIL, EMAIL_HREF } from "./lib/constants";
@@ -2786,7 +2787,7 @@ const PAYOUT_HANDLE_META: Record<string, { field: string; placeholder: string; h
 // were removed 2026-05-22 — the homepage keeps one short "Things people
 // ask us" FAQ that links to the full /faq page. No need for two.
 
-type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "displayresolution" | "condition" | "broken-functional" | "broken-glass" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
+type Step = "device" | "category" | "brand" | "model" | "processor" | "memory" | "displayglass" | "storage" | "graphics" | "displayresolution" | "condition" | "broken-functional" | "broken-glass" | "broken-faceid" | "batteryhealth" | "charger" | "connectivity" | "carrier" | "carrier-lock" | "extras" | "quote" | "checkout" | "payout" | "contact" | "done" | "inquiry";
 
 // Brand-specific extra questions. A device family can declare a list of
 // follow-up questions (disc drive / controllers / hours flown / band
@@ -4215,6 +4216,7 @@ export default function Home() {
     // bar pulls back when I get to the conditions about the device".
     step === "broken-functional" ? 1 :
     step === "broken-glass" ? 1 :
+    step === "broken-faceid" ? 1 :
     step === "connectivity" ? 2 :
     step === "storage" ? (isIpadFlow ? 3 : 2) :
     step === "carrier" ? (isIpadFlow ? 4 : 3) :
@@ -4337,6 +4339,12 @@ export default function Home() {
   // is the worst. Collected for the lead notes; future pricing math
   // can read off this field too.
   const [brokenGlass, setBrokenGlass] = useState<"front" | "back" | "both" | null>(null);
+  // iPhone-specific follow-up to "broken" — does Face ID / Touch ID work?
+  // A dead Face ID is one of the buyer sheet's biggest deductions
+  // ($30-250 by generation, see app/data/deductions.ts), and sellers
+  // always know when theirs is broken — so this one IS worth an upfront
+  // question, unlike the inspection-only issues (MDM, parts messages).
+  const [brokenFaceId, setBrokenFaceId] = useState<"yes" | "no" | null>(null);
   // Phones we sell whose back is NOT glass — asking "back glass cracked?"
   // would be nonsensical. Auto-skip the broken-glass step on these and
   // assume any damage is on the front (display). Researched 2026-05-17:
@@ -4997,6 +5005,7 @@ export default function Home() {
     extras?: string[];
     brokenGlass?: "front" | "back" | "both" | null;
     brokenFunctional?: boolean | null;
+    brokenFaceId?: "yes" | "no" | null;
     paidOff?: boolean | null;
     imei?: string;
     // IMEI blacklist/stolen warnings for THIS device, snapshotted at
@@ -5623,6 +5632,7 @@ export default function Home() {
           // Broken-condition sub-steps — need model + broken-condition
           case "broken-functional":
           case "broken-glass":
+          case "broken-faceid":
             // Saved condition would have to be the "broken" entry; can't
             // verify deep shape, so allow if model+condition present.
             return !!s.model && !!s.condition;
@@ -5707,6 +5717,7 @@ export default function Home() {
       if (s.charger) setCharger(s.charger);
       if (s.brokenFunctional) setBrokenFunctional(s.brokenFunctional);
       if (s.brokenGlass) setBrokenGlass(s.brokenGlass);
+      if (s.brokenFaceId) setBrokenFaceId(s.brokenFaceId);
       if (s.extras) setExtras(s.extras);
       if (typeof s.extrasIndex === "number") setExtrasIndex(s.extrasIndex);
       setStep(s.step);
@@ -5746,11 +5757,11 @@ export default function Home() {
         // additive MacBooks/PC laptops collapse to the base floor. (bug fix)
         connectivity, carrierLock, processor, memory, graphics,
         displayResolution, displayGlass, batteryHealth, charger,
-        brokenFunctional, brokenGlass, extras, extrasIndex,
+        brokenFunctional, brokenGlass, brokenFaceId, extras, extrasIndex,
         ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox, payout, name, phone, connectivity, carrierLock, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, brokenFunctional, brokenGlass, extras, extrasIndex]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox, payout, name, phone, connectivity, carrierLock, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, brokenFunctional, brokenGlass, brokenFaceId, extras, extrasIndex]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
@@ -5986,7 +5997,12 @@ export default function Home() {
   // price. Front-only or back-only damage stays at the regular
   // broken-tier value. Skywalker directive 2026-05-17.
   const bothGlassPenalty = (isPhoneFlow && condition?.id === "broken" && brokenGlass === "both" && baseQuote > 0) ? -30 : 0;
-  const rawQuote = Math.max(0, baseQuote + accessoryBonus + popularDeviceBonus + bothGlassPenalty);
+  // Dead Face ID / Touch ID on a broken iPhone — flat deduction from the
+  // buyer-sheet schedule (app/data/deductions.ts). Only asked on the broken
+  // path; working-condition quotes carry it as a stated assumption instead.
+  const faceIdPenalty = (deviceType === "iphone" && condition?.id === "broken" && brokenFaceId === "no" && baseQuote > 0)
+    ? -deductionAmount(model?.id, "faceid") : 0;
+  const rawQuote = Math.max(0, baseQuote + accessoryBonus + popularDeviceBonus + bothGlassPenalty + faceIdPenalty);
 
   // MARGIN GUARDRAIL — never quote more than 25% under resell value.
   // Catches cases like a broken iPhone 17 Pro Max that the IWM-derived
@@ -6297,6 +6313,7 @@ export default function Home() {
     }
     else if (step === "broken-functional") { setStep("condition"); setCondition(null); setBrokenFunctional(null); }
     else if (step === "broken-glass") { setStep("broken-functional"); setBrokenFunctional(null); setBrokenGlass(null); }
+    else if (step === "broken-faceid") { setStep("broken-glass"); setBrokenGlass(null); setBrokenFaceId(null); }
     else if (step === "carrier") { setStep("storage"); setStorage(null); }
     else if (step === "carrier-lock") { setStep("carrier"); setCarrier(null); }
     else if (step === "quote") {
@@ -6366,7 +6383,7 @@ export default function Home() {
     // device's promo + accessories/broken-glass state onto the next quote,
     // silently inflating or distorting it.
     setCouponCode(""); setCouponPercent(0); setCouponLabel("");
-    setAccessoriesIncluded(false); setBrokenFunctional(null); setBrokenGlass(null);
+    setAccessoriesIncluded(false); setBrokenFunctional(null); setBrokenGlass(null); setBrokenFaceId(null);
   };
 
   // Brand → flat variant lists (the series intermediate step was removed
@@ -9016,6 +9033,7 @@ export default function Home() {
                         setCondition(c);
                         setBrokenFunctional(null);
                         setBrokenGlass(null);
+                        setBrokenFaceId(null);
                       }}
                       className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-[#00c853]/30 cursor-pointer transition text-left tap-press"
                     >
@@ -10743,6 +10761,7 @@ export default function Home() {
                     setCondition(c);
                     setBrokenFunctional(null); // reset for both broken + non-broken paths
                     setBrokenGlass(null);
+                    setBrokenFaceId(null);
                     popThenRun(`cond-${c.id}`, () => {
                       // Broken: ask functional question before continuing
                       if (c.id === "broken") {
@@ -11027,6 +11046,14 @@ export default function Home() {
                     onClick={() => {
                       setBrokenGlass(g.id);
                       popThenRun(`bglass-${g.id}`, () => {
+                        // iPhones get one more follow-up — does Face ID
+                        // work? (Biggest single deduction on our resale
+                        // sheet; sellers always know the answer.)
+                        if (deviceType === "iphone") {
+                          setBrokenFaceId(null);
+                          setStep("broken-faceid" as Step); pushHistory("broken-faceid" as Step);
+                          return;
+                        }
                         // Continue with the same routing the broken-functional
                         // Yes-branch uses for phones (none of the additive /
                         // PC / desktop paths apply to phones, so go straight
@@ -11054,6 +11081,71 @@ export default function Home() {
                     </div>
                   </button>
                 ))}
+              </div>
+            </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP: BROKEN FACE ID (iPhones only) — after broken-glass. A dead
+          Face ID / Touch ID is the resale sheet's single biggest flat
+          deduction ($30-250 by generation, app/data/deductions.ts), and
+          unlike parts messages the seller always knows — so this is the one
+          issue worth an upfront question instead of an inspection catch. */}
+      {step === "broken-faceid" && page === "home" && model && condition?.id === "broken" && deviceType === "iphone" && (
+        <section className="tcc-step-in">
+          <div className="max-w-lg md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6 pb-8 lg:flex lg:gap-8 lg:items-start">
+            {selectionPanel}
+            <div className="flex-1 min-w-0">
+            <button onClick={goBack} aria-label="Go back" className="inline-flex items-center gap-2 text-[#00c853] text-sm font-semibold mb-4 px-4 py-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition tap-press">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+              Back
+            </button>
+            {selectionPanelMobile}
+            <h2 className="text-xl lg:text-3xl font-extrabold mb-2">Does Face ID still work?</h2>
+            <p className="text-[#b8b8b8] text-sm mb-4">Unlocking with your face (or fingerprint on Touch ID models). It&apos;s okay if it doesn&apos;t — we still buy it.</p>
+            {stepProgress}
+            <div className="tcc-selection-frame">
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    setBrokenFaceId("yes");
+                    popThenRun(`bfaceid-yes`, () => {
+                      if (getBrandExtras(deviceType, model?.id).length > 0) {
+                        setExtras({}); setExtrasIndex(0);
+                        setStep("extras"); pushHistory("extras"); return;
+                      }
+                      setStep("storage"); pushHistory("storage");
+                    });
+                  }}
+                  className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `bfaceid-yes` ? "tap-confirm" : ""}`}
+                >
+                  <svg className="w-8 h-8 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div className="flex-1">
+                    <p className="font-extrabold text-[15px] text-white">Yes — Face ID works</p>
+                    <p className="text-[#b8b8b8] text-xs mt-0.5">Face or fingerprint unlock works normally</p>
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    setBrokenFaceId("no");
+                    popThenRun(`bfaceid-no`, () => {
+                      if (getBrandExtras(deviceType, model?.id).length > 0) {
+                        setExtras({}); setExtrasIndex(0);
+                        setStep("extras"); pushHistory("extras"); return;
+                      }
+                      setStep("storage"); pushHistory("storage");
+                    });
+                  }}
+                  className={`tcc-card group w-full flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-left tap-press ${funnelPop === `bfaceid-no` ? "tap-confirm" : ""}`}
+                >
+                  <svg className="w-8 h-8 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div className="flex-1">
+                    <p className="font-extrabold text-[15px] text-white">No — Face ID doesn&apos;t work</p>
+                    <p className="text-[#b8b8b8] text-xs mt-0.5">Face/fingerprint unlock fails or is unavailable</p>
+                  </div>
+                </button>
               </div>
             </div>
             </div>
@@ -11454,6 +11546,15 @@ export default function Home() {
                   <p className="text-[11px] text-[#bdbdbd] mt-0.5 leading-snug">
                     No surprise deductions at inspection. The number you see is the number you get.
                   </p>
+                  {/* Quote assumptions — keeps the pledge honest: a device
+                      that doesn't match these isn't the device we quoted,
+                      so an itemized adjustment at inspection isn't a
+                      "surprise deduction". Buyer-sheet issues, 2026-07-14. */}
+                  {deviceType === "iphone" && (
+                    <p className="text-[10px] text-[#8a8a8a] mt-1 leading-snug">
+                      Assumes no MDM / company lock, working Face ID, and original Apple parts.
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -11671,6 +11772,7 @@ export default function Home() {
                       extras: extrasArr.length > 0 ? extrasArr : undefined,
                       brokenGlass: condition.id === "broken" && isPhoneFlow ? brokenGlass : undefined,
                       brokenFunctional: condition.id === "broken" ? brokenFunctional : undefined,
+                      brokenFaceId: condition.id === "broken" && deviceType === "iphone" ? brokenFaceId : undefined,
                       paidOff: paidOff ?? undefined,
                       imei: imeiInput.replace(/\D/g, "") || undefined,
                       imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined,
@@ -11936,7 +12038,7 @@ export default function Home() {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 if (!email) return;
-                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
+                fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: "Guest", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                 setStep("payout"); pushHistory("payout");
               }} className="space-y-3 mb-4">
                 <input type="email" autoComplete="email" value={email} onChange={(e) => { setEmail(e.target.value); if (emailErr) setEmailErr(null); }} onBlur={(e) => checkEmailField(e.target.value)} required placeholder="Email" className="w-full px-4 py-3.5 tcc-input text-sm" />
@@ -11968,7 +12070,7 @@ export default function Home() {
                   // account history on future visits without re-typing email.
                   // Fire-and-forget — funnel never blocks on this.
                   fetch("/api/account/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => {});
-                  await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
+                  await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 } catch {
                   setLoginError("Couldn't verify — try again or use Guest Checkout above.");
@@ -11998,7 +12100,7 @@ export default function Home() {
                   const gName = (payload.name as string) || "Google User";
                   if (gEmail && !email) setEmail(gEmail);
                   if (gName) setName(gName);
-                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: gName, phone: "", email: gEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
+                  fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: gName, phone: "", email: gEmail, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 }}
               />
@@ -12591,6 +12693,7 @@ export default function Home() {
                       extras: it.extras,
                       brokenGlass: it.brokenGlass,
                       brokenFunctional: it.brokenFunctional,
+                      brokenFaceId: it.brokenFaceId,
                       // Carrier balance is asked ONCE at the contact step
                       // (order-level), AFTER items are snapshotted — so the
                       // per-item snapshot (it.paidOff) is stale/null and would
@@ -12645,7 +12748,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponLabel || undefined, referralCode: referralCode || undefined, attestation: complianceAttested }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponLabel || undefined, referralCode: referralCode || undefined, attestation: complianceAttested }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const d = await res.json().catch(() => ({}));

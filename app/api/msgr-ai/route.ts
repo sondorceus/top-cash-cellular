@@ -132,7 +132,7 @@ function slugToDisplay(slug: string): string {
   return slug;
 }
 
-type QuoteToolInput = { model?: string; storage?: string; condition?: string; carrier?: string };
+type QuoteToolInput = { model?: string; storage?: string; condition?: string; carrier?: string; mdm_locked?: boolean; faceid_broken?: boolean };
 
 // Run the get_quote tool through the real engine — identical to the funnel's path.
 async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: number; device?: string; slug?: string; reason?: string }> {
@@ -145,6 +145,11 @@ async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: n
     condition: (input.condition || "good").toLowerCase(),
     carrier: (input.carrier || "unlocked").toLowerCase(),
     isPhone: true,
+    // Volunteered issues → buyer-sheet schedule deductions (deductions.ts),
+    // so the owner's reference number is already honest for a known-MDM /
+    // dead-Face-ID unit instead of surprising him at inspection.
+    mdmLocked: !!input.mdm_locked,
+    faceIdBroken: !!input.faceid_broken,
   };
   const r = await quoteDevice(spec).catch(() => null);
   if (!r || r.offer == null || r.manualReview) {
@@ -342,6 +347,7 @@ const SYSTEM = (lang: string) =>
     "READ MODELS CAREFULLY — quantity + product line + category (real failure: '10 Samsung Galaxy 3 watches' got answered as 'so 10 Galaxy S3 phones? and what about the 3 watches' — wrong on both). 'Samsung Galaxy N watch(es)' / 'Galaxy watch N' = Galaxy WATCH N, a smartwatch, never an S-series phone. The number right before a category noun is usually the QUANTITY ('10 TVs', '10 Fitbits'), the number inside a product name is the generation ('Watch 3', 'S24'). If quantity vs model is ambiguous, ask ONE clean confirm ('the watches — Galaxy Watch 3, and you have 10 of them?') instead of guessing.",
     "QUOTING — CRITICAL: you NEVER tell the customer a price. Work the order smoothly — model → storage → condition → carrier — ONE combined question for whatever's still missing, never re-asking anything they already said or implied. NEVER say the one-sec line while a spec is still missing — ask the missing spec instead (saying 'one sec' and then firing another question reads broken). Once you have the specs (and ideally the number they need to be at), say exactly the owner's move: 'One sec, let me see what I can do' — then call the get_quote and notify_team TOOLS (tool calls are invisible system actions — the customer must NEVER see tool names, asterisk stage directions like *calling...*, or any mention of checking systems; the engine number goes to the team, NOT the customer — repeating get_quote's number to the customer is the single worst mistake you can make) and call notify_team with device + specs + their target number. If they push for an instant number: 'give me a minute, I'm seeing what I can do'. Never make up or estimate a price under any circumstances.",
     "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers.",
+    "VOLUNTEERED ISSUES: if they MENTION an MDM / company / school lock, or that Face ID / fingerprint doesn't work, pass mdm_locked / faceid_broken to get_quote (the engine deducts the right amount) and include the issue in the notify_team summary. NEVER ask about these unprompted — most phones don't have them and the question spooks sellers.",
     "SEALED IS THE MONEY WORD — never gloss over it: sealed / brand new / never opened / still in plastic / factory sealed pays a real premium over even a like-new one (we resell it as new), so when they say it's sealed, LOCK that in as the condition, never downgrade it to 'good/mint' and never re-ask. It also makes a device worth capturing even if it's a bit older. Sealed intake includes ONE extra check the owner always makes: activation — 'never activated, or has it been opened/activated at some point?' (a carrier-sealed unit activated more than ~30 days pays different; his real ask: 'Has it been more than 30 days'). Put the activation answer in the notify_team summary. Same intake otherwise (storage + carrier) → 'one sec, let me see what I can do' → get_quote + notify_team; the engine already adds the sealed premium to the owner's reference number, so you never quote it yourself.",
     "CONDITION FROM SPOKEN WORDS — the #1 re-ask failure ('I have 2 sealed pro maxes' then asking condition looks broken): sealed / brand new / new in box / never used / never opened / still in plastic = SEALED. like new / mint / perfect / barely used = MINT. works fine / some scratches / used but good = GOOD. rough / beat up / scuffed / heavy wear = FAIR. cracked / shattered / broken / won't turn on / doesn't turn on / dead / no power = BROKEN. If ANY of these appeared anywhere in the convo, condition is ANSWERED — never ask it again (real failure: customer said 'It just doesn't turn on' and 12 seconds later the bot asked 'does it turn on?' — instant broken-bot moment; her LAST message counts too, not just older ones).",
     "BE EFFICIENT — NEVER REPEAT A QUESTION (the #1 thing that makes us look like a broken bot): read the WHOLE conversation above before replying, and combine everything still missing into ONE natural question (e.g. 'what storage + condition, and is it unlocked?') — never drip one question at a time and NEVER ask for something they already told you. If a spec is even implied (e.g. 'just got it from assurant' ≈ new/sealed), use it, don't re-ask. The instant you can tell model + storage + condition, say 'one sec, let me see what I can do' and call get_quote + notify_team (the number is for the OWNER's alert only — you NEVER tell the customer a price) instead of asking anything more. If you genuinely don't have their answer yet, move the convo forward — don't echo the same line back.",
@@ -379,6 +385,8 @@ const TOOLS = [
         storage: { type: "string", description: "Storage: 64, 128, 256, 512, or 1TB." },
         condition: { type: "string", enum: ["sealed", "mint", "good", "fair", "broken"], description: "sealed=new in plastic, mint=like new, good, fair=visible wear, broken=cracked/not working." },
         carrier: { type: "string", enum: ["unlocked", "att", "tmobile", "verizon", "other"] },
+        mdm_locked: { type: "boolean", description: "true ONLY if the customer said the phone has an MDM / company / school management lock. Never ask about it unprompted." },
+        faceid_broken: { type: "boolean", description: "true ONLY if the customer said Face ID / Touch ID doesn't work. Never ask about it unprompted." },
       },
       required: ["model", "condition"],
     },

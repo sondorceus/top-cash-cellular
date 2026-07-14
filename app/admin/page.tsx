@@ -5,6 +5,7 @@ import { DeviceCorrection } from "./DeviceCorrection";
 import { parseDollarAmount } from "../lib/lead-money";
 import { formatOfferNumber, offerNumberMatches } from "../lib/offer-number";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { deductionChipsForLabel } from "../data/deductions";
 
 interface Lead {
   id: string;
@@ -4000,6 +4001,11 @@ export default function AdminPage() {
         // mid-typed). Final = quote − sum(valid amounts).
         const modalValidDeds = counterOfferDeductions.filter((d) => d.label.trim());
         const modalIsItemized = modalValidDeds.length > 0;
+        // One-click deduction chips — buyer-sheet schedule amounts for the
+        // lead's iPhone generation (app/data/deductions.ts). Clicking a chip
+        // appends a prefilled line; amount stays editable. Empty for
+        // non-iPhone leads (schedule only covers iPhones today).
+        const modalChips = deductionChipsForLabel(counterOfferLead.model || counterOfferLead.device);
         const modalDedTotal = counterOfferDeductions.reduce((s, d) => s + (Number.isFinite(Number(d.amount)) ? Math.max(0, Math.round(Number(d.amount))) : 0), 0);
         const modalItemFinal = Math.max(0, modalQuote - modalDedTotal);
         const modalIsFinal = !modalIsItemized && Number.isFinite(modalAmt) && modalAmt >= modalQuote && counterOfferAmount.trim() !== "";
@@ -4079,6 +4085,25 @@ export default function AdminPage() {
                           <button type="button" onClick={() => addItemDed(i)} disabled={counterOfferSending} className="text-[10px] font-bold text-amber-300 hover:text-amber-200 cursor-pointer disabled:opacity-40">+ deduction</button>
                           {(it.device.trim() || it.quote.trim()) && <span className={`text-[11px] font-bold ${over ? "text-red-300" : "text-[#00c853]"}`}>{over ? "deductions exceed price" : `= $${tot}`}</span>}
                         </div>
+                        {(() => {
+                          const chips = deductionChipsForLabel(it.device);
+                          return chips.length > 0 ? (
+                            <div className="flex flex-wrap gap-1.5 mt-1.5 pl-6">
+                              {chips.map((c) => (
+                                <button
+                                  key={c.id}
+                                  type="button"
+                                  disabled={counterOfferSending}
+                                  onClick={() => setItem(i, { deductions: [...it.deductions, { label: c.label, amount: String(c.amount) }] })}
+                                  title={`Add "${c.label}" −$${c.amount}`}
+                                  className="text-[10px] font-semibold px-2 py-0.5 rounded-full border border-amber-500/30 text-amber-200/90 hover:bg-amber-500/10 cursor-pointer disabled:opacity-40"
+                                >
+                                  {c.label} <span className="text-[#ff8a80]">−${c.amount}</span>
+                                </button>
+                              ))}
+                            </div>
+                          ) : null;
+                        })()}
                       </div>
                     );
                   })}
@@ -4115,6 +4140,22 @@ export default function AdminPage() {
               <label className="text-[10px] uppercase tracking-wider text-[#dcdcdc] font-bold">Deductions (itemized invoice)</label>
               <button type="button" onClick={() => setCounterOfferDeductions((c) => [...c, { label: "", amount: "" }])} disabled={counterOfferSending} className="text-[10px] font-bold text-amber-300 hover:text-amber-200 cursor-pointer disabled:opacity-40">+ Add deduction</button>
             </div>
+            {modalChips.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {modalChips.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    disabled={counterOfferSending}
+                    onClick={() => setCounterOfferDeductions((cur) => [...cur, { label: c.label, amount: String(c.amount) }])}
+                    title={`Add "${c.label}" −$${c.amount}`}
+                    className="text-[10px] font-semibold px-2 py-1 rounded-full border border-amber-500/30 text-amber-200/90 hover:bg-amber-500/10 cursor-pointer disabled:opacity-40"
+                  >
+                    {c.label} <span className="text-[#ff8a80]">−${c.amount}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             {counterOfferDeductions.length === 0 ? (
               <p className="text-[10px] text-[#888] mb-3">Add line items (bad IMEI, cracks, etc.) to send an itemized invoice — or leave empty for a plain offer.</p>
             ) : (

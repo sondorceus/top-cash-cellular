@@ -31,6 +31,7 @@ import {
   EBAY_FEE_MULT,
   applyGalaxyDrop,
 } from "./resell-estimates";
+import { deductionAmount } from "../data/deductions";
 
 const BLOB_KEY = "prices/overrides.json";
 
@@ -92,6 +93,13 @@ export type QuoteSpec = {
   isPhone?: boolean;
   // Extra −$30 when a phone is broken with BOTH front + back glass cracked.
   brokenGlass?: "front" | "back" | "both" | null;
+  // Issue flags the seller VOLUNTEERED (bot conversations, admin quotes).
+  // Deduct the buyer-sheet schedule amounts (app/data/deductions.ts) so a
+  // known-MDM / dead-Face-ID device quotes honestly upfront instead of
+  // surprising the seller with an inspection counter. iPhone-only —
+  // amounts resolve to $0 for models without a schedule.
+  mdmLocked?: boolean;
+  faceIdBroken?: boolean;
 };
 
 export type QuoteResult = {
@@ -191,7 +199,14 @@ export async function quoteDevice(
     const popularBonus = spec.isPhone && baseQuote > 0 ? 25 : 0;
     const bothGlassPenalty =
       cond === "broken" && spec.brokenGlass === "both" && baseQuote > 0 ? -30 : 0;
-    const rawQuote = Math.max(0, baseQuote + popularBonus + bothGlassPenalty);
+    // Volunteered-issue deductions (buyer-sheet schedule). Mirrors the
+    // funnel's broken-faceid question; MDM has no funnel question (stated
+    // as a quote assumption) but bot leads sometimes volunteer it.
+    const issuePenalty = baseQuote > 0
+      ? -((spec.mdmLocked ? deductionAmount(id, "mdm") : 0) +
+          (spec.faceIdBroken ? deductionAmount(id, "faceid") : 0))
+      : 0;
+    const rawQuote = Math.max(0, baseQuote + popularBonus + bothGlassPenalty + issuePenalty);
 
     // 25%-margin guardrail — never offer more than 75% of resell value. Only
     // applies when we have a resell comp for the label (matched by name).
