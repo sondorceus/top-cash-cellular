@@ -633,7 +633,10 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "128": { broken: 1, fair: 32, good: 63, mint: 81, sealed: 108 },
     "256": { broken: 1, fair: 40, good: 72, mint: 90, sealed: 126 } },
   gs23p: {
-    "128": { broken: 20, sealed: 198 },
+    // 128 had only broken+sealed — the missing conditions silently fell
+    // back to the base-multiplier engine. Filled below the 256 row
+    // (2026-07-14 completeness invariant).
+    "128": { broken: 20, fair: 81, good: 117, mint: 135, sealed: 198 },
     "256": { broken: 25, fair: 90, good: 126, mint: 144, sealed: 225 },
     "512": { broken: 26, fair: 99, good: 135, mint: 153, sealed: 243 } },
   gs24fe: {

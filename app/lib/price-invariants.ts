@@ -119,6 +119,23 @@ export function validatePriceInvariants(
     // Sealed must clear Excellent by the mint accessory bonus on iPhones.
     const sealedHeadroom = isIphone(id) ? 10 : 0;
 
+    // 3. ROW COMPLETENESS (phones): every storage row must carry all five
+    // conditions. A missing cell doesn't error in the funnel — it silently
+    // reroutes that condition to the base×multiplier engine, which prices
+    // on a different curve than the neighboring cells (found live: gs23p
+    // 128 had only broken+sealed).
+    if (isPhone(id)) {
+      for (const st of storages) {
+        const missing = CONDS.filter((cond) => priceTable[id][st][cond] == null);
+        if (missing.length > 0 && missing.length < CONDS.length) {
+          violations.push({
+            modelId: id, storage: st, carrier: "—",
+            message: `${id} ${st}: missing ${missing.join(", ")} cell${missing.length === 1 ? "" : "s"} — incomplete rows silently fall back to multiplier pricing`,
+          });
+        }
+      }
+    }
+
     for (const c of carriers) {
       // 1. condition ladder
       for (const st of storages) {
@@ -153,6 +170,25 @@ export function validatePriceInvariants(
             });
           }
           prev = o; prevSt = st;
+        }
+      }
+
+      // 4. LOCKED ≤ UNLOCKED: a carrier-locked phone must never out-quote
+      // the unlocked one. Gaps are normally positive, but the admin shape
+      // check allows negative deductions — this catches a stray negative
+      // gap (or cond-gap edit) before it pays locked over unlocked.
+      if (c.id !== "unlocked") {
+        for (const st of storages) {
+          for (const cond of CONDS) {
+            const locked = rawOffer(priceTable, carrierDeductions, gapResolver, id, st, cond, c.id, c.locked);
+            const unlocked = rawOffer(priceTable, carrierDeductions, gapResolver, id, st, cond, "unlocked", false);
+            if (locked != null && unlocked != null && locked > unlocked) {
+              violations.push({
+                modelId: id, storage: st, carrier: c.label,
+                message: `${id} ${st} ${CONDITION_LABEL[cond]}: ${c.label} would quote $${locked} vs unlocked $${unlocked} — locked must never pay more than unlocked`,
+              });
+            }
+          }
         }
       }
     }

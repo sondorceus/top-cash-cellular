@@ -159,11 +159,16 @@ export async function quoteDevice(
   }
 
   // --- PRICE-TABLE PATH (phones, tablets) — fully computed ---
-  // Sealed derives from the MINT price + a flat guaranteed premium (see
-  // SEALED_PREMIUM): the per-cell `sealed` column is inconsistent, and the
-  // owner always pays the same extra for an unopened unit over a like-new one.
+  // Sealed uses the per-cell `sealed` column when one exists — the FUNNEL
+  // reads it directly, and since the 2026-07-14 recabs those cells ARE the
+  // intended sealed prices (e.g. 17PM sealed = buyer sheet − 80; the old
+  // mint+premium derivation had this bot quoting a sealed 17PM 1TB $220
+  // UNDER the funnel). Only when a row has no sealed cell do we fall back
+  // to mint + SEALED_PREMIUM (the owner's flat sealed-over-mint rule).
+  const sealedCell = ov.priceTable?.[id]?.[storage]?.sealed ?? PRICE_TABLE[id]?.[storage]?.sealed;
   const isSealed = cond === "sealed";
-  const priceCond = isSealed ? "mint" : cond;
+  const sealedFromMint = isSealed && sealedCell == null;
+  const priceCond = sealedFromMint ? "mint" : cond;
   const cellPrice =
     ov.priceTable?.[id]?.[storage]?.[priceCond] ?? PRICE_TABLE[id]?.[storage]?.[priceCond];
 
@@ -220,10 +225,12 @@ export async function quoteDevice(
     // Galaxy S23+ blanket −$75 (mirror of the funnel). Monotone floor
     // 2026-07-13: see applyGalaxyDrop in resell-estimates.
     const postGalaxy = applyGalaxyDrop(cappedQuote, id);
-    // Sealed premium is added LAST — guaranteed past the resell margin cap,
-    // because an unopened unit genuinely resells above the mint comp the cap is
-    // built on. Only on real offers (a $0 base stays $0, not a lone $45).
-    const sealedPremium = isSealed && postGalaxy > 0 ? SEALED_PREMIUM : 0;
+    // Sealed premium applies ONLY on the mint-fallback path (no sealed cell).
+    // Added LAST — guaranteed past the resell margin cap, because an unopened
+    // unit genuinely resells above the mint comp the cap is built on. Only on
+    // real offers (a $0 base stays $0, not a lone $45). When a sealed cell
+    // exists, the funnel-identical cell path above already priced it.
+    const sealedPremium = sealedFromMint && postGalaxy > 0 ? SEALED_PREMIUM : 0;
     const finalQuote = postGalaxy + sealedPremium;
 
     // Below MIN_OFFER (or cap forces it there) → manual review, no auto-offer.
