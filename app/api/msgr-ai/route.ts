@@ -279,6 +279,17 @@ async function marketCheck(summary: string): Promise<string | null> {
 const withTimeout = <T,>(p: Promise<T>, ms: number): Promise<T | null> =>
   Promise.race([p, new Promise<null>((r) => setTimeout(() => r(null), ms))]);
 
+// Multi-device / bulk detector — quantity word + a device noun, or bulk vocab.
+// Shared by the owner-alert signal scan (below) and the follow-up arm gate, so
+// "which leads count as bulk" has ONE definition. A real lot ("two Samsung ultra
+// 26 ... two iPhones 17") slipped past every regex on 2026-07-05 — hence broad.
+function looksBulk(text: string): boolean {
+  return (
+    /\b(?:two|three|four|five|six|\d{1,2})\s+(?:iphones?|samsungs?|galaxys?|pixels?|phones?|devices?|macbooks?|laptops?|ipads?|tablets?|consoles?)\b/i.test(text) ||
+    /\b(?:bulk|wholesale|a lot of (?:phones|devices)|several (?:phones|devices))\b/i.test(text)
+  );
+}
+
 // Server-side lead intelligence: catch contact info + hot-buying signals in the raw
 // message even when the model doesn't call notify_team — so no lead ever slips past
 // the owner, and the truly-ready ones get flagged HOT for a fast follow-up.
@@ -289,12 +300,9 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   const phone = scrubbed.match(/(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/)?.[0]?.trim();
   const email = scrubbed.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i)?.[0];
   const contact = phone || email || "";
-  // Bulk / multi-device = big money and the easiest lead to fumble — a real
-  // one ("two Samsung ultra 26 ... two iPhones 17") slipped past every regex
-  // on 2026-07-05. Quantity words + a device noun, or bulk vocabulary.
-  const bulk =
-    /\b(?:two|three|four|five|six|\d{1,2})\s+(?:iphones?|samsungs?|galaxys?|pixels?|phones?|devices?|macbooks?|laptops?|ipads?|tablets?|consoles?)\b/i.test(text) ||
-    /\b(?:bulk|wholesale|a lot of (?:phones|devices)|several (?:phones|devices))\b/i.test(text);
+  // Bulk / multi-device = big money and the easiest lead to fumble (a real one
+  // slipped past every regex on 2026-07-05). Shared detector, see looksBulk above.
+  const bulk = looksBulk(text);
   // Signals are bilingual — the bot sells in Spanish, so the alert triggers
   // must too (a 2026-07-05 ES lead fired nothing: every regex was English).
   const hot =
@@ -428,6 +436,11 @@ const FOLLOWUP_TAG = "quoted-followup";
 // arent worth it") — a nudge over a $60 scrap phone reads desperate. Shared
 // floor with /api/cron/msgr-followup.
 const FOLLOWUP_MIN = Number(process.env.MSGR_FOLLOWUP_MIN ?? 100);
+// Beyond the value floor, follow-ups now chase ONLY multi-device / bulk lots —
+// Sonny 2026-07-14: "don't follow up on single devices". A lone phone that goes
+// quiet is his to work (or drop) by hand; the nudge is reserved for the big lots
+// worth re-engaging. Set MSGR_FOLLOWUP_BULK_ONLY=0 to nudge worthwhile singles again.
+const FOLLOWUP_BULK_ONLY = process.env.MSGR_FOLLOWUP_BULK_ONLY !== "0";
 function render(
   texts: string[],
   quickReplies: { caption: string; state: ConvoState }[],
@@ -587,7 +600,11 @@ async function latestCustomerImages(psid: string, maxAgeMs = 15 * 60_000): Promi
 // "380-440" manually and the bot re-asked the price on top of him. Requires an
 // existing ledger for the psid so pre-feature convos and the CTM ad greeting
 // (sent before the bot's first reply) can never false-trigger. Fail-open.
-async function ownerActive(psid: string, thread: ThreadMsg[]): Promise<boolean> {
+// maxAgeMs: the live-reply path wants a TIGHT 30-min window (an old unknown
+// page message is pre-feature noise, not an active takeover). The follow-up
+// nudge fires ~3h after the quote, so it passes a WIDE window — Sonny's booking
+// reply can be hours old by the time the nudge callback lands.
+async function ownerActive(psid: string, thread: ThreadMsg[], maxAgeMs = 30 * 60_000): Promise<boolean> {
   try {
     if (!thread.length) return false;
     const sent = await listSentHashes(psid);
@@ -597,7 +614,7 @@ async function ownerActive(psid: string, thread: ThreadMsg[]): Promise<boolean> 
     const now = Date.now();
     return pageMsgs.some(
       (m) =>
-        now - m.ts < 30 * 60_000 && // recent — old unknowns are pre-feature noise
+        now - m.ts < maxAgeMs &&
         !sent.has(sentHash(m.content)) &&
         !/replied to an ad/i.test(m.content), // Meta's system line, not a human
     );
@@ -846,6 +863,19 @@ export async function POST(req: NextRequest) {
     };
     if (!turns.length) return NextResponse.json(disarmOnly); // no memory → don't nudge blind
     if (psid && ((await isMuted(psid)) || (await deferActive(psid)))) return NextResponse.json(disarmOnly); // owner took over — never nudge into his convo
+    // FRESH takeover check — deferActive/isMuted only fire if detection ran on a
+    // prior inbound message, but a lead Sonny booked by hand goes quiet (no new
+    // message to trigger it) and the nudge lands 3h later blind. Re-read the real
+    // thread now: if he's typed to this lead across the delay window, the deal is
+    // his — stand down. (Joey, 2026-07-14: appointment set from Business Suite,
+    // nudge fired "you still wanna sell" anyway.) Wide window; his reply is hours old.
+    if (psid) {
+      const thread = await threadFromGraph(psid, 18);
+      if (await ownerActive(psid, thread, 12 * 3_600_000)) {
+        await markDefer(psid);
+        return NextResponse.json(disarmOnly);
+      }
+    }
     const hrN =
       Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
     if (hrN < 8 || hrN >= 22) return NextResponse.json(disarmOnly); // no 2am nudges
@@ -1448,7 +1478,7 @@ export async function POST(req: NextRequest) {
     origin,
     secret,
     newCtx,
-    psid ? (lastQuote && lastQuote.offer >= FOLLOWUP_MIN ? "arm" : "disarm") : undefined,
+    psid ? (lastQuote && lastQuote.offer >= FOLLOWUP_MIN && (!FOLLOWUP_BULK_ONLY || looksBulk(userText)) ? "arm" : "disarm") : undefined,
     psid || undefined,
   );
 }

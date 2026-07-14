@@ -28,6 +28,10 @@ const MIN_AGE_MS = 16 * 3_600_000; // quiet this long = they went cold overnight
 const MAX_AGE_MS = 23 * 3_600_000; // stay clear of the 24h Send API edge
 const REFOLLOW_MS = 30 * 24 * 3_600_000; // one nudge per customer per month
 const WORTH_MIN = Number(process.env.MSGR_FOLLOWUP_MIN ?? 100);
+// Bulk-only follow-ups (Sonny 2026-07-14: "don't follow up on single devices").
+// Shared switch with the ManyChat nudge path in /api/msgr-ai. Default ON; set
+// MSGR_FOLLOWUP_BULK_ONLY=0 to chase worthwhile singles again on both paths.
+const BULK_ONLY = process.env.MSGR_FOLLOWUP_BULK_ONLY !== "0";
 
 type GraphMsg = { message?: string; created_time?: string; from?: { id?: string } };
 type GraphConvo = { id?: string; participants?: { data?: { id?: string; name?: string }[] }; messages?: { data?: GraphMsg[] } };
@@ -73,7 +77,7 @@ async function markFollowup(psid: string) {
 // Haiku reads the thread and decides if this lead clears the value bar.
 // Conservative by design: parse failure or uncertainty = not worth it.
 type Verdict = { worth: boolean; device: string; lang: "en" | "es"; closed: boolean };
-async function judgeThread(transcript: string): Promise<Verdict> {
+async function judgeThread(transcript: string, bulkOnly: boolean): Promise<Verdict> {
   const fallback: Verdict = { worth: false, device: "", lang: "en", closed: false };
   try {
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
@@ -81,8 +85,9 @@ async function judgeThread(transcript: string): Promise<Verdict> {
     const r = await client.messages.create({
       model: "claude-haiku-4-5-20251001",
       max_tokens: 120,
-      system:
-        `You judge phone-buyback leads for ONE follow-up text. WORTH a follow-up: iPhone 13 or newer, Galaxy S21+/Z Flip/Z Fold, Pixel 6+, MacBook or recent iPad, PS5/Xbox Series, Apple Watch Ultra or Series 9+, multiple devices or a bulk lot, or any deal where the money discussed is $${WORTH_MIN} or more. NOT worth: single older/scrap phones (iPhone 12 and below, old Galaxy/Pixel), broken-only junk, PS4-era or older consoles, Fitbits/accessories, wholesale vendors pitching to sell TO us, spam or trolling. closed=true when the customer explicitly backed out ("never mind", "ima keep it", "not interested"). If unsure, worth=false. Output ONLY JSON: {"worth":bool,"device":"short name","lang":"en"|"es","closed":bool}`,
+      system: bulkOnly
+        ? `You judge phone-buyback leads for ONE follow-up text. WORTH a follow-up: ONLY a multi-device or bulk/wholesale lot (2 or more devices sold together). A SINGLE device of ANY kind — even a brand-new sealed iPhone, a MacBook, or a console — is NOT worth a follow-up. NOT worth: any single device, broken junk, wholesale vendors pitching to sell TO us, spam or trolling. closed=true when the customer explicitly backed out ("never mind", "ima keep it", "not interested"). If unsure, worth=false. Output ONLY JSON: {"worth":bool,"device":"short name","lang":"en"|"es","closed":bool}`
+        : `You judge phone-buyback leads for ONE follow-up text. WORTH a follow-up: iPhone 13 or newer, Galaxy S21+/Z Flip/Z Fold, Pixel 6+, MacBook or recent iPad, PS5/Xbox Series, Apple Watch Ultra or Series 9+, multiple devices or a bulk lot, or any deal where the money discussed is $${WORTH_MIN} or more. NOT worth: single older/scrap phones (iPhone 12 and below, old Galaxy/Pixel), broken-only junk, PS4-era or older consoles, Fitbits/accessories, wholesale vendors pitching to sell TO us, spam or trolling. closed=true when the customer explicitly backed out ("never mind", "ima keep it", "not interested"). If unsure, worth=false. Output ONLY JSON: {"worth":bool,"device":"short name","lang":"en"|"es","closed":bool}`,
       messages: [{ role: "user", content: transcript.slice(0, 4000) }],
     });
     const flat = (r.content as { type: string; text?: string }[]).filter((b) => b.type === "text").map((b) => b.text).join("");
@@ -185,7 +190,7 @@ export async function GET(req: NextRequest) {
       .reverse()
       .map((m) => `${m.from?.id === psid ? "CUSTOMER" : "PAGE"}: ${String(m.message || "(photo)").slice(0, 300)}`)
       .join("\n");
-    const verdict = await judgeThread(transcript);
+    const verdict = await judgeThread(transcript, BULK_ONLY);
     if (!verdict.worth) {
       await markFollowup(psid); // judged once — don't re-run Haiku on this thread every hour
       results.push({ name, action: `skip: not worth it (${verdict.device || "?"})` });
