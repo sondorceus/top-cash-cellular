@@ -138,6 +138,8 @@ async function isDuplicateMC(email: string, contact: string, device: string, mod
 // fork that drifted — stale Xbox numbers, missing Pixels/Watches/iPad, and
 // no brokenGlass deduction — which silently clamped legit quotes down and
 // false-flagged them as tampered. Always import; never re-fork.)
+import { authoritativeLineCap, type LeadLineSpec } from "../../lib/server-quote-cap";
+import { readPriceOverrides } from "../../lib/quote";
 
 // High-value devices that need manual review before payout
 const REVIEW_KEYWORDS = [
@@ -199,6 +201,21 @@ export async function POST(req: NextRequest) {
     return handleQuoteSave(req, data);
   }
   let { payout } = data;
+  // SINGLE-ELEMENT devices[] HYDRATION (deferred bug hunt #5 "finding E"):
+  // a one-item cart submits its detail inside devices[0] while the render,
+  // quantity math, and tamper cap below all read TOP-LEVEL fields — so the
+  // storage/specs vanished from the email and a ×2 cart line was capped
+  // (and paid) as ×1. Promote the device's fields into any top-level slot
+  // the client left empty BEFORE destructuring; a >1 cart keeps the
+  // multi-device path untouched.
+  if (Array.isArray(data?.devices) && data.devices.length === 1 && data.devices[0] && typeof data.devices[0] === "object") {
+    const d0 = data.devices[0] as Record<string, unknown>;
+    for (const k of ["storage", "quantity", "carrier", "connectivity", "processor", "memory", "graphics",
+      "displayResolution", "displayGlass", "batteryHealth", "charger", "extras",
+      "brokenGlass", "brokenFunctional", "brokenFaceId", "imei", "imeiWarnings", "photos"] as const) {
+      if ((data as Record<string, unknown>)[k] == null && d0[k] != null) (data as Record<string, unknown>)[k] = d0[k];
+    }
+  }
   const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, brokenFaceId, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, referralCode, attestation } = data;
   // Compliance attestation (18+ & legal ownership). The funnel makes the
   // customer tick a required box affirming both before submit. We record
@@ -452,41 +469,57 @@ export async function POST(req: NextRequest) {
   // submissions keep the original headline-model lookup.
   const isMultiDeviceCart = Array.isArray((data as { devices?: unknown }).devices)
     && ((data as { devices?: unknown[] }).devices?.length || 0) > 1;
-  const computeCap = (m: unknown, c: unknown, bg?: unknown): number | null => {
+  // Legacy resell-based ceiling — kept ONLY as the fallback when the
+  // authoritative engine can't resolve a line (unknown label, manual-review
+  // model). Resell-EXEMPT SKUs return null here, which used to mean NO
+  // ceiling at all on the priciest quotes (deferred bug hunt #2/#4).
+  const legacyCap = (m: unknown, c: unknown, bg?: unknown): number | null => {
     const r = getResellEstimate(typeof m === "string" ? m : "");
     if (r == null) return null;
     const glass = bg === "front" || bg === "back" || bg === "both" ? bg : null;
     const cm = resellMultiplierForCondition(typeof c === "string" ? c : "", glass);
-    // Mirror the funnel cap exactly: resell × condMult × eBay-net (0.87) ×
-    // margin floor (0.75). The eBay 13% FVF was folded into the live cap on
-    // 2026-07-05 but this server anti-tamper ceiling was left at the old
-    // ×0.75, leaving it ~13% loose. (bug fix)
     return Math.round(r * cm * EBAY_FEE_MULT * SERVER_MARGIN_FLOOR_MULT);
   };
+  // Authoritative ceiling: recompute the REAL offer via quoteDevice()
+  // (PRICE_TABLE + live blob overrides — covers resell-exempt SKUs) plus
+  // headroom for funnel-only bonuses; see app/lib/server-quote-cap.ts.
+  const capOverrides = await readPriceOverrides();
+  const lineCap = async (line: LeadLineSpec): Promise<number | null> =>
+    (await authoritativeLineCap(line, capOverrides)) ?? legacyCap(line.model, line.condition, line.brokenGlass);
+  const sanitizeQty = (q: unknown) => Math.min(50, Math.max(1, Math.round(Number(q) || 1)));
   let serverQuoteCap: number | null;
   if (isMultiDeviceCart) {
-    const devs = (data as { devices: { model?: string; condition?: string; quantity?: number; brokenGlass?: unknown }[] }).devices;
+    const devs = (data as { devices: { model?: string; storage?: string; condition?: string; carrier?: string; quantity?: number; quote?: number; brokenGlass?: unknown }[] }).devices;
     let acc = 0;
     let anyKnown = false;
     let allKnown = true;
     for (const d of devs) {
-      const cap = computeCap(d.model, d.condition, d.brokenGlass);
+      const cap = await lineCap(d);
       if (cap != null) {
         anyKnown = true;
-        acc += cap * (Number(d.quantity) || 1);
+        const lineAllowed = cap * sanitizeQty(d.quantity);
+        acc += lineAllowed;
+        // Per-LINE clamp (deferred #4): the rendered per-device dollar was
+        // never validated, so one inflated line hid inside an honest total.
+        // Clamp the line value the email/admin will render; the total clamp
+        // below still governs what we'd pay.
+        if (typeof d.quote === "number" && d.quote > lineAllowed + SERVER_QUOTE_TOLERANCE) {
+          console.warn(`[lead] Line tamper: ${String(d.model).slice(0, 60)} submitted=$${d.quote} lineCap=$${lineAllowed} — line clamped.`);
+          d.quote = lineAllowed;
+        }
       } else {
         allKnown = false;
       }
     }
-    // Only clamp when EVERY device is priceable. If ANY device is a
-    // resell-exempt SKU (sealed iPhone 17 PM, Ultra 2/3, etc.), its $0
-    // contribution to `acc` would make a partial cap that a legit full-cart
-    // total blows past — false-flagging an honest customer as a fraudster
-    // and gutting their offer. Better to skip the clamp (inspection is the
-    // backstop) than clamp against an undercount. (bug fix)
+    // Only clamp the TOTAL when every device is priceable — a partial sum
+    // would false-flag an honest cart containing one unpriceable device.
     serverQuoteCap = (anyKnown && allKnown) ? acc : null;
   } else {
-    serverQuoteCap = computeCap(model, condition, brokenGlass);
+    // Single device: per-unit ceiling × quantity. The old code never
+    // multiplied by quantity, so every honest ×2+ submission was falsely
+    // "tamper"-clamped to a one-unit payout wherever a resell cap existed.
+    const cap = await lineCap({ model, storage, condition, carrier, carrierLock, brokenGlass });
+    serverQuoteCap = cap != null ? cap * sanitizeQty(quantity) : null;
   }
   // Quote-step promo coupons (/coupons.json) apply a PERCENT bonus that the
   // client folds into the submitted quote. The server MUST re-validate the code
@@ -1488,7 +1521,10 @@ Pick the best channel per device. Be concise.`;
     const labelNote = fedexLabel
       ? ` 📦 FedEx label minted${fedexLabel.cost != null ? ` — billed ~$${fedexLabel.cost}` : " (cost pending)"}.`
       : "";
-    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${name} wants to sell ${model} (${condition})${quote ? ` for $${quote}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}${labelNote}`;
+    // quoteNum is the SERVER-VALIDATED payout (tamper-clamped + coupon/
+    // referral) — the raw client `quote` showed the inflated number on a
+    // tampered lead (deferred bug hunt, fixed 2026-07-14).
+    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${name} wants to sell ${model} (${condition})${quoteNum > 0 ? ` for $${quoteNum}${quoteTampered ? " (CLAMPED — tamper flag)" : ""}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}${labelNote}`;
     try {
       await notifyOwnerSms(ownerSms);
     } catch {}

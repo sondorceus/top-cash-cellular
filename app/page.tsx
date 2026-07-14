@@ -3475,7 +3475,12 @@ const buildAppleWatchExtras = (modelId?: string | null): BrandExtra[] => {
     ]});
   if (isUltra && spec.ultraBands?.length) {
     qs.push({ id: "band", question: "Which band shipped with it?",
-      showIf: (extras) => extras.bandIncluded?.id === "yes" && works(extras),
+      // Sealed watches skip the bandIncluded question (a sealed box always
+      // has its band), which left this showIf false and never asked WHICH
+      // band — a sealed Ultra with a Titanium Milanese band lost its
+      // premium (deferred bug hunt, fixed 2026-07-14). Sealed asks band
+      // type directly; used units still require bandIncluded === yes.
+      showIf: (extras, condition) => (condition?.id === "sealed" || extras.bandIncluded?.id === "yes") && works(extras),
       options: spec.ultraBands.map(b => ({ id: b.id, label: b.adj > 0 ? `${b.label} (+$${b.adj})` : b.label, multiplier: 1.00, adj: b.adj })) });
   }
   if (spec.accAdj) {
@@ -3658,7 +3663,11 @@ const CHARGER_OPTIONS = [
 const SKIP_ON_SEALED_EXTRAS_IDS = new Set([
   "charger", "box", "spen", "stylus", "dock",
   "controllers", "kit",
-  "bandIncluded", "band", "accessories",
+  // "band" (WHICH band shipped) intentionally NOT skipped: sealed Ultras
+  // ship with different bands at very different resale (Titanium Milanese
+  // premium was silently lost on sealed — deferred bug hunt, 2026-07-14).
+  // bandIncluded (yes/no) stays skipped: a sealed box always has its band.
+  "bandIncluded", "accessories",
   "functional", "hours", "crashes",
 ]);
 // Mutable module-level cache for PC laptop additive specs loaded from
@@ -4217,6 +4226,9 @@ export default function Home() {
     step === "broken-functional" ? 1 :
     step === "broken-glass" ? 1 :
     step === "broken-faceid" ? 1 :
+    // extras (tablet/watch brand questions) sit between condition and
+    // storage — was unmapped, dropping the bar to 0% for the whole step.
+    step === "extras" ? (isIpadFlow ? 3 : 2) :
     step === "connectivity" ? 2 :
     step === "storage" ? (isIpadFlow ? 3 : 2) :
     step === "carrier" ? (isIpadFlow ? 4 : 3) :
@@ -6258,16 +6270,27 @@ export default function Home() {
     else if (step === "batteryhealth") { setStep("condition"); setCondition(null); }
     else if (step === "charger") { setStep("batteryhealth"); setBatteryHealth(null); }
     else if (step === "extras") {
-      if (extrasIndex > 0) {
-        // Back up one question within the extras flow.
-        const ex = getBrandExtras(deviceType, model?.id);
-        const prev = ex[extrasIndex - 1];
+      // Walk BACKWARD past questions the skip rules hide (mirror of the
+      // forward walk in the answer handler). The render's auto-skip only
+      // advances FORWARD, so backing onto a showIf-skipped or sealed-
+      // skipped question used to bounce the user forward again — Back
+      // dead-ended. (deferred bug hunt, fixed 2026-07-14)
+      const ex = getBrandExtras(deviceType, model?.id);
+      let prevIdx = extrasIndex - 1;
+      while (prevIdx >= 0) {
+        const peek = ex[prevIdx];
+        if (peek.showIf && !peek.showIf(extras, condition)) { prevIdx--; continue; }
+        if (condition?.id === "sealed" && SKIP_ON_SEALED_EXTRAS_IDS.has(peek.id)) { prevIdx--; continue; }
+        break;
+      }
+      if (prevIdx >= 0) {
+        const prev = ex[prevIdx];
         if (prev) {
           const next = { ...extras };
           delete next[prev.id];
           setExtras(next);
         }
-        setExtrasIndex(extrasIndex - 1);
+        setExtrasIndex(prevIdx);
       } else if (model && hasAdditiveSpecs(model.id)) {
         // Additive flow: desktops skip battery/charger so go back to
         // condition; laptops go back to charger.
@@ -6296,8 +6319,15 @@ export default function Home() {
       // If this device has brand extras, back through the last question instead
       // of jumping straight to condition.
       const ex = getBrandExtras(deviceType, model?.id);
-      if (ex.length > 0) {
-        setExtrasIndex(ex.length - 1);
+      let lastIdx = ex.length - 1;
+      while (lastIdx >= 0) {
+        const peek = ex[lastIdx];
+        if (peek.showIf && !peek.showIf(extras, condition)) { lastIdx--; continue; }
+        if (condition?.id === "sealed" && SKIP_ON_SEALED_EXTRAS_IDS.has(peek.id)) { lastIdx--; continue; }
+        break;
+      }
+      if (lastIdx >= 0) {
+        setExtrasIndex(lastIdx);
         setStep("extras"); // keep last answer until they re-pick
       } else {
         setStep("condition"); setCondition(null);
@@ -6311,7 +6341,18 @@ export default function Home() {
         else { setStep("processor"); setProcessor(null); }
       }
       else if (deviceType === "ipad") { setStep("connectivity"); setConnectivity(null); }
-      else { setStep("condition"); setCondition(null); }
+      else {
+        const exs = getBrandExtras(deviceType, model?.id);
+        let li = exs.length - 1;
+        while (li >= 0) {
+          const peek = exs[li];
+          if (peek.showIf && !peek.showIf(extras, condition)) { li--; continue; }
+          if (condition?.id === "sealed" && SKIP_ON_SEALED_EXTRAS_IDS.has(peek.id)) { li--; continue; }
+          break;
+        }
+        if (li >= 0) { setExtrasIndex(li); setStep("extras"); }
+        else { setStep("condition"); setCondition(null); }
+      }
     }
     else if (step === "broken-functional") { setStep("condition"); setCondition(null); setBrokenFunctional(null); }
     else if (step === "broken-glass") { setStep("broken-functional"); setBrokenFunctional(null); setBrokenGlass(null); }
@@ -10519,7 +10560,7 @@ export default function Home() {
                         // route through extras before quote.
                         const ex = getBrandExtras(deviceType, model?.id);
                         if (ex.length > 0) {
-                          setExtras({}); setExtrasIndex(0);
+                          setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                           setStep("extras"); pushHistory("extras");
                           return;
                         }
@@ -10788,7 +10829,7 @@ export default function Home() {
                         const skipToEndForSealed = c.id === "sealed";
                         if (isDskType || skipToEndForSealed) {
                           if (hasExtras) {
-                            setExtras({}); setExtrasIndex(0);
+                            setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                             setStep("extras"); pushHistory("extras");
                           } else {
                             setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
@@ -10816,7 +10857,7 @@ export default function Home() {
                       // smartwatch band etc) fire BEFORE the quote so the
                       // pricing reflects them.
                       if (getBrandExtras(deviceType, model?.id).length > 0) {
-                        setExtras({}); setExtrasIndex(0);
+                        setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                         setStep("extras"); pushHistory("extras");
                         return;
                       }
@@ -10967,7 +11008,7 @@ export default function Home() {
                         const isDskType = deviceType?.endsWith("_desktop") ?? false;
                         if (isDskType) {
                           if (getBrandExtras(deviceType, model?.id).length > 0) {
-                            setExtras({}); setExtrasIndex(0);
+                            setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                             setStep("extras"); pushHistory("extras");
                           } else {
                             setShowConfetti(true); setTimeout(() => setShowConfetti(false), 3000);
@@ -10983,7 +11024,7 @@ export default function Home() {
                         return;
                       }
                       if (getBrandExtras(deviceType, model?.id).length > 0) {
-                        setExtras({}); setExtrasIndex(0);
+                        setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                         setStep("extras"); pushHistory("extras"); return;
                       }
                       const ns: Step = isNoStorageDevice ? "quote" : (deviceType === "ipad" ? "connectivity" : "storage");
@@ -11061,7 +11102,7 @@ export default function Home() {
                         // PC / desktop paths apply to phones, so go straight
                         // to extras-or-storage like the original).
                         if (getBrandExtras(deviceType, model?.id).length > 0) {
-                          setExtras({}); setExtrasIndex(0);
+                          setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                           setStep("extras"); pushHistory("extras"); return;
                         }
                         const ns: Step = "storage";
@@ -11115,7 +11156,7 @@ export default function Home() {
                     setBrokenFaceId("yes");
                     popThenRun(`bfaceid-yes`, () => {
                       if (getBrandExtras(deviceType, model?.id).length > 0) {
-                        setExtras({}); setExtrasIndex(0);
+                        setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                         setStep("extras"); pushHistory("extras"); return;
                       }
                       setStep("storage"); pushHistory("storage");
@@ -11134,7 +11175,7 @@ export default function Home() {
                     setBrokenFaceId("no");
                     popThenRun(`bfaceid-no`, () => {
                       if (getBrandExtras(deviceType, model?.id).length > 0) {
-                        setExtras({}); setExtrasIndex(0);
+                        setExtrasIndex(0); // answers preserved — stale ids filtered at pricing (bug fix)
                         setStep("extras"); pushHistory("extras"); return;
                       }
                       setStep("storage"); pushHistory("storage");
@@ -11551,8 +11592,11 @@ export default function Home() {
                   {/* Quote assumptions — keeps the pledge honest: a device
                       that doesn't match these isn't the device we quoted,
                       so an itemized adjustment at inspection isn't a
-                      "surprise deduction". Buyer-sheet issues, 2026-07-14. */}
-                  {deviceType === "iphone" && (
+                      "surprise deduction". Buyer-sheet issues, 2026-07-14.
+                      Hidden on SEALED (owner: a factory-sealed phone can't
+                      have a dead Face ID or aftermarket parts — the sealed
+                      condition definition already covers it). */}
+                  {deviceType === "iphone" && condition?.id !== "sealed" && (
                     <p className="text-[10px] text-[#8a8a8a] mt-1 leading-snug">
                       Assumes no MDM / company lock, working Face ID, and original Apple parts.
                     </p>
@@ -12645,17 +12689,17 @@ export default function Home() {
                 // full spec payload.
                 const isMultiCart = cartItems.length > 1;
                 // Route the submit through the CART data (real per-item
-                // prices) whenever it's a true multi-cart OR the shopper is
-                // checking out a single carted device on a stale/empty funnel
-                // — model reset via "add another device", or a returning
-                // session where the cart was restored from localStorage but
-                // the live funnel `quote` starts at $0. That $0 was flowing
-                // into /api/confirm and printing "Custom quote — coming within
-                // the hour" on a device we actually have a price for. Only
-                // kicks in when the live quote is empty, so normal
-                // straight-through checkouts (funnel = the device) are
-                // untouched and no carted device is ever dropped. (bug fix)
-                const submitViaCart = isMultiCart || (cartItems.length === 1 && (quote * quantity) <= 0);
+                // prices) whenever ANY cart exists. The old gate only
+                // diverted a 1-item cart when the live funnel quote was $0,
+                // so a single carted device with a stepper quantity (×2) or
+                // a diverged funnel state submitted the STALE funnel numbers
+                // — unit lost, email ≠ on-screen (deferred bug hunt #5). A
+                // cart is the checkout's source of truth the moment it
+                // exists; cart-less straight-through checkouts still use the
+                // live funnel state below. The 1-element devices[] payload
+                // is hydrated into top-level fields server-side so the email
+                // keeps full spec detail. (bug fix)
+                const submitViaCart = cartItems.length > 0;
                 // Capture the FedEx label info from /api/lead's response
                 // when a ship handoff was submitted. Plumbs through to
                 // /api/confirm (so the email shows the label) AND to the
