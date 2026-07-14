@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
-import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, type MacSpec } from "../../../data/prices";
+import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, carrierGapForCondition, type MacSpec } from "../../../data/prices";
+import { validatePriceInvariants } from "../../../lib/price-invariants";
 import { getResellEstimate } from "../../../lib/resell-estimates";
 import { lookupAtlasResell } from "../../../lib/atlas-lookup";
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
@@ -491,7 +492,6 @@ export async function POST(req: NextRequest) {
   if (shapeErr) return NextResponse.json({ error: shapeErr }, { status: 400 });
 
   const current = await readOverrides();
-  await snapshotToHistory(current);
 
   const merged: OverridesShape = {
     priceTable: deepMerge(current.priceTable, body.priceTable || {}),
@@ -500,6 +500,33 @@ export async function POST(req: NextRequest) {
     conditionAdj: deepMerge(current.conditionAdj, body.conditionAdj || {}),
     updatedAt: new Date().toISOString(),
   };
+
+  // PRICE-LOGIC GATE (owner 2026-07-14): an edit that would let a better
+  // condition quote below a worse one — or a bigger storage below a
+  // smaller one — is rejected BEFORE it reaches the live blob, with the
+  // exact violations so staff can fix the number. Same validator that
+  // gates the build (next.config.ts); only the models this save touches
+  // are re-checked so a one-cell edit stays instant.
+  const touched = new Set([
+    ...Object.keys(body.priceTable || {}),
+    ...Object.keys(body.carrierDeductions || {}),
+  ]);
+  if (touched.size > 0) {
+    const effPT = deepMerge(PRICE_TABLE, merged.priceTable);
+    const effCD = deepMerge(CARRIER_DEDUCTIONS, merged.carrierDeductions);
+    const violations = validatePriceInvariants(effPT, effCD, carrierGapForCondition, [...touched]);
+    if (violations.length > 0) {
+      return NextResponse.json({
+        error:
+          `Price logic violation — save rejected. ${violations.length} problem${violations.length === 1 ? "" : "s"}:\n` +
+          violations.slice(0, 8).map((v) => `• ${v.message}`).join("\n") +
+          (violations.length > 8 ? `\n…and ${violations.length - 8} more.` : ""),
+        violations,
+      }, { status: 422 });
+    }
+  }
+
+  await snapshotToHistory(current);
 
   await put(BLOB_KEY, JSON.stringify(merged, null, 2), {
     access: "public",
@@ -533,6 +560,10 @@ export async function DELETE(req: NextRequest) {
   const cell = req.nextUrl.searchParams.get("cell");
   const carrier = req.nextUrl.searchParams.get("carrier");
   const baseId = req.nextUrl.searchParams.get("base");
+  // ?force=1 skips the invariant gate — removing an override can re-expose
+  // a baseline state that a pending code fix supersedes, and staff must be
+  // able to unwedge that.
+  const force = req.nextUrl.searchParams.get("force") === "1";
   const current = await readOverrides();
   await snapshotToHistory(current);
 
@@ -568,6 +599,27 @@ export async function DELETE(req: NextRequest) {
     next = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
   }
   next.updatedAt = new Date().toISOString();
+
+  // Same price-logic gate as POST: a partial revert (one cell of a model
+  // whose other cells are still overridden) can create an inversion in the
+  // effective table. Full clears are exempt — the bundled baseline is
+  // already build-gated.
+  if (!force && (cell || condModel || carrier || baseId || model)) {
+    const affected = [cell?.split("/")[0], carrier, model].filter(Boolean) as string[];
+    if (affected.length > 0) {
+      const effPT = deepMerge(PRICE_TABLE, next.priceTable);
+      const effCD = deepMerge(CARRIER_DEDUCTIONS, next.carrierDeductions);
+      const violations = validatePriceInvariants(effPT, effCD, carrierGapForCondition, affected);
+      if (violations.length > 0) {
+        return NextResponse.json({
+          error:
+            `Reverting this would break price logic — blocked. Add &force=1 to override.\n` +
+            violations.slice(0, 8).map((v) => `• ${v.message}`).join("\n"),
+          violations,
+        }, { status: 422 });
+      }
+    }
+  }
 
   const empty =
     Object.keys(next.priceTable).length === 0 &&

@@ -189,7 +189,7 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
     // (780/920/1030/1115 min-color). 256 trimmed 190→185 and 2TB 410→390
     // so sealed-locked stays ABOVE Excellent T-Mobile (monotonic sweep
     // 2026-07-14: 2TB sealed $1015 sat below Excellent tmo $1030).
-    sealedLocked: { "256": 185, "512": 195, "1tb": 320, "2tb": 390 },
+    sealedLocked: { "256": 180, "512": 195, "1tb": 320, "2tb": 385 },
   },
   // ip17air (owner 2026-07-14: Air anchors to ItsWorthMore − $100, NOT the
   // buyer sheet — the sheet craters on Airs and they exit elsewhere). Gaps
@@ -212,7 +212,7 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
     // Per-storage, sized so sealed-locked stays ABOVE Excellent-locked —
     // the flat 390 had a sealed AT&T Air at $261 vs Excellent $300
     // (owner: "we are paying more on excellent than sealed").
-    sealedLocked: { "256": 290, "512": 285, "1tb": 250 },
+    sealedLocked: { "256": 280, "512": 275, "1tb": 240 },
   },
   ip17p: {
     used: { att: 185, tmobile: 50, other: 450 },
@@ -221,7 +221,7 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
     broken: { att: 85, tmobile: 50, other: 250 },
     // 256 gap cut 160→90: sealed-locked ($450) sat below Excellent
     // T-Mobile ($515). Sealed must top the ladder (monotonic sweep).
-    sealedLocked: { "256": 90, "512": 85, "1tb": 50 },
+    sealedLocked: { "256": 85, "512": 85, "1tb": 50 },
   },
 };
 
@@ -328,16 +328,16 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "512": { broken: 35, fair: 202, good: 243, mint: 266, sealed: 296 } },
   ip14p: {
     "128": { broken: 87, fair: 184, good: 238, mint: 284, sealed: 306 },
-    "1tb": { broken: 105, fair: 256, good: 310, mint: 356, sealed: 360 },
+    "1tb": { broken: 105, fair: 256, good: 310, mint: 356, sealed: 370 },
     "256": { broken: 97, fair: 212, good: 266, mint: 310, sealed: 328 },
-    "512": { broken: 101, fair: 238, good: 292, mint: 338, sealed: 342 } },
+    "512": { broken: 101, fair: 238, good: 292, mint: 338, sealed: 350 } },
   ip14plus: {
     "128": { broken: 61, fair: 135, good: 171, mint: 198, sealed: 234 },
     "256": { broken: 65, fair: 171, good: 207, mint: 234, sealed: 279 },
     "512": { broken: 69, fair: 189, good: 225, mint: 252, sealed: 302 } },
   ip14pm: {
     "128": { broken: 119, fair: 248, good: 302, mint: 351, sealed: 378 },
-    "1tb": { broken: 173, fair: 320, good: 374, mint: 423, sealed: 432 },
+    "1tb": { broken: 173, fair: 320, good: 374, mint: 423, sealed: 435 },
     "256": { broken: 137, fair: 266, good: 320, mint: 369, sealed: 405 },
     "512": { broken: 155, fair: 292, good: 346, mint: 396, sealed: 414 } },
   ip15: {
