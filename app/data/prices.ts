@@ -509,35 +509,35 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "512": { broken: 155, fair: 900, good: 1350, mint: 1800, sealed: 2070 } },
   // === PIXEL (10% below IWM) ===
   px10pxl: {
-    "1tb": { broken: 87, fair: 360, good: 414, mint: 450, sealed: 477 },
-    "256": { broken: 65, fair: 315, good: 369, mint: 405, sealed: 432 },
-    "512": { broken: 74, fair: 346, good: 400, mint: 436, sealed: 464 } },
+    "1tb": { broken: 87, fair: 350, good: 404, mint: 440, sealed: 447 },
+    "256": { broken: 65, fair: 305, good: 359, mint: 395, sealed: 402 },
+    "512": { broken: 74, fair: 336, good: 390, mint: 426, sealed: 434 } },
   px10p: {
-    "128": { broken: 43, fair: 225, good: 292, mint: 338, sealed: 369 },
-    "1tb": { broken: 56, fair: 315, good: 382, mint: 428, sealed: 468 },
-    "256": { broken: 47, fair: 270, good: 338, mint: 382, sealed: 428 },
-    "512": { broken: 51, fair: 292, good: 360, mint: 405, sealed: 446 } },
+    "128": { broken: 43, fair: 215, good: 282, mint: 328, sealed: 339 },
+    "1tb": { broken: 56, fair: 305, good: 372, mint: 418, sealed: 438 },
+    "256": { broken: 47, fair: 260, good: 328, mint: 372, sealed: 398 },
+    "512": { broken: 51, fair: 282, good: 350, mint: 395, sealed: 416 } },
   px10: {
-    "128": { broken: 20, fair: 148, good: 207, mint: 248, sealed: 292 },
-    "256": { broken: 29, fair: 166, good: 225, mint: 266, sealed: 315 } },
+    "128": { broken: 20, fair: 138, good: 197, mint: 238, sealed: 262 },
+    "256": { broken: 29, fair: 156, good: 215, mint: 256, sealed: 285 } },
   px9pxl: {
-    "128": { broken: 43, fair: 189, good: 243, mint: 288, sealed: 315 },
-    "1tb": { broken: 49, fair: 243, good: 297, mint: 342, sealed: 396 },
-    "256": { broken: 47, fair: 207, good: 261, mint: 306, sealed: 351 },
-    "512": { broken: 47, fair: 225, good: 279, mint: 324, sealed: 382 } },
+    "128": { broken: 43, fair: 179, good: 233, mint: 278, sealed: 285 },
+    "1tb": { broken: 49, fair: 233, good: 287, mint: 332, sealed: 366 },
+    "256": { broken: 47, fair: 197, good: 251, mint: 296, sealed: 321 },
+    "512": { broken: 47, fair: 215, good: 269, mint: 314, sealed: 352 } },
   px9p: {
-    "128": { broken: 20, fair: 126, good: 180, mint: 216, sealed: 261 },
-    "1tb": { broken: 25, fair: 194, good: 248, mint: 284, sealed: 342 },
-    "256": { broken: 22, fair: 153, good: 207, mint: 243, sealed: 297 },
-    "512": { broken: 24, fair: 171, good: 225, mint: 261, sealed: 328 } },
+    "128": { broken: 20, fair: 116, good: 170, mint: 206, sealed: 231 },
+    "1tb": { broken: 25, fair: 184, good: 238, mint: 274, sealed: 312 },
+    "256": { broken: 22, fair: 143, good: 197, mint: 233, sealed: 267 },
+    "512": { broken: 24, fair: 161, good: 215, mint: 251, sealed: 298 } },
   px9: {
-    "128": { broken: 15, fair: 112, good: 153, mint: 198, sealed: 225 },
-    "256": { broken: 20, fair: 130, good: 171, mint: 216, sealed: 248 } },
+    "128": { broken: 15, fair: 102, good: 143, mint: 188, sealed: 195 },
+    "256": { broken: 20, fair: 120, good: 161, mint: 206, sealed: 218 } },
   px8p: {
-    "128": { broken: 7, fair: 112, good: 144, mint: 184, sealed: 207 },
-    "1tb": { broken: 11, fair: 148, good: 180, mint: 220, sealed: 274 },
-    "256": { broken: 8, fair: 122, good: 153, mint: 194, sealed: 243 },
-    "512": { broken: 9, fair: 140, good: 171, mint: 212, sealed: 261 } },
+    "128": { broken: 7, fair: 102, good: 134, mint: 174, sealed: 177 },
+    "1tb": { broken: 11, fair: 138, good: 170, mint: 210, sealed: 244 },
+    "256": { broken: 8, fair: 112, good: 143, mint: 184, sealed: 213 },
+    "512": { broken: 9, fair: 130, good: 161, mint: 202, sealed: 231 } },
   // === CONSOLES (10% below IWM) ===
   ps5pro: {
     "base": { broken: 8, fair: 432, good: 513, mint: 585, sealed: 621 } },
@@ -562,8 +562,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 1, fair: 14, good: 32, mint: 40, sealed: 54 },
     "512": { broken: 1, fair: 14, good: 32, mint: 40, sealed: 58 } },
   px8: {
-    "128": { broken: 1, fair: 68, good: 108, mint: 126, sealed: 166 },
-    "256": { broken: 2, fair: 90, good: 130, mint: 148, sealed: 189 } },
+    "128": { broken: 1, fair: 58, good: 98, mint: 116, sealed: 136 },
+    "256": { broken: 2, fair: 80, good: 120, mint: 138, sealed: 159 } },
   // === AUDIT ROUND 2 — 5 more devices with >15% multiplier error ===
   gs24p: {
     "256": { broken: 47, fair: 144, good: 198, mint: 230, sealed: 266 },
@@ -572,9 +572,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "128": { broken: 1, fair: 27, good: 36, mint: 50, sealed: 94 },
     "256": { broken: 1, fair: 36, good: 45, mint: 58, sealed: 112 } },
   px7p: {
-    "128": { broken: 1, fair: 45, good: 72, mint: 108, sealed: 153 },
-    "256": { broken: 2, fair: 58, good: 86, mint: 122, sealed: 162 },
-    "512": { broken: 4, fair: 63, good: 90, mint: 126, sealed: 166 } },
+    "128": { broken: 1, fair: 35, good: 62, mint: 98, sealed: 123 },
+    "256": { broken: 2, fair: 48, good: 76, mint: 112, sealed: 132 },
+    "512": { broken: 4, fair: 53, good: 80, mint: 116, sealed: 136 } },
   gs20: {
     "base": { broken: 1, fair: 45, good: 58, mint: 68, sealed: 99 } },
   // === FULL IWM SCRAPE — all remaining devices ===
@@ -745,39 +745,39 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "2tb": { broken: 338, fair: 783, good: 837, mint: 909, sealed: 1035 },
     "512": { broken: 270, fair: 558, good: 612, mint: 684, sealed: 765 } },
   px10a: {
-    "128": { broken: 2, fair: 99, good: 153, mint: 198, sealed: 234 },
-    "256": { broken: 11, fair: 117, good: 171, mint: 216, sealed: 256 } },
+    "128": { broken: 2, fair: 89, good: 143, mint: 188, sealed: 204 },
+    "256": { broken: 11, fair: 107, good: 161, mint: 206, sealed: 226 } },
   px5: {
-    "base": { broken: 1, fair: 18, good: 32, mint: 40, sealed: 54 } },
+    "base": { broken: 1, fair: 8, good: 22, mint: 30, sealed: 31 } },
   px5a: {
     // broken was 27 — ABOVE fair (22), so claiming worse condition paid more.
     // Lowered to 6 to restore the ladder, derived from the Pixel-family
     // broken/fair ratio (px5 4/18, px6 9/32 ≈ 0.22-0.28 × fair 22). Confirm. (bug fix)
-    "base": { broken: 2, fair: 22, good: 45, mint: 54, sealed: 72 } },
+    "base": { broken: 2, fair: 12, good: 35, mint: 44, sealed: 45 } },
   px6: {
-    "128": { broken: 1, fair: 32, good: 45, mint: 58, sealed: 99 },
-    "256": { broken: 1, fair: 40, good: 54, mint: 68, sealed: 112 } },
+    "128": { broken: 1, fair: 22, good: 35, mint: 48, sealed: 69 },
+    "256": { broken: 1, fair: 30, good: 44, mint: 58, sealed: 82 } },
   px6p: {
-    "128": { broken: 1, fair: 40, good: 68, mint: 81, sealed: 108 },
-    "256": { broken: 1, fair: 50, good: 76, mint: 90, sealed: 112 },
-    "512": { broken: 1, fair: 54, good: 81, mint: 94, sealed: 117 } },
+    "128": { broken: 1, fair: 30, good: 58, mint: 71, sealed: 78 },
+    "256": { broken: 1, fair: 40, good: 66, mint: 80, sealed: 82 },
+    "512": { broken: 1, fair: 44, good: 71, mint: 84, sealed: 87 } },
   px7: {
-    "128": { broken: 1, fair: 36, good: 45, mint: 63, sealed: 112 },
-    "256": { broken: 1, fair: 45, good: 54, mint: 72, sealed: 122 } },
+    "128": { broken: 1, fair: 26, good: 35, mint: 53, sealed: 82 },
+    "256": { broken: 1, fair: 35, good: 44, mint: 62, sealed: 92 } },
   px7a: {
-    "base": { broken: 1, fair: 45, good: 63, mint: 72, sealed: 112 } },
+    "base": { broken: 1, fair: 35, good: 53, mint: 62, sealed: 82 } },
   px8a: {
-    "128": { broken: 1, fair: 72, good: 108, mint: 126, sealed: 176 },
-    "256": { broken: 1, fair: 81, good: 117, mint: 135, sealed: 198 } },
+    "128": { broken: 1, fair: 62, good: 98, mint: 116, sealed: 146 },
+    "256": { broken: 1, fair: 71, good: 107, mint: 125, sealed: 168 } },
   px9a: {
-    "128": { broken: 20, fair: 90, good: 130, mint: 158, sealed: 202 },
-    "256": { broken: 25, fair: 108, good: 148, mint: 176, sealed: 225 } },
+    "128": { broken: 20, fair: 80, good: 120, mint: 148, sealed: 172 },
+    "256": { broken: 25, fair: 98, good: 138, mint: 166, sealed: 195 } },
   px9pfold: {
-    "256": { broken: 74, fair: 292, good: 360, mint: 405, sealed: 450 },
-    "512": { broken: 83, fair: 320, good: 387, mint: 432, sealed: 540 } },
+    "256": { broken: 74, fair: 282, good: 350, mint: 395, sealed: 420 },
+    "512": { broken: 83, fair: 310, good: 377, mint: 422, sealed: 510 } },
   pxfold: {
-    "256": { broken: 7, fair: 90, good: 135, mint: 158, sealed: 202 },
-    "512": { broken: 7, fair: 126, good: 171, mint: 194, sealed: 248 } },
+    "256": { broken: 7, fair: 80, good: 125, mint: 148, sealed: 172 },
+    "512": { broken: 7, fair: 116, good: 161, mint: 184, sealed: 218 } },
   switch: {
     // The "switch" variant card IS the OLED (label "Nintendo Switch OLED",
     // switch-oled.webp, base from IWM switch-oled) — but this row held plain
