@@ -523,7 +523,7 @@ export const DEVICE_IMAGES: Record<string, string> = {
   "Mac Studio M2 Max": "/devices/mac-studio-m2.webp",
   "Mac Studio M2 Ultra": "/devices/mac-studio-m2.webp",
   "Mac Studio M4 Max": "/devices/mac-studio-m2.webp",
-  "Mac Studio M4 Ultra": "/devices/mac-studio-m2.webp",
+  "Mac Studio M3 Ultra": "/devices/mac-studio-m2.webp",
   "MacBook": "/macbook-classic-series.webp",
   "MacBook Air": "/macbook-air-series.webp",
   "MacBook Air 13\" M1 (2020)": "/devices/macbook-air-m1.webp",

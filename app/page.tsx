@@ -1105,7 +1105,10 @@ const APPLE_MACMINI_VARIANTS = [
   { id: "macminim1", label: "Mac Mini M1", base: 175, image: "/devices/mac-mini-m1.webp" },
 ];
 const APPLE_MACSTUDIO_VARIANTS = [
-  { id: "macstudiom4u", label: "Mac Studio M4 Ultra", base: 1760, image: "/devices/mac-studio-m2.webp" },
+  // The 2025 Mac Studio's top config is the M3 Ultra (paired with the M4 Max) —
+  // there is no "M4 Ultra" chip. Internal id kept as macstudiom4u to avoid
+  // touching PRICE_TABLE / MANUAL_REVIEW references; only the label is a spec.
+  { id: "macstudiom4u", label: "Mac Studio M3 Ultra", base: 1760, image: "/devices/mac-studio-m2.webp" },
   { id: "macstudiom4m", label: "Mac Studio M4 Max", base: 1120, image: "/devices/mac-studio-m2.webp" },
   { id: "macstudiom2u", label: "Mac Studio M2 Ultra", base: 1280, image: "/devices/mac-studio-m2.webp" },
   { id: "macstudiom2m", label: "Mac Studio M2 Max", base: 800, image: "/devices/mac-studio-m2.webp" },
@@ -2214,7 +2217,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   // Samsung Galaxy
   gs26u: ["256", "512", "1tb"],
   gs26p: ["256", "512"],
-  gs26: ["128", "256", "512"],
+  gs26: ["256", "512"],  // S26 base starts at 256GB in the US — no 128GB SKU (2026-07-17 audit)
   gs25u: ["256", "512", "1tb"],
   gs25edge: ["256", "512"],
   gs25p: ["256", "512"],
@@ -2229,7 +2232,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   gs24: ["128", "256"],
   gs23u: ["256", "512", "1tb"],
   gs23p: ["256", "512"],
-  gs23: ["128", "256", "512"],
+  gs23: ["128", "256"],  // base S23 US only shipped 128/256 — 512GB was +/Ultra-only (2026-07-17 audit)
   gs22u: ["128", "256", "512", "1tb"],
   gs22p: ["128", "256"],
   gs22: ["128", "256"],
@@ -2292,7 +2295,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   // Samsung Computers
   sgbk4u: ["512", "1tb"],
   sgbk4p: ["512", "1tb"],
-  sgbk4pro: ["256", "512"],
+  sgbk4pro: ["512", "1tb"],  // Galaxy Book4 Pro has no 256GB SKU — starts at 512GB
   sgbk4: ["256", "512"],
   sgbk3u: ["512", "1tb"],
   sgbk3p: ["512", "1tb"],
@@ -2309,17 +2312,17 @@ const STORAGE_MAP: Record<string, string[]> = {
   lnslim7: ["256", "512"],
   lnslim5: ["256", "512"],
   lnlegion7: ["512", "1tb"],
-  lnlegion5: ["256", "512", "1tb"],
-  lnlegion5g8: ["256", "512"],
+  lnlegion5: ["512", "1tb"],  // Legion 5 has no 256GB SKU — starts at 512GB
+  lnlegion5g8: ["512", "1tb"],  // Legion 5 Gen8 starts at 512GB
   // Dell
   dxps17: ["512", "1tb"],
   dxps15: ["512", "1tb"],
-  dxps13: ["256", "512", "1tb"],
+  dxps13: ["512", "1tb"],  // XPS 13 (9340, 2024) starts at 512GB; the 256GB era is the separate dxps13g23 entry
   dxps15g23: ["512", "1tb"],
   dxps13g23: ["256", "512"],
   dlat7440: ["256", "512"],
   dlat5540: ["256", "512"],
-  dinsp16p: ["256", "512", "1tb"],
+  dinsp16p: ["512", "1tb"],  // Inspiron 16 Plus (7630) starts at 512GB, no 256GB base
   dinsp15: ["256", "512"],
   dinsp14: ["256", "512"],
   // Alienware
@@ -2346,23 +2349,27 @@ const STORAGE_MAP: Record<string, string[]> = {
   acswx14: ["512", "1tb"],
   acsw14: ["256", "512"],
   acpred16: ["512", "1tb"],
-  acpred18: ["512", "1tb"],
-  acnit16: ["256", "512"],
+  acpred18: ["1tb", "2tb"],  // Predator Helios 18 (PH18-71) ships 1TB base; 512GB was never a shipped SKU
+  acnit16: ["512", "1tb"],  // Nitro 16 (AN16) base is 512GB Gen4, no 256GB config
   acnit15: ["256", "512"],
   acasp15: ["256", "512"],
   acasp3: ["128", "256"],
   // LG
   lggr17: ["512", "1tb"],
-  lggr16: ["256", "512", "1tb"],
+  lggr16: ["512", "1tb"],  // Gram 16 (16Z90S) US SKUs start at 512GB
   lggr14: ["256", "512"],
   lggr17g23: ["512", "1tb"],
-  lggr16g23: ["256", "512"],
+  lggr16g23: ["512", "1tb"],  // Gram 16 2023 (16Z90R) US SKUs start at 512GB
   lggrpro16: ["512", "1tb"],
   lgultgear: ["512", "1tb"],
   // Apple Desktops
-  macstudiom4u: ["512", "1tb"],
+  // Mac Studio ULTRA starts at 1TB — Apple never sold a 512GB Ultra (2026-07-17
+  // audit vs Apple specs). The MAX variants correctly keep their 512GB base.
+  // (macstudiom4u is really the M3 Ultra — there is no M4 Ultra chip; the
+  // customer-facing label is corrected in APPLE_MACSTUDIO_VARIANTS.)
+  macstudiom4u: ["1tb", "2tb"],
   macstudiom4m: ["512", "1tb"],
-  macstudiom2u: ["512", "1tb"],
+  macstudiom2u: ["1tb", "2tb"],
   macstudiom2m: ["512", "1tb"],
   macprom2u: ["1tb"],
   macminim4: ["256", "512"],
@@ -2438,7 +2445,10 @@ const STORAGE_MAP: Record<string, string[]> = {
   ipadair11m2: ["128", "256", "512", "1tb"],
   ipad11: ["128", "256", "512"],
   ipad10: ["64", "256"],
-  ipad9: ["64", "128"],
+  // iPad 9th gen ships in 64GB and 256GB — never 128GB. The funnel was
+  // offering a phantom 128 (no PRICE_TABLE entry → dead quote) and HIDING the
+  // real 256 (which is priced). Corrected to match Apple + PRICE_TABLE.
+  ipad9: ["64", "256"],
   ipadmini7: ["128", "256", "512"],
   ipadmini6: ["64", "256"],
   // Samsung Tablets — verified against Samsung's launch storage matrix.
@@ -2451,7 +2461,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   stabs10p: ["256", "512"],
   stabs10fep: ["128", "256"],
   stabs10fe:  ["128", "256"],
-  stabs10l:   ["64", "128"],
+  stabs10l:   ["128", "256"],  // Tab S10 Lite base is 128GB (no 64GB SKU), up to 256GB (2026-07-17 audit)
   stabs9u: ["256", "512", "1tb"],
   stabs9p: ["256", "512"],
   stabs9: ["128", "256"],
@@ -2475,7 +2485,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   // Lenovo Tabs
   ltabp12: ["128", "256"],
   ltabp11g2: ["128", "256"],
-  ltabp11: ["128", "256"],
+  ltabp11: ["64", "128"],  // base Tab P11 (1st gen) US is 64/128; 256GB belonged to the P11 Plus (2026-07-17 audit)
   ltabm11: ["64", "128"],
   // OnePlus
   oppad2: ["128", "256"],
