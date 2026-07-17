@@ -14,7 +14,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { advance, seedState, detectBulkIntent, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 import { notifyOwnerSms } from "../../lib/owner-sms";
-import { recordOutbound } from "../../lib/msgr-signals";
+import { recordOutbound, senderName, muteToken } from "../../lib/msgr-signals";
 
 export const dynamic = "force-dynamic";
 
@@ -104,14 +104,29 @@ function renderManyChat(reply: BotReply, self: string, secret: string, psid?: st
 // handoff, so no lead sits unseen in the ManyChat inbox. Best-effort; awaited so
 // serverless doesn't cut the SMS off, but notifyOwnerSms never throws. Also fires
 // the optional MSGR_NOTIFY_URL webhook (MC etc.) when configured.
-async function notifyLead(reply: BotReply, state: ConvoState) {
+// WHO + WHAT ride every alert now — a bare "customer asked to talk to the team.
+// Reply in ManyChat." (the pre-2026-07-17 shape) gave the owner nothing to find
+// the thread by when several conversations were running at once.
+async function notifyLead(reply: BotReply, state: ConvoState, typed?: string, psid?: string) {
+  const who = psid ? (await senderName(psid)) || `contact #${psid.slice(-6)}` : "";
+  const specs = [state.device_name, state.storage, state.condition, state._carrier].filter(Boolean).join(" · ");
+  const muteLink = psid ? `🤫 Take over (mutes bot 24h): https://topcashcellular.com/api/msgr-ai?mute=${psid}&t=${muteToken(psid)}` : "";
   let sms = "";
   if (reply.offer) {
     const tag = reply.offer.hot ? "🔥 HOT lead" : "💰 New lead";
-    const specs = [state.storage, state.condition, state._carrier].filter(Boolean).join(", ");
-    sms = `${tag} — TCC bot: ${reply.offer.deviceName}${specs ? ` (${specs})` : ""} → offered $${reply.offer.quote}. Close it in ManyChat 👉`;
+    const offerSpecs = [state.storage, state.condition, state._carrier].filter(Boolean).join(", ");
+    sms = [
+      `${tag} — TCC bot${who ? ` — ${who}` : ""}: ${reply.offer.deviceName}${offerSpecs ? ` (${offerSpecs})` : ""} → offered $${reply.offer.quote}. Close it in ManyChat 👉`,
+      muteLink,
+    ].filter(Boolean).join("\n");
   } else if (reply.handoff) {
-    sms = `🙋 TCC bot needs you: ${reply.handoff.reason}${reply.handoff.bulk ? " — bulk lot" : ""}. Reply in ManyChat.`;
+    sms = [
+      `🙋 TCC bot needs you${who ? ` — ${who}` : ""}: ${reply.handoff.reason}${reply.handoff.bulk ? " — bulk lot" : ""}`,
+      specs ? `📱 ${specs}` : "",
+      typed ? `💬 "${typed.slice(0, 90)}"` : "",
+      "Reply in ManyChat.",
+      muteLink,
+    ].filter(Boolean).join("\n");
   }
   if (!sms) return;
   await notifyOwnerSms(sms);
@@ -146,9 +161,14 @@ export async function POST(req: NextRequest) {
   const typed = body.text ?? req.nextUrl.searchParams.get("text") ?? undefined;
   if (typed && detectBulkIntent(typed)) state.step = "bulk";
 
+  // Who this is — from the request body or the state riding the tap. Resolved
+  // BEFORE the notify so alerts can carry the name + mute link.
+  const psidRaw = typeof (body as { psid?: unknown }).psid === "string" ? String((body as { psid?: unknown }).psid).trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
+  const psid = /^\d{3,20}$/.test(psidRaw) ? psidRaw : state.psid && /^\d{3,20}$/.test(state.psid) ? state.psid : "";
+
   const reply = await advance(state, req.nextUrl.origin);
   // Text the owner on the money moments: any quote (deal) or any handoff.
-  if (reply.offer || reply.handoff) await notifyLead(reply, state);
+  if (reply.offer || reply.handoff) await notifyLead(reply, state, typed, psid || undefined);
   // Typed instead of tapped? Nudge to tap rather than re-asking the whole
   // question (which read as an annoying loop).
   if (body.retext && reply.quickReplies.length) {
@@ -157,8 +177,6 @@ export async function POST(req: NextRequest) {
   }
   // Outbound ledger: when we know who this is, record what the funnel said so
   // the AI's owner-takeover detection can tell bot lines from Sonny's.
-  const psidRaw = typeof (body as { psid?: unknown }).psid === "string" ? String((body as { psid?: unknown }).psid).trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
-  const psid = /^\d{3,20}$/.test(psidRaw) ? psidRaw : state.psid && /^\d{3,20}$/.test(state.psid) ? state.psid : "";
   if (psid) await recordOutbound(psid, reply.texts);
   return renderManyChat(reply, self, secret, psid || undefined);
 }

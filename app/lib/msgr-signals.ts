@@ -15,7 +15,7 @@
 // by the owned webhook's echo detection AND by the AI brain's owner-takeover
 // detection; read by both before replying.
 
-import { createHash } from "crypto";
+import { createHash, createHmac } from "crypto";
 import { put, list, del } from "@vercel/blob";
 
 // 2h standdown per takeover signal — was 60 min; Sonny liked the feature and
@@ -88,5 +88,69 @@ export async function deferActive(psid: string): Promise<boolean> {
     return ts.some((x) => Date.now() - x.t < DEFER_MS);
   } catch {
     return false; // fail open: reply rather than go silent on infra errors
+  }
+}
+
+// "Who is who" for owner alerts: resolve the sender's real profile name from
+// the page inbox (the direct /{psid} profile read is blocked in DEV mode, the
+// conversations lookup works). Best-effort — callers fall back to a contact #.
+export async function senderName(psid: string): Promise<string> {
+  const token = process.env.PAGE_ACCESS_TOKEN || "";
+  if (!token) return "";
+  try {
+    const r = await fetch(
+      `https://graph.facebook.com/v21.0/me/conversations?user_id=${encodeURIComponent(psid)}&fields=participants&access_token=${encodeURIComponent(token)}`,
+      { cache: "no-store" },
+    );
+    const j = (await r.json().catch(() => null)) as { data?: { participants?: { data?: { name?: string; id?: string }[] } }[] } | null;
+    return j?.data?.[0]?.participants?.data?.find((p) => p.id === psid)?.name || "";
+  } catch {
+    return "";
+  }
+}
+
+// Signed token for the one-tap owner mute link (/api/msgr-ai?mute=<psid>&t=<hmac>)
+// — HMAC of the contact id, so a link only works for that one conversation.
+export function muteToken(psid: string): string {
+  return createHmac("sha256", process.env.MSGR_BOT_SECRET || "").update(`mute:${psid}`).digest("hex").slice(0, 16);
+}
+
+// ---- blob-backed conversation memory (msgr-ctx/{psid}/{ts13}.txt) -----------
+// The owned webhook has always kept its deep transcript here; the ManyChat path
+// now writes it too, so a returning lead's history survives ManyChat's shallow
+// 8-turn ai_ctx field — with the Graph thread read as the richer source when
+// the page token is healthy, and this as the fallback when it isn't (the token
+// died 2026-07-15 and the bot forgot a lead's whole prior deal — Rick Dee came
+// back after 9 days asking "you remember what price you gave me?" and the bot
+// had nothing). Unique ts-prefixed pathnames, newest wins — same CDN-staleness
+// rule as every other marker here.
+export async function loadCtxBlob(psid: string): Promise<string> {
+  try {
+    const { blobs } = await list({ prefix: `msgr-ctx/${psid}/`, limit: 100 });
+    const entries = blobs
+      .map((b) => ({ ts: Number(b.pathname.match(/\/(\d{13})\.txt$/)?.[1] || 0), url: b.url }))
+      .filter((x) => x.ts)
+      .sort((a, b) => b.ts - a.ts);
+    if (!entries.length) return "";
+    // Sweep all but the newest 3 so the ts-sorted (oldest-first) listing never
+    // pushes the newest entry out of the 100-item window.
+    const old = entries.slice(3).map((x) => x.url);
+    if (old.length) del(old).catch(() => {});
+    const r = await fetch(entries[0].url, { cache: "no-store" });
+    return r.ok ? await r.text() : "";
+  } catch {
+    return "";
+  }
+}
+export async function saveCtxBlob(psid: string, ctx: string): Promise<void> {
+  try {
+    await put(`msgr-ctx/${psid}/${String(Date.now()).padStart(13, "0")}.txt`, ctx, {
+      access: "public",
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      contentType: "text/plain",
+    });
+  } catch {
+    /* best-effort memory */
   }
 }

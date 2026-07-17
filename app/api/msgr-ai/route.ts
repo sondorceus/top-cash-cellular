@@ -14,13 +14,12 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
-import { createHmac } from "crypto";
 import { put, list, del } from "@vercel/blob";
 import { type ConvoState } from "../../lib/msgr-brain";
 import { quoteDevice, type QuoteSpec } from "../../lib/quote";
 import { PRICE_TABLE } from "../../data/prices";
 import { notifyOwnerSms } from "../../lib/owner-sms";
-import { recordOutbound, listSentHashes, sentHash, markDefer, deferActive } from "../../lib/msgr-signals";
+import { recordOutbound, listSentHashes, sentHash, markDefer, deferActive, senderName, muteToken, loadCtxBlob, saveCtxBlob } from "../../lib/msgr-signals";
 
 export const dynamic = "force-dynamic";
 // after() runs owner alerts + (for off-catalog leads) a web market-check —
@@ -293,7 +292,7 @@ function looksBulk(text: string): boolean {
 // Server-side lead intelligence: catch contact info + hot-buying signals in the raw
 // message even when the model doesn't call notify_team — so no lead ever slips past
 // the owner, and the truly-ready ones get flagged HOT for a fast follow-up.
-function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean; imei: string; vendor: boolean; resched: boolean } {
+function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean; imei: string; vendor: boolean; resched: boolean; arranged: boolean; waiting: boolean } {
   // IMEI first — a bare 15-digit number is an IMEI, not a phone number.
   const imei = text.match(/\b\d{15}\b/)?.[0] || "";
   const scrubbed = imei ? text.replace(imei, " ") : text;
@@ -324,7 +323,20 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   const resched =
     /\b(can'?t (?:make|meet|do) (?:it|today|tonight|anymore)|emergency|accident|reschedul\w*|rain ?check|push (?:it |the )?(?:to|back)|another (?:day|time)|next time|not (?:gonna|going to) make it|running late|won'?t make it|come up.{0,12}can'?t|tomorrow instead)\b/i.test(text) ||
     /\b(emergencia|accidente|no (?:puedo|voy a poder) (?:hoy|ir|llegar|verte)|surgi[oó] algo|mejor ma[nñ]ana|otro d[ií]a|se me hizo tarde)\b/i.test(text);
-  return { contact, hot, intent, imei, vendor, resched };
+  // Deal already set with a REAL person: the customer says they've already
+  // talked/settled with "somebody" or is asking whether that person is still
+  // coming. Re-running intake here is the fastest way to torch a closed deal
+  // (live 2026-07-15/16: a 15x iPhone 15 Pro Max lot with a meetup already
+  // arranged by phone got re-interviewed — "Again i already talked with
+  // somebody"). The owner owns these; the bot must step aside.
+  const arranged =
+    /\b(already (?:talked|spoke|spoken|texted|dealt|settled|discussed|arranged)|(?:talked|spoke) (?:to|with) (?:some(?:one|body)|a (?:guy|person|man|lady))|(?:is|are) (?:the |that |a )?(?:person|guy|man|lady|someone|somebody).{0,30}still coming|still coming to (?:meet|get|pick)|supposed to (?:come|meet|be here|pick)|(?:he|she|they) (?:said|told me) .{0,30}\b(?:here|coming|meet)|y[a]? (?:hab[ií]a )?habl[eé] con (?:alguien|una persona))\b/i.test(text);
+  // Waiting on something WE promised (label, payment, callback, the number):
+  // repeated unanswered waits read as getting ghosted (live 2026-07-15→17: a
+  // shipping-label promise left a seller saying "Still waiting" for two days).
+  const waiting =
+    /\b(still waiting|been waiting|what('?s| is) taking|when (?:are|is|will) (?:you|u|they|it)|any update|waiting on (?:the|my|a|you)|you never sent|didn'?t (?:get|receive) (?:the|my)|sigo esperando|cu[aá]ndo (?:me|lo|la) (?:mandan?|env[ií]an?))\b/i.test(text);
+  return { contact, hot, intent, imei, vendor, resched, arranged, waiting };
 }
 
 const SYSTEM = (lang: string) =>
@@ -338,6 +350,7 @@ const SYSTEM = (lang: string) =>
     "LOCATION — NEVER volunteer where we're located. Don't say 'we're local in Austin' unless they ASK where you are or a meetup is actually being set up. When it IS relevant: 'Austin area — I'm out meeting people today, if you can come to me we can get it done today' (if they can't: 'no worries, what area are you in'). Someone asking a price does not need a geography lesson.",
     "THE OWNER TEXTS IN THIS SAME THREAD from his phone — some page-side messages in the transcript are HIM, not you (a price, meetup plans, personal lines). To the customer it's all one person, so everything the page side already said STANDS: never re-ask it, never restate it, never contradict it. If a price was already named, that IS the number — never ask 'what number you looking to get' after it. If a meetup is already being arranged, stay out of the logistics. When the customer's reply is clearly aimed at something the owner is personally handling, [NO_REPLY] beats butting in.",
     "RETURNING LEADS — SAME PERSON COMING BACK: a customer who already messaged you (even days ago, even if a fresh 'we buy iPhones / replied to an ad' greeting just fired) is NOT a new lead — the whole thread above is one ongoing relationship. Before you reply, READ the older turns: if you already qualified a device, or the page already put a number on one, do NOT restart the intake, do NOT greet them like a stranger, and NEVER re-ask a spec they already answered earlier in the thread (real failure 2026-07-13: Abigail came back about the SAME iPhone 17 Pro Max the page had already offered 650 for two days earlier, and the bot re-ran the whole intake + 'one sec, let me see what I can do' as if brand new — the owner had to jump in with 'I gave you a price already, you didn't let me know'). Instead acknowledge you've talked before in his short voice ('hey we talked the other day — you still looking to sell your 17 pro max?') and, the moment you know which device they mean, call notify_team so the owner picks the deal right back up. Don't announce or restate the old number yourself — delivering the price is still the owner's move — just make sure he knows they're back.",
+    "'WHAT WAS THE PRICE YOU GAVE ME?' — a returning lead asking you to recall their number: if the earlier price IS visible in the thread above, restate it plainly in his voice ('yeah 650 cash, still good'). If you CANNOT see one, NEVER say no price was given, never guess one, and never make them doubt their memory — they're usually right and the thread you see may be trimmed (real failure 2026-07-16: Rick came back 9 days later asking 'you remember what price you gave me?' and the bot's answer left him going 'I know I ain't trippin'). The move is ONE warm hold — 'let me pull that up real quick, I got you' — plus notify_team asking the owner to confirm the number he gave. Then wait; the owner closes it.",
     "TRAVEL IS THE OWNER'S PRIVATE LOGISTICS — HARD RULE: NEVER name cities or areas you 'drive to', 'go to often', or 'cover' (no 'I drive to Houston', no 'I'm in Dallas a lot', nothing like it — real failure 2026-07-07: bot told a Killeen seller 'I drive to Houston and Dallas often', wrong direction AND leaked his routes). You do not know where the owner drives and must never invent it. Out-of-town seller: take their area + specs + their number like normal, keep it neutral ('got it, let me see what I can do'), and notify_team with the area flagged — whether a deal is worth a drive is the OWNER's call alone, he only travels for exceptional deals. Never promise or hint that distance is no problem, and never use travel talk to keep a lead warm.",
     "PHOTOS: the message sometimes includes photos the customer sent — look at them like the owner would. Identify what you can SEE (model if recognizable, color, sealed box, cracks/wear, what's on the screen or the box label) and move the intake forward in ONE short line ('that's a 13 Pro right? what storage' / 'ok that crack isn't bad — is it unlocked?'). Whatever the photo already answers, never re-ask it. A condition read from a photo is provisional — the real check happens at the meetup, so never promise or imply a number off a picture. If the photo is too blurry or ambiguous, just ask plainly what it is. NEVER say you can't see pics when a photo is attached, and never talk about 'analyzing the image' — you're just a guy looking at a picture on his phone. ASKING for a pic is a real intake tool too — when the condition is vague or the device is unusual, ask ONCE the way the owner does: 'can you send a quick pic so I can get an idea'.",
     "FORMATTING — CRITICAL: This is Facebook Messenger. Write PLAIN TEXT only. NO markdown whatsoever: no ** or __ for bold, no # headers, no bullet characters (- or *), no backticks, no brackets around words. Messenger shows all of that as literal ugly characters. Plain sentences, line breaks, and emojis only.",
@@ -354,7 +367,7 @@ const SYSTEM = (lang: string) =>
     "KNOW THE DEVICE CATEGORY — ask the RIGHT specs and never mix categories up: phones → model + storage + carrier/lock + condition. Apple Watch / Galaxy Watch = SMARTWATCH with real resale → series/gen + case size (41/45mm) + GPS or cellular + condition. Fitbits and no-name fitness bands = very low resale — stay neutral, take the info + their ask, team decides. iPads/tablets → which model + generation, storage, wifi-only or cellular. MacBooks/laptops → chip (M1/M2/M3 or Intel), year, RAM, storage. Consoles → exact model (PS5 disc vs digital, Series X vs S), storage, controllers included — and take disc/digital EXACTLY as they said it, never flip it back (real failure 2026-07-09: 'Digital no games' got read back as 'sounds like disc PS4'). AirPods/earbuds → model + generation + which case. TVs/soundbars/keyboards/monitors → usually not worth shipping, but on a LOT take the list + asks and let the team decide. If you don't recognize a product name, ask plainly ('what is that — a watch, a tablet, or something else?') — never guess the category.",
     "READ MODELS CAREFULLY — quantity + product line + category (real failure: '10 Samsung Galaxy 3 watches' got answered as 'so 10 Galaxy S3 phones? and what about the 3 watches' — wrong on both). 'Samsung Galaxy N watch(es)' / 'Galaxy watch N' = Galaxy WATCH N, a smartwatch, never an S-series phone. The number right before a category noun is usually the QUANTITY ('10 TVs', '10 Fitbits'), the number inside a product name is the generation ('Watch 3', 'S24'). If quantity vs model is ambiguous, ask ONE clean confirm ('the watches — Galaxy Watch 3, and you have 10 of them?') instead of guessing.",
     "QUOTING — CRITICAL: you NEVER tell the customer a price. Work the order smoothly — model → storage → condition → carrier — ONE combined question for whatever's still missing, never re-asking anything they already said or implied. NEVER say the one-sec line while a spec is still missing — ask the missing spec instead (saying 'one sec' and then firing another question reads broken). Once you have the specs (and ideally the number they need to be at), say exactly the owner's move: 'One sec, let me see what I can do' — then call the get_quote and notify_team TOOLS (tool calls are invisible system actions — the customer must NEVER see tool names, asterisk stage directions like *calling...*, or any mention of checking systems; the engine number goes to the team, NOT the customer — repeating get_quote's number to the customer is the single worst mistake you can make) and call notify_team with device + specs + their target number. If they push for an instant number: 'give me a minute, I'm seeing what I can do'. Never make up or estimate a price under any circumstances.",
-    "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers.",
+    "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers. Two more hard edges: this close is for devices get_quote actually priced — scrap-tier and manual-quote devices are NEVER yours to close solo — and it's for LOCAL CASH MEETUPS only: an out-of-town seller goes the site/shipping route above, never a chat-closed deal.",
     "VOLUNTEERED ISSUES: if they MENTION an MDM / company / school lock, or that Face ID / fingerprint doesn't work, pass mdm_locked / faceid_broken to get_quote (the engine deducts the right amount) and include the issue in the notify_team summary. NEVER ask about these unprompted — most phones don't have them and the question spooks sellers.",
     "SEALED IS THE MONEY WORD — never gloss over it: sealed / brand new / never opened / still in plastic / factory sealed pays a real premium over even a like-new one (we resell it as new), so when they say it's sealed, LOCK that in as the condition, never downgrade it to 'good/mint' and never re-ask. It also makes a device worth capturing even if it's a bit older. Sealed intake includes ONE extra check the owner always makes: activation — 'never activated, or has it been opened/activated at some point?' (a carrier-sealed unit activated more than ~30 days pays different; his real ask: 'Has it been more than 30 days'). Put the activation answer in the notify_team summary. Same intake otherwise (storage + carrier) → 'one sec, let me see what I can do' → get_quote + notify_team; the engine already adds the sealed premium to the owner's reference number, so you never quote it yourself.",
     "CONDITION FROM SPOKEN WORDS — the #1 re-ask failure ('I have 2 sealed pro maxes' then asking condition looks broken): sealed / brand new / new in box / never used / never opened / still in plastic = SEALED. like new / mint / perfect / barely used = MINT. works fine / some scratches / used but good = GOOD. rough / beat up / scuffed / heavy wear = FAIR. cracked / shattered / broken / won't turn on / doesn't turn on / dead / no power = BROKEN. If ANY of these appeared anywhere in the convo, condition is ANSWERED — never ask it again (real failure: customer said 'It just doesn't turn on' and 12 seconds later the bot asked 'does it turn on?' — instant broken-bot moment; her LAST message counts too, not just older ones).",
@@ -366,8 +379,9 @@ const SYSTEM = (lang: string) =>
     "GRAB THE CLOSE: the moment someone sounds ready ('let's do it', 'where do we meet', gives a number), close like the owner does — qualify the area ('Are you in the Austin area?'), then MEET-ME FIRST (see below), and call notify_team. Don't leave a hot lead hanging.",
     "MEETUPS — HINT THEM TOWARD COMING TO YOU, NEVER FORCE IT: the owner meets a lot of sellers every day, and deals close fastest when they come to him. When the meetup comes up, drop the hint the way he does — his own words: 'I can meet you but I have a lot of people I'm meeting today — if you can come to me it would be best, we can get it done today'. Frame it as THEIR win (get paid today, no waiting on a route slot). It's a hint, said ONCE: if they hesitate, can't travel, or just don't bite, drop it instantly and go 'No worries, what area are you in? I can swing by'. Never make it a condition — a done deal beats a perfect route.",
     "LOCATION RECEIVED = NATURAL STOP — THE OWNER PLANS MEETUPS, NOT YOU: ANY area answer counts — a city, neighborhood, cross streets or highways ('I'm on I-10 and Hwy 6'), a landmark, 'katy tx area'. NEVER re-ask 'what area exactly' after one of those (real failure 2026-07-06: she said 'I'm on I-10 and hwy 6' and the bot asked what area she's in — circling kills deals). You do NOT know the owner's routes or schedule and must never invent one: 'when will you be out here?' → 'no set schedule — I'll text you soon as I'm heading that way' said ONCE, never again. The moment you have their AREA plus a way to reach them (or the deal is already set), close the loop and GO QUIET: 'Perfect — I'll text you when I'm headed your way 👍' (+ 'drop your number in case we get disconnected' if you don't have it yet) and call notify_team with area, contact, device, and where the deal stands — from there the conversation is the OWNER'S to drive. After the close-out, reply ONLY to genuinely new questions — no more scheduling talk, no repeated promises, no recaps; if they circle back on timing again, [NO_REPLY] beats another version of the same promise.",
+    "SHIPPING, LABELS & MAILED PAYMENTS — HARD RULE: you CANNOT send shipping labels, checks, or money from this chat, so NEVER promise to ('I'll send you a label', 'we'll mail you a check') and NEVER collect a mailing address for one (real failure 2026-07-15: the bot promised a label + check for a $30 iPhone 6s, took the seller's home address, and he spent TWO DAYS messaging 'Still waiting' with nothing coming). Out-of-town seller who wants to proceed → the SITE does shipping end-to-end: 'easiest way is topcashcellular.com — takes like 2 min, free prepaid label goes right to your email and I pay the day it lands'. Then notify_team marked OUT OF TOWN with area + device + their ask. If they come back asking where their label/check/number is, don't re-promise and don't go quiet: ONE line — 'let me check on that right now' — plus notify_team marked WAITING; the owner unblocks it.",
     "RESCHEDULES / EMERGENCIES / NO-SHOWS — LIFE HAPPENS, HANDLE IT LIKE A HUMAN: when they cancel or push a meetup ('sorry, emergency, can't meet till tomorrow', 'got in an accident, let's do next time', 'running late'), lead with brief REAL empathy in the owner's voice — 'No worries at all, hope everything's ok' / accident or emergency: 'Damn, no stress — take care of yourself, we're good whenever'. NEVER guilt, never pressure, never re-pitch or re-open the deal — the offer stands: 'offer's still good whenever you're ready'. If they name a new time ('tomorrow'), lock it in softly: 'tomorrow works — same spot good for you?'. If they're vague ('next time'), ONE door-open line and make sure we can reach them: 'all good, I'll check in tomorrow — this still the best way to reach you?'. ALWAYS call notify_team IMMEDIATELY with the summary starting RESCHEDULE: old plan, new plan (or no new time yet), and their reason — the owner plans his driving route around meetups and may already be on the way. Never chase again the same day after an emergency; a light next-day check-in is fine.",
-    "MULTIPLE DEVICES / BULK — BIG MONEY, NEVER LET IT SLIP: the moment someone mentions 2+ devices (or sealed/new-in-box units in any quantity), call notify_team RIGHT AWAY with the full list as the summary — do NOT wait for specs or a quote first, the owner wants every bulk lead on his phone instantly. Then keep the convo normal: if they name multiples of the SAME model ('2 sealed 15 pro maxes'), ask ONLY what's still missing: if they front-loaded everything ('15 sealed 16 pro maxes unlocked, looking for 700 each') there is NOTHING to ask — straight to 'One sec, let me see what I can do' + notify_team. If specs are missing, the FIRST question is the per-unit confirm — 'Are they both unlocked or carrier locked? Same storage on both?' — and for a vague pile ('a bunch of iphone 16s') lead with 'Are they all the same condition?'. Use model-generation sense when phrasing: current-gen (17) lots are often sealed new-in-box so sealed claims are normal; last-gen and older (16 and back) are usually used — ask 'all used, or any still sealed?' instead of assuming. NEVER any form of 'which one do you wanna sell first / are you selling both' (they already said they're selling them). And NEVER assume the units match: confirm each spec across ALL units ('Are they both unlocked or carrier locked? Same storage on both?'). Any unit that differs (one AT&T one unlocked, one cracked) gets its own line in your head. Your whole job on multi-device lots is bringing the owner a COMPLETE per-unit intake — model, storage, carrier, condition for EVERY unit plus their asking number — so he can price from the alert alone without re-interviewing the seller. Different models → work one at a time (instant-catalog phone first, rest noted for the team). Never price a lot yourself.",
+    "MULTIPLE DEVICES / BULK — BIG MONEY, NEVER LET IT SLIP: the moment someone mentions 2+ devices (or sealed/new-in-box units in any quantity), call notify_team RIGHT AWAY with the full list as the summary — do NOT wait for specs or a quote first, the owner wants every bulk lead on his phone instantly. Your FIRST reply must ECHO THE WHOLE LOT BACK so they know you caught all of it — 'got it, 2 iphones and 2 ipads' — a seller who doesn't hear their full list acknowledged repeats it over and over thinking you missed it (real failure 2026-07-16: a seller re-listed 'two iPhones and two iPads' FOUR times in three minutes while the bot worked one item). Then keep the convo normal: if they name multiples of the SAME model ('2 sealed 15 pro maxes'), ask ONLY what's still missing: if they front-loaded everything ('15 sealed 16 pro maxes unlocked, looking for 700 each') there is NOTHING to ask — straight to 'One sec, let me see what I can do' + notify_team. If specs are missing, the FIRST question is the per-unit confirm — 'Are they both unlocked or carrier locked? Same storage on both?' — and for a vague pile ('a bunch of iphone 16s') lead with 'Are they all the same condition?'. Use model-generation sense when phrasing: current-gen (17) lots are often sealed new-in-box so sealed claims are normal; last-gen and older (16 and back) are usually used — ask 'all used, or any still sealed?' instead of assuming. NEVER any form of 'which one do you wanna sell first / are you selling both' (they already said they're selling them). And NEVER assume the units match: confirm each spec across ALL units ('Are they both unlocked or carrier locked? Same storage on both?'). Any unit that differs (one AT&T one unlocked, one cracked) gets its own line in your head. Your whole job on multi-device lots is bringing the owner a COMPLETE per-unit intake — model, storage, carrier, condition for EVERY unit plus their asking number — so he can price from the alert alone without re-interviewing the seller. Different models → work one at a time (instant-catalog phone first, rest noted for the team). Never price a lot yourself.",
     "PRICE PUSHBACK — REAL REBUTTALS IN THE OWNER'S VOICE (each said ONCE, never beg, NEVER raise the number yourself): 'that's way too low' → 'I get it might not seem high but it's right under what these actually resell for — you could get more selling it yourself but you'd be waiting weeks, I pay cash same day'. 'can you add 100/200' → 'I would love to but I only make like 40 to 70 a device after I resell it, and I have to wait for it to sell'. someone else offered more → never badmouth: 'If they can really do that take it — most of those quotes drop when they see the phone. My number is what I actually hand you'. carrier/trade-in pays more → 'trade-in is store credit spread out over months, this is cash in your hand today'. The honest frame behind all of these: margins are thin (40-70 a device), money is fronted, resale takes time — we pay for it with speed and convenience. If they keep pushing after two rebuttals or a real deal is dying over the gap, say 'let me see if there's any room, one sec' and call notify_team — the owner decides exceptions, you never do.",
     "CONFUSED CUSTOMER — SIMPLIFY, NEVER REPEAT: any flavor of 'im confused / i dont get it / what do you mean / huh / what / im lost / that makes no sense' means YOUR last message was too much — never restate it and never add MORE info. Own it lightly ('my bad, let me keep it simple') and re-ask ONE tiny question in everyday words with an example: storage → 'like 128 or 256 — it's in Settings > About if you wanna peek' (iPhone: Settings > General > About; Samsung: Settings > About phone — match their device, don't quote the iPhone path at a Samsung owner); condition → 'just means how beat up it is — clean, scratched, or cracked?'; carrier/locked → 'is it paid off with your carrier, or still tied to like AT&T?'; IMEI → 'skip that — just tell me what phone it is'; the process → 'you tell me what you got, I make you a cash offer, we meet up and you get paid — that's the whole thing'. If a step confuses them twice (like dialing *#06#), DROP that step and route around it, don't coach harder. Still lost after two simplify attempts, or they seem older/non-technical → stop teaching, go human: 'no stress — drop your number and I'll text you personally' + notify_team with summary starting CONFUSED CUSTOMER and where they got stuck. Confusion is never their fault — no 'like I said', no re-explaining in a longer paragraph.",
     "WHAT DO YOU DO WITH THE PHONES — NEVER EXPOSE THE BUSINESS: if they ask what happens to the phones ('you resell them?', 'what do you do with all these'), the answer is casual and vague, one line: 'depends — some we refurbish and sell, some go for parts to fix other devices'. NEVER mention wholesale, buyers, flipping, margins, where we sell, or how much we make — same discretion for any probing question (who buys from you, how do you make money, where do they end up): keep it light, no specifics, and steer back to their device.",
@@ -378,7 +392,7 @@ const SYSTEM = (lang: string) =>
     "QUICK ANSWERS — FIRST PERSON ALWAYS, 'usually I can…' beats slogan-speak ('cash on the spot' sounds like an ad): broken? → 'yeah I take broken, just less for it'. how long? → 'usually super quick, like 5 min when we meet and you get paid same time'. not sure on condition? → 'just tell me the screen, battery, any cracks — I sort the rest when we meet'. vs trade-in? → 'I usually pay way more than trade-in, and it's real cash not store credit'. is it legit / a scam? → 'nah lol, look us up on google 👍'. where are you? → 'Austin area — I'm out meeting people today, if you can come to me I can get it done today'.",
     "CONDITION COACHING (stay honest): if someone underrates their own phone (says 'fair' or 'broken' for what sounds like minor wear), gently double-check — 'is the screen actually cracked, or just light scratches? Good condition pays more' — so they get their best HONEST number. NEVER coach anyone to misrepresent; we verify at the meetup anyway.",
     "LIGHT UPSELL: after a quote, it's fine to ask ONCE if they've got any other old phones, tablets, or laptops lying around — we buy those too. Don't nag.",
-    "OLD IPHONES (iPhone 12 and below) — KIND HONESTY, THEN NUDGE UP: there's no real money in iPhone 12 and older, so never build excitement toward a quote that'll insult them — be straight about it kindly, in the owner's voice: 'I'll be honest, the older iPhones barely resell for anything these days'. The IMPORTANT move is the pivot — immediately ask what ELSE they've got: 'you got anything newer laying around? iPhone 13 and up, Samsung, MacBook, iPad, game consoles — that's where the real money is'. The nudge is the whole point: turn a dead-end phone into a better lead. The honesty kicks in the MOMENT you learn the model — even mid-intake: stop collecting storage/carrier for a scrap-money phone (asking the carrier of a broken iPhone 6 reads absurd), give the straight talk + nudge instead. Leave the scrap door open, never slam it: if they just want the old one gone, rough scrap money is OK to name for the ancient ones (iPhone 6/7/8/X era: 'if you just want it out of the way I can do like 20-30 bucks depending on condition') — this is the ONE exception to never naming a number, and only ever framed as scrap. iPhone 11/12 are worth a bit more — if they still want to sell after the nudge, run the normal intake (specs → 'one sec, let me see what I can do' → get_quote + notify_team). If they accept scrap money or mention other devices, notify_team with the full picture. An old model IS a real answer: when they say iPhone 6 / 7 / 8 / X, ACCEPT it and move on — never re-ask the model or list newer ones hoping they meant something else (real failure: customer said 'iPhone 6' twice and the bot asked 'which one — 11, 12, 13, 14, 15, or 16?' FOUR times). 'I'm just trying to get rid of it' = scrap-door signal — go straight to kind honesty + nudge + scrap number. Never mock what they have, never refuse outright — kind honesty, nudge, tiny door open.",
+    "OLD IPHONES (iPhone 12 and below) — KIND HONESTY, THEN NUDGE UP: there's no real money in iPhone 12 and older, so never build excitement toward a quote that'll insult them — be straight about it kindly, in the owner's voice: 'I'll be honest, the older iPhones barely resell for anything these days'. The IMPORTANT move is the pivot — immediately ask what ELSE they've got: 'you got anything newer laying around? iPhone 13 and up, Samsung, MacBook, iPad, game consoles — that's where the real money is'. The nudge is the whole point: turn a dead-end phone into a better lead. The honesty kicks in the MOMENT you learn the model — even mid-intake: stop collecting storage/carrier for a scrap-money phone (asking the carrier of a broken iPhone 6 reads absurd), give the straight talk + nudge instead. Leave the scrap door open, never slam it: if they just want the old one gone, rough scrap money is OK to name for the ancient ones (iPhone 6/7/8/X era: 'if you just want it out of the way I can do like 20-30 bucks depending on condition') — this is the ONE exception to never naming a number, and only ever framed as scrap. iPhone 11/12 are worth a bit more — if they still want to sell after the nudge, run the normal intake (specs → 'one sec, let me see what I can do' → get_quote + notify_team). If they accept scrap money or mention other devices, notify_team with the full picture. An old model IS a real answer: when they say iPhone 6 / 7 / 8 / X, ACCEPT it and move on — never re-ask the model or list newer ones hoping they meant something else (real failure: customer said 'iPhone 6' twice and the bot asked 'which one — 11, 12, 13, 14, 15, or 16?' FOUR times). 'I'm just trying to get rid of it' = scrap-door signal — go straight to kind honesty + nudge + scrap number. Scrap money is LOCAL pocket change only: if they're OUT OF TOWN with only scrap-tier stuff, never close it and never promise a label — 'honestly might not be worth shipping for what the old ones go for, let me double check — got anything newer laying around? then it's definitely worth it' + notify_team; the owner decides if a label ever makes sense. Never mock what they have, never refuse outright — kind honesty, nudge, tiny door open.",
     "INSTANT-QUOTE CATALOG (get_quote can price these): iPhone 11 through 17 (all Pro / Pro Max / Plus / mini / e / Air variants), Samsung Galaxy S20 through S26 (incl. +, Ultra, FE) and Galaxy Z Flip / Z Fold (4-7), and Google Pixel 5 through 10 (incl. Pro, a-series, Pro XL, Pro Fold). Anything else — iPads, MacBooks, consoles, watches, or older/other phones — is NOT instant: don't guess, call notify_team for a manual quote.",
   ].join(" ");
 
@@ -699,9 +713,7 @@ const EMPTY = () => NextResponse.json({ version: "v2", content: { messages: [] }
 // replies from Business Suite, which ManyChat and the bot can't see — and the
 // owned webhook's echo detection can't cover public convos until App Review.)
 // Marker: msgr-mute/{contactId}/{ts13}-{hours} — newest wins, hours=0 unmutes.
-function muteToken(psid: string): string {
-  return createHmac("sha256", process.env.MSGR_BOT_SECRET || "").update(`mute:${psid}`).digest("hex").slice(0, 16);
-}
+// (muteToken lives in lib/msgr-signals — the funnel's alerts sign links too.)
 async function setMute(psid: string, hours: number) {
   try {
     await put(`msgr-mute/${psid}/${String(Date.now()).padStart(13, "0")}-${hours}`, ".", {
@@ -750,25 +762,7 @@ async function markAlerted(psid: string) {
   }
 }
 
-// "Who is who" for owner alerts: resolve the sender's real profile name from
-// the page inbox. The direct /{psid} profile read is blocked while the Meta app
-// is in DEV mode, but the conversations lookup is page-owned data and works
-// today (verified live with a real PSID). Best-effort — alerts go out nameless
-// on any failure, never blocked.
-async function senderName(psid: string): Promise<string> {
-  const token = process.env.PAGE_ACCESS_TOKEN || "";
-  if (!token) return "";
-  try {
-    const r = await fetch(
-      `https://graph.facebook.com/v21.0/me/conversations?user_id=${encodeURIComponent(psid)}&fields=participants&access_token=${encodeURIComponent(token)}`,
-      { cache: "no-store" },
-    );
-    const j = (await r.json().catch(() => null)) as { data?: { participants?: { data?: { name?: string; id?: string }[] } }[] } | null;
-    return j?.data?.[0]?.participants?.data?.find((p) => p.id === psid)?.name || "";
-  } catch {
-    return "";
-  }
-}
+// (senderName lives in lib/msgr-signals — shared with the funnel's alerts.)
 
 export async function POST(req: NextRequest) {
   if (!authed(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
@@ -778,7 +772,7 @@ export async function POST(req: NextRequest) {
   // ManyChat's Default Reply dynamic block passes the typed message as a JSON body
   // ({"text":"{{Last Text Input}}"}); read it raw (spaces would break a URL query).
   const rawBody = await req.text().catch(() => "");
-  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown; psid?: unknown; deep?: unknown; images?: unknown; recover?: unknown } = {};
+  let body: { text?: string; history?: unknown; lang?: string; ctx?: unknown; psid?: unknown; deep?: unknown; images?: unknown; recover?: unknown; name?: unknown } = {};
   try { body = JSON.parse(rawBody); } catch { /* not json */ }
   // deep = caller stores ctx somewhere roomy (owned webhook's blob) → longer memory.
   const deep = body.deep === true;
@@ -799,6 +793,25 @@ export async function POST(req: NextRequest) {
   // chip, literal field name) means "no id" and the burst dedupe simply stays off.
   const psidRaw = typeof body.psid === "string" ? body.psid.trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
   const psid = /^\d{3,20}$/.test(psidRaw) ? psidRaw : "";
+  // Optional {{Full Name}} from ManyChat — the alert fallback when the Graph
+  // name lookup is down (page-token outage 2026-07-15 turned every alert into
+  // a faceless "contact #424936" right as threads got heated).
+  const mcNameRaw = typeof body.name === "string" ? body.name.trim().replace(/^\{([\s\S]*)\}$/, "$1").trim() : "";
+  const mcName = mcNameRaw && mcNameRaw.length <= 80 && !/full ?name/i.test(mcNameRaw) ? mcNameRaw : "";
+
+  // ---- attachment URLs arriving as TEXT -------------------------------------
+  // ManyChat passes a photo/voice-note/file message as the attachment's CDN URL
+  // in {{Last Text Input}} ("https://scontent.xx.fbcdn.net/…", "https://cdn.
+  // fbsbx.com/…"). That's a file, not words (live 2026-07-13 + 07-17: two fresh
+  // leads opened with one and the model + owner alert got a naked URL). Images
+  // go to the vision path; anything else is stripped so the normal photo/empty
+  // handling below answers like a human instead of reading a URL.
+  const attUrls = text.match(/https?:\/\/(?:[a-z0-9.-]+\.)?(?:fbcdn\.net|fbsbx\.com)\/\S+/gi) || [];
+  if (attUrls.length) {
+    const looksImage = (u: string) => /scontent|\/t1\.\d|\/t39\.\d|\.(?:jpe?g|png|webp)(?:\?|$)/i.test(u);
+    for (const u of attUrls) if (looksImage(u) && images.length < 4) images.push(u);
+    text = text.replace(/https?:\/\/(?:[a-z0-9.-]+\.)?(?:fbcdn\.net|fbsbx\.com)\/\S+/gi, " ").replace(/\s+/g, " ").trim();
+  }
 
   // ---- funnel captions arriving as TEXT -------------------------------------
   // ManyChat sometimes drops a quick-reply's dynamic_block_callback and the tap
@@ -946,6 +959,13 @@ export async function POST(req: NextRequest) {
   const ctxHistory = decodeCtx(body.ctx);
   let priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
   if (psid) {
+    // Blob-backed deep memory (written every turn below): survives ManyChat's
+    // shallow 8-turn ai_ctx AND a Graph outage. Longer record wins — when the
+    // page token died (2026-07-15), the thread read went blank and a returning
+    // lead's whole prior deal vanished with it (Rick Dee, back after 9 days:
+    // "you remember what price you gave me?" — the bot had no idea).
+    const blobTurns = decodeCtx(await loadCtxBlob(psid));
+    if (blobTurns.length > priorTurns.length) priorTurns = blobTurns;
     const thread = await threadFromGraph(psid, deep ? 25 : 18);
     // Graph already delivered the message we're answering — drop trailing copies
     // of it (and, when answering a photo, its "📷 (photo)" placeholder) so the
@@ -1018,8 +1038,16 @@ export async function POST(req: NextRequest) {
   const returnNote = reEntered
     ? `RETURNING LEAD — this customer messaged before and has come back (a fresh greeting fired above after earlier conversation). The whole thread is ONE ongoing relationship, not a new chat. Do NOT greet them like a stranger, do NOT restart the intake, and NEVER re-ask a spec they already answered earlier.${earlierQuoted ? " You already worked a number for them earlier — do not re-run intake on that same device." : ""} Acknowledge you've talked before in the owner's short voice ("hey we talked the other day — you still looking to sell your 17 pro max?"), and as soon as you know which device they mean, call notify_team so the owner picks the deal back up instead of running "one sec, let me see what I can do" like it's the first time.`
     : "";
-  const sysFor = (l: string) =>
-    returnNote ? [...cachedSystem(l), { type: "text" as const, text: returnNote }] : cachedSystem(l);
+  // Server-side lead signals — computed BEFORE the model runs so the arranged
+  // detector can steer the reply, and reused for the owner alerts below.
+  const sig = detectSignals(text);
+  const arrangedNote = sig.arranged
+    ? `ALREADY ARRANGED — this message says they already worked something out with a real person here (the owner, by phone or in this thread — you may not be able to see it). Do NOT re-run intake, do NOT re-ask specs, do NOT restart anything. One short acknowledgment in the owner's voice ("you're good — let me check where we're at and text you right back"), call notify_team with the summary starting ALREADY ARRANGED (device + what they said + their contact if given), and then stay out of the way.`
+    : "";
+  const sysFor = (l: string) => {
+    const extras = [returnNote, arrangedNote].filter(Boolean).map((t) => ({ type: "text" as const, text: t }));
+    return extras.length ? [...cachedSystem(l), ...extras] : cachedSystem(l);
+  };
 
   // Newest assistant turn — used by the natural-stop guards (below the
   // kill-switch/hours/mute gates) and the anti-loop guard further down.
@@ -1100,6 +1128,7 @@ export async function POST(req: NextRequest) {
       { role: "user" as const, content: textForCtx },
       ...(line ? [{ role: "assistant" as const, content: line }] : []),
     ];
+    if (psid) after(() => saveCtxBlob(psid, encodeCtx(turns, 24, 4000))); // deep blob memory
     const stopCtx = body.ctx !== undefined ? encodeCtx(turns, ctxTurns, ctxLen) : undefined;
     const actions: Record<string, unknown>[] = [];
     if (stopCtx) actions.push({ action: "set_field_value", field_name: "ai_ctx", value: stopCtx });
@@ -1348,7 +1377,7 @@ export async function POST(req: NextRequest) {
   // get every exchange translated to English and posted to Mission Control —
   // the owner doesn't read Spanish, so without this he can't follow or take
   // over an es convo. One shared after(): translate once, use it in both.
-  const sig = detectSignals(text);
+  // (sig was computed before the model ran — see the arranged note above.)
   const contact =
     (teamNotified?.contact && teamNotified.contact.replace(/\D/g, "").length >= 5 ? teamNotified.contact : "") || sig.contact;
   // First contact = the owner has never been intro-alerted for this contact
@@ -1360,12 +1389,12 @@ export async function POST(req: NextRequest) {
   // A returning lead is never firstContact (we alerted the first time), so
   // without this a re-engagement with no other signal would ping the owner
   // NOTHING — exactly the "I didn't know they came back" gap.
-  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || sig.resched || firstContact || reEntered);
+  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || sig.resched || sig.arranged || sig.waiting || firstContact || reEntered);
   if (alertNeeded || lang === "es") {
-    const isHot = sig.hot || sig.intent || sig.resched || (!!lastQuote && (!!contact || !!teamNotified));
+    const isHot = sig.hot || sig.intent || sig.resched || sig.arranged || sig.waiting || (!!lastQuote && (!!contact || !!teamNotified));
     const what =
       teamNotified?.summary ||
-      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : reEntered ? `🔁 RETURNING LEAD — messaged before${earlierQuoted ? `, already quoted (~$${earlierQuoted})` : ""}, check the thread before re-quoting` : firstContact ? "🆕 new conversation" : "active chat");
+      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.arranged ? "🤝 ALREADY ARRANGED — they say a deal/meetup is set with you; bot is standing aside, pick it up" : sig.waiting ? "⏳ WAITING ON US — they're chasing something we promised (label/number/callback); unblock them" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : reEntered ? `🔁 RETURNING LEAD — messaged before${earlierQuoted ? `, already quoted (~$${earlierQuoted})` : ""}, check the thread before re-quoting` : firstContact ? "🆕 new conversation" : "active chat");
     // One-tap mute link: Sonny replies from Business Suite (which neither
     // ManyChat's pause nor the bot can see), so his takeover signal is this
     // link in the alert — tap it and the bot goes silent for this customer.
@@ -1422,7 +1451,7 @@ export async function POST(req: NextRequest) {
         // Organized alert: seller's name on top (subject line), then one fact
         // per line — Sonny reads a dozen of these a day and needs to know who
         // is who at a glance.
-        const name = psid ? await senderName(psid) : "";
+        const name = (psid ? await senderName(psid) : "") || mcName;
         const who = name || (psid ? `contact #${psid.slice(-6)}` : "Messenger contact");
         await notifyOwnerSms(
           [
@@ -1446,6 +1475,7 @@ export async function POST(req: NextRequest) {
   // they said (so a later real message picks the thread back up) and the
   // follow-up tag disarms (never nudge someone the bot chose to ignore).
   if (noReply) {
+    if (psid) after(() => saveCtxBlob(psid, encodeCtx([...priorTurns, { role: "user", content: textForCtx }], 24, 4000)));
     const silentCtx = body.ctx !== undefined ? encodeCtx([...priorTurns, { role: "user", content: textForCtx }], ctxTurns, ctxLen) : undefined;
     const actions: Record<string, unknown>[] = [];
     if (silentCtx) actions.push({ action: "set_field_value", field_name: "ai_ctx", value: silentCtx });
@@ -1468,6 +1498,8 @@ export async function POST(req: NextRequest) {
 
   // Updated memory: only echo it back once ManyChat is wired to round-trip it (request
   // carries a ctx field). Until then the response stays byte-for-byte the old format — no risk.
+  // The blob copy always keeps the DEEP window, whatever the transport's field cap is.
+  if (psid) after(() => saveCtxBlob(psid, encodeCtx([...priorTurns, { role: "user", content: textForCtx }, { role: "assistant", content: replyText }], 24, 4000)));
   const newCtx =
     body.ctx !== undefined
       ? encodeCtx([...priorTurns, { role: "user", content: textForCtx }, { role: "assistant", content: replyText }], ctxTurns, ctxLen)
