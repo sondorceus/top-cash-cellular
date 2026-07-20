@@ -1,10 +1,10 @@
 {
   "_doc": "Apple Trade-In max published values per model id. Refreshed weekly by scripts/refresh-apple-comps.py via .github/workflows/refresh-comps.yml. Frontend reads this at runtime when device is in the Apple family. CONVENTION: only include a model when Apple's actual trade-in calculator lists it. Current-generation flagships (within ~6 months of launch) are usually NOT accepted by Apple — leave them out and the frontend renders an 'Apple won't trade this — we will' badge instead. Adding an entry implies the value was actually scraped from apple.com/shop/trade-in.",
   "source": "https://www.apple.com/shop/trade-in",
-  "updatedAt": "2026-06-22T11:35:34Z",
+  "updatedAt": "2026-07-20T08:40:17Z",
   "values": {
     "ip16pm": 695,
-    "ip16p": 530,
+    "ip16p": 695,
     "ip16plus": 380,
     "ip16": 300,
     "ip16e": 190,
