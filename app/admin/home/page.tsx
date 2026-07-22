@@ -53,7 +53,7 @@ const STATUS_META: Record<string, { label: string; tone: string }> = {
 
 const PIPELINE_ORDER = ["quote_requested", "shipped", "received", "tested", "met", "paid"];
 
-const QUICK_LINKS: { href: string; ico: string; name: string; desc: string }[] = [
+const QUICK_LINKS: { href: string; ico: string; name: string; desc: string; external?: boolean }[] = [
   { href: "/admin", ico: "◉", name: "Leads", desc: "pipeline & actions" },
   { href: "/admin/customers", ico: "⬡", name: "Customers", desc: "roster & history" },
   { href: "/admin/analytics", ico: "≡", name: "Analytics", desc: "volume & trends" },
@@ -64,6 +64,7 @@ const QUICK_LINKS: { href: string; ico: string; name: string; desc: string }[] =
   { href: "/admin/newsletter", ico: "◨", name: "Newsletter", desc: "subscribers & sends" },
   { href: "/admin/saved-quotes", ico: "◫", name: "Saved quotes", desc: "abandoned offers" },
   { href: "/admin/slots", ico: "◷", name: "Slots", desc: "ATX meetup times" },
+  { href: "https://credit-intake.vercel.app/admin", ico: "⚖", name: "Credit Disputes", desc: "client intakes & results", external: true },
 ];
 
 function timeAgo(iso: string): string {
@@ -298,15 +299,25 @@ export default function AdminHomePage() {
       <div className="tadm-card" style={{ marginTop: 10, background: "none", border: "none", padding: "6px 0 0" }}>
         <h3>Everything else</h3>
         <div className="tadm-links">
-          {QUICK_LINKS.map((q) => (
-            <Link key={q.href} href={q.href} className="tadm-link">
-              <span className="ico">{q.ico}</span>
-              <span className="t">
-                <b>{q.name}</b>
-                <span>{q.desc}</span>
-              </span>
-            </Link>
-          ))}
+          {QUICK_LINKS.map((q) =>
+            q.external ? (
+              <a key={q.href} href={q.href} target="_blank" rel="noreferrer" className="tadm-link">
+                <span className="ico">{q.ico}</span>
+                <span className="t">
+                  <b>{q.name}</b>
+                  <span>{q.desc}</span>
+                </span>
+              </a>
+            ) : (
+              <Link key={q.href} href={q.href} className="tadm-link">
+                <span className="ico">{q.ico}</span>
+                <span className="t">
+                  <b>{q.name}</b>
+                  <span>{q.desc}</span>
+                </span>
+              </Link>
+            )
+          )}
         </div>
       </div>
     </div>
