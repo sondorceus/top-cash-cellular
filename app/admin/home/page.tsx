@@ -64,7 +64,7 @@ const QUICK_LINKS: { href: string; ico: string; name: string; desc: string; exte
   { href: "/admin/newsletter", ico: "◨", name: "Newsletter", desc: "subscribers & sends" },
   { href: "/admin/saved-quotes", ico: "◫", name: "Saved quotes", desc: "abandoned offers" },
   { href: "/admin/slots", ico: "◷", name: "Slots", desc: "ATX meetup times" },
-  { href: "https://credit-intake.vercel.app/admin", ico: "⚖", name: "Credit Disputes", desc: "client intakes & results", external: true },
+  { href: "/admin/credit-disputes", ico: "⚖", name: "Credit Disputes", desc: "client intakes & results" },
 ];
 
 function timeAgo(iso: string): string {
