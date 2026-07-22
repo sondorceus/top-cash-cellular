@@ -168,6 +168,14 @@ function Detail({ sel, onSent, onResult, onComplete, onDownload, onDelete }: any
           <button style={btn} onClick={() => { onResult(bureau, outcome, note); setNote(""); }}>Add result</button>
         </div>
       </Section>
+      <Section title="Live tracking (IdentityIQ)">
+        <div style={kv}><b>Login connected</b><span>{sel.hasCredentials ? `yes · ${fmt(sel.credentialsSavedAt)}` : "no"}</span></div>
+        <div style={kv}><b>Last refresh</b><span>{sel.lastRefreshAt ? fmt(sel.lastRefreshAt) : "never"}</span></div>
+        {(sel.refreshes || []).length
+          ? [...sel.refreshes].reverse().map((r: any, i: number) => (
+            <div key={i} style={kv}><b>{fmt(r.at)}</b><span>{r.ok ? `${r.negatives ?? "?"} negatives${r.totalAccounts ? ` / ${r.totalAccounts} accts` : ""}${r.score ? `, score ${r.score}` : ""}` : "refresh failed"}</span></div>))
+          : <span style={{ color: "#6b7280" }}>no refreshes yet</span>}
+      </Section>
       <Section title="History">
         {timeline.map((t, i) => <div key={i} style={{ margin: "3px 0" }}><b>{fmt(t.at)}</b> — {t.text}{t.detail ? ` (${t.detail})` : ""}</div>)}
       </Section>
