@@ -28,6 +28,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../../../lib/resell-estimates";
+import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
+import { readPriceOverrides } from "../../../../lib/quote";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
 
 // Server-side quote ceiling per added device — mirrors /api/lead's anti-tamper
@@ -158,28 +160,14 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     const quote = Math.round(Number(d.quote));
     const quantity = Math.round(Number(d.quantity) || 1);
     const qty = quantity >= 1 && quantity <= 50 ? quantity : 1;
-    let safeQuote = Number.isFinite(quote) && quote >= 0 && quote <= 100000 ? quote : 0;
-    let review = !!d.needsReview;
-    // Anti-tamper: clamp a known model's line total to its resell-based ceiling
-    // (× qty). Unknown models can't be verified, so flag them for a manual
-    // re-quote rather than auto-trusting the client number into the payout.
-    const unitCap = computeUnitCap(d.model, d.condition);
-    if (unitCap == null) {
-      review = true;
-    } else {
-      const lineCap = unitCap * qty;
-      if (safeQuote > lineCap + SERVER_QUOTE_TOLERANCE) {
-        safeQuote = lineCap;
-        review = true;
-      }
-    }
+    const safeQuote = Number.isFinite(quote) && quote >= 0 && quote <= 100000 ? quote : 0;
     return {
       model: clean(d.model, 80),
       storage: clean(d.storage, 30) || undefined,
       condition: clean(d.condition, 30) || undefined,
       quote: safeQuote,
       quantity: qty,
-      needsReview: review,
+      needsReview: !!d.needsReview,
     };
   });
   if (added.some((d) => !d.model)) {
@@ -220,6 +208,34 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({
       error: "This offer can no longer be changed — your trade is already on its way. Email support@topcashcellular.com to add a device.",
     }, { status: 409 });
+  }
+
+  // Anti-tamper: clamp each added line to its AUTHORITATIVE ceiling —
+  // quoteDevice() + headroom (same guard as /api/lead), carrier-aware via
+  // the lead's carrier field. The old resell-only cap returned null for
+  // every resell-exempt SKU (watches, MacBooks, sealed 17PM…), letting a
+  // client number up to $100k ride the order total. Legacy resell cap
+  // stays as the fallback; lines we can't price at all get flagged for a
+  // manual staff re-quote and never trusted into the estimate.
+  const leadCarrier = field(leadMsg.body, "Carrier");
+  const capOverrides = await readPriceOverrides();
+  for (const d of added) {
+    if (d.needsReview || d.quote <= 0) continue;
+    const unitCap =
+      (await authoritativeLineCap(
+        { model: d.model, storage: d.storage, condition: d.condition, carrier: leadCarrier },
+        capOverrides,
+      )) ?? computeUnitCap(d.model, d.condition);
+    if (unitCap == null) {
+      d.needsReview = true;
+      continue;
+    }
+    const lineCap = unitCap * d.quantity;
+    if (d.quote > lineCap + SERVER_QUOTE_TOLERANCE) {
+      console.warn(`[offer-append] Line over ceiling: ${d.model.slice(0, 60)} submitted=$${d.quote} lineCap=$${lineCap} — clamped.`);
+      d.quote = lineCap;
+      d.needsReview = true;
+    }
   }
 
   // Rebuild the existing list server-side, then append the new lines.

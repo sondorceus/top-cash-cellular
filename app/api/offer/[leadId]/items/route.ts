@@ -23,9 +23,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
+import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
+import { readPriceOverrides } from "../../../../lib/quote";
 import {
   field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES,
 } from "../../../../lib/lead-devices";
+
+const SERVER_QUOTE_TOLERANCE = 5;
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -75,9 +79,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (devices.some((d) => !d.model)) {
     return NextResponse.json({ error: "Every device needs a model." }, { status: 400 });
   }
-  // Each device's `quote` is already the line total (price × qty),
-  // matching the funnel/lead convention — don't multiply by qty again.
-  const total = devices.reduce((s, d) => s + d.quote, 0);
 
   // Pull the lead to verify ownership + check it's still editable. limit=5000
   // (full live cap, was 1000) so an older offer still resolves by id.
@@ -98,6 +99,40 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
   }
 
+  // Per-LINE ceiling — the total-only cap let one line inflate inside an
+  // unchanged total, and the client editor re-quotes from RAW table cells
+  // (no carrier gap / margin cap / galaxy drop), which could restore a
+  // $155-500 carrier gap on a condition downgrade. Recompute each line's
+  // real ceiling via quoteDevice (same guard as /api/lead), using the
+  // lead's carrier; lines we can't price server-side (MacBooks, customs)
+  // get flagged for a manual staff re-quote instead of trusting the
+  // client's math. Clamping (not rejecting) also unblocks honest
+  // downgrades on cap-bound models whose raw cell exceeds the ceiling.
+  const leadCarrier = field(leadMsg.body, "Carrier");
+  const capOverrides = await readPriceOverrides();
+  for (const d of devices) {
+    if (d.needsReview || d.quote <= 0) continue;
+    const cap = await authoritativeLineCap(
+      { model: d.model, storage: d.storage, condition: d.condition, carrier: leadCarrier },
+      capOverrides,
+    );
+    if (cap == null) {
+      // Unknown model or a config that prices below MIN_OFFER — never
+      // trust the client's number as the estimate.
+      d.needsReview = true;
+      continue;
+    }
+    const lineAllowed = cap * d.quantity;
+    if (d.quote > lineAllowed + SERVER_QUOTE_TOLERANCE) {
+      console.warn(`[offer-items] Line over ceiling: ${d.model.slice(0, 60)} submitted=$${d.quote} lineCap=$${lineAllowed} — clamped.`);
+      d.quote = lineAllowed;
+      d.needsReview = true;
+    }
+  }
+  // Each device's `quote` is already the line total (price × qty),
+  // matching the funnel/lead convention — don't multiply by qty again.
+  const total = devices.reduce((s, d) => s + d.quote, 0);
+
   // Anti-inflation guard. The leadId is the only access control on this
   // endpoint, and the client computes `quote` — so without this anyone
   // with their offer link could POST an inflated quote and raise the
@@ -113,10 +148,17 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // the max across resolved current devices + the body footer/Quote so we
   // never under-estimate the ceiling and falsely reject a lowering edit.
   const current = resolveCurrentDevices(leadMsg.body, messages, leadId);
+  // The body's Quote / Total-payout figures INCLUDE the coupon/referral
+  // bonus, but the [ITEM-UPDATE] marker stores the device SUBTOTAL and the
+  // offer GET re-adds the bonus on top — so a ceiling that includes the
+  // bonus lets an edit double-count it. Strip it here (same marker parse
+  // as the offer GET, capped at $1,000).
+  const bonusMatch = leadMsg.body.match(/\[OFFER-BONUS:\s*amount=([\d.]+)\]/i);
+  const bodyBonus = Math.min(1000, Math.max(0, Number(bonusMatch?.[1]) || 0));
   const ceiling = Math.max(
     devicesTotal(current),
-    parseTotalPayoutLine(leadMsg.body),
-    parseDollarAmount(field(leadMsg.body, "Quote")),
+    parseTotalPayoutLine(leadMsg.body) - bodyBonus,
+    parseDollarAmount(field(leadMsg.body, "Quote")) - bodyBonus,
   );
   if (ceiling > 0 && total > ceiling) {
     return NextResponse.json({

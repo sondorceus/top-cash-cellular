@@ -3,6 +3,8 @@ import { mailLogo, mailButton, mailDeviceImg } from "../../lib/email-shell";
 import { reportError } from "../../lib/error-report";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
+import { authoritativeLineCap } from "../../lib/server-quote-cap";
+import { readPriceOverrides } from "../../lib/quote";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -95,6 +97,27 @@ export async function POST(req: NextRequest) {
   const deviceArr: Array<{ model?: string; storage?: string; condition?: string; quote?: number; quantity?: number }> =
     Array.isArray(devices) ? devices : [];
   const isMulti = deviceArr.length > 1;
+  // Never email a dollar figure above the device's authoritative ceiling.
+  // This route trusts the client body and /api/lead's tamper clamp doesn't
+  // reach it — a pre-clamp (or hand-crafted) number became a WRITTEN
+  // "your $X quote is locked" promise from TCC. Clamp per line via
+  // quoteDevice + headroom (same guard as /api/lead); models we can't
+  // price server-side (MacBooks, customs) keep the funnel figure — the
+  // actual payout is still governed by the lead-route clamp + inspection.
+  const capOverrides = await readPriceOverrides();
+  const clampLine = async (m: unknown, s: unknown, c: unknown, lineQuote: number, qty: unknown): Promise<number> => {
+    const cap = await authoritativeLineCap({ model: m, storage: s, condition: c, carrier: body.carrier }, capOverrides);
+    if (cap == null) return lineQuote;
+    const allowed = cap * Math.min(50, Math.max(1, Math.round(Number(qty)) || 1));
+    return lineQuote > allowed + 5 ? allowed : lineQuote;
+  };
+  for (const d of deviceArr) {
+    const q = Number(d.quote) || 0;
+    if (q > 0) d.quote = await clampLine(d.model, d.storage, d.condition, q, d.quantity ?? 1);
+  }
+  if (deviceArr.length === 0 && (Number(quote) || 0) > 0) {
+    quote = await clampLine(model, storage, condition, Number(quote), body.quantity ?? 1);
+  }
   if (deviceArr.length >= 1) {
     // When a devices[] array is present the emailed total ALWAYS comes from
     // the device rows — never from a stale/absent top-level `quote`. A

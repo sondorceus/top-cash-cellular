@@ -3497,7 +3497,10 @@ const buildAppleWatchExtras = (modelId?: string | null): BrandExtra[] => {
     const accAdj = spec.accAdj;
     qs.push({ id: "accessories", question: "Original charger + box included?",
       helper: "The magnetic charging cable and the original retail box.",
-      showIf: (extras) => works(extras), options: [
+      // Sealed units necessarily include box + charger — asking would
+      // double-pay the bonus (iPhone/MacBook accessory bonus already
+      // excludes sealed; watches were the leak).
+      showIf: (extras, condition) => condition?.id !== "sealed" && works(extras), options: [
         { id: "yes", label: `Yes (+$${accAdj})`, multiplier: 1.00, adj: accAdj },
         { id: "no",  label: "No", multiplier: 1.00, adj: 0 },
       ]});
@@ -6067,7 +6070,33 @@ export default function Home() {
   // 'Pending quote'.
   const isPendingQuote = !model?.base;
   const isBrokenNonFunctional = condition?.id === "broken" && brokenFunctional === false;
-  const isManualQuote = isBelowMinimum || isBrokenNonFunctional || needsMarginReview || isSealedLockedPremium;
+  // Broken with NO authored broken cell (and no additive spec path) must
+  // never auto-quote off the universal ×0.50 fallback — real broken values
+  // run 0.14-0.26 of mint, so the fallback quoted a broken iMac above its
+  // own GOOD cell and a broken Mac Studio at ~$1,364 vs ~$550 real. Only
+  // rows the owner priced (or explicit broken:0 cells) may quote broken;
+  // everything else goes to manual review. Powerhouse 2026-07-23.
+  const isUnpricedBroken = condition?.id === "broken" && !useDirectPricing && !useAdditive;
+  // Additive-path broken sanity: MCOND has no broken key and most scraped
+  // condition_adj rows carry broken: 0, so a broken-but-functional MacBook
+  // or PC laptop resolved to a MINT-level quote (a broken M4 Max promised
+  // ~$2,835). Only trust additive broken pricing when the model's broken
+  // adj genuinely docks below its fair adj (admin overrides honored);
+  // otherwise route to manual review. Powerhouse 2026-07-23.
+  const isUnpricedAdditiveBroken = condition?.id === "broken" && useAdditive && (() => {
+    const ovAdj = model ? priceOverrides?.conditionAdj?.[model.id] : undefined;
+    const specAdj = model ? getMacSpec(model.id)?.condition_adj : undefined;
+    const resolveAdj = (c: string): number | null => {
+      const o = ovAdj?.[c];
+      if (o !== undefined) return o;
+      if (specAdj && c in specAdj) return specAdj[c] ?? 0;
+      return null; // MCOND has no broken key — unpriced
+    };
+    const brokenAdj = resolveAdj("broken");
+    const fairAdj = resolveAdj("fair") ?? -220; // MCOND fair fallback
+    return brokenAdj == null || brokenAdj >= fairAdj;
+  })();
+  const isManualQuote = isBelowMinimum || isBrokenNonFunctional || isUnpricedBroken || isUnpricedAdditiveBroken || needsMarginReview || isSealedLockedPremium;
 
   // Add-to-order mode: append the currently-priced device to an existing offer.
   // NOTE: the append route wants `quote` as the LINE TOTAL (price × qty), and
@@ -12926,7 +12955,9 @@ export default function Home() {
                     model: model.label,
                     storage: storage?.label || "N/A",
                     condition: condition.label,
-                    price: quote * quantity,
+                    // Per-UNIT price — the done screen multiplies by
+                    // quantity (a ×2 order was rendering quantity² $).
+                    price: quote,
                     quantity,
                     image: model.image,
                   }]);
