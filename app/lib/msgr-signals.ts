@@ -46,10 +46,14 @@ export async function recordOutbound(psid: string, texts: string[]): Promise<voi
   );
 }
 
-// Hashes of everything the bot sent this customer in the last 48h. Also sweeps
-// older markers so the ts-sorted (oldest-first) listing never pushes fresh
-// entries out of the 100-item window.
-export async function listSentHashes(psid: string): Promise<Set<string>> {
+// Hashes of everything the bot sent this customer in the last 48h, plus the
+// timestamp of the newest send — owner-takeover detection needs both (a page
+// message can only be a live human if it's NEWER than the bot's newest send;
+// the CTM ad greeting and Meta's canned ice-breaker replies all land BEFORE
+// the bot's first reply and are never in this ledger). Also sweeps older
+// markers so the ts-sorted (oldest-first) listing never pushes fresh entries
+// out of the 100-item window.
+export async function listSentLedger(psid: string): Promise<{ hashes: Set<string>; newestTs: number }> {
   try {
     const { blobs } = await list({ prefix: `msgr-sent/${psid}/`, limit: 100 });
     const entries = blobs
@@ -57,10 +61,17 @@ export async function listSentHashes(psid: string): Promise<Set<string>> {
       .filter((x) => x.m) as { m: RegExpMatchArray; url: string }[];
     const old = entries.filter((x) => Date.now() - Number(x.m[1]) > 48 * 3_600_000).map((x) => x.url);
     if (old.length) del(old).catch(() => {});
-    return new Set(entries.filter((x) => Date.now() - Number(x.m[1]) <= 48 * 3_600_000).map((x) => x.m[2]));
+    const live = entries.filter((x) => Date.now() - Number(x.m[1]) <= 48 * 3_600_000);
+    return {
+      hashes: new Set(live.map((x) => x.m[2])),
+      newestTs: live.reduce((max, x) => Math.max(max, Number(x.m[1])), 0),
+    };
   } catch {
-    return new Set(); // fail open: no ledger → takeover detection stays quiet
+    return { hashes: new Set(), newestTs: 0 }; // fail open: no ledger → takeover detection stays quiet
   }
+}
+export async function listSentHashes(psid: string): Promise<Set<string>> {
+  return (await listSentLedger(psid)).hashes;
 }
 
 export async function markDefer(psid: string): Promise<void> {

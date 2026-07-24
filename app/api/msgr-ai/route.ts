@@ -19,7 +19,7 @@ import { type ConvoState } from "../../lib/msgr-brain";
 import { quoteDevice, type QuoteSpec } from "../../lib/quote";
 import { PRICE_TABLE } from "../../data/prices";
 import { notifyOwnerSms } from "../../lib/owner-sms";
-import { recordOutbound, listSentHashes, sentHash, markDefer, deferActive, senderName, muteToken, loadCtxBlob, saveCtxBlob } from "../../lib/msgr-signals";
+import { recordOutbound, listSentLedger, sentHash, markDefer, deferActive, senderName, muteToken, loadCtxBlob, saveCtxBlob } from "../../lib/msgr-signals";
 
 export const dynamic = "force-dynamic";
 // after() runs owner alerts + (for off-catalog leads) a web market-check —
@@ -612,25 +612,40 @@ async function latestCustomerImages(psid: string, maxAgeMs = 15 * 60_000): Promi
 // the bot's outbound ledger (msgr-sent, written by ALL bot paths) can only be
 // a human typing from Business Suite. Rick Dee case 2026-07-07: Sonny quoted
 // "380-440" manually and the bot re-asked the price on top of him. Requires an
-// existing ledger for the psid so pre-feature convos and the CTM ad greeting
-// (sent before the bot's first reply) can never false-trigger. Fail-open.
+// existing ledger for the psid so pre-feature convos can never false-trigger.
+// Fail-open.
+//
+// Condition (b) is LOAD-BEARING, not an optimization (real failure 2026-07-24,
+// Jacob Pina): the CTM ad greeting + Meta's canned ice-breaker replies are page
+// messages the bot never sent, and on a fresh lead they're minutes old — while
+// this check only compared hashes, every follow-up message inside 30 min of the
+// greeting read as "Sonny is typing" → 2h standdown + a false 🤫 SMS, right in
+// the hottest window of a brand-new lead. Anything at-or-before the bot's
+// newest recorded send is history, not a live takeover — that one rule also
+// absorbs hash drift on the bot's own older messages (Graph re-formatting).
+// CANNED_PAGE_RE is the belt to that suspender: Meta re-fires ice-breaker
+// canned replies mid-convo too (customer taps a second question), and those
+// land NEWER than the bot's last send.
 // maxAgeMs: the live-reply path wants a TIGHT 30-min window (an old unknown
 // page message is pre-feature noise, not an active takeover). The follow-up
 // nudge fires ~3h after the quote, so it passes a WIDE window — Sonny's booking
 // reply can be hours old by the time the nudge callback lands.
+const CANNED_PAGE_RE =
+  /replied to an ad|we buy iphones.{0,40}cash paid same day|depends on the model, storage and condition|iphone 13 and up pays best/i;
 async function ownerActive(psid: string, thread: ThreadMsg[], maxAgeMs = 30 * 60_000): Promise<boolean> {
   try {
     if (!thread.length) return false;
-    const sent = await listSentHashes(psid);
-    if (!sent.size) return false; // no ledger yet → can't judge, stay live
+    const sent = await listSentLedger(psid);
+    if (!sent.hashes.size) return false; // no ledger yet → can't judge, stay live
     const pageMsgs = thread.filter((t) => t.role === "assistant");
     if (!pageMsgs.length) return false;
     const now = Date.now();
     return pageMsgs.some(
       (m) =>
         now - m.ts < maxAgeMs &&
-        !sent.has(sentHash(m.content)) &&
-        !/replied to an ad/i.test(m.content), // Meta's system line, not a human
+        m.ts > sent.newestTs &&
+        !sent.hashes.has(sentHash(m.content)) &&
+        !CANNED_PAGE_RE.test(m.content),
     );
   } catch {
     return false;
