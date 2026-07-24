@@ -39,7 +39,13 @@ export async function GET(req: NextRequest) {
   // Maintenance (secret-gated): re-subscribe app + page with message_echoes so
   // the webhook sees PAGE-sent messages — that's how human takeover is detected
   // (a human reply makes the bot stand down instead of talking over the human).
-  if (p.get("admin") === "resubscribe" && process.env.MSGR_BOT_SECRET && p.get("s") === process.env.MSGR_BOT_SECRET) {
+  // Same MSGR_BOT_SECRET-or-CRON_SECRET rule as the inbox peek below — only
+  // CRON_SECRET survives `vercel env pull`, and the webhook-subscription lapse
+  // of Jul 2026 sat unrepaired partly because nobody could call this.
+  const adminSecretOk =
+    (!!process.env.MSGR_BOT_SECRET && p.get("s") === process.env.MSGR_BOT_SECRET) ||
+    (!!process.env.CRON_SECRET && p.get("s") === process.env.CRON_SECRET);
+  if (p.get("admin") === "resubscribe" && adminSecretOk) {
     const fields = "messages,messaging_postbacks,message_echoes";
     const appId = process.env.MESSENGER_APP_ID || "4405612649655084";
     const appToken = `${appId}|${process.env.MESSENGER_APP_SECRET}`;
