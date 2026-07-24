@@ -272,33 +272,33 @@ export const MANUAL_REVIEW_DEVICES = new Set([
 
 export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>> = {
   ip11: {
-    "128": { broken: 1, fair: 72, good: 90, mint: 104, sealed: 130 },
-    "256": { broken: 1, fair: 86, good: 104, mint: 117, sealed: 144 },
-    "64": { broken: 1, fair: 40, good: 58, mint: 72, sealed: 117 } },
+    "128": { broken: 0, fair: 13, good: 31, mint: 55, sealed: 130 },
+    "256": { broken: 0, fair: 13, good: 31, mint: 55, sealed: 144 },
+    "64": { broken: 0, fair: 13, good: 31, mint: 55, sealed: 117 } },
   ip11p: {
-    "256": { broken: 1, fair: 86, good: 112, mint: 126, sealed: 162 },
-    "512": { broken: 2, fair: 108, good: 135, mint: 148, sealed: 180 },
-    "64": { broken: 1, fair: 58, good: 86, mint: 99, sealed: 135 } },
+    "256": { broken: 0, fair: 0, good: 35, mint: 55, sealed: 162 },
+    "512": { broken: 2, fair: 5, good: 45, mint: 65, sealed: 180 },
+    "64": { broken: 0, fair: 0, good: 25, mint: 45, sealed: 135 } },
   ip11pm: {
-    "256": { broken: 17, fair: 126, good: 153, mint: 171, sealed: 220 },
-    "512": { broken: 20, fair: 144, good: 171, mint: 189, sealed: 225 },
-    "64": { broken: 15, fair: 122, good: 148, mint: 166, sealed: 212 } },
+    "256": { broken: 15, fair: 38, good: 62, mint: 94, sealed: 220 },
+    "512": { broken: 20, fair: 52, good: 79, mint: 115, sealed: 225 },
+    "64": { broken: 0, fair: 34, good: 57, mint: 88, sealed: 212 } },
   ip12: {
-    "128": { broken: 22, fair: 86, good: 112, mint: 130, sealed: 153 },
-    "256": { broken: 23, fair: 99, good: 126, mint: 144, sealed: 158 },
-    "64": { broken: 20, fair: 58, good: 86, mint: 104, sealed: 144 } },
+    "128": { broken: 15, fair: 23, good: 44, mint: 71, sealed: 153 },
+    "256": { broken: 23, fair: 23, good: 44, mint: 71, sealed: 158 },
+    "64": { broken: 0, fair: 23, good: 44, mint: 71, sealed: 144 } },
   ip12mini: {
-    "128": { broken: 1, fair: 63, good: 86, mint: 99, sealed: 112 },
-    "256": { broken: 1, fair: 68, good: 90, mint: 104, sealed: 117 },
-    "64": { broken: 1, fair: 36, good: 58, mint: 72, sealed: 108 } },
+    "128": { broken: 0, fair: 8, good: 25, mint: 47, sealed: 112 },
+    "256": { broken: 1, fair: 12, good: 30, mint: 53, sealed: 117 },
+    "64": { broken: 0, fair: 7, good: 7, mint: 47, sealed: 108 } },
   ip12p: {
-    "128": { broken: 20, fair: 90, good: 135, mint: 153, sealed: 207 },
-    "256": { broken: 25, fair: 126, good: 171, mint: 189, sealed: 220 },
-    "512": { broken: 26, fair: 126, good: 171, mint: 189, sealed: 230 } },
+    "128": { broken: 20, fair: 58, good: 86, mint: 124, sealed: 207 },
+    "256": { broken: 25, fair: 58, good: 86, mint: 124, sealed: 220 },
+    "512": { broken: 26, fair: 65, good: 95, mint: 124, sealed: 230 } },
   ip12pm: {
-    "128": { broken: 38, fair: 130, good: 184, mint: 198, sealed: 252 },
-    "256": { broken: 40, fair: 148, good: 202, mint: 216, sealed: 288 },
-    "512": { broken: 43, fair: 162, good: 216, mint: 230, sealed: 315 } },
+    "128": { broken: 0, fair: 72, good: 104, mint: 146, sealed: 252 },
+    "256": { broken: 40, fair: 86, good: 120, mint: 207, sealed: 288 },
+    "512": { broken: 43, fair: 105, good: 144, mint: 230, sealed: 315 } },
   // ip13 recalibrated 2026-07-11 to Sonny's live payouts (he corrected a bot
   // quote to "170 unlocked / 120 locked" for a good one — Damian thread):
   // good 128 + the $25 phone bonus lands exactly on $170 unlocked / $120
@@ -308,9 +308,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 25, fair: 122, good: 152, mint: 165, sealed: 218 },
     "512": { broken: 29, fair: 128, good: 160, mint: 173, sealed: 238 } },
   ip13mini: {
-    "128": { broken: 20, fair: 76, good: 124, mint: 137, sealed: 180 },
-    "256": { broken: 25, fair: 104, good: 152, mint: 165, sealed: 190 },
-    "512": { broken: 26, fair: 124, good: 171, mint: 185, sealed: 215 } },
+    "128": { broken: 0, fair: 49, good: 69, mint: 111, sealed: 180 },
+    "256": { broken: 0, fair: 49, good: 76, mint: 111, sealed: 190 },
+    "512": { broken: 0, fair: 58, good: 87, mint: 125, sealed: 215 } },
   ip13p: {
     "128": { broken: 33, fair: 128, good: 192, mint: 194, sealed: 217 },
     "1tb": { broken: 43, fair: 158, good: 230, mint: 232, sealed: 255 },
@@ -322,19 +322,19 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 56, fair: 175, good: 247, mint: 249, sealed: 273 },
     "512": { broken: 61, fair: 192, good: 264, mint: 266, sealed: 289 } },
   ip14: {
-    "128": { broken: 29, fair: 104, good: 144, mint: 166, sealed: 212 },
+    "128": { broken: 29, fair: 30, good: 144, mint: 166, sealed: 212 },
     "256": { broken: 33, fair: 135, good: 176, mint: 198, sealed: 234 },
     // 512 sealed (256) sat below mint (266). 2026-07-14 monotonic sweep.
     "512": { broken: 35, fair: 202, good: 243, mint: 266, sealed: 296 } },
   ip14p: {
-    "128": { broken: 87, fair: 184, good: 238, mint: 284, sealed: 306 },
+    "128": { broken: 80, fair: 184, good: 238, mint: 284, sealed: 306 },
     "1tb": { broken: 105, fair: 256, good: 310, mint: 356, sealed: 370 },
     "256": { broken: 97, fair: 212, good: 266, mint: 310, sealed: 328 },
     "512": { broken: 101, fair: 238, good: 292, mint: 338, sealed: 350 } },
   ip14plus: {
-    "128": { broken: 61, fair: 135, good: 171, mint: 198, sealed: 234 },
-    "256": { broken: 65, fair: 171, good: 207, mint: 234, sealed: 279 },
-    "512": { broken: 69, fair: 189, good: 225, mint: 252, sealed: 302 } },
+    "128": { broken: 60, fair: 85, good: 119, mint: 166, sealed: 234 },
+    "256": { broken: 65, fair: 85, good: 120, mint: 166, sealed: 279 },
+    "512": { broken: 69, fair: 114, good: 156, mint: 251, sealed: 297 } },
   ip14pm: {
     "128": { broken: 119, fair: 248, good: 302, mint: 351, sealed: 378 },
     "1tb": { broken: 173, fair: 320, good: 374, mint: 423, sealed: 435 },
@@ -345,14 +345,14 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 74, fair: 230, good: 266, mint: 281, sealed: 356 },
     "512": { broken: 79, fair: 256, good: 292, mint: 307, sealed: 400 } },
   ip15p: {
-    "128": { broken: 146, fair: 266, good: 310, mint: 325, sealed: 392 },
+    "128": { broken: 140, fair: 266, good: 310, mint: 325, sealed: 392 },
     "1tb": { broken: 191, fair: 374, good: 418, mint: 433, sealed: 504 },
-    "256": { broken: 164, fair: 310, good: 356, mint: 371, sealed: 436 },
+    "256": { broken: 160, fair: 310, good: 356, mint: 371, sealed: 436 },
     "512": { broken: 173, fair: 338, good: 382, mint: 397, sealed: 459 } },
   ip15plus: {
-    "128": { broken: 105, fair: 216, good: 252, mint: 267, sealed: 378 },
-    "256": { broken: 115, fair: 238, good: 274, mint: 289, sealed: 423 },
-    "512": { broken: 123, fair: 288, good: 324, mint: 339, sealed: 446 } },
+    "128": { broken: 100, fair: 154, good: 220, mint: 267, sealed: 378 },
+    "256": { broken: 115, fair: 162, good: 220, mint: 289, sealed: 423 },
+    "512": { broken: 123, fair: 196, good: 237, mint: 339, sealed: 446 } },
   ip15pm: {
     "1tb": { broken: 155, fair: 414, good: 472, mint: 487, sealed: 544 },
     "256": { broken: 137, fair: 342, good: 400, mint: 415, sealed: 500 },
@@ -360,8 +360,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   ip16: {
     // 128 broken: owner's exact number 2026-07-12 ("I can pay 158 for
     // standard 128gb") — offer $158 = cell 133 + $25 bonus.
-    "128": { broken: 133, fair: 292, good: 346, mint: 361, sealed: 464 },
-    "256": { broken: 173, fair: 328, good: 382, mint: 397, sealed: 513 },
+    "128": { broken: 130, fair: 292, good: 346, mint: 361, sealed: 464 },
+    "256": { broken: 160, fair: 328, good: 382, mint: 397, sealed: 513 },
     "512": { broken: 209, fair: 356, good: 410, mint: 425, sealed: 562 } },
   ip16e: {
     // Sealed + 128/256 mint trimmed 2026-07-14: buyer-sheet check had sealed
@@ -369,9 +369,9 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     // over the open-activated price (sealed − 50) — new/open-box stock
     // wholesales through that sheet, so those must stay under ("we have to
     // make sure we still under them"). Offers now land $5 under.
-    "128": { broken: 38, fair: 144, good: 202, mint: 225, sealed: 275 },
-    "256": { broken: 56, fair: 207, good: 266, mint: 285, sealed: 335 },
-    "512": { broken: 74, fair: 252, good: 310, mint: 346, sealed: 395 } },
+    "128": { broken: 38, fair: 120, good: 180, mint: 213, sealed: 275 },
+    "256": { broken: 56, fair: 120, good: 180, mint: 213, sealed: 335 },
+    "512": { broken: 74, fair: 150, good: 210, mint: 220, sealed: 395 } },
   ip16p: {
     // Broken to IWM-parity targets (owner 2026-07-12, same directive as
     // 16PM). Offers pin at the broken margin cap (~$230 on the fresh $640
@@ -415,8 +415,8 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 182, fair: 423, good: 482, mint: 535, sealed: 626 },
     "512": { broken: 254, fair: 477, good: 536, mint: 635, sealed: 724 } },
   ip17e: {
-    "256": { broken: 65, fair: 225, good: 284, mint: 299, sealed: 374 },
-    "512": { broken: 83, fair: 270, good: 328, mint: 343, sealed: 423 } },
+    "256": { broken: 65, fair: 145, good: 195, mint: 215, sealed: 374 },
+    "512": { broken: 83, fair: 195, good: 225, mint: 265, sealed: 423 } },
   ip17p: {
     // Custom flat pricing (Skywalker, 2026-06): 17 Pro Max ladder minus $40 (excellent OFFER
     // $580 = base 555 + $25 bonus); +$55/tier; no carrier penalty. Broken left unchanged.
@@ -848,14 +848,16 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   // Apple Watch Series 7-10 / SE 2 — IWM Flawless × 0.85 (see Ultra note above).
   aws10: {
     "base": { fair: 68, good: 117, mint: 158, sealed: 194 } },
+  // fair ≈ 0.6 × good (the ratio the priced sibling rows carry) — a missing
+  // fair cell fell through to base × 0.852, quoting fair ABOVE good.
   aws7: {
-    "base": { good: 28, mint: 46, sealed: 59 } },
+    "base": { fair: 17, good: 28, mint: 46, sealed: 59 } },
   aws8: {
-    "base": { good: 37, mint: 59, sealed: 82 } },
+    "base": { fair: 22, good: 37, mint: 59, sealed: 82 } },
   aws9: {
     "base": { fair: 45, good: 76, mint: 104, sealed: 130 } },
   awse2: {
-    "base": { good: 25, mint: 34, sealed: 57 } },
+    "base": { fair: 15, good: 25, mint: 34, sealed: 57 } },
   mba13m2: {
     "1tb": { fair: 194, good: 292, mint: 392, sealed: 436 },
     "256": { fair: 126, good: 225, mint: 324, sealed: 369 },
@@ -965,21 +967,21 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "8tb": { fair: 2520, good: 2678, mint: 2835, sealed: 2970 } },
   pw2: {
     "base": { fair: 4, good: 9, mint: 18, sealed: 32 } },
+  // Watch rows are keyed "base" — the funnel skips the storage step for
+  // watches, so a row keyed by connectivity slug is unreachable and the
+  // quote silently falls to base × universal multipliers (overpaying every
+  // non-mint tier). LTE premium comes from the funnel connectivity extra
+  // (+$5 Samsung / ×1.10 Pixel), so only the BT/WiFi ladder lives here.
   pw3: {
-    "pixelwatch3bluetoothwifi": { fair: 9, good: 24, mint: 32, sealed: 60 },
-    "pixelwatch3bluetoothwifi4glte": { broken: 10, fair: 14, good: 28, mint: 37, sealed: 64 } },
+    "base": { fair: 9, good: 24, mint: 32, sealed: 60 } },
   pw4: {
-    "pixelwatch4bluetoothwifi": { fair: 37, good: 82, mint: 118, sealed: 154 },
-    "pixelwatch4bluetoothwifi4glte": { broken: 19, fair: 46, good: 91, mint: 127, sealed: 163 } },
+    "base": { fair: 37, good: 82, mint: 118, sealed: 154 } },
   sgw7: {
-    "bluetoothwifi": { good: 14, mint: 24, sealed: 37 },
-    "bluetoothwifi4glte": { fair: 10, good: 19, mint: 28, sealed: 41 } },
+    "base": { fair: 5, good: 14, mint: 24, sealed: 37 } },
   sgw8: {
-    "bluetoothwifi": { fair: 23, good: 50, mint: 68, sealed: 92 },
-    "bluetoothwifi4glte": { fair: 32, good: 59, mint: 77, sealed: 100 } },
+    "base": { fair: 23, good: 50, mint: 68, sealed: 92 } },
   sgw8c: {
-    "bluetoothwifi": { fair: 54, good: 76, mint: 99, sealed: 122 },
-    "bluetoothwifi4glte": { fair: 63, good: 86, mint: 108, sealed: 130 } },
+    "base": { fair: 54, good: 76, mint: 99, sealed: 122 } },
   sgwu: {
     "base": { fair: 22, good: 58, mint: 90, sealed: 112 } },
   sgwu25: {

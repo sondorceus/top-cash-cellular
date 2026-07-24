@@ -209,7 +209,7 @@ export const DEVICES: Device[] = [
   { slug: "iphone-15", name: "iPhone 15", category: "iPhone", price: 228, year: 2023 },
   { slug: "iphone-14-pro-max", name: "iPhone 14 Pro Max", category: "iPhone", price: 272, year: 2022 },
   { slug: "iphone-14-pro", name: "iPhone 14 Pro", category: "iPhone", price: 234, year: 2022 },
-  { slug: "iphone-14-plus", name: "iPhone 14 Plus", category: "iPhone", price: 327, year: 2022 },
+  { slug: "iphone-14-plus", name: "iPhone 14 Plus", category: "iPhone", price: 322, year: 2022 },
   { slug: "iphone-14", name: "iPhone 14", category: "iPhone", price: 175, year: 2022 },
   { slug: "iphone-13-pro-max", name: "iPhone 13 Pro Max", category: "iPhone", price: 300, year: 2021 },
   { slug: "iphone-13-pro", name: "iPhone 13 Pro", category: "iPhone", price: 261, year: 2021 },
@@ -278,26 +278,26 @@ export const DEVICES: Device[] = [
   { slug: "pixel-9-pro-xl", name: "Pixel 9 Pro XL", category: "Pixel", price: 256, year: 2024 },
   { slug: "pixel-9-pro", name: "Pixel 9 Pro", category: "Pixel", price: 245, year: 2024 },
   { slug: "pixel-8-pro", name: "Pixel 8 Pro", category: "Pixel", price: 147, year: 2023 },
-  { slug: "pixel-7-pro", name: "Pixel 7 Pro", category: "Pixel", price: 191, year: 2022 },
-  { slug: "pixel-6-pro", name: "Pixel 6 Pro", category: "Pixel", price: 142, year: 2021 },
+  { slug: "pixel-7-pro", name: "Pixel 7 Pro", category: "Pixel", price: 161, year: 2022 },
+  { slug: "pixel-6-pro", name: "Pixel 6 Pro", category: "Pixel", price: 112, year: 2021 },
 
   // ── Google Pixel Standard / a-series ──
   { slug: "pixel-10", name: "Pixel 10", category: "Pixel", price: 206, year: 2025 },
   { slug: "pixel-10a", name: "Pixel 10a", category: "Pixel", price: 173, year: 2025 },
   { slug: "pixel-9", name: "Pixel 9", category: "Pixel", price: 137, year: 2024 },
-  { slug: "pixel-9a", name: "Pixel 9a", category: "Pixel", price: 250, year: 2024 },
-  { slug: "pixel-8", name: "Pixel 8", category: "Pixel", price: 214, year: 2023 },
-  { slug: "pixel-8a", name: "Pixel 8a", category: "Pixel", price: 223, year: 2023 },
-  { slug: "pixel-7", name: "Pixel 7", category: "Pixel", price: 147, year: 2022 },
-  { slug: "pixel-7a", name: "Pixel 7a", category: "Pixel", price: 137, year: 2022 },
-  { slug: "pixel-6", name: "Pixel 6", category: "Pixel", price: 137, year: 2021 },
-  { slug: "pixel-5", name: "Pixel 5", category: "Pixel", price: 79, year: 2020 },
-  { slug: "pixel-5a-5g", name: "Pixel 5a (5G)", category: "Pixel", price: 97, year: 2021 },
+  { slug: "pixel-9a", name: "Pixel 9a", category: "Pixel", price: 220, year: 2024 },
+  { slug: "pixel-8", name: "Pixel 8", category: "Pixel", price: 184, year: 2023 },
+  { slug: "pixel-8a", name: "Pixel 8a", category: "Pixel", price: 193, year: 2023 },
+  { slug: "pixel-7", name: "Pixel 7", category: "Pixel", price: 117, year: 2022 },
+  { slug: "pixel-7a", name: "Pixel 7a", category: "Pixel", price: 107, year: 2022 },
+  { slug: "pixel-6", name: "Pixel 6", category: "Pixel", price: 107, year: 2021 },
+  { slug: "pixel-5", name: "Pixel 5", category: "Pixel", price: 56, year: 2020 },
+  { slug: "pixel-5a-5g", name: "Pixel 5a (5G)", category: "Pixel", price: 70, year: 2021 },
 
   // ── Google Pixel Fold Series ──
   { slug: "pixel-10-pro-fold", name: "Pixel 10 Pro Fold", category: "Pixel", price: 800, year: 2025 },
   { slug: "pixel-9-pro-fold", name: "Pixel 9 Pro Fold", category: "Pixel", price: 382, year: 2024 },
-  { slug: "pixel-fold", name: "Pixel Fold", category: "Pixel", price: 273, year: 2023 },
+  { slug: "pixel-fold", name: "Pixel Fold", category: "Pixel", price: 243, year: 2023 },
 
   // ── MacBook Pro ──
   { slug: "macbook-pro-16-m5-pro-max-2026", name: "MacBook Pro 16\" M5 Pro/Max (2026)", category: "MacBook", price: 1737, year: 2026 },
@@ -375,10 +375,10 @@ export const DEVICES: Device[] = [
 
   // ── Samsung Watch ──
   { slug: "galaxy-watch-ultra", name: "Galaxy Watch Ultra", category: "Watch", price: 112, year: 2024 },
-  { slug: "galaxy-watch-7", name: "Galaxy Watch 7", category: "Watch", price: 41, year: 2024 },
+  { slug: "galaxy-watch-7", name: "Galaxy Watch 7", category: "Watch", price: 37, year: 2024 },
 
   // ── Pixel Watch ──
-  { slug: "pixel-watch-3", name: "Pixel Watch 3", category: "Watch", price: 64, year: 2024 },
+  { slug: "pixel-watch-3", name: "Pixel Watch 3", category: "Watch", price: 60, year: 2024 },
   { slug: "pixel-watch-2", name: "Pixel Watch 2", category: "Watch", price: 32, year: 2023 },
   { slug: "pixel-watch", name: "Pixel Watch", category: "Watch", price: 32, year: 2022 },
 
