@@ -173,7 +173,7 @@ export async function GET(req: NextRequest) {
       ...needsYou.map((w) => `⏰ ${w.name} (${w.ageMin}m, needs YOU): "${w.text}"`),
       ...fixed.map((w) => `🤖 ${w.name} (${w.ageMin}m): "${w.text}" — bot jumped back in`),
     ].join("\n");
-    await notifyOwnerSms(`📥 ${waiting.length} Messenger thread${waiting.length > 1 ? "s" : ""} were waiting on a reply\n${lines}`);
+    await notifyOwnerSms(`📥 ${waiting.length} Messenger thread${waiting.length > 1 ? "s were" : " was"} waiting on a reply\n${lines}`);
   }
   return NextResponse.json({ ok: true, flagged: waiting.length, recovered: recoveries });
 }

@@ -625,13 +625,19 @@ async function latestCustomerImages(psid: string, maxAgeMs = 15 * 60_000): Promi
 // absorbs hash drift on the bot's own older messages (Graph re-formatting).
 // CANNED_PAGE_RE is the belt to that suspender: Meta re-fires ice-breaker
 // canned replies mid-convo too (customer taps a second question), and those
-// land NEWER than the bot's last send.
+// land NEWER than the bot's last send. Same class: the July-run CTM ad
+// template ("Hi X! Please let us know how we can help" + the 📍 "Send us your
+// models" blurb) and ManyChat's own static re-engagement nudge — none of them
+// ever touch this server, so they can never be ledgered (real failure
+// 2026-07-25, Boss Ladii: the 02:44 "Just checking in, still have a device to
+// sell?" nudge read as Sonny typing → 2h standdown + false 🤫 right as she
+// asked "What's the process after getting a quote?").
 // maxAgeMs: the live-reply path wants a TIGHT 30-min window (an old unknown
 // page message is pre-feature noise, not an active takeover). The follow-up
 // nudge fires ~3h after the quote, so it passes a WIDE window — Sonny's booking
 // reply can be hours old by the time the nudge callback lands.
 const CANNED_PAGE_RE =
-  /replied to an ad|we buy iphones.{0,40}cash paid same day|depends on the model, storage and condition|iphone 13 and up pays best/i;
+  /replied to an ad|we buy iphones.{0,40}cash paid same day|depends on the model, storage and condition|iphone 13 and up pays best|please let us know how we can help|send us your models|just checking in.{0,40}(still have|device to sell)/i;
 async function ownerActive(psid: string, thread: ThreadMsg[], maxAgeMs = 30 * 60_000): Promise<boolean> {
   try {
     if (!thread.length) return false;
@@ -1040,14 +1046,20 @@ export async function POST(req: NextRequest) {
       .slice(0, -1) // exclude the most recent assistant turn
       .map((t) => priceIn(t.content))
       .find(Boolean) || null;
-  // A fresh ad-greeting deeper than the opening turns = they re-entered the
-  // funnel after earlier conversation (the first 1-2 turns of any thread are
-  // naturally the greeting, so only a greeting further down counts as a return).
+  // A fresh ad-greeting fired AFTER the customer had already spoken = they
+  // re-entered the funnel after earlier conversation. It must be anchored to
+  // the first USER turn, not a fixed index: the CTM ad template opens with
+  // THREE page messages ("X replied to an ad" + "Hi X!" + the 📍 blurb), so
+  // the old `lastGreetIdx >= 2` false-flagged every fresh lead (real failure
+  // 2026-07-25: Rene Lozano's FIRST-ever message alerted "🔁 RETURNING LEAD",
+  // and since reEntered ⊂ alertNeeded, all 8 of her intake turns emailed the
+  // owner).
   let lastGreetIdx = -1;
   priorTurns.forEach((t, i) => {
     if (t.role === "assistant" && greetingRe.test(t.content)) lastGreetIdx = i;
   });
-  const reEntered = lastGreetIdx >= 2;
+  const firstUserIdx = priorTurns.findIndex((t) => t.role === "user");
+  const reEntered = firstUserIdx >= 0 && lastGreetIdx > firstUserIdx;
   // Dynamic system note — appended AFTER the cached prompt so the big prompt
   // stays cached and this per-conversation hint is never skimmed past.
   const returnNote = reEntered
@@ -1059,8 +1071,17 @@ export async function POST(req: NextRequest) {
   const arrangedNote = sig.arranged
     ? `ALREADY ARRANGED — this message says they already worked something out with a real person here (the owner, by phone or in this thread — you may not be able to see it). Do NOT re-run intake, do NOT re-ask specs, do NOT restart anything. One short acknowledgment in the owner's voice ("you're good — let me check where we're at and text you right back"), call notify_team with the summary starting ALREADY ARRANGED (device + what they said + their contact if given), and then stay out of the way.`
     : "";
+  const austinHr =
+    Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
+  // Late at night the location close-out reads as a threat, not a plan — at
+  // 12:12am "I'll text you when I'm headed your way 👍" made an 80-year-old in
+  // Lakeway reply "Do not come out here please" (Rene Lozano, 2026-07-25).
+  const nightNote =
+    austinHr >= 21 || austinHr < 7
+      ? `IT IS LATE NIGHT IN AUSTIN RIGHT NOW (~${austinHr}:00) — nobody is driving anywhere tonight. Never say "when I'm headed your way" or anything implying someone might show up now; close with tomorrow instead ("Perfect — I'll text you tomorrow to set it up 👍"). If they say it's late or ask for a call tomorrow, agree warmly in one short line and stop.`
+      : "";
   const sysFor = (l: string) => {
-    const extras = [returnNote, arrangedNote].filter(Boolean).map((t) => ({ type: "text" as const, text: t }));
+    const extras = [returnNote, arrangedNote, nightNote].filter(Boolean).map((t) => ({ type: "text" as const, text: t }));
     return extras.length ? [...cachedSystem(l), ...extras] : cachedSystem(l);
   };
 
@@ -1084,9 +1105,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ version: "v2", content: { messages: [] } });
   }
   const openH = Number(process.env.MSGR_AI_START ?? 0); // default 24/7 (set MSGR_AI_START/END to add hours later)
-  const closeH = Number(process.env.MSGR_AI_END ?? 24); // default 24/7  (times are Austin/US-Central)
-  const austinHr =
-    Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
+  const closeH = Number(process.env.MSGR_AI_END ?? 24); // default 24/7  (times are Austin/US-Central; austinHr computed above the night note)
   const openNow = openH >= closeH ? true : austinHr >= openH && austinHr < closeH; // start>=end ⇒ always on
   if (!openNow) {
     // After hours: one short holding line + ping the owner so no overnight lead is lost.
@@ -1406,7 +1425,10 @@ export async function POST(req: NextRequest) {
   // NOTHING — exactly the "I didn't know they came back" gap.
   const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || sig.resched || sig.arranged || sig.waiting || firstContact || reEntered);
   if (alertNeeded || lang === "es") {
-    const isHot = sig.hot || sig.intent || sig.resched || sig.arranged || sig.waiting || (!!lastQuote && (!!contact || !!teamNotified));
+    // A captured phone/email is hot on its own — their number is the exact
+    // milestone the number-first sales flow drives toward (Rene Lozano's
+    // 512 number came through as a plain 💬 and was easy to miss).
+    const isHot = sig.hot || sig.intent || sig.resched || sig.arranged || sig.waiting || !!contact || (!!lastQuote && !!teamNotified);
     const what =
       teamNotified?.summary ||
       (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.arranged ? "🤝 ALREADY ARRANGED — they say a deal/meetup is set with you; bot is standing aside, pick it up" : sig.waiting ? "⏳ WAITING ON US — they're chasing something we promised (label/number/callback); unblock them" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : reEntered ? `🔁 RETURNING LEAD — messaged before${earlierQuoted ? `, already quoted (~$${earlierQuoted})` : ""}, check the thread before re-quoting` : firstContact ? "🆕 new conversation" : "active chat");
