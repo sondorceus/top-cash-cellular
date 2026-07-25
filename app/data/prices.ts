@@ -1264,7 +1264,10 @@ export const BASE_PRICED_MODELS: Record<string, BasePricedModel> = {
 // types + the MACBOOK_SPECS map. Admin /admin/prices reads them to power
 // the per-MacBook spec editor.
 
-export type MacSpecOption = { id: string; label: string; multiplier: number; adj?: number; sub?: string };
+// `review: true` marks a spec row whose scraped adj is known-contaminated
+// (e.g. $0 chip on a flagship) — the funnel routes that selection to
+// manual review instead of auto-quoting the poisoned value.
+export type MacSpecOption = { id: string; label: string; multiplier: number; adj?: number; sub?: string; review?: boolean };
 export type MacSpec = {
   processors: MacSpecOption[];
   memory: MacSpecOption[];

@@ -27,7 +27,8 @@
         "id": "7th_8th_gen",
         "label": "7th/8th Gen",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 85,
@@ -145,7 +146,8 @@
         "id": "v_17",
         "label": "V 17",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 565,
@@ -221,21 +223,24 @@
         "id": "helios_300",
         "label": "Helios 300",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 40,
         "id": "helios_700",
         "label": "Helios 700",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 45,
         "id": "helios_500",
         "label": "Helios 500",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 250,
@@ -346,14 +351,16 @@
         "id": "triton_300",
         "label": "Triton 300",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 10,
         "id": "triton_300_se",
         "label": "Triton 300 SE",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 55,
@@ -27257,14 +27264,16 @@
         "id": "14in",
         "label": "14in",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 30,
         "id": "16in",
         "label": "16in",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 410,
@@ -27789,7 +27798,8 @@
         "id": "high_processor",
         "label": "High Processor",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 325,
@@ -27893,7 +27903,8 @@
         "id": "2025_models",
         "label": "2025 models",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 270,
@@ -28011,7 +28022,8 @@
         "id": "7th_8th_9th_gen",
         "label": "7th/8th/9th gen.",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 175,
@@ -28101,7 +28113,8 @@
         "id": "ryzen",
         "label": "Ryzen",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 775,
@@ -28163,7 +28176,8 @@
         "id": "hp_omen_slim_16",
         "label": "Hp Omen Slim 16",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       }
     ],
     "storage": [
@@ -29077,7 +29091,8 @@
         "id": "hp_pavilion_14",
         "label": "Hp Pavilion 14",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       }
     ],
     "storage": [
@@ -38489,7 +38504,8 @@
         "id": "9i_gen_8",
         "label": "9i Gen 8",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 275,
@@ -45195,7 +45211,8 @@
         "id": "gen_1",
         "label": "Gen 1",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       }
     ],
     "storage": [
@@ -53604,7 +53621,8 @@
         "id": "galaxy_book3",
         "label": "Galaxy Book3",
         "multiplier": 1.0,
-        "sub": ""
+        "sub": "",
+        "review": true
       },
       {
         "adj": 140,

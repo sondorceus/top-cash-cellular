@@ -560,11 +560,12 @@ export default function PricesAdminPage() {
                   <li>
                     <span className="text-[#00c853] font-bold">MacBooks, PC laptops:</span>{" "}
                     <span className="text-[#bdbdbd]">additive deltas.</span> The quote is built by summing several
-                    dollar adjustments:
+                    dollar adjustments — <span className="text-white font-semibold">chip_adj is ABSOLUTE (it already
+                    contains the base price; base is never added on top)</span>:
                     <code className="text-[#cfcfcf] block mt-1 ml-1 text-[11px]">
-                      base + chip_adj + ram_adj + storage_adj + condition_adj + gpu_adj + battery_adj + charger_adj
+                      (chip_adj + ram_adj + storage_adj + condition_adj + gpu_adj + battery_adj + charger_adj) × 0.90
                     </code>
-                    <span className="text-[#bdbdbd]">The condition_adj row in the &quot;MacBooks · condition adjustments&quot; section is just one piece of this — it&apos;s a +/− dollar amount that gets added to the running total based on which condition the customer picks.</span>
+                    <span className="text-[#bdbdbd]">The condition_adj row in the &quot;MacBooks · condition adjustments&quot; section is just one piece of this — it&apos;s a +/− dollar amount that gets added to the running total based on which condition the customer picks. If a quote looks wrong, suspect the DATA row (a mis-bridged chip_adj), not the math — treating chip_adj as base-relative is exactly the mistake behind the July Core-Ultra mis-bridge.</span>
                   </li>
                 </ul>
               </div>
@@ -580,8 +581,9 @@ export default function PricesAdminPage() {
                   <code className="text-[#cfcfcf]">+50 / 0 / −50 / −110 / −220 / −450</code>.
                 </p>
                 <p className="text-[#bdbdbd] mt-1">
-                  A $1500-base MacBook in <span className="text-[#cfcfcf]">good</span> condition →
-                  $1500 + (−$110) = <span className="text-white font-bold">$1390</span> quoted.
+                  A MacBook whose chip_adj is <span className="text-[#cfcfcf]">$1500</span> (absolute — base included) in{" "}
+                  <span className="text-[#cfcfcf]">good</span> condition →
+                  ($1500 + (−$110)) × 0.90 = <span className="text-white font-bold">$1,251</span> quoted.
                 </p>
               </div>
 

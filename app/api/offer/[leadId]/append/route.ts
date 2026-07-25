@@ -53,7 +53,7 @@ const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
 const LOCKED = new Set(["shipped", "received", "tested", "paid", "met"]);
 
-type Device = { model: string; storage?: string; condition?: string; quote: number; quantity: number; needsReview?: boolean };
+type Device = { model: string; storage?: string; condition?: string; carrier?: string; quote: number; quantity: number; needsReview?: boolean };
 
 function field(body: string, key: string): string | undefined {
   const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
@@ -132,7 +132,7 @@ function resolveCurrentDevices(
   }];
 }
 
-type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
+type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; carrier?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
   const { leadId } = await ctx.params;
@@ -165,6 +165,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       model: clean(d.model, 80),
       storage: clean(d.storage, 30) || undefined,
       condition: clean(d.condition, 30) || undefined,
+      // Per-line carrier from the funnel add-to-order flow — the funnel
+      // KNOWS the added device's carrier. Without it, adding an unlocked
+      // phone onto an AT&T-carrier lead clamped the new line against the
+      // AT&T ceiling → false clamp + needsReview at add time.
+      carrier: clean(d.carrier, 40) || undefined,
       quote: safeQuote,
       quantity: qty,
       needsReview: !!d.needsReview,
@@ -223,7 +228,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     if (d.needsReview || d.quote <= 0) continue;
     const unitCap =
       (await authoritativeLineCap(
-        { model: d.model, storage: d.storage, condition: d.condition, carrier: leadCarrier },
+        { model: d.model, storage: d.storage, condition: d.condition, carrier: d.carrier || leadCarrier },
         capOverrides,
       )) ?? computeUnitCap(d.model, d.condition);
     if (unitCap == null) {

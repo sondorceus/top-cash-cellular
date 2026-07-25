@@ -259,6 +259,11 @@ interface AdminLead {
   // True when a customer edit set a device to a broken condition —
   // it can't be auto-quoted and needs a hands-on staff re-quote.
   itemsNeedReview?: boolean;
+  // True when /api/lead stamped "⚠️ NEEDS REVIEW" in the lead header at
+  // funnel time (manual-review model, tamper clamp, missing attestation,
+  // uncapped-sanity flag). Parsed here so the admin red queue surfaces
+  // these — previously only ITEM-UPDATE edits carried a review signal.
+  funnelNeedsReview?: boolean;
   // Soft-trash metadata. Populated for leads in the Trash view. The
   // hoursToAutoPurge field counts down from 24h since deletedAt.
   // Skywalker 2026-05-17: "next time save my quotes for 24hr".
@@ -914,6 +919,7 @@ export async function GET(req: NextRequest) {
     let quoteOverride: string | undefined;
     let itemsEditedAt: string | undefined;
     let itemsNeedReview = false;
+    const funnelNeedsReview = m.body.includes("⚠️ NEEDS REVIEW");
     const itemUpd = itemUpdateByLead.get(m.id);
     if (itemUpd) {
       itemsEditedAt = itemUpd.timestamp;
@@ -1032,6 +1038,7 @@ export async function GET(req: NextRequest) {
       totalPayout,
       itemsEditedAt,
       itemsNeedReview,
+      funnelNeedsReview,
       deletedAt:        bucket.kind === "trashed" ? bucket.deletedAt : undefined,
       // null hoursLeft means "no auto-purge" (active in-flight lead) —
       // pass through as null so the UI can display "kept indefinitely"

@@ -2076,8 +2076,8 @@ type ModelGroup = { label: string; year?: string; ids: string[] };
 const MODEL_GROUPS: Record<string, ModelGroup[]> = {
   applewatch: [
     { label: "Ultra",      year: "2022–2025", ids: ["awu3", "awu2", "awu1"] },
-    { label: "Series",     year: "2021–2024", ids: ["aws10", "aws9", "aws8", "aws7"] },
-    { label: "SE",         year: "2020–2022", ids: ["awse2", "awse1"] },
+    { label: "Series",     year: "2021–2025", ids: ["aws11", "aws10", "aws9", "aws8", "aws7"] },
+    { label: "SE",         year: "2020–2025", ids: ["awse3", "awse2", "awse1"] },
   ],
   samsungwatch: [
     { label: "Ultra (2025)", year: "2025", ids: ["sgwu25"] },
@@ -5957,6 +5957,13 @@ export default function Home() {
     * couponMultiplier * processorMultiplier * memoryMultiplier * displayGlassMultiplier
     * batteryHealthMultiplier * chargerMultiplier * extrasMultOnly;
   const promoOnly = promoMultiplier * couponMultiplier * (useAdditive ? extrasMultOnly : extrasMultiplier);
+  // Promo flat bonus only sweetens a quote that already exists. Added
+  // outside the zero-clamp it resurrected $0-authored cells (the owner's
+  // "don't auto-quote this config" signal) into firm offers: a live $20
+  // iPhone promo turned iPhone 11 Pro fair (authored 0) into $20, which
+  // then also unlocked the +$25 popular bonus → $45 auto-offer with no
+  // server backstop. Zero must stay zero → manual review. 2026-07-25.
+  const withPromoFlat = (pre: number) => (pre > 0 ? pre + promoFlatBonus : pre);
   const baseQuote = useAdditive
     ? (() => {
         const chip = procAdj;
@@ -5997,10 +6004,10 @@ export default function Home() {
           ? (specChrg[charger.id] ?? specChrg["no"] ?? 0)
           : (charger?.id === "no" ? -50 : 0);
         const iwm = chip + ram + stor + gpu + disp + cond + nano + batt + chrg + extrasAdjSum;
-        return Math.max(0, Math.round(iwm * 0.90 * promoOnly)) + promoFlatBonus;
+        return withPromoFlat(Math.max(0, Math.round(iwm * 0.90 * promoOnly)));
       })()
     : useDirectPricing
-      ? Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
+      ? withPromoFlat(Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier + extrasAdjSum)))
       : (() => {
           // model.base via admin override (baseOverrides[id]) if present —
           // covers VR, drones, Garmin, any other simple-base device. Falls
@@ -6008,7 +6015,7 @@ export default function Home() {
           // price editor.
           const effBase = (model && (priceOverrides?.baseOverrides?.[model.id] ?? model.base)) || 0;
           return model && condition && effBase
-            ? Math.max(0, Math.round(effBase * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)) + promoFlatBonus
+            ? withPromoFlat(Math.max(0, Math.round(effBase * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)))
             : 0;
         })();
   // Popular-device bonus: phones + cellular iPads get +$25 over IWM
@@ -6096,7 +6103,13 @@ export default function Home() {
     const fairAdj = resolveAdj("fair") ?? -220; // MCOND fair fallback
     return brokenAdj == null || brokenAdj >= fairAdj;
   })();
-  const isManualQuote = isBelowMinimum || isBrokenNonFunctional || isUnpricedBroken || isUnpricedAdditiveBroken || needsMarginReview || isSealedLockedPremium;
+  // Contaminated-spec guard: pc-laptop-specs rows flagged `review: true`
+  // carry scrape-poisoned chip adjs ($0 "High Processor" on a $1,260-base
+  // flagship, Helios family $0-45 vs $472 sibling median) — the additive
+  // sum quotes ~nothing and the customer walks. Route to manual review;
+  // staff quote by hand. Real values need fresh comps, not guesses.
+  const isReviewSpec = useAdditive && (processor as MacSpecOption | null)?.review === true;
+  const isManualQuote = isBelowMinimum || isBrokenNonFunctional || isUnpricedBroken || isUnpricedAdditiveBroken || isReviewSpec || needsMarginReview || isSealedLockedPremium;
 
   // Add-to-order mode: append the currently-priced device to an existing offer.
   // NOTE: the append route wants `quote` as the LINE TOTAL (price × qty), and
@@ -6112,6 +6125,10 @@ export default function Home() {
         model: model.label,
         storage: storage?.label,
         condition: condition.label,
+        // Per-line carrier so the append route caps THIS device against
+        // its own carrier's ceiling, not the original lead's — adding an
+        // unlocked phone onto an AT&T lead used to false-flag the line.
+        carrier: carrier?.label,
         quote: quote * quantity,
         quantity,
         needsReview: isManualQuote || isPendingQuote,

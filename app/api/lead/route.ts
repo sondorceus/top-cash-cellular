@@ -138,8 +138,9 @@ async function isDuplicateMC(email: string, contact: string, device: string, mod
 // fork that drifted — stale Xbox numbers, missing Pixels/Watches/iPad, and
 // no brokenGlass deduction — which silently clamped legit quotes down and
 // false-flagged them as tampered. Always import; never re-fork.)
-import { authoritativeLineCap, type LeadLineSpec } from "../../lib/server-quote-cap";
+import { authoritativeLineCap, resolveModelIdFromLabel, type LeadLineSpec } from "../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../lib/quote";
+import { MANUAL_REVIEW_DEVICES } from "../../data/prices";
 
 // High-value devices that need manual review before payout
 const REVIEW_KEYWORDS = [
@@ -154,7 +155,16 @@ function needsManualReview(modelName: string, _quoteAmt: number): boolean {
   // even though we have a firm price. Skywalker 2026-07-05: don't review
   // devices we've priced — only the ones I list. (Quote-tamper + missing
   // 18+/ownership attestation are still flagged separately in reviewRequired.)
-  return REVIEW_KEYWORDS.some(kw => modelName?.includes(kw));
+  if (REVIEW_KEYWORDS.some(kw => modelName?.includes(kw))) return true;
+  // Also consult MANUAL_REVIEW_DEVICES by resolved model ID — the
+  // authoritative set quote.ts uses. REVIEW_KEYWORDS is a hand-kept label
+  // list that drifts against it, and the cap path can't carry the signal:
+  // quoteDevice() returns manualReview for these IDs, but
+  // authoritativeLineCap collapses that to null, which this route reads as
+  // "unknown model, skip" — so flagged devices (Mac Studio M4, Z TriFold…)
+  // arrived looking like normal priced leads. 2026-07-25.
+  const id = resolveModelIdFromLabel(modelName);
+  return id != null && MANUAL_REVIEW_DEVICES.has(id);
 }
 
 export async function POST(req: NextRequest) {
@@ -932,8 +942,23 @@ export async function POST(req: NextRequest) {
   const highValueReview = isMulti
     ? deviceList.some((d) => needsManualReview(typeof d.model === "string" ? d.model : "", Number(d.quote) || 0))
     : needsManualReview(model as string, quoteNum);
-  const reviewRequired = highValueReview || quoteTampered || !attested;
+  // No-cap sanity bound. When serverQuoteCap is null (additive MacBooks/
+  // PCs, base-priced VR/drones/Garmin — the whole class quoteDevice can't
+  // price) the tamper clamp never runs, so a hand-crafted lead could post
+  // model="MacBook Pro 14 M4", quote=25000 and render as a normal lead all
+  // the way into the confirm email. No legit funnel quote exceeds ~$3k
+  // (M4 Max mint ≈ $2.8k), so anything above the bound with no server cap
+  // is flagged for review — flagged, not clamped, because with no cap we
+  // don't know the real value either. 2026-07-25.
+  const NO_CAP_SANITY_MAX = 3500;
+  const uncappedSanity = serverQuoteCap == null && (isMulti
+    ? deviceList.some((d) => (Number(d.quote) || 0) > NO_CAP_SANITY_MAX)
+    : submittedQuoteNum > NO_CAP_SANITY_MAX);
+  const reviewRequired = highValueReview || quoteTampered || !attested || uncappedSanity;
   const reviewLines: string[] = [];
+  if (uncappedSanity) {
+    reviewLines.push(`🚨 UNCAPPED HIGH QUOTE — no server-side price ceiling exists for this model and the submitted figure exceeds $${NO_CAP_SANITY_MAX}. Verify the quote by hand before ANY payout.`);
+  }
   if (!attested) {
     reviewLines.push("⚠️ NO 18+/OWNERSHIP ATTESTATION — confirm the seller is 18+ and the legal owner of the device before paying (Terms §2).");
   }
@@ -1029,7 +1054,9 @@ export async function POST(req: NextRequest) {
         fromName: "Top Cash Cellular",
         role: "system",
         body: leadBody,
-        tags: ["lead", "buyback"],
+        // needs-review tag matches the items/append convention so tag-based
+        // tooling and the admin queue see funnel review-leads the same way.
+        tags: reviewRequired ? ["lead", "buyback", "needs-review"] : ["lead", "buyback"],
         priority: "urgent",
       }),
     });

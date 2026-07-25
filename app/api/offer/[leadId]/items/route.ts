@@ -37,7 +37,7 @@ const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
 
-type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
+type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; carrier?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
   const { leadId } = await ctx.params;
@@ -69,6 +69,13 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       model: cleanField(d.model, 80),
       storage: cleanField(d.storage, 30),
       condition: cleanField(d.condition, 30),
+      // Per-line carrier (optional). A mixed-carrier cart clamped every
+      // line against the LEAD-level carrier — an unlocked line on an AT&T
+      // lead capped at the AT&T ceiling → false clamp + needsReview.
+      // Client-supplied is fine here: the customer already self-declares
+      // carrier at funnel time and inspection is the backstop; a wrong
+      // claim only moves the ceiling by the carrier gap.
+      carrier: cleanField(d.carrier, 40),
       quote: Number.isFinite(quote) && quote >= 0 && quote <= 100000 ? quote : 0,
       quantity: quantity >= 1 && quantity <= 50 ? quantity : 1,
       // Set by the editor for a broken + non-functional device — it
@@ -113,7 +120,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   for (const d of devices) {
     if (d.needsReview || d.quote <= 0) continue;
     const cap = await authoritativeLineCap(
-      { model: d.model, storage: d.storage, condition: d.condition, carrier: leadCarrier },
+      { model: d.model, storage: d.storage, condition: d.condition, carrier: d.carrier || leadCarrier },
       capOverrides,
     );
     if (cap == null) {

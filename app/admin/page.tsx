@@ -78,6 +78,8 @@ interface Lead {
   itemsEditedAt?: string;
   // True when a customer edit set a device broken — needs a hands-on re-quote.
   itemsNeedReview?: boolean;
+  // True when /api/lead stamped ⚠️ NEEDS REVIEW at funnel time.
+  funnelNeedsReview?: boolean;
   // Live Atlas + eBay margin per lead — computed at GET time using the
   // current comp datasets. Skywalker 2026-05-19.
   compMargin?: {
@@ -1485,6 +1487,11 @@ export default function AdminPage() {
   const FINISHED = new Set(["paid", "met", "rejected"]);
   function leadNeedsReview(l: Lead): boolean {
     if (l.ai?.flag) return true;
+    // Funnel-time or edit-time review flags (manual-review model, tamper,
+    // missing attestation, uncapped sanity, broken-edit re-quote). These
+    // carried the ⚠️ marker in the body/email but never surfaced in THIS
+    // red queue — staff only saw them if they read the body. 2026-07-25.
+    if (l.funnelNeedsReview || l.itemsNeedReview) return true;
     if (l.ai?.summary && /\bpass\b/i.test(l.ai.summary.body)) return true;
     if (l.staleHours && l.staleHours >= 24 && !FINISHED.has(l.status)) return true;
     const isMulti = !!(l.deviceCount && l.deviceCount > 1);

@@ -52,9 +52,15 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   "Apple Watch SE (2nd Gen)": 70,
   "Apple Watch Series 7": 80, "Apple Watch Series 8": 100, "Apple Watch Series 9": 115,
   "Apple Watch Ultra": 200,
-  // iPads — Skipped most (TCC pays above Atlas wholesale). Only the M3 13"
-  // Air has enough margin headroom for a safe cap.
-  "iPad Air 13\" (M3)": 515,
+  // iPads — Skipped ALL (TCC pays above Atlas wholesale). An "iPad Air 13\"
+  // (M3)": 515 entry lived here 2026-05→07 but was DEAD CODE the whole
+  // time: the parenthesized key never matched the funnel label (iPad Air
+  // 13" M3), so the cap it promised never applied. Removed 2026-07-25
+  // rather than re-keyed — a flat number can't govern a storage/
+  // connectivity-configurable device (the 515 base-config comp would have
+  // clamped a legit sealed-1TB-cellular quote), same reason the watch
+  // entries above came out. If iPad caps come back they need per-config
+  // comps and Skywalker's numbers.
   // Consoles — refreshed 2026-07-12 from fresh eBay sold medians (console
   // market ROSE since May: Series X used now ~$450 n=61, PS5 Pro used 2TB
   // ~$775 n=38). ps5slim/nswoled kept at May-19 medians (July scrape
@@ -62,9 +68,15 @@ export const RESELL_ESTIMATES: Record<string, number> = {
   "PlayStation 5 Pro": 775, "PlayStation 5 Slim": 399, "PlayStation 5": 347,
   "Xbox Series X": 450, "Xbox Series S": 240,
   "Nintendo Switch 2": 413, "Nintendo Switch OLED": 195,
-  // MacBook
-  "MacBook Pro 16\" M4": 1500, "MacBook Pro 14\" M4": 1000, "MacBook Pro 16\" M3": 1100,
-  "MacBook Pro 14\" M3": 700, "MacBook Air M4": 600, "MacBook Air M3": 450,
+  // MacBooks — none. Six entries (MBP 16/14 M4/M3 1500-700, Air M4/M3
+  // 600/450) lived here 2026-05→07 but were DEAD CODE: funnel labels carry
+  // " (2024)"-style suffixes the trailing-token guard rejects, so no label
+  // ever matched and the caps everyone believed in never fired. Removed
+  // 2026-07-25 rather than re-keyed: MacBooks are spec-configurable (an M4
+  // Max 16" quotes ~$2.5k+) so a flat per-family cap would silently clamp
+  // every high-spec config — the exact watch footgun documented above.
+  // The additive path + inspection is the MacBook guard; admin margin
+  // chips for MacBooks need per-config comps, not a resurrected flat key.
 };
 
 // Exact PRICE_TABLE-id → RESELL_ESTIMATES key. The label matcher below is

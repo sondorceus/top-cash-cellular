@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
   // row (the headline) and override the offer total. Skywalker 2026-05-17:
   // "when I submit it only shows 1 device on both the page confirmation
   // and on email it should reflect multiple".
-  const deviceArr: Array<{ model?: string; storage?: string; condition?: string; quote?: number; quantity?: number }> =
+  const deviceArr: Array<{ model?: string; storage?: string; condition?: string; carrier?: string; quote?: number; quantity?: number }> =
     Array.isArray(devices) ? devices : [];
   const isMulti = deviceArr.length > 1;
   // Never email a dollar figure above the device's authoritative ceiling.
@@ -105,15 +105,20 @@ export async function POST(req: NextRequest) {
   // price server-side (MacBooks, customs) keep the funnel figure — the
   // actual payout is still governed by the lead-route clamp + inspection.
   const capOverrides = await readPriceOverrides();
-  const clampLine = async (m: unknown, s: unknown, c: unknown, lineQuote: number, qty: unknown): Promise<number> => {
-    const cap = await authoritativeLineCap({ model: m, storage: s, condition: c, carrier: body.carrier }, capOverrides);
+  // Carrier is per-LINE with the top-level body.carrier as fallback — a
+  // mixed cart submits one body.carrier, which capped every line against
+  // that single carrier's ceiling (an unlocked line on an AT&T submission
+  // clamped ~the carrier gap too low). Funnel carts carry carrier per
+  // device row; older clients without it keep today's behavior.
+  const clampLine = async (m: unknown, s: unknown, c: unknown, lineQuote: number, qty: unknown, lineCarrier?: unknown): Promise<number> => {
+    const cap = await authoritativeLineCap({ model: m, storage: s, condition: c, carrier: lineCarrier || body.carrier }, capOverrides);
     if (cap == null) return lineQuote;
     const allowed = cap * Math.min(50, Math.max(1, Math.round(Number(qty)) || 1));
     return lineQuote > allowed + 5 ? allowed : lineQuote;
   };
   for (const d of deviceArr) {
     const q = Number(d.quote) || 0;
-    if (q > 0) d.quote = await clampLine(d.model, d.storage, d.condition, q, d.quantity ?? 1);
+    if (q > 0) d.quote = await clampLine(d.model, d.storage, d.condition, q, d.quantity ?? 1, d.carrier);
   }
   if (deviceArr.length === 0 && (Number(quote) || 0) > 0) {
     quote = await clampLine(model, storage, condition, Number(quote), body.quantity ?? 1);
