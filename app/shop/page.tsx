@@ -70,6 +70,20 @@ export default async function ShopPage() {
 
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": FAQ.map((f) => ({
+              "@type": "Question",
+              "name": f.q,
+              "acceptedAnswer": { "@type": "Answer", "text": f.a },
+            })),
+          }),
+        }}
+      />
       <ShopHeader />
 
       <div className="max-w-7xl mx-auto px-4 pt-10 pb-16 w-full flex-1">

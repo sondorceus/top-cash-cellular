@@ -3,13 +3,15 @@
 // URL goes into the toll-free verification application as the
 // `opt_in_image_urls` reference. Linked from the privacy policy.
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import SiteFooter from "../components/SiteFooter";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "SMS Policy — Top Cash Cellular",
   description:
     "How customers opt in to SMS updates from Top Cash Cellular, what messages we send, and how to stop them.",
+  alternates: { canonical: "https://topcashcellular.com/sms-policy" },
 };
 
 import { BRAND, EMAIL } from "../lib/constants";

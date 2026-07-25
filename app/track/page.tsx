@@ -319,6 +319,7 @@ function TrackInner() {
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
                   placeholder="Phone or email"
+                  aria-label="Phone or email"
                   className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] transition"
                 />
                 <button type="submit" disabled={sending || !contact.trim()} className="px-5 py-3 bg-[#00c853] text-[#0a0a0a] rounded-xl text-sm font-semibold hover:bg-[#00e676] cursor-pointer transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">

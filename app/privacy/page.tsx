@@ -5,6 +5,7 @@ import { BRAND, EMAIL, EMAIL_HREF, LOCATION_DISPLAY } from "../lib/constants";
 export const metadata: Metadata = {
   title: `Privacy Policy | ${BRAND}`,
   description: `Privacy Policy for ${BRAND} — how we collect, use, and protect your data.`,
+  alternates: { canonical: "https://topcashcellular.com/privacy" },
 };
 
 export default function PrivacyPage() {

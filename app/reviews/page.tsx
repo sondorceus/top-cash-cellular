@@ -64,6 +64,35 @@ export default async function ReviewsPage() {
 
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+      {/* Emitted only with real reviews — a rating with zero reviews behind it
+          is a rich-result penalty risk, so the 4.8 display fallback stays out. */}
+      {count > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Top Cash Cellular",
+              "url": "https://topcashcellular.com",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": Number(avg.toFixed(1)),
+                "reviewCount": count,
+                "bestRating": 5,
+                "worstRating": 1,
+              },
+              "review": reviews.slice(0, 10).map((r) => ({
+                "@type": "Review",
+                "author": { "@type": "Person", "name": r.name },
+                "reviewRating": { "@type": "Rating", "ratingValue": r.rating, "bestRating": 5 },
+                "reviewBody": r.body,
+                "datePublished": r.createdAt.slice(0, 10),
+              })),
+            }),
+          }}
+        />
+      )}
       <SlideOnScrollNav className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
         <Link href="/" className="text-xl font-bold tracking-tight">
           Top Cash <span className="text-[#00c853]">Cellular</span>

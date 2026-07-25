@@ -41,6 +41,23 @@ const PROMISES = [
 export default function HowItWorksPage() {
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": "How to sell your phone or device to Top Cash Cellular",
+            "description": "Selling your phone, tablet, laptop, or console takes 3 steps: get your quote, ship it free, get paid.",
+            "step": STEPS.map((s) => ({
+              "@type": "HowToStep",
+              "position": s.n,
+              "name": s.title,
+              "text": s.body,
+            })),
+          }),
+        }}
+      />
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
