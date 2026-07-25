@@ -78,18 +78,29 @@ async function isMuted(psid: string): Promise<boolean> {
 // Re-run the brain on the unanswered message and send its reply. The brain
 // gets psid so it reads the real thread, joins the shared burst/mute/takeover
 // guards, and records its outbound in the ledger. Returns what was sent.
-async function recoverThread(origin: string, psid: string, lastText: string, token: string): Promise<string[]> {
+// Returns the texts it managed to send plus a failure tag — the tag reaches
+// the owner alert. A whole week of watchdog emails (Jul 18–25) said a plain
+// "needs YOU" while every recovery was actually dying at the Graph Send leg
+// (dev-mode Send API can't message real customers pre-App-Review); the
+// console.error was the only witness and nobody reads function logs.
+// fail is the closed CATEGORY (the renderer branches on it — "send" is the
+// one that means "bot replied, Meta blocked it, App Review needed"); detail
+// carries the HTTP status for the alert text.
+type Recovery = { texts: string[]; fail: "" | "send" | "ai" | "error" | "no-secret"; detail: string };
+async function recoverThread(origin: string, psid: string, lastText: string, token: string): Promise<Recovery> {
   const secret = process.env.MSGR_BOT_SECRET || "";
-  if (!secret) return [];
+  if (!secret) return { texts: [], fail: "no-secret", detail: "" };
   try {
     const r = await fetch(`${origin}/api/msgr-ai?s=${encodeURIComponent(secret)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: lastText, psid, deep: true, recover: true }),
     });
-    if (!r.ok) return [];
+    if (!r.ok) return { texts: [], fail: "ai", detail: String(r.status) };
     const out = (await r.json()) as { content?: { messages?: { text?: string }[] } };
     const texts = (out?.content?.messages ?? []).map((m) => m?.text).filter(Boolean) as string[];
+    // Zero messages = the bot chose silence (natural stop / standdown) — a
+    // hanging thread the bot won't touch is legitimately Sonny's, no tag.
     for (const text of texts) {
       const sent = await fetch(`https://graph.facebook.com/v21.0/me/messages?access_token=${encodeURIComponent(token)}`, {
         method: "POST",
@@ -98,13 +109,13 @@ async function recoverThread(origin: string, psid: string, lastText: string, tok
       });
       if (!sent.ok) {
         console.error("[inbox-watch] recovery send failed", sent.status, (await sent.text().catch(() => "")).slice(0, 300));
-        return [];
+        return { texts: [], fail: "send", detail: String(sent.status) };
       }
     }
-    return texts;
+    return { texts, fail: "", detail: "" };
   } catch (e) {
     console.error("[inbox-watch] recovery failed", (e as Error).message);
-    return [];
+    return { texts: [], fail: "error", detail: "" };
   }
 }
 
@@ -131,7 +142,7 @@ export async function GET(req: NextRequest) {
   if (!pageId) return NextResponse.json({ ok: false, reason: "page id derivation failed", convos: convos.length });
 
   const botLive = process.env.MSGR_AI_ENABLED !== "0";
-  const waiting: { name: string; text: string; ageMin: number; recovered: boolean }[] = [];
+  const waiting: { name: string; text: string; ageMin: number; recovered: boolean; fail: Recovery["fail"]; detail: string }[] = [];
   let recoveries = 0;
   for (const c of convos) {
     const msgs = c.messages?.data || [];
@@ -149,18 +160,20 @@ export async function GET(req: NextRequest) {
     const name = c.participants?.data?.find((p) => p.id !== pageId)?.name || "Facebook user";
 
     // Recovery — only when silence looks like a DROP, not a choice.
-    let sentTexts: string[] = [];
+    let rec: Recovery = { texts: [], fail: "", detail: "" };
     const deliberate = ENDED.test(lastText) || ACK_ONLY.test(lastText) || STEP_AWAY.test(lastText);
     if (botLive && !deliberate && age <= MAX_RECOVER_MS && recoveries < 3 && !(await isMuted(psid)) && !(await deferActive(psid))) {
-      sentTexts = await recoverThread(req.nextUrl.origin, psid, lastText, token);
-      if (sentTexts.length) recoveries++;
+      rec = await recoverThread(req.nextUrl.origin, psid, lastText, token);
+      if (rec.texts.length) recoveries++;
     }
 
     waiting.push({
       name,
       text: (lastText || "(photo/attachment)").slice(0, 80),
       ageMin: Math.round(age / 60_000),
-      recovered: sentTexts.length > 0,
+      recovered: rec.texts.length > 0,
+      fail: rec.fail,
+      detail: rec.detail,
     });
     if (waiting.length >= 5) break;
   }
@@ -170,7 +183,15 @@ export async function GET(req: NextRequest) {
     const needsYou = waiting.filter((w) => !w.recovered);
     const fixed = waiting.filter((w) => w.recovered);
     const lines = [
-      ...needsYou.map((w) => `⏰ ${w.name} (${w.ageMin}m, needs YOU): "${w.text}"`),
+      ...needsYou.map((w) => {
+        const why =
+          w.fail === "send"
+            ? ` — bot REPLIED but Meta blocked the send (${w.detail}; needs App Review)`
+            : w.fail
+              ? ` — recovery failed (${w.fail}${w.detail ? ` ${w.detail}` : ""})`
+              : "";
+        return `⏰ ${w.name} (${w.ageMin}m, needs YOU${why}): "${w.text}"`;
+      }),
       ...fixed.map((w) => `🤖 ${w.name} (${w.ageMin}m): "${w.text}" — bot jumped back in`),
     ].join("\n");
     await notifyOwnerSms(`📥 ${waiting.length} Messenger thread${waiting.length > 1 ? "s were" : " was"} waiting on a reply\n${lines}`);

@@ -1427,8 +1427,9 @@ export async function POST(req: NextRequest) {
   if (alertNeeded || lang === "es") {
     // A captured phone/email is hot on its own — their number is the exact
     // milestone the number-first sales flow drives toward (Rene Lozano's
-    // 512 number came through as a plain 💬 and was easy to miss).
-    const isHot = sig.hot || sig.intent || sig.resched || sig.arranged || sig.waiting || !!contact || (!!lastQuote && !!teamNotified);
+    // 512 number came through as a plain 💬 and was easy to miss). Same for a
+    // texted IMEI: the seller literally dialed *#06# on request.
+    const isHot = sig.hot || sig.intent || sig.resched || sig.arranged || sig.waiting || !!contact || !!sig.imei || (!!lastQuote && !!teamNotified);
     const what =
       teamNotified?.summary ||
       (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.arranged ? "🤝 ALREADY ARRANGED — they say a deal/meetup is set with you; bot is standing aside, pick it up" : sig.waiting ? "⏳ WAITING ON US — they're chasing something we promised (label/number/callback); unblock them" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : reEntered ? `🔁 RETURNING LEAD — messaged before${earlierQuoted ? `, already quoted (~$${earlierQuoted})` : ""}, check the thread before re-quoting` : firstContact ? "🆕 new conversation" : "active chat");
