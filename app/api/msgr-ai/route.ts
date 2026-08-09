@@ -292,7 +292,7 @@ function looksBulk(text: string): boolean {
 // Server-side lead intelligence: catch contact info + hot-buying signals in the raw
 // message even when the model doesn't call notify_team — so no lead ever slips past
 // the owner, and the truly-ready ones get flagged HOT for a fast follow-up.
-function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean; imei: string; vendor: boolean; resched: boolean; arranged: boolean; waiting: boolean } {
+function detectSignals(text: string): { contact: string; hot: boolean; intent: boolean; imei: string; vendor: boolean; resched: boolean; arranged: boolean; waiting: boolean; eta: boolean; frustrated: boolean } {
   // IMEI first — a bare 15-digit number is an IMEI, not a phone number.
   const imei = text.match(/\b\d{15}\b/)?.[0] || "";
   const scrubbed = imei ? text.replace(imei, " ") : text;
@@ -306,8 +306,8 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   // must too (a 2026-07-05 ES lead fired nothing: every regex was English).
   const hot =
     bulk ||
-    /\b(today|tonight|asap|right now|need\s+(the\s+)?cash|how soon|urgent|this (morning|afternoon|evening)|meet ?up|can we meet|cash today|where.*(meet|located|you at))\b/i.test(text) ||
-    /\b(hoy mismo|ahorita|ya mismo|urgente|necesito (dinero|efectivo|cash)|nos vemos|d[oó]nde (est[aá]n|te veo|los encuentro)|puedo ir hoy)\b/i.test(text);
+    /\b(today|tonight|asap|right now|need\s+(the\s+)?cash|how soon|urgent|this (morning|afternoon|evening)|meet ?up|can we meet|cash today|where.*(meet|located|you at)|i'?m (here|outside|at the (spot|store|park|address)))\b/i.test(text) ||
+    /\b(hoy mismo|ahorita|ya mismo|urgente|necesito (dinero|efectivo|cash)|nos vemos|d[oó]nde (est[aá]n|te veo|los encuentro)|puedo ir hoy|ya (llegu[eé]|estoy aqu[ií])|estoy (aqu[ií]|afuera))\b/i.test(text);
   const intent =
     /\b(i'?ll take it|let'?s do it|sounds good|it'?s a deal|i'?m in|where do (we|i)|come get it|book it|set it up|when can (we|you)|ready to sell|wanna sell|want to sell it|do it|tell me how much|how much (?:can|do|will|would)?\s*(?:you|u)?\s*(?:offer|give|pay))\b/i.test(text) ||
     /\b(quiero vender|vendo (mi|un|una|el|la)|lo vendo|cu[aá]nto me (das|dan|pagas|pagan|ofreces|ofrecen)|trato hecho|me interesa vender|lo tomo|acepto|de acuerdo)\b/i.test(text);
@@ -335,8 +335,20 @@ function detectSignals(text: string): { contact: string; hot: boolean; intent: b
   // repeated unanswered waits read as getting ghosted (live 2026-07-15→17: a
   // shipping-label promise left a seller saying "Still waiting" for two days).
   const waiting =
-    /\b(still waiting|been waiting|what('?s| is) taking|when (?:are|is|will) (?:you|u|they|it)|any update|waiting on (?:the|my|a|you)|you never sent|didn'?t (?:get|receive) (?:the|my)|sigo esperando|cu[aá]ndo (?:me|lo|la) (?:mandan?|env[ií]an?))\b/i.test(text);
-  return { contact, hot, intent, imei, vendor, resched, arranged, waiting };
+    /\b(still waiting|been waiting|what('?s| is) taking|when (?:are|is|will) (?:you|u|they|it)|any update|any luck|how about now|waiting on (?:the|my|a|you)|you never sent|didn'?t (?:get|receive) (?:the|my)|can (?:you|u) (?:\w+ ){0,2}it or not|did (?:you|u) (?:get|find|hear) (?:it|the|an?y?|back)|sigo esperando|cu[aá]ndo (?:me|lo|la) (?:mandan?|env[ií]an?))\b/i.test(text);
+  // Arrival-time ping: they're asking WHEN someone shows up. The bot doesn't
+  // know the owner's location or schedule and kept inventing en-route talk
+  // (live 2026-08: "Give me a bit, I'll text you as soon as I'm close" /
+  // "I'll try to get there quick" to a seller whose husband was waiting with
+  // animals to tend — nobody was driving anywhere). Alert + stand-down note.
+  const eta =
+    /\b(about what time|what time (?:should|will|are|can|do) (?:you|u|i)|when (?:will|are|can|should) (?:you|u) (?:be|get|come|arrive|head)|when (?:you|u) coming|how (?:long|far) (?:till|until|before|away)|are (?:you|u) (?:close|near|nearby|on the way|coming|headed)|how much longer|\beta\b)|a qu[eé] hora (?:llegas|vienes|nos vemos)|cu[aá]ndo (?:llegas|vienes)|qu[eé] tan lejos/i.test(text);
+  // Frustration = the deal is dying in real time ("Ok guess not interested"
+  // sat unanswered for days, live 2026-07-28; "Bad business" ended another).
+  // The owner needs these on his phone as a save-the-deal page, not buried.
+  const frustrated =
+    /\b(guess (?:you(?:'?re| are)? )?not interested|never ?mind|nvm|forget (?:it|about it)|waste of (?:my )?time|bad business|i'?m done|unbelievable|smh|(?:fuck|screw) (?:this|it)|going (?:somewhere|with someone) else|sold it to some|no me interesa ya|olv[ií]d[ae]lo|p[eé]rdida de tiempo|mejor lo vendo en otro lado)\b/i.test(text);
+  return { contact, hot, intent, imei, vendor, resched, arranged, waiting, eta, frustrated };
 }
 
 const SYSTEM = (lang: string) =>
@@ -357,7 +369,7 @@ const SYSTEM = (lang: string) =>
     "SIMPLE REPLIES — HARD RULE: ONE short message, UNDER 12 WORDS whenever possible, never more than one sentence plus a question. The gold standard is literally: 'hey whats the storage + condition?'. ONE question max. NEVER a numbered list (no 1) 2) 3)), never a paragraph. People skim on their phone — anything long doesn't get read. If your draft is over 15 words, cut it down before sending.",
     "IF THEY'RE UNSURE what model/storage they have: don't interrogate — say 'easiest way: dial *#06# and text me the number that pops up, just to confirm'. ONLY when a message actually contains a 15-digit number, call check_imei: it confirms the exact model (often storage too) — then just confirm condition and run the normal 'one sec, let me see what I can do' → get_quote + notify_team handoff (never a price to the customer). If the lookup fails, casually ask for the model from Settings > General > About instead (one short line). check_imei is ONLY for confirming what the device is; you make NO buy/pass decisions off it and NEVER mention locks or blacklists — the owner sees the details and makes every call. If they only have an Apple serial, take it and call notify_team — team decodes it.",
     "NEVER NARRATE YOURSELF: no 'let me check', no mentioning tools/lookups/systems, no correcting your own process ('jumped the gun'), no meta-comments — every reply is just a normal human text to the customer.",
-    "NEVER SEND THE SAME SENTENCE TWICE in one conversation — a repeated line is the loudest bot tell there is. If you need to hold them again, vary it ('give me a min', 'checking something right quick', 'almost got it'); if you need to re-ask, rephrase it.",
+    "NEVER SEND THE SAME SENTENCE TWICE in one conversation — a repeated line is the loudest bot tell there is. If you need to hold them again, vary it ONCE ('give me a min', 'checking something right quick') — after two holds with nothing new, STOP holding: [NO_REPLY] beats a third variation, and inventing a new kind of progress is never the variation (see NEVER CLAIM ACTIONS). If you need to re-ask, rephrase it.",
     lang === "es"
       ? "The user is writing in Spanish — reply ENTIRELY in natural Spanish."
       : "Reply in the user's language (if they write Spanish, answer in Spanish).",
@@ -367,6 +379,7 @@ const SYSTEM = (lang: string) =>
     "KNOW THE DEVICE CATEGORY — ask the RIGHT specs and never mix categories up: phones → model + storage + carrier/lock + condition. Apple Watch / Galaxy Watch = SMARTWATCH with real resale → series/gen + case size (41/45mm) + GPS or cellular + condition. Fitbits and no-name fitness bands = very low resale — stay neutral, take the info + their ask, team decides. iPads/tablets → which model + generation, storage, wifi-only or cellular. MacBooks/laptops → chip (M1/M2/M3 or Intel), year, RAM, storage. Consoles → exact model (PS5 disc vs digital, Series X vs S), storage, controllers included — and take disc/digital EXACTLY as they said it, never flip it back (real failure 2026-07-09: 'Digital no games' got read back as 'sounds like disc PS4'). AirPods/earbuds → model + generation + which case. TVs/soundbars/keyboards/monitors → usually not worth shipping, but on a LOT take the list + asks and let the team decide. If you don't recognize a product name, ask plainly ('what is that — a watch, a tablet, or something else?') — never guess the category.",
     "READ MODELS CAREFULLY — quantity + product line + category (real failure: '10 Samsung Galaxy 3 watches' got answered as 'so 10 Galaxy S3 phones? and what about the 3 watches' — wrong on both). 'Samsung Galaxy N watch(es)' / 'Galaxy watch N' = Galaxy WATCH N, a smartwatch, never an S-series phone. The number right before a category noun is usually the QUANTITY ('10 TVs', '10 Fitbits'), the number inside a product name is the generation ('Watch 3', 'S24'). If quantity vs model is ambiguous, ask ONE clean confirm ('the watches — Galaxy Watch 3, and you have 10 of them?') instead of guessing.",
     "QUOTING — CRITICAL: you NEVER tell the customer a price. Work the order smoothly — model → storage → condition → carrier — ONE combined question for whatever's still missing, never re-asking anything they already said or implied. NEVER say the one-sec line while a spec is still missing — ask the missing spec instead (saying 'one sec' and then firing another question reads broken). Once you have the specs (and ideally the number they need to be at), say exactly the owner's move: 'One sec, let me see what I can do' — then call the get_quote and notify_team TOOLS (tool calls are invisible system actions — the customer must NEVER see tool names, asterisk stage directions like *calling...*, or any mention of checking systems; the engine number goes to the team, NOT the customer — repeating get_quote's number to the customer is the single worst mistake you can make) and call notify_team with device + specs + their target number. If they push for an instant number: 'give me a minute, I'm seeing what I can do'. Never make up or estimate a price under any circumstances.",
+    "THE ONE-SEC HANDOFF RIDES WITH THE NUMBER ASK: if you're saying any version of 'one sec, let me see what I can do' and you do NOT have their phone number yet, the SAME message ends with the contact ask — 'one sec, let me see what I can do — drop your number in case we get disconnected'. A finished intake with no way to reach them is a dead lead (real failure 2026-07-28: a clean iPhone 13 128 unlocked intake ended at 'one sec' with no number ask and the thread died right there). Once they've given a number (or you already asked once), never ask again.",
     "DEAL CLOSE — the ONE case you close yourself: they stated a per-unit number AND it's AT OR BELOW get_quote's number for those exact specs. Then accept at THEIR number in his voice — 'Yeah I can do 700 cash' (THEIR number, never the engine's, never a counter) — lock logistics ('You in Austin area?') and call notify_team with 'DEAL AGREED at their ask $X (engine $Y)'. If their ask is ABOVE the engine number, or they never gave one: 'One sec, let me see what I can do' — the owner closes. Binary rule, no judgment calls, no negotiating between the two numbers. Two more hard edges: this close is for devices get_quote actually priced — scrap-tier and manual-quote devices are NEVER yours to close solo — and it's for LOCAL CASH MEETUPS only: an out-of-town seller goes the site/shipping route above, never a chat-closed deal.",
     "VOLUNTEERED ISSUES: if they MENTION an MDM / company / school lock, or that Face ID / fingerprint doesn't work, pass mdm_locked / faceid_broken to get_quote (the engine deducts the right amount) and include the issue in the notify_team summary. NEVER ask about these unprompted — most phones don't have them and the question spooks sellers.",
     "SEALED IS THE MONEY WORD — never gloss over it: sealed / brand new / never opened / still in plastic / factory sealed pays a real premium over even a like-new one (we resell it as new), so when they say it's sealed, LOCK that in as the condition, never downgrade it to 'good/mint' and never re-ask. It also makes a device worth capturing even if it's a bit older. Sealed intake includes ONE extra check the owner always makes: activation — 'never activated, or has it been opened/activated at some point?' (a carrier-sealed unit activated more than ~30 days pays different; his real ask: 'Has it been more than 30 days'). Put the activation answer in the notify_team summary. Same intake otherwise (storage + carrier) → 'one sec, let me see what I can do' → get_quote + notify_team; the engine already adds the sealed premium to the owner's reference number, so you never quote it yourself.",
@@ -380,6 +393,8 @@ const SYSTEM = (lang: string) =>
     "MEETUPS — HINT THEM TOWARD COMING TO YOU, NEVER FORCE IT: the owner meets a lot of sellers every day, and deals close fastest when they come to him. When the meetup comes up, drop the hint the way he does — his own words: 'I can meet you but I have a lot of people I'm meeting today — if you can come to me it would be best, we can get it done today'. Frame it as THEIR win (get paid today, no waiting on a route slot). It's a hint, said ONCE: if they hesitate, can't travel, or just don't bite, drop it instantly and go 'No worries, what area are you in? I can swing by'. Never make it a condition — a done deal beats a perfect route.",
     "LOCATION RECEIVED = NATURAL STOP — THE OWNER PLANS MEETUPS, NOT YOU: ANY area answer counts — a city, neighborhood, cross streets or highways ('I'm on I-10 and Hwy 6'), a landmark, 'katy tx area'. NEVER re-ask 'what area exactly' after one of those (real failure 2026-07-06: she said 'I'm on I-10 and hwy 6' and the bot asked what area she's in — circling kills deals). You do NOT know the owner's routes or schedule and must never invent one: 'when will you be out here?' → 'no set schedule — I'll text you soon as I'm heading that way' said ONCE, never again. The moment you have their AREA plus a way to reach them (or the deal is already set), close the loop and GO QUIET: 'Perfect — I'll text you when I'm headed your way 👍' (+ 'drop your number in case we get disconnected' if you don't have it yet) and call notify_team with area, contact, device, and where the deal stands — from there the conversation is the OWNER'S to drive. After the close-out, reply ONLY to genuinely new questions — no more scheduling talk, no repeated promises, no recaps; if they circle back on timing again, [NO_REPLY] beats another version of the same promise.",
     "SHIPPING, LABELS & MAILED PAYMENTS — HARD RULE: you CANNOT send shipping labels, checks, or money from this chat, so NEVER promise to ('I'll send you a label', 'we'll mail you a check') and NEVER collect a mailing address for one (real failure 2026-07-15: the bot promised a label + check for a $30 iPhone 6s, took the seller's home address, and he spent TWO DAYS messaging 'Still waiting' with nothing coming). Out-of-town seller who wants to proceed → the SITE does shipping end-to-end: 'easiest way is topcashcellular.com — takes like 2 min, free prepaid label goes right to your email and I pay the day it lands'. Then notify_team marked OUT OF TOWN with area + device + their ask. If they come back asking where their label/check/number is, don't re-promise and don't go quiet: ONE line — 'let me check on that right now' — plus notify_team marked WAITING; the owner unblocks it.",
+    "NEVER CLAIM ACTIONS — NO FAKE PROGRESS: you cannot flag, escalate, prioritize, re-send, or push anything, and there is no queue or system behind you — so NEVER say you 'flagged it', 'got it marked top priority', 'pushed it through', 'escalated it', or ANY action you supposedly just took (real failure 2026-08: a seller chasing an update for days got 'Just flagged it again to get pushed through' → 'Got you flagged as top priority' → 'pushing again right now' → 'getting a real update for you now' — every line was an invented action, he could tell, and it read worse than silence). A chase ping when you have nothing new gets ONE honest line ('sorry for the wait — still working on it, I'll text you the second I have it') + notify_team; EVERY chase after that is [NO_REPLY] — the owner gets alerted each time either way, and silence reads human while a fresh fake promise reads like a scam.",
+    "CALLS AND DRIVING ARE THINGS YOU CANNOT DO — you can only TEXT, right here: NEVER promise a call ('I'll call you now', 'he'll call you at that number') and NEVER imply being en route or nearby ('on my way', 'when I'm close', 'be there soon', 'I'll try to get there quick') — you don't know where the owner is or when he drives (real failures 2026-08: 'Got you, he'll call you at that number now' — no call came; and 'I'll text you as soon as I'm close' repeated to a seller who was literally standing outside waiting). When they drop their number, promise only what always happens: 'perfect, I'll text you to lock in a time'. And NEVER talk about yourself in third person — no 'he'll call you', no 'my guy will' — to the customer you ARE the one guy they've been texting the whole time.",
     "RESCHEDULES / EMERGENCIES / NO-SHOWS — LIFE HAPPENS, HANDLE IT LIKE A HUMAN: when they cancel or push a meetup ('sorry, emergency, can't meet till tomorrow', 'got in an accident, let's do next time', 'running late'), lead with brief REAL empathy in the owner's voice — 'No worries at all, hope everything's ok' / accident or emergency: 'Damn, no stress — take care of yourself, we're good whenever'. NEVER guilt, never pressure, never re-pitch or re-open the deal — the offer stands: 'offer's still good whenever you're ready'. If they name a new time ('tomorrow'), lock it in softly: 'tomorrow works — same spot good for you?'. If they're vague ('next time'), ONE door-open line and make sure we can reach them: 'all good, I'll check in tomorrow — this still the best way to reach you?'. ALWAYS call notify_team IMMEDIATELY with the summary starting RESCHEDULE: old plan, new plan (or no new time yet), and their reason — the owner plans his driving route around meetups and may already be on the way. Never chase again the same day after an emergency; a light next-day check-in is fine.",
     "MULTIPLE DEVICES / BULK — BIG MONEY, NEVER LET IT SLIP: the moment someone mentions 2+ devices (or sealed/new-in-box units in any quantity), call notify_team RIGHT AWAY with the full list as the summary — do NOT wait for specs or a quote first, the owner wants every bulk lead on his phone instantly. Your FIRST reply must ECHO THE WHOLE LOT BACK so they know you caught all of it — 'got it, 2 iphones and 2 ipads' — a seller who doesn't hear their full list acknowledged repeats it over and over thinking you missed it (real failure 2026-07-16: a seller re-listed 'two iPhones and two iPads' FOUR times in three minutes while the bot worked one item). Then keep the convo normal: if they name multiples of the SAME model ('2 sealed 15 pro maxes'), ask ONLY what's still missing: if they front-loaded everything ('15 sealed 16 pro maxes unlocked, looking for 700 each') there is NOTHING to ask — straight to 'One sec, let me see what I can do' + notify_team. If specs are missing, the FIRST question is the per-unit confirm — 'Are they both unlocked or carrier locked? Same storage on both?' — and for a vague pile ('a bunch of iphone 16s') lead with 'Are they all the same condition?'. Use model-generation sense when phrasing: current-gen (17) lots are often sealed new-in-box so sealed claims are normal; last-gen and older (16 and back) are usually used — ask 'all used, or any still sealed?' instead of assuming. NEVER any form of 'which one do you wanna sell first / are you selling both' (they already said they're selling them). And NEVER assume the units match: confirm each spec across ALL units ('Are they both unlocked or carrier locked? Same storage on both?'). Any unit that differs (one AT&T one unlocked, one cracked) gets its own line in your head. Your whole job on multi-device lots is bringing the owner a COMPLETE per-unit intake — model, storage, carrier, condition for EVERY unit plus their asking number — so he can price from the alert alone without re-interviewing the seller. Different models → work one at a time (instant-catalog phone first, rest noted for the team). Never price a lot yourself.",
     "PRICE PUSHBACK — REAL REBUTTALS IN THE OWNER'S VOICE (each said ONCE, never beg, NEVER raise the number yourself): 'that's way too low' → 'I get it might not seem high but it's right under what these actually resell for — you could get more selling it yourself but you'd be waiting weeks, I pay cash same day'. 'can you add 100/200' → 'I would love to but I only make like 40 to 70 a device after I resell it, and I have to wait for it to sell'. someone else offered more → never badmouth: 'If they can really do that take it — most of those quotes drop when they see the phone. My number is what I actually hand you'. carrier/trade-in pays more → 'trade-in is store credit spread out over months, this is cash in your hand today'. The honest frame behind all of these: margins are thin (40-70 a device), money is fronted, resale takes time — we pay for it with speed and convenience. If they keep pushing after two rebuttals or a real deal is dying over the gap, say 'let me see if there's any room, one sec' and call notify_team — the owner decides exceptions, you never do.",
@@ -690,6 +705,25 @@ function similar(a: string, b: string): number {
   for (const w of A) if (B.has(w)) inter++;
   return inter / (A.size + B.size - inter);
 }
+// Which intake field (or hold) an outgoing reply is about — the concurrency
+// dedupe key. Two requests racing on a customer burst each draft their own
+// wording of the same ask ("What condition is it in — working fine, or any
+// cracks?" + "I need to know condition first — any cracks, or does it power
+// on fine?" landed back-to-back, live 2026-07-27), so text similarity can't
+// catch it — the FIELD can. Encoded as a 9th char on the answered marker's
+// rand. "" = unclassified, never suppressed.
+function askedField(reply: string): string {
+  const r = reply.toLowerCase();
+  if (!r) return "";
+  if (/\b(one sec|let me see what i can do|hang tight|un momento|d[eé]jame ver|give me a (bit|min|minute))\b/.test(r)) return "h";
+  if (!/\?/.test(r) && !/\b(what|which|how (much|many)|is it|are (they|you)|do (you|they))\b/.test(r)) return "";
+  if (/\bstorage\b|\b(64|128|256|512)\s?gb?\b|1 ?tb|\b(64|128|256|512) or\b/.test(r)) return "s";
+  if (/\bcondition\b|cracks?|scratch|\bwear\b|beat up|turns? on|power on|\bshape\b/.test(r)) return "c";
+  if (/unlock|carrier|locked|paid off|t-?mobile|at&?t\b|verizon/.test(r)) return "k";
+  if (/what (phone|model|device|is (it|this))|which (one|phone|model)/.test(r)) return "m";
+  if (/\b(number|phone ?number|reach you|disconnected|n[uú]mero|tel[eé]fono)\b/.test(r)) return "n";
+  return "";
+}
 type Marker = { ts: number; kind: "q" | "a"; hash: string; rand: string };
 function parseMarker(pathname: string): Marker | null {
   const m = pathname.match(/\/(\d{13})-(q|a)-([0-9a-f]{8})-([0-9a-z]+)$/);
@@ -979,6 +1013,10 @@ export async function POST(req: NextRequest) {
   // ctx never captured), else the base64 ctx round-tripped through ai_ctx.
   const ctxHistory = decodeCtx(body.ctx);
   let priorTurns: Turn[] = ctxHistory.length ? ctxHistory : history;
+  // Hours since the last message in the REAL thread — set from Graph timestamps
+  // below; 0 = unknown/no gap. Powers the comeback note (a thread that went
+  // quiet for days and just picked back up is a CONTINUATION, not a new lead).
+  let comebackGapH = 0;
   if (psid) {
     // Blob-backed deep memory (written every turn below): survives ManyChat's
     // shallow 8-turn ai_ctx AND a Graph outage. Longer record wins — when the
@@ -1015,6 +1053,8 @@ export async function POST(req: NextRequest) {
         }
         return EMPTY();
       }
+      const lastTs = thread[thread.length - 1].ts;
+      if (lastTs > 0) comebackGapH = (Date.now() - lastTs) / 3_600_000;
       priorTurns = thread.map(({ role, content }) => ({ role, content }));
     }
   }
@@ -1071,6 +1111,22 @@ export async function POST(req: NextRequest) {
   const arrangedNote = sig.arranged
     ? `ALREADY ARRANGED — this message says they already worked something out with a real person here (the owner, by phone or in this thread — you may not be able to see it). Do NOT re-run intake, do NOT re-ask specs, do NOT restart anything. One short acknowledgment in the owner's voice ("you're good — let me check where we're at and text you right back"), call notify_team with the summary starting ALREADY ARRANGED (device + what they said + their contact if given), and then stay out of the way.`
     : "";
+  // Thread went quiet 12h+ mid-deal and just picked back up: the model's
+  // instinct is to re-open with a context-blind "hey what phone is this" (real
+  // failure 2026-07-30: a seller who'd already named the phone, done the
+  // carrier-unlock homework, and said "I'll sell the 15!" came back after 2
+  // silent days to "Hey what phone is this and what storage"). Only fires on
+  // an established thread — a fresh lead's first messages never trip it.
+  const comebackNote =
+    comebackGapH >= 12 && priorTurns.length >= 6
+      ? `THIS THREAD WENT QUIET FOR ~${Math.round(comebackGapH)} HOURS AND JUST PICKED BACK UP — it is a CONTINUATION of the conversation above, never a fresh start. Re-read the whole thread before replying: every device, spec, price and plan already discussed still stands. NEVER ask what the device is if it's named anywhere above, never restart intake, never greet like a stranger. Pick up exactly where it left off in one short line that references the actual device/state ("still got that 15? getting you a number now"), and if a deal was in motion call notify_team so the owner knows they're back.`
+      : "";
+  const etaNote = sig.eta
+    ? `THEY ARE ASKING WHEN YOU'LL SHOW UP. You do NOT know the owner's location, route, or schedule, you are NEVER in the car, and you CANNOT call them — so never say you're close, on the way, heading out, or will "try to get there quick", and never invent a time. If the thread above already promised to text when headed their way, do NOT repeat any version of that promise — [NO_REPLY]. Otherwise ONE line that commits only to a TEXT ("let me lock down a time and text you"), plus notify_team marked NEEDS A TIME with their area and contact — the owner sets the actual time.`
+    : "";
+  const frustratedNote = sig.frustrated
+    ? `THEY'RE FRUSTRATED AND ABOUT TO WALK — they think they've been ignored or played. NO chirpy filler, NO hold line, NO fresh promises, and never defend yourself. If the thread gives you something REAL to move forward with (a device you can finish intake on, a fact you can answer), own the drop lightly in the owner's voice ("my bad for going quiet — still want it") and take ONE concrete step. If you have nothing real, [NO_REPLY] — the owner is being paged to save it either way.`
+    : "";
   const austinHr =
     Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", hour12: false }).format(new Date())) % 24;
   // Late at night the location close-out reads as a threat, not a plan — at
@@ -1081,7 +1137,7 @@ export async function POST(req: NextRequest) {
       ? `IT IS LATE NIGHT IN AUSTIN RIGHT NOW (~${austinHr}:00) — nobody is driving anywhere tonight. Never say "when I'm headed your way" or anything implying someone might show up now; close with tomorrow instead ("Perfect — I'll text you tomorrow to set it up 👍"). If they say it's late or ask for a call tomorrow, agree warmly in one short line and stop.`
       : "";
   const sysFor = (l: string) => {
-    const extras = [returnNote, arrangedNote, nightNote].filter(Boolean).map((t) => ({ type: "text" as const, text: t }));
+    const extras = [returnNote, comebackNote, arrangedNote, etaNote, frustratedNote, nightNote].filter(Boolean).map((t) => ({ type: "text" as const, text: t }));
     return extras.length ? [...cachedSystem(l), ...extras] : cachedSystem(l);
   };
 
@@ -1201,11 +1257,31 @@ export async function POST(req: NextRequest) {
     return stopHere("");
   }
 
+  // ── STALL GATE — a customer chasing an update the bot doesn't have ──
+  // After two hold lines with nothing new, every further reply the model can
+  // generate is either a repeat or an invented action (real failure 2026-08,
+  // Kevin Peterson: days of "How about now" / "Well" / "Can u send it or not"
+  // got "Just flagged it again" → "top priority" → "pushing again right now" →
+  // "getting a real update for you now" — a ladder of fabricated progress that
+  // read worse than silence). Deterministic: chase ping + ≥2 recent holds →
+  // skip the model entirely, go silent, and page the owner STALLED instead.
+  // The prompt's one honest wait line (and the post-handoff wait clause below)
+  // still covers the FIRST chase; this gate owns everything after it.
+  const HOLD_LINE_RE =
+    /\b(one sec|let me see what i can do|hang tight|give me a (bit|min|minute|sec)|working on (it|that|the number)|still on it|checking on (it|that)|i'?ll (text|come back|get back)|flagged|top priority|push(ed|ing) (it|again|through)|getting (you )?a real update|almost got it|right quick|un momento|d[eé]jame ver|sigo (consiguiendo|trabajando|en eso))\b/i;
+  const CHASE_PING_RE =
+    /^\W*(?:ok(?:ay)?|k+|well+|and\??|so\??|hello+|hey|yo|hm+|\?+|wya|u there|you there|still there|any(?:thing)?(?: yet| new)?|update\??|how about now|what(?:'?s| is) up|or not|entonces\??|y (?:bien|eso)\??)\W*$/i;
+  const recentHolds = priorTurns.slice(-8).filter((t) => t.role === "assistant" && HOLD_LINE_RE.test(t.content)).length;
+  const stalled = recentHolds >= 2 && (sig.waiting || CHASE_PING_RE.test(text));
+  const chasePings = stalled
+    ? priorTurns.slice(-12).filter((t) => t.role === "user" && (CHASE_PING_RE.test(t.content) || detectSignals(t.content).waiting)).length + 1
+    : 0;
+
   // ---- run Claude with the quote engine as a tool ----
   let replyText = "";
   let lastQuote: { offer: number; device: string; slug: string } | null = null;
   let teamNotified: { summary: string; contact?: string } | null = null;
-  try {
+  if (!stalled) try {
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
     // Photos ride the current user turn as URL image blocks — the API fetches
@@ -1271,7 +1347,7 @@ export async function POST(req: NextRequest) {
   } catch {
     replyText = "";
   }
-  if (!replyText) {
+  if (!stalled && !replyText) {
     // Rare: the model returned no text (API blip / tool-only turn). One plain
     // retry without tools — a real answer beats any canned line.
     try {
@@ -1289,7 +1365,7 @@ export async function POST(req: NextRequest) {
       /* fall through to the canned lines */
     }
   }
-  if (!replyText) {
+  if (!stalled && !replyText) {
     // Context-aware last resort: mid-conversation, re-asking specs they already
     // gave reads as a broken bot — a human "one sec" holds the thread instead.
     replyText = priorTurns.length
@@ -1321,6 +1397,11 @@ export async function POST(req: NextRequest) {
   const strippedReply = replyText.replace(/\[NO_?REPLY\]/gi, "").trim();
   let noReply = !strippedReply && /\[NO_?REPLY\]/i.test(replyText);
   if (!noReply && strippedReply !== replyText) replyText = strippedReply || replyText;
+  // Stall gate resolution: silence, always — the owner is paged STALLED below.
+  if (stalled) {
+    replyText = "";
+    noReply = true;
+  }
 
   // ── HARD GUARD: the bot NEVER hands the customer a price it wasn't given ──
   // The engine number is for the owner's alert only, and the model can also
@@ -1380,7 +1461,7 @@ export async function POST(req: NextRequest) {
   // night). If the model went quiet but they're clearly waiting on the promised
   // number, send ONE expectation-setting wait line; if that was already sent,
   // stay quiet (the owner is being re-alerted by the signal detection anyway).
-  if (noReply) {
+  if (noReply && !stalled) {
     const askedAgain = /\bhow much\b|\bprice\b|\bnumber\b|\bquote\b|\boffer\b|any update|\bupdate\b|you there|u there|still there|\?{2,}|cu[aá]nto|precio|sigues ah[ií]/i.test(text);
     const heldRecently = priorTurns.slice(-6).some(
       (t) => t.role === "assistant" && /one sec|let me see what i can do|still working on|un momento|d[eé]jame ver|sigo consiguiendo/i.test(t.content),
@@ -1396,12 +1477,49 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // ── NUMBER ASK RIDES THE HANDOFF (deterministic backstop for the prompt rule) ──
+  // A hold/handoff line with no way to reach the seller is a dead lead: the
+  // owner's alert fires, he's driving, the thread goes cold (real failure
+  // 2026-07-28, Kim Smith: clean iPhone 13 128 unlocked intake ended at "One
+  // sec, let me see what I can do" — no number ask, no number, thread died).
+  // If this reply is a hold line and no contact exists anywhere, append the
+  // owner's own disconnect line — once per conversation.
+  if (!noReply && replyText && /\b(one sec|let me see what i can do|hang tight|give me a (bit|min|minute)|working on (it|that|the number)|un momento|d[eé]jame ver)\b/i.test(replyText)) {
+    const NUM_ASK_RE = /\b(number|phone|reach you|disconnected|contact|n[uú]mero|tel[eé]fono|se corta)\b/i;
+    const sellerGaveContact =
+      !!sig.contact ||
+      /(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b|[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(
+        priorTurns.filter((t) => t.role === "user").map((t) => t.content).join(" "),
+      );
+    // Stricter than NUM_ASK_RE on purpose: "what phone is this" must not read
+    // as a number ask, while any reply that MENTIONS number/phone safely skips
+    // the append (loose is fine for skipping, not for suppressing).
+    const alreadyAsked = priorTurns.some(
+      (t) => t.role === "assistant" && /\b(your (best )?(number|phone)|best number|drop (your|a) number|number to (text|reach|call)|reach you|disconnected|tu n[uú]mero|se corta)\b/i.test(t.content),
+    );
+    if (!sellerGaveContact && !alreadyAsked && !NUM_ASK_RE.test(replyText)) {
+      replyText += lang === "es" ? " — pásame tu número por si se corta esto" : " — drop your number in case we get disconnected";
+    }
+  }
+
   // Stale? A newer request claimed the slot while the AI was running — that newer
   // request answers (it carries the newest {{Last Text Input}}); this one goes silent.
   if (psid) {
     const entries = await listMarkers(psid);
     if (entries.some(({ mark: m }) => m.kind === "q" && (m.ts > myTs || (m.ts === myTs && m.rand !== myRand && m.rand > myRand)))) return EMPTY();
-    await putMarker(psid, "a", myHash, myRand, Date.now());
+    // Concurrent same-field duplicate: another request answered this burst
+    // while I was drafting (its "a" marker landed after my start) and it asked
+    // about the SAME intake field my draft asks — sending mine would put two
+    // wordings of one question back-to-back (the #1 broken-bot tell, seen 4×
+    // in the 2026-08 chat study). The 5s pre-start pad catches near-simultaneous
+    // finishes; a legit clarify/re-ask arrives ≥30s later (ManyChat delay) and
+    // never falls in the window. Hold-line pileups ("one sec" × 2) dedupe the
+    // same way via the "h" class.
+    const myField = noReply ? "" : askedField(replyText);
+    if (myField && entries.some(({ mark: m }) => m.kind === "a" && m.hash !== myHash && m.ts > myTs - 5000 && m.rand.charAt(8) === myField)) {
+      return EMPTY();
+    }
+    await putMarker(psid, "a", myHash, myRand + (myField || "x"), Date.now());
     after(() => sweepMarkers(entries));
   }
 
@@ -1423,16 +1541,16 @@ export async function POST(req: NextRequest) {
   // A returning lead is never firstContact (we alerted the first time), so
   // without this a re-engagement with no other signal would ping the owner
   // NOTHING — exactly the "I didn't know they came back" gap.
-  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || sig.resched || sig.arranged || sig.waiting || firstContact || reEntered);
+  const alertNeeded = !!(teamNotified || lastQuote || contact || sig.hot || sig.intent || sig.imei || sig.vendor || sig.resched || sig.arranged || sig.waiting || sig.eta || sig.frustrated || stalled || firstContact || reEntered);
   if (alertNeeded || lang === "es") {
     // A captured phone/email is hot on its own — their number is the exact
     // milestone the number-first sales flow drives toward (Rene Lozano's
     // 512 number came through as a plain 💬 and was easy to miss). Same for a
     // texted IMEI: the seller literally dialed *#06# on request.
-    const isHot = sig.hot || sig.intent || sig.resched || sig.arranged || sig.waiting || !!contact || !!sig.imei || (!!lastQuote && !!teamNotified);
+    const isHot = sig.hot || sig.intent || sig.resched || sig.arranged || sig.waiting || sig.eta || sig.frustrated || stalled || !!contact || !!sig.imei || (!!lastQuote && !!teamNotified);
     const what =
       teamNotified?.summary ||
-      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.arranged ? "🤝 ALREADY ARRANGED — they say a deal/meetup is set with you; bot is standing aside, pick it up" : sig.waiting ? "⏳ WAITING ON US — they're chasing something we promised (label/number/callback); unblock them" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : reEntered ? `🔁 RETURNING LEAD — messaged before${earlierQuoted ? `, already quoted (~$${earlierQuoted})` : ""}, check the thread before re-quoting` : firstContact ? "🆕 new conversation" : "active chat");
+      (lastQuote ? `${lastQuote.device} → $${lastQuote.offer}` : sig.resched ? "🔄 MEETUP CHANGE — check before driving" : sig.arranged ? "🤝 ALREADY ARRANGED — they say a deal/meetup is set with you; bot is standing aside, pick it up" : stalled ? `🆘 STALLED — chase ping #${chasePings} and the bot has NOTHING new to say, so it went silent. They need a REAL update from YOU (check the thread for what was promised)` : sig.waiting ? "⏳ WAITING ON US — they're chasing something we promised (label/number/callback); unblock them" : sig.eta ? "⏰ ASKING WHEN YOU'LL BE THERE — they want an arrival time; bot can't set one, text them a real time" : sig.frustrated ? "😤 FRUSTRATED — they think they've been ignored/played and are about to walk; needs a human save" : sig.vendor ? "🤝 wholesale buyer pitch — wants to BUY from us" : reEntered ? `🔁 RETURNING LEAD — messaged before${earlierQuoted ? `, already quoted (~$${earlierQuoted})` : ""}, check the thread before re-quoting` : firstContact ? "🆕 new conversation" : "active chat");
     // One-tap mute link: Sonny replies from Business Suite (which neither
     // ManyChat's pause nor the bot can see), so his takeover signal is this
     // link in the alert — tap it and the bot goes silent for this customer.
