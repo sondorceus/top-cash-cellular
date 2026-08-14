@@ -99,9 +99,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(()=>{if(typeof IntersectionObserver==='undefined')return;const o=new IntersectionObserver((es,ob)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-visible');ob.unobserve(e.target);}});},{threshold:0.12,rootMargin:'0px 0px -8% 0px'});let p=false;const arm=()=>{p=false;document.querySelectorAll('.reveal:not(.is-visible)').forEach(el=>o.observe(el));};const sched=()=>{if(p)return;p=true;requestAnimationFrame(arm);};if(document.readyState==='complete')arm();else window.addEventListener('load',arm);try{new MutationObserver(sched).observe(document.documentElement,{childList:true,subtree:true});}catch(e){}})();`
           }}
         />
+        {/* Nav shadow at top-of-page. This runs in <head>, where
+            document.body does NOT exist yet — the old version read
+            document.body.classList immediately, threw "Cannot read properties
+            of null" on EVERY page load, and died before it could attach the
+            scroll listener. So 'at-top' was never set, and since the rule is
+            `body:not(.at-top) nav.sticky { box-shadow }` the sticky nav wore
+            its scrolled shadow permanently, including at the very top.
+            Wait for the body, then behave exactly as intended. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(()=>{const u=()=>{document.body.classList.toggle('at-top',window.scrollY<8);};u();window.addEventListener('scroll',u,{passive:true});})();`
+            __html: `(()=>{const u=()=>{if(document.body)document.body.classList.toggle('at-top',window.scrollY<8);};const start=()=>{u();window.addEventListener('scroll',u,{passive:true});};if(document.body)start();else document.addEventListener('DOMContentLoaded',start,{once:true});})();`
           }}
         />
         {/* Google Consent Mode v2 — denied by default so GA4 + Google
