@@ -239,7 +239,15 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-weight: 600;
+  /* Body copy sits at 450, not 600. Cabinet Grotesk is a 100-900 variable
+     face, and the old base put EVERY paragraph at semibold: 71 of 77 long
+     text blocks on the home page rendered >=600, the same weight as the
+     headings above them. Nothing could stand out, and long copy read as a
+     wall of bold. Headings, buttons, prices and badges all set their own
+     weight with a class, so they are untouched by this — only text that
+     never asked for a weight (i.e. actual body copy) gets lighter, which is
+     exactly where the contrast was missing. */
+  font-weight: 450;
   font-size: 17px;
   line-height: 1.55;
   letter-spacing: -0.005em;
@@ -404,6 +412,11 @@ html[data-theme="light"] .tcc-admin .bg-\[\#0a0a0a\]\/95 {
 /* Cabinet Grotesk renders better with slight tracking adjustments
    per size band — tighter on display, looser on small. */
 h1, h2, h3 { letter-spacing: -0.02em; }
+/* Interactive labels keep their weight. Body copy dropped to 450 (see the
+   body rule) and buttons/labels inherit it, which left funnel CTAs reading
+   thin — the one place on this site where the text must feel pressable.
+   Bare element selectors, so any explicit font-* utility still wins. */
+button, label, select, summary { font-weight: 600; }
 .text-xs, .text-\[10px\], .text-\[11px\] { letter-spacing: 0.01em; }
 
 button, a, [role="button"] {
@@ -885,7 +898,7 @@ img[loading="lazy"] {
   border-radius: 0 0 14px 14px !important;
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.55) !important;
   padding: 4px 0 !important;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-family: var(--font-cabinet), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   margin-top: 2px;
 }
 .pac-item {
@@ -921,7 +934,7 @@ img[loading="lazy"] {
 gmp-place-autocomplete {
   display: block;
   width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--font-cabinet), -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* Pill accent — the exact rounded grey capsule the nav uses (the
