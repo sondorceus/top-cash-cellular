@@ -19,6 +19,7 @@
 
 import { NextRequest, NextResponse, after } from "next/server";
 import crypto from "crypto";
+import { safeEqual } from "../../lib/admin-auth";
 import { put, list, del } from "@vercel/blob";
 import { advance, type BotReply, type ConvoState } from "../../lib/msgr-brain";
 import { recordOutbound, markDefer as markDeferShared, deferActive as deferActiveShared, DEFER_MS as DEFER_MS_SHARED } from "../../lib/msgr-signals";
@@ -147,7 +148,8 @@ export async function GET(req: NextRequest) {
   const mode = p.get("hub.mode");
   const token = p.get("hub.verify_token");
   const challenge = p.get("hub.challenge");
-  if (mode === "subscribe" && token && token === process.env.MESSENGER_VERIFY_TOKEN) {
+  // Constant-time compare — see lib/admin-auth.ts for why === leaks here.
+  if (mode === "subscribe" && safeEqual(token, process.env.MESSENGER_VERIFY_TOKEN)) {
     return new NextResponse(challenge ?? "", { status: 200 });
   }
   return new NextResponse("forbidden", { status: 403 });

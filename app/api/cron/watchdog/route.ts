@@ -52,16 +52,28 @@ function esc(s: string): string {
 
 type Flag = { leadId: string; cat: Cat; name: string; device: string; quote: string; ageDays: number };
 
+// How long the funnel may produce NOTHING before that itself is the alert.
+// Lead flow ran 1-4/day through late July 2026 and then fell to roughly one
+// every several days without anyone noticing, because a funnel that stops
+// converting emits no signal at all — silence reads exactly like a quiet
+// week, forever. Two days of total silence is well outside normal.
+const NO_LEADS_ALERT_MS = 2 * 24 * 60 * 60 * 1000;
+const NO_LEADS_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization") || "";
   const secret = process.env.CRON_SECRET;
   if (!secret || auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  // ?dry=1 computes everything and sends NOTHING. Arming an alert system on a
+  // months-old backlog can fire a burst of catch-up SMS, so the blast radius
+  // is inspectable before the switch is flipped.
+  const dryRun = req.nextUrl.searchParams.get("dry") === "1";
   // Held until explicitly enabled (same as notary shipped its watchdog) so it
   // can't surprise the owner with alerts before thresholds are tuned / the
   // pre-launch test data is cleared. Flip TCC_WATCHDOG_ENABLED=1 to activate.
-  if (process.env.TCC_WATCHDOG_ENABLED !== "1") {
+  if (process.env.TCC_WATCHDOG_ENABLED !== "1" && !dryRun) {
     return NextResponse.json({ skipped: "disabled — set TCC_WATCHDOG_ENABLED=1 to enable" });
   }
   if (!MC_KEY) return NextResponse.json({ error: "MC not configured" }, { status: 503 });
@@ -144,8 +156,48 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // ---- THE SILENCE ALARM ---------------------------------------------------
+  // Every other category here watches a trade that already exists. Nothing
+  // watched for the funnel producing no trades at all, which is the more
+  // expensive failure: ads still spending, or a broken submit, and the only
+  // symptom is an inbox that stays quiet.
+  const lastLeadTs = [...leads.values()].reduce((max, l) => (l.ts > max ? l.ts : max), "");
+  const lastLeadMs = ms(lastLeadTs);
+  // No lead inside the 30-day window at all still counts as silence.
+  const silentForMs = lastLeadMs ? now - lastLeadMs : 30 * D;
+  const lastNoLeadAlert = ms(alertedAt.get("SITE|no_leads"));
+  const noLeadsAlarm =
+    silentForMs >= NO_LEADS_ALERT_MS &&
+    !(lastNoLeadAlert && now - lastNoLeadAlert < NO_LEADS_COOLDOWN_MS);
+  const silentDays = Math.floor(silentForMs / D);
+
+  if (flags.length === 0 && !noLeadsAlarm) {
+    return NextResponse.json({ ok: true, flagged: 0, lastLeadAt: lastLeadTs || null, silentDays });
+  }
+
+  if (noLeadsAlarm && !dryRun) {
+    const msg =
+      `🔕 TCC: no new buyback lead in ${silentDays} day${silentDays === 1 ? "" : "s"}` +
+      `${lastLeadTs ? ` (last ${new Date(lastLeadMs).toLocaleDateString("en-US")})` : " (none in 30 days)"}. ` +
+      `Check the funnel submits and whether ads are running.`;
+    await notifyOwnerSms(msg);
+    await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "tcc-admin",
+        fromName: "TCC Admin",
+        role: "system",
+        // SITE is the pseudo-lead id the cooldown lookup above keys on.
+        body: `[WATCHDOG-ALERT: SITE] cat=no_leads silentDays=${silentDays} at=${new Date(now).toISOString()}\n${msg}`,
+        tags: ["watchdog", "no_leads", "urgent"],
+        priority: "high",
+      }),
+    }).catch(() => {});
+  }
+
   if (flags.length === 0) {
-    return NextResponse.json({ ok: true, flagged: 0 });
+    return NextResponse.json({ ok: true, flagged: 0, noLeadsAlarm, silentDays, dryRun });
   }
 
   // Build the digest, grouped by category (urgent first).
@@ -161,6 +213,20 @@ export async function GET(req: NextRequest) {
   }).join("");
 
   const html = `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:28px 16px"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:26px"><div style="font-size:20px;font-weight:800;color:#fff;margin-bottom:4px">⏰ Watchdog: ${flags.length} stalled trade${flags.length === 1 ? "" : "s"}</div><div style="font-size:13px;color:#9aa;margin-bottom:20px">Trades sitting too long in an open state. Re-nags are cooldown-suppressed.</div>${sections}</div></body></html>`;
+
+  if (dryRun) {
+    return NextResponse.json({
+      ok: true,
+      dryRun: true,
+      wouldFlag: flags.length,
+      wouldSms: flags.filter((f) => RULES[f.cat].urgent).length > 0,
+      noLeadsAlarm,
+      silentDays,
+      lastLeadAt: lastLeadTs || null,
+      byCategory: Object.fromEntries(order.filter((c) => byCat.has(c)).map((c) => [c, byCat.get(c)!.length])),
+      leads: flags.map((f) => ({ leadId: f.leadId, cat: f.cat, ageDays: f.ageDays })),
+    });
+  }
 
   let emailSent = false;
   if (RESEND_KEY) {
@@ -207,6 +273,8 @@ export async function GET(req: NextRequest) {
     ok: true,
     flagged: flags.length,
     byCategory: Object.fromEntries(order.filter((c) => byCat.has(c)).map((c) => [c, byCat.get(c)!.length])),
+    noLeadsAlarm,
+    silentDays,
     emailSent,
     smsSent,
   });

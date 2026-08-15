@@ -13,6 +13,7 @@
 // Batch   -> { results: QuoteResult[], overridesUpdatedAt }
 
 import { NextRequest, NextResponse } from "next/server";
+import { safeEqual } from "../../lib/admin-auth";
 import { quoteDevice, readPriceOverrides, type QuoteSpec } from "../../lib/quote";
 import { PRICE_TABLE, BASE_PRICED_MODELS, MACBOOK_SPECS } from "../../data/prices";
 
@@ -23,7 +24,9 @@ function authed(req: NextRequest): boolean {
   if (!expected) return false; // fail closed if no token configured
   const bearer = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
   const qp = req.nextUrl.searchParams.get("token");
-  return bearer === expected || qp === expected;
+  // Constant-time, same as every other secret check in this codebase — a plain
+  // === leaks how many leading characters matched via response timing.
+  return safeEqual(bearer, expected) || safeEqual(qp, expected);
 }
 
 function isSpec(x: unknown): x is QuoteSpec {

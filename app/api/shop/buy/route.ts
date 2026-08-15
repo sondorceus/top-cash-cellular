@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const prevStatus = listing.status;
   listing.status = "on_hold";
   listing.updatedAt = new Date().toISOString();
   await writeListingsDoc(doc.listings);
@@ -131,12 +132,41 @@ export async function POST(req: NextRequest) {
     }
   } catch {}
 
+  let smsSent = false;
   try {
-    await notifyOwnerSms(
+    smsSent = await notifyOwnerSms(
       `SHOP SALE PENDING: ${name} wants the ${deviceLine} (${GRADE_LABEL[listing.grade]}) for $${price} — ${fulfilment}. ` +
         `Phone: ${phone || "N/A"} Email: ${emailRaw || "N/A"}. Listing is now ON HOLD.`,
     );
   } catch {}
+
+  // NEITHER channel took it. Mission Control is the system of record and it is
+  // unreachable (it restarts on every MC deploy), and the SMS fallback failed
+  // too — so nobody will ever learn this person wanted this phone. Returning
+  // ok:true here is the worst outcome available: the buyer gets a "we're
+  // holding it for you" email, the unit stays locked out of inventory, and the
+  // sale evaporates in silence. Put the listing back and tell them to call.
+  // (/api/slots/[id]/book already does the honest thing and 502s — match it.)
+  if (!mcId && !smsSent) {
+    try {
+      const back = await readListingsDoc();
+      const l = back.listings.find((x) => x.id === listingId);
+      if (l && l.status === "on_hold") {
+        l.status = prevStatus;
+        l.updatedAt = new Date().toISOString();
+        await writeListingsDoc(back.listings);
+      }
+    } catch {}
+    return NextResponse.json(
+      {
+        ok: false,
+        // No public phone number exists on purpose (see lib/constants.ts) —
+        // email is the only channel we can honestly point them at.
+        error: `We couldn't get your request through just now. Email us at ${EMAIL} and we'll hold it for you.`,
+      },
+      { status: 502 },
+    );
+  }
 
   // Buyer confirmation. Best-effort — the reservation stands even if Resend
   // hiccups; the owner has the contact info either way.
