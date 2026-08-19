@@ -508,17 +508,17 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     <main className="min-h-screen bg-[#0a0a0a] text-white px-4 pb-16 pt-3" style={{ maxWidth: 560, margin: "0 auto" }}>
       {/* header */}
       <header className="flex items-center justify-between py-2" aria-label="Top Cash Cellular">
-        <div className="text-[15px] font-semibold tracking-tight">
+        <div className="text-[16px] font-semibold tracking-tight">
           top cash <span className="text-[#00c853]">cellular</span>
         </div>
-        <div className="text-[11px] text-white/50">{status}</div>
+        <div className="text-[12px] text-white/50">{status}</div>
       </header>
 
       {/* headline */}
-      <h1 className="text-[28px] leading-[1.1] font-extrabold mt-4">
+      <h1 className="text-[30px] leading-[1.1] font-extrabold mt-4">
         {lot ? "we buy phones — singles or the whole lot" : "sell your phone — cash in hand today"}
       </h1>
-      <p className="text-[14px] text-white/60 mt-2">
+      <p className="text-[15px] text-white/60 mt-2">
         {lot ? "tell us what you got. cash the same day, no email, no signup." : "tap what you got — real number in 30 seconds. no email, no signup."}
       </p>
 
@@ -529,7 +529,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             document.getElementById("go-composer")?.scrollIntoView({ behavior: "smooth", block: "center" });
             document.getElementById("go-composer-input")?.focus();
           }}
-          className="mt-4 w-full rounded-2xl border border-[#00c853] px-4 py-3 text-left text-[14px] font-semibold text-[#00c853]"
+          className="mt-4 w-full rounded-2xl border border-[#00c853] px-4 py-3 text-left text-[15px] font-semibold text-[#00c853]"
         >
           selling more than a couple? start here →
         </button>
@@ -546,7 +546,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           @keyframes goOverlayIn { from { opacity: 0; transform: translateY(14px); } }
           .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
         `}</style>
-        <h2 className="text-[16px] font-bold">{lot ? "tell us what you got" : "what are you selling?"}</h2>
+        <h2 className="text-[17px] font-bold">{lot ? "tell us what you got" : "what are you selling?"}</h2>
 
         <div
           role="button"
@@ -559,8 +559,8 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           <div className="flex items-end gap-2">
             <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
             <div className="max-w-[85%]">
-              <div className="text-[11px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
-              <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
+              <div className="text-[12px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
+              <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
                 {msgs.length > 0
                   ? "tap to keep the conversation going"
                   : lot
@@ -578,19 +578,19 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                 <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 56 }}>
                   <img src={c.img} alt="" className="max-h-[48px] max-w-[80%] object-contain" />
                 </span>
-                <span className="block text-[12px] font-semibold mt-1.5 text-white">{c.label}</span>
+                <span className="block text-[13px] font-semibold mt-1.5 text-white">{c.label}</span>
               </button>
             ))}
           </div>
           <div className="mt-3 ml-10 flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/15 px-4 py-3">
-            <span className="flex-1 text-[15px] text-white/40">{lot ? "i got 15 phones, need cash today…" : "or just type it — i got 4 phones…"}</span>
-            <span className="tcc-button-primary w-[38px] h-[38px] shrink-0 text-[17px] font-bold flex items-center justify-center" style={{ borderRadius: "50%" }}>↑</span>
+            <span className="flex-1 text-[16px] text-white/40">{lot ? "i got 15 phones, need cash today…" : "or just type it — i got 4 phones…"}</span>
+            <span className="tcc-button-primary w-[38px] h-[38px] shrink-0 text-[18px] font-bold flex items-center justify-center" style={{ borderRadius: "50%" }}>↑</span>
           </div>
         </div>
       </section>
 
       {/* trust line */}
-      <p className="text-[12px] text-white/60 mt-3">
+      <p className="text-[13px] text-white/60 mt-3">
         the number we quote is the number we pay if it matches what you told us · same-day cash in the austin area · free shipping label anywhere ·{" "}
         <a href="/reviews" className="underline text-white/60">reviews from paid sellers</a>
       </p>
@@ -598,8 +598,8 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       {/* how it works — offer → meetup → cash, three beats
           (Sonny 2026-08-19: "way too much text — it should be offer meetup cash") */}
       <section className="mt-7" aria-label="how it works">
-        <h2 className="text-[16px] font-bold">how this works</h2>
-        <ol className="mt-3 flex flex-col gap-2 text-[13px] text-white/75">
+        <h2 className="text-[17px] font-bold">how this works</h2>
+        <ol className="mt-3 flex flex-col gap-2 text-[14px] text-white/75">
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">1</span>
             <span><b className="text-white font-semibold">offer</b> — tap what you got, get your number. locked 14 days.</span>
@@ -625,18 +625,18 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               type="button"
               onClick={() => setShowReviews(true)}
               aria-expanded={false}
-              className="text-[13px] text-white/65 py-2"
+              className="text-[14px] text-white/65 py-2"
             >
               <span className="text-[#00c853] font-semibold">{reviews.avg}★</span> from {reviews.count} people we&rsquo;ve paid — see what they say →
             </button>
           ) : (
             <div>
-              <h2 className="text-[16px] font-bold">{reviews.avg}★ from people we&rsquo;ve paid</h2>
+              <h2 className="text-[17px] font-bold">{reviews.avg}★ from people we&rsquo;ve paid</h2>
               <div className="mt-3 flex flex-col gap-2">
                 {reviews.top.map((r, i) => (
                   <figure key={i} className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
-                    <blockquote className="text-[13px] text-white/85">&ldquo;{r.body}&rdquo;</blockquote>
-                    <figcaption className="text-[12px] text-white/55 mt-1">
+                    <blockquote className="text-[14px] text-white/85">&ldquo;{r.body}&rdquo;</blockquote>
+                    <figcaption className="text-[13px] text-white/55 mt-1">
                       {r.name}
                       {r.device ? ` · sold a ${r.device}` : ""}
                       {r.city ? ` · ${r.city}` : ""}
@@ -645,7 +645,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   </figure>
                 ))}
               </div>
-              <p className="text-[12px] mt-2">
+              <p className="text-[13px] mt-2">
                 <a href="/reviews" className="text-white/60 underline">all {reviews.count} reviews →</a>
               </p>
             </div>
@@ -661,14 +661,14 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
             <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
             <div className="flex-1 min-w-0">
-              <div className="text-[15px] font-semibold leading-tight">top cash <span className="text-[#00c853]">cellular</span></div>
-              <div className="text-[11px] leading-tight">
+              <div className="text-[16px] font-semibold leading-tight">top cash <span className="text-[#00c853]">cellular</span></div>
+              <div className="text-[12px] leading-tight">
                 {takeover
                   ? <span className="text-[#00c853] font-semibold">Sonny is with you — live</span>
                   : <span className="text-white/45">{status || "quotes live 24/7"}</span>}
               </div>
             </div>
-            <button type="button" onClick={() => setChatOpen(false)} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[18px] flex items-center justify-center active:scale-95">
+            <button type="button" onClick={() => setChatOpen(false)} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[19px] flex items-center justify-center active:scale-95">
               ✕
             </button>
           </header>
@@ -676,7 +676,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           <div ref={threadRef} role="log" aria-live="polite" className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
             <div className="go-msg flex items-end gap-2">
               <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-              <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
+              <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
                 {lot
                   ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. we\u2019ll get you real numbers and cash the same day."
                   : "tap what you got — or just type it. one phone or a whole drawer, cracked ones too."}
@@ -692,7 +692,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 62 }}>
                       <img src={c.img} alt="" className="max-h-[54px] max-w-[80%] object-contain" />
                     </span>
-                    <span className="block text-[12px] font-semibold mt-1.5 text-white">{c.label}</span>
+                    <span className="block text-[13px] font-semibold mt-1.5 text-white">{c.label}</span>
                   </button>
                 ))}
               </div>
@@ -707,8 +707,8 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     <div key={i} className="go-msg flex items-end gap-2">
                       <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
                       <div className="max-w-[85%]">
-                        <div className="text-[11px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
-                        <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-[#0f2417] border border-[#00c853]/50">
+                        <div className="text-[12px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
+                        <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-[#0f2417] border border-[#00c853]/50">
                           {m.text}
                         </div>
                       </div>
@@ -716,13 +716,13 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   );
                 }
                 return m.from === "user" ? (
-                  <div key={i} className="go-msg self-end max-w-[85%] rounded-2xl rounded-br-md px-4 py-3 text-[14px] bg-[#132018] border border-[#00c853]/30">
+                  <div key={i} className="go-msg self-end max-w-[85%] rounded-2xl rounded-br-md px-4 py-3 text-[15px] bg-[#132018] border border-[#00c853]/30">
                     {m.text}
                   </div>
                 ) : (
                   <div key={i} className="go-msg flex items-end gap-2">
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10">
+                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10">
                       {m.text}
                     </div>
                   </div>
@@ -749,12 +749,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               if (m.kind === "chips") {
                 return (
                   <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    {m.q && <div className="text-[13px] text-white/60 mb-2">{m.q}</div>}
+                    {m.q && <div className="text-[14px] text-white/60 mb-2">{m.q}</div>}
                     <div className="flex flex-wrap gap-2">
                       {m.options.map((o) => (
                         <button key={o.key} type="button" disabled={!!m.done || gBusy}
                           onClick={() => void chipTap(m.dim, o.key, o.label)}
-                          className="text-[13px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform">
+                          className="text-[14px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform">
                           {o.label}
                         </button>
                       ))}
@@ -767,9 +767,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   <div key={i} className="go-msg flex items-end gap-2">
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
-                      <div className="text-[13px] text-white/60">{m.label}</div>
-                      <div className="text-[30px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer}</div>
-                      <div className="text-[12px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
+                      <div className="text-[14px] text-white/60">{m.label}</div>
+                      <div className="text-[32px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer}</div>
+                      <div className="text-[13px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
                     </div>
                   </div>
                 );
@@ -786,8 +786,8 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   <div key={i} className="go-msg flex items-end gap-2">
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/40">
-                      <div className="text-[15px] font-semibold text-[#00c853]">locked in{m.offer != null ? ` — $${m.offer}` : ""}.</div>
-                      <div className="text-[13px] text-white/70 mt-1">{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                      <div className="text-[16px] font-semibold text-[#00c853]">locked in{m.offer != null ? ` — $${m.offer}` : ""}.</div>
+                      <div className="text-[14px] text-white/70 mt-1">{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
                     </div>
                   </div>
                 );
@@ -811,7 +811,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     key={c}
                     type="button"
                     onClick={() => void send(c)}
-                    className="text-[13px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform"
+                    className="text-[14px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform"
                   >
                     {c}
                   </button>
@@ -828,7 +828,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             <input
               id="go-composer-input"
               ref={overlayInputRef}
-              className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+              className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
               placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
@@ -838,7 +838,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               type="submit"
               disabled={sending || !draft.trim()}
               style={{ borderRadius: "50%" }}
-              className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[20px] font-bold disabled:opacity-40 flex items-center justify-center"
+              className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[21px] font-bold disabled:opacity-40 flex items-center justify-center"
               aria-label="send"
             >
               ↑
@@ -848,12 +848,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       )}
 
       {/* long tail */}
-      <p className="mt-8 text-[13px]">
+      <p className="mt-8 text-[14px]">
         <a href="/" className="text-white/60 underline">everything else — laptops, consoles, watches →</a>
       </p>
 
       {/* footer — real business, real pages */}
-      <footer className="mt-10 pt-4 border-t border-white/10 text-[12px] text-white/50">
+      <footer className="mt-10 pt-4 border-t border-white/10 text-[13px] text-white/50">
         <p>TOP CASH CELLULAR LLC · austin tx</p>
         <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
           <a href="/reviews" className="underline">reviews</a>
@@ -866,7 +866,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       </footer>
 
       <noscript>
-        <p className="mt-4 text-[13px] text-white/70">
+        <p className="mt-4 text-[14px] text-white/70">
           this page needs javascript — <a href="/sell-iphone-austin" className="underline">see prices and how it works here</a>.
         </p>
       </noscript>
@@ -888,7 +888,7 @@ function DeviceCarousel({ rows, onPick, onOther, busy }: { rows: BoardRow[]; onP
           <div className="rounded-xl bg-white p-1.5 flex items-center justify-center" style={{ height: 86 }}>
             <img src={r.img} alt="" className="max-h-full max-w-full object-contain" style={{ borderRadius: 8 }} />
           </div>
-          <div className="text-[12px] font-semibold mt-1.5 leading-tight text-white">{r.label}</div>
+          <div className="text-[13px] font-semibold mt-1.5 leading-tight text-white">{r.label}</div>
         </button>
       ))}
       {onOther && (
@@ -899,9 +899,9 @@ function DeviceCarousel({ rows, onPick, onOther, busy }: { rows: BoardRow[]; onP
           className="shrink-0 w-[118px] rounded-2xl border border-[#00c853]/35 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform"
         >
           <div className="rounded-xl border border-dashed border-white/25 flex items-center justify-center" style={{ height: 86 }}>
-            <span className="text-[26px] font-bold text-[#00c853]">?</span>
+            <span className="text-[27px] font-bold text-[#00c853]">?</span>
           </div>
-          <div className="text-[12px] font-semibold mt-1.5 leading-tight text-white">don&rsquo;t see yours? tell us</div>
+          <div className="text-[13px] font-semibold mt-1.5 leading-tight text-white">don&rsquo;t see yours? tell us</div>
         </button>
       )}
     </div>
@@ -916,18 +916,18 @@ function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boo
   const [busy, setBusy] = useState(false);
   return (
     <div className="flex flex-col gap-2">
-      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="name (optional)" value={n} onChange={(e) => setN(e.target.value)} autoComplete="name" disabled={disabled} />
-      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="your number — we text you the quote" value={c} onChange={(e) => setC(e.target.value)} autoComplete="tel" disabled={disabled} />
-      <label className="flex items-start gap-2 text-[12px] text-white/60">
+      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="name (optional)" value={n} onChange={(e) => setN(e.target.value)} autoComplete="name" disabled={disabled} />
+      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="your number — we text you the quote" value={c} onChange={(e) => setC(e.target.value)} autoComplete="tel" disabled={disabled} />
+      <label className="flex items-start gap-2 text-[13px] text-white/60">
         <input type="checkbox" checked={a} onChange={(e) => setA(e.target.checked)} className="mt-[2px] accent-[#00c853]" disabled={disabled} />
         <span>i&rsquo;m 18+ and this device is mine to sell</span>
       </label>
-      {err && <p className="text-[12px] text-red-400" role="alert">{err}</p>}
+      {err && <p className="text-[13px] text-red-400" role="alert">{err}</p>}
       <button
         type="button"
         disabled={disabled || busy}
         onClick={async () => { setBusy(true); setErr(""); const e = await onLock(n, c, a); if (e) setErr(e); setBusy(false); }}
-        className="tcc-button-primary py-3 text-[15px] font-bold rounded-2xl disabled:opacity-40"
+        className="tcc-button-primary py-3 text-[16px] font-bold rounded-2xl disabled:opacity-40"
       >
         {busy ? "locking…" : manual ? "send me a real offer" : "Lock In My Offer"}
       </button>
@@ -945,7 +945,7 @@ function ChipRow({
 }) {
   return (
     <div className="mt-3">
-      <p className="text-[13px] text-white/70 mb-2">{q}</p>
+      <p className="text-[14px] text-white/70 mb-2">{q}</p>
       <div className="flex flex-wrap gap-2">
         {chips.map((c) => (
           <button
@@ -953,7 +953,7 @@ function ChipRow({
             type="button"
             disabled={disabled}
             onClick={() => onPick(c.key, c.label)}
-            className="text-[13px] text-white/85 border border-white/20 rounded-full px-4 py-[11px] disabled:opacity-50"
+            className="text-[14px] text-white/85 border border-white/20 rounded-full px-4 py-[11px] disabled:opacity-50"
           >
             {c.label}
           </button>
