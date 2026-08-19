@@ -594,7 +594,18 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               if (m.kind === "models") {
                 return (
                   <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <DeviceCarousel rows={rows.filter((r) => r.id.startsWith(m.prefix))} onPick={deviceTap} busy={gBusy || !!m.done} />
+                    <DeviceCarousel
+                      rows={rows.filter((r) => r.id.startsWith(m.prefix))}
+                      onPick={deviceTap}
+                      onOther={() => {
+                        pushMsgs(
+                          { from: "user", text: "i don’t see mine" },
+                          { from: "bot", text: "all good — type what you got (model + anything you know) and we’ll get you a number." },
+                        );
+                        setTimeout(() => overlayInputRef.current?.focus(), 60);
+                      }}
+                      busy={gBusy || !!m.done}
+                    />
                   </div>
                 );
               }
@@ -733,7 +744,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   );
 }
 
-function DeviceCarousel({ rows, onPick, busy }: { rows: BoardRow[]; onPick: (r: BoardRow) => void; busy: boolean }) {
+function DeviceCarousel({ rows, onPick, onOther, busy }: { rows: BoardRow[]; onPick: (r: BoardRow) => void; onOther?: () => void; busy: boolean }) {
   return (
     <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
       {rows.map((r) => (
@@ -750,6 +761,19 @@ function DeviceCarousel({ rows, onPick, busy }: { rows: BoardRow[]; onPick: (r: 
           <div className="text-[12px] font-semibold mt-1.5 leading-tight text-white">{r.label}</div>
         </button>
       ))}
+      {onOther && (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={onOther}
+          className="shrink-0 w-[118px] rounded-2xl border border-[#00c853]/35 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform"
+        >
+          <div className="rounded-xl border border-dashed border-white/25 flex items-center justify-center" style={{ height: 86 }}>
+            <span className="text-[26px] font-bold text-[#00c853]">?</span>
+          </div>
+          <div className="text-[12px] font-semibold mt-1.5 leading-tight text-white">don&rsquo;t see yours? tell us</div>
+        </button>
+      )}
     </div>
   );
 }
