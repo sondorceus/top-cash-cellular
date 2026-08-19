@@ -62,3 +62,5 @@ next-env.d.ts
 
 # stray downloaded artifacts (FedEx test labels, filled cover sheets, gallery imgs)
 "top cash /"
+scripts/ad-assets/out/
+scripts/ad-assets/.*.html

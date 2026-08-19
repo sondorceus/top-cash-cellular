@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Cabinet"; src: url("CabinetGrotesk-Variable.woff2") format("woff2"); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #333; font-family: "Cabinet", sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .board { position: relative; background: #0a0a0a; color: #fff; overflow: hidden; display: flex; flex-direction: column; }
+  .sq { width: 1080px; height: 1080px; }
+  .st { width: 1080px; height: 1920px; }
+
+  /* top banner — his flyer language */
+  .banner {
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%);
+    color: #06340f; font-weight: 800; letter-spacing: 0.02em;
+    padding: 22px 44px; font-size: 40px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.4);
+  }
+  .st .banner { padding: 28px 48px; font-size: 46px; }
+
+  .inner { flex: 1; display: flex; flex-direction: column; padding: 40px 56px 44px; }
+  .st .inner { padding: 56px 56px 56px; }
+
+  .head { font-weight: 800; letter-spacing: -0.01em; line-height: 0.98; text-transform: uppercase; }
+  .sq .head { font-size: 88px; }
+  .st .head { font-size: 96px; }
+  .head em { font-style: normal; color: #00c853; }
+  .sub { color: rgba(255,255,255,0.75); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+  .sq .sub { font-size: 30px; margin-top: 18px; }
+  .st .sub { font-size: 36px; margin-top: 24px; }
+  .sub b { color: #00c853; }
+
+  /* product tiles */
+  .tiles { display: flex; gap: 28px; }
+  .sq .tiles { margin-top: 44px; }
+  .st .tiles { margin-top: 56px; flex-direction: column; gap: 28px; }
+  .tile { flex: 1; background: #fff; border-radius: 28px; padding: 22px 22px 0; text-align: center; overflow: hidden; position: relative; box-shadow: 0 14px 34px rgba(0,0,0,0.5); }
+  .st .tile { display: flex; align-items: center; text-align: left; padding: 20px 34px; gap: 36px; }
+  .tile img { width: 100%; height: auto; display: block; }
+  .sq .tile img { margin-bottom: -6px; }
+  .st .tile img { width: 190px; }
+  .tile .flag {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    background: rgba(10,10,10,0.92); color: #fff;
+    padding: 16px 10px; font-weight: 700; font-size: 30px;
+  }
+  .tile .flag b { color: #00c853; font-size: 1.15em; margin-left: 8px; font-variant-numeric: tabular-nums; }
+  .st .tile .flag { position: static; background: none; color: #0a0a0a; padding: 0; font-size: 40px; }
+  .st .tile .flag .nm { display: block; font-weight: 750; }
+  .st .tile .flag b { margin-left: 0; font-size: 1.25em; color: #00a039; }
+
+  .spacer { flex: 1; }
+
+  .cta {
+    text-align: center;
+    background: linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%);
+    color: #06340f; font-weight: 800; border-radius: 26px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), 0 10px 24px rgba(0,0,0,0.5);
+  }
+  .sq .cta { font-size: 46px; padding: 30px; margin-top: 44px; }
+  .st .cta { font-size: 48px; padding: 36px; margin-top: 48px; }
+
+  .foot { display: flex; justify-content: space-between; align-items: baseline; margin-top: 24px; }
+  .cashfan { position: absolute; pointer-events: none; }
+  .sq .cashfan { right: -30px; top: 118px; width: 360px; }
+  .st .cashfan { right: -40px; top: 30px; width: 330px; }
+  .es { color: #00c853; font-weight: 750; letter-spacing: 0.05em; text-transform: uppercase; }
+  .sq .es { font-size: 30px; margin-top: 10px; }
+  .st .es { font-size: 36px; margin-top: 14px; }
+  .mark { font-size: 34px; font-weight: 650; }
+  .mark b { color: #00c853; font-weight: 650; }
+  .site { color: rgba(255,255,255,0.55); font-weight: 600; font-size: 28px; }
+  .st .mark { font-size: 40px; } .st .site { font-size: 32px; }
+</style>
+</head>
+<body>
+
+<!-- f1: cash-for-phones flyer · square -->
+<div class="board sq" id="f1">
+  <div class="banner"><span>GET PAID TODAY!</span><span>TRADE-INS WELCOME</span></div>
+  <div class="inner">
+    <svg class="cashfan" viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(-18 180 200)"><rect x="60" y="70" width="240" height="104" rx="10" fill="#1f8a44" stroke="#0d5c2a" stroke-width="4"/><ellipse cx="180" cy="122" rx="40" ry="34" fill="#2aa055"/><text x="180" y="132" font-family="Cabinet" font-size="30" font-weight="800" fill="#0d5c2a" text-anchor="middle">100</text><text x="84" y="100" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a"></text><text x="276" y="160" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a" text-anchor="end"></text></g>
+  <g transform="rotate(-2 180 200)"><rect x="60" y="70" width="240" height="104" rx="10" fill="#27994e" stroke="#0d5c2a" stroke-width="4"/><ellipse cx="180" cy="122" rx="40" ry="34" fill="#33b061"/><text x="180" y="132" font-family="Cabinet" font-size="30" font-weight="800" fill="#0d5c2a" text-anchor="middle">100</text><text x="84" y="100" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a"></text><text x="276" y="160" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a" text-anchor="end"></text></g>
+  <g transform="rotate(14 180 200)"><rect x="60" y="70" width="240" height="104" rx="10" fill="#2fa858" stroke="#0d5c2a" stroke-width="4"/><ellipse cx="180" cy="122" rx="40" ry="34" fill="#3bbd6b"/><text x="180" y="132" font-family="Cabinet" font-size="30" font-weight="800" fill="#0d5c2a" text-anchor="middle">100</text><text x="84" y="100" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a"></text><text x="276" y="160" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a" text-anchor="end"></text></g>
+</svg>
+    <div class="head">WE BUY PHONES<br>FOR <em>CASH</em></div>
+    <div class="sub">FAST CASH · TOP DOLLAR PAID · <b>EVEN CRACKED</b></div>
+    <div class="es">¡Te pagamos hoy mismo!</div>
+    <div class="tiles">
+      <div class="tile"><img src="iphone-17-pro-max.webp" alt=""><div class="flag">17 Pro Max<b>$1425</b></div></div>
+      <div class="tile"><img src="iphone-16-pro-max.webp" alt=""><div class="flag">16 Pro Max<b>$485</b></div></div>
+      <div class="tile"><img src="iphone-15-pro-max.webp" alt=""><div class="flag">15 Pro Max<b>$343</b></div></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="cta">TAP YOURS → CASH IN HAND TODAY</div>
+    <div class="foot">
+      <div class="mark">top cash <b>cellular</b></div>
+      <div class="site">austin area · topcashcellular.com/go</div>
+    </div>
+  </div>
+</div>
+
+<!-- f2: cash-for-phones flyer · story -->
+<div class="board st" id="f2">
+  <div class="banner"><span>GET PAID TODAY!</span><span>TRADE-INS WELCOME</span></div>
+  <div class="inner">
+    <svg class="cashfan" viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(-18 180 200)"><rect x="60" y="70" width="240" height="104" rx="10" fill="#1f8a44" stroke="#0d5c2a" stroke-width="4"/><ellipse cx="180" cy="122" rx="40" ry="34" fill="#2aa055"/><text x="180" y="132" font-family="Cabinet" font-size="30" font-weight="800" fill="#0d5c2a" text-anchor="middle">100</text><text x="84" y="100" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a"></text><text x="276" y="160" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a" text-anchor="end"></text></g>
+  <g transform="rotate(-2 180 200)"><rect x="60" y="70" width="240" height="104" rx="10" fill="#27994e" stroke="#0d5c2a" stroke-width="4"/><ellipse cx="180" cy="122" rx="40" ry="34" fill="#33b061"/><text x="180" y="132" font-family="Cabinet" font-size="30" font-weight="800" fill="#0d5c2a" text-anchor="middle">100</text><text x="84" y="100" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a"></text><text x="276" y="160" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a" text-anchor="end"></text></g>
+  <g transform="rotate(14 180 200)"><rect x="60" y="70" width="240" height="104" rx="10" fill="#2fa858" stroke="#0d5c2a" stroke-width="4"/><ellipse cx="180" cy="122" rx="40" ry="34" fill="#3bbd6b"/><text x="180" y="132" font-family="Cabinet" font-size="30" font-weight="800" fill="#0d5c2a" text-anchor="middle">100</text><text x="84" y="100" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a"></text><text x="276" y="160" font-family="Cabinet" font-size="22" font-weight="800" fill="#0d5c2a" text-anchor="end"></text></g>
+</svg>
+    <div class="head">WE BUY PHONES<br>FOR <em>CASH</em></div>
+    <div class="sub">FAST CASH · TOP DOLLAR PAID · <b>EVEN CRACKED</b></div>
+    <div class="es">¡Te pagamos hoy mismo!</div>
+    <div class="tiles">
+      <div class="tile"><img src="iphone-17-pro-max.webp" alt=""><div class="flag"><span class="nm">iPhone 17 Pro Max</span>up to <b>$1425</b></div></div>
+      <div class="tile"><img src="iphone-16-pro-max.webp" alt=""><div class="flag"><span class="nm">iPhone 16 Pro Max</span>up to <b>$485</b></div></div>
+      <div class="tile"><img src="iphone-15-pro-max.webp" alt=""><div class="flag"><span class="nm">iPhone 15 Pro Max</span>up to <b>$343</b></div></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="cta">TAP YOURS → CASH IN HAND TODAY</div>
+    <div class="foot">
+      <div class="mark">top cash <b>cellular</b></div>
+      <div class="site">austin area · topcashcellular.com/go</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: "Cabinet";
+    src: url("CabinetGrotesk-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #333; font-family: "Cabinet", sans-serif; -webkit-font-smoothing: antialiased; }
+
+  /* ---- artboards ---- */
+  .board { position: relative; background: #0a0a0a; color: #fff; overflow: hidden; display: flex; flex-direction: column; }
+  .sq  { width: 1080px; height: 1080px; padding: 72px; }
+  .st  { width: 1080px; height: 1920px; padding: 88px 72px; }
+
+  /* wordmark — same treatment as the /go header */
+  .mark { font-size: 40px; font-weight: 650; letter-spacing: -0.01em; }
+  .mark b { color: #00c853; font-weight: 650; }
+  .tag { font-size: 30px; color: rgba(255,255,255,0.5); font-weight: 500; }
+  .topline { display: flex; justify-content: space-between; align-items: baseline; }
+
+  h1 { font-weight: 800; letter-spacing: -0.022em; line-height: 1.04; }
+  .sq h1 { font-size: 72px; margin-top: 26px; }
+  .st h1 { font-size: 104px; margin-top: 72px; }
+  .sub { color: rgba(255,255,255,0.6); font-weight: 500; }
+  .sq .sub { font-size: 38px; margin-top: 20px; }
+  .st .sub { font-size: 46px; margin-top: 28px; }
+
+  /* the payout panel — .tcc-selection-frame formula */
+  .panel {
+    background: rgba(15,15,15,0.42);
+    border: 2px solid rgba(255,255,255,0.10);
+    border-radius: 44px;
+    padding: 18px 44px;
+    box-shadow: inset 2px 2px 0 rgba(255,255,255,0.07), inset 0 0 0 2px rgba(0,0,0,0.25);
+  }
+  .sq .panel { margin-top: 40px; }
+  .st .panel { margin-top: 72px; }
+  .row { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.07); }
+  .row:last-child { border-bottom: none; }
+  .sq .row { padding: 23px 8px; }
+  .st .row { padding: 44px 8px; }
+  .row .n { font-size: 46px; font-weight: 640; }
+  .row .p { font-size: 46px; font-weight: 700; color: #00c853; font-variant-numeric: tabular-nums; }
+  .st .row .n, .st .row .p { font-size: 54px; }
+  .row .p small { font-size: 0.62em; font-weight: 600; color: rgba(0,200,83,0.85); margin-right: 10px; }
+
+  .spacer { flex: 1; }
+
+  /* CTA — .tcc-button-primary formula: bevel, no glow */
+  .cta {
+    align-self: stretch; text-align: center;
+    background: linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%);
+    color: #0a0a0a; font-weight: 750;
+    border-radius: 28px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), 0 8px 20px rgba(0,0,0,0.45);
+  }
+  .sq .cta { font-size: 44px; padding: 27px; margin-top: 32px; }
+  .st .cta { font-size: 54px; padding: 44px; margin-top: 72px; }
+
+  .foot { color: rgba(255,255,255,0.45); font-weight: 500; text-align: center; }
+  .sq .foot { font-size: 27px; margin-top: 22px; }
+  .st .foot { font-size: 34px; margin-top: 40px; }
+
+  /* lot variant big block */
+  .lotline { font-weight: 800; letter-spacing: -0.02em; line-height: 1.02; }
+  .sq .lotline { font-size: 86px; margin-top: 40px; }
+  .st .lotline { font-size: 120px; margin-top: 88px; }
+  .lotline em { font-style: normal; color: #00c853; }
+  .checks { margin-top: 40px; display: flex; flex-direction: column; gap: 22px; }
+  .checks div { font-size: 40px; font-weight: 560; color: rgba(255,255,255,0.85); display: flex; gap: 22px; align-items: baseline; }
+  .st .checks div { font-size: 52px; }
+  .checks span { color: #00c853; font-weight: 750; }
+</style>
+</head>
+<body>
+
+<!-- 1: consumer · square 1080x1080 -->
+<div class="board sq" id="a1">
+  <div class="topline">
+    <div class="mark">top cash <b>cellular</b></div>
+    <div class="tag">austin area</div>
+  </div>
+  <h1>here&rsquo;s what we&rsquo;re paying right now</h1>
+  <div class="panel">
+    <div class="row"><span class="n">iPhone 17 Pro Max</span><span class="p"><small>up to</small>$1425</span></div>
+    <div class="row"><span class="n">iPhone 16 Pro Max</span><span class="p"><small>up to</small>$485</span></div>
+    <div class="row"><span class="n">Galaxy S25 Ultra</span><span class="p"><small>up to</small>$391</span></div>
+    <div class="row"><span class="n">iPhone 15 Pro Max</span><span class="p"><small>up to</small>$343</span></div>
+    <div class="row"><span class="n">Galaxy S24 Ultra</span><span class="p"><small>up to</small>$280</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="cta">tap yours → cash in hand today</div>
+</div>
+
+<!-- 2: consumer · story 1080x1920 -->
+<div class="board st" id="a2">
+  <div class="topline">
+    <div class="mark">top cash <b>cellular</b></div>
+    <div class="tag">austin area</div>
+  </div>
+  <h1>here&rsquo;s what we&rsquo;re paying right now</h1>
+  <div class="sub">tap yours. no email, no signup.</div>
+  <div class="panel">
+    <div class="row"><span class="n">iPhone 17 Pro Max</span><span class="p"><small>up to</small>$1425</span></div>
+    <div class="row"><span class="n">iPhone 16 Pro Max</span><span class="p"><small>up to</small>$485</span></div>
+    <div class="row"><span class="n">Galaxy S25 Ultra</span><span class="p"><small>up to</small>$391</span></div>
+    <div class="row"><span class="n">iPhone 15 Pro Max</span><span class="p"><small>up to</small>$343</span></div>
+    <div class="row"><span class="n">Galaxy S24 Ultra</span><span class="p"><small>up to</small>$280</span></div>
+    <div class="row"><span class="n">iPhone 14 Pro Max</span><span class="p"><small>up to</small>$272</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="cta">tap yours → cash in hand today</div>
+  <div class="foot">we check it while you watch · the number doesn&rsquo;t move if it matches</div>
+</div>
+
+<!-- 3: lot seller · square 1080x1080 -->
+<div class="board sq" id="a3">
+  <div class="topline">
+    <div class="mark">top cash <b>cellular</b></div>
+    <div class="tag">austin area</div>
+  </div>
+  <div class="lotline">got a <em>lot</em> of phones?<br>we buy the whole lot.</div>
+  <div class="checks">
+    <div><span>✓</span> singles, trays, the whole shelf</div>
+    <div><span>✓</span> counted &amp; checked in one meetup</div>
+    <div><span>✓</span> cash the same day</div>
+    <div><span>✓</span> cracked ones priced in, not tossed</div>
+  </div>
+  <div class="spacer"></div>
+  <div class="cta">tell us what you got → get paid</div>
+  <div class="foot">no email, no signup · topcashcellular.com/go</div>
+</div>
+
+<!-- 4: lot seller · story 1080x1920 -->
+<div class="board st" id="a4">
+  <div class="topline">
+    <div class="mark">top cash <b>cellular</b></div>
+    <div class="tag">austin area</div>
+  </div>
+  <div class="lotline">got a <em>lot</em> of phones?<br>we buy the whole lot.</div>
+  <div class="checks">
+    <div><span>✓</span> singles, trays, the whole shelf</div>
+    <div><span>✓</span> counted &amp; checked in one meetup</div>
+    <div><span>✓</span> cash the same day</div>
+    <div><span>✓</span> cracked ones priced in, not tossed</div>
+  </div>
+  <div class="panel">
+    <div class="row"><span class="n">iPhone 16 Pro Max</span><span class="p"><small>up to</small>$485</span></div>
+    <div class="row"><span class="n">Galaxy S25 Ultra</span><span class="p"><small>up to</small>$391</span></div>
+    <div class="row"><span class="n">iPhone 15 Pro Max</span><span class="p"><small>up to</small>$343</span></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="cta">tell us what you got → get paid</div>
+  <div class="foot">we check it while you watch · cash in hand same day</div>
+</div>
+
+</body>
+</html>
