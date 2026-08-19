@@ -69,6 +69,11 @@ export default async function GoPage({
   const sp = await searchParams;
   const rawSrc = typeof sp.src === "string" ? sp.src : typeof sp.utm_source === "string" ? sp.utm_source : "";
   const src = rawSrc.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 8);
+  // ?v=lot — the bulk/liquidation-seller variant. Same page, same engine;
+  // the headline, chips, and composer speak to someone with a LOT of
+  // phones who needs cash, and a jump pill sits above the board. Ads for
+  // that audience use /go?v=lot&src=…; message match without a second page.
+  const variant = sp.v === "lot" ? "lot" : "std";
   const [rows, reviews] = await Promise.all([computeBoard(), fetchReviews()]);
-  return <GoClient rows={rows} src={src} reviews={reviews} />;
+  return <GoClient rows={rows} src={src} reviews={reviews} variant={variant} />;
 }

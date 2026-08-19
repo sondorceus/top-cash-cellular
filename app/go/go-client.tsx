@@ -44,7 +44,8 @@ function newSessionId(src: string) {
   return `go${src ? `-${src}` : ""}-${rand}`.slice(0, 24);
 }
 
-export default function GoClient({ rows, src, reviews }: { rows: BoardRow[]; src: string; reviews: GoReviews }) {
+export default function GoClient({ rows, src, reviews, variant = "std" }: { rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot" }) {
+  const lot = variant === "lot";
   // ---- board / HOLD state ----
   const [openId, setOpenId] = useState<string | null>(null);
   const [step, setStep] = useState(0); // 0 storage · 1 condition · 2 carrier · 3 done
@@ -243,8 +244,25 @@ export default function GoClient({ rows, src, reviews }: { rows: BoardRow[]; src
       </header>
 
       {/* headline */}
-      <h1 className="text-[28px] leading-[1.1] font-extrabold mt-4">here&rsquo;s what we&rsquo;re paying right now</h1>
-      <p className="text-[14px] text-white/60 mt-2">tap yours. no email, no signup.</p>
+      <h1 className="text-[28px] leading-[1.1] font-extrabold mt-4">
+        {lot ? "we buy phones — singles or the whole lot" : "here\u2019s what we\u2019re paying right now"}
+      </h1>
+      <p className="text-[14px] text-white/60 mt-2">
+        {lot ? "tell us what you got. cash the same day, no email, no signup." : "tap yours. no email, no signup."}
+      </p>
+
+      {lot && (
+        <button
+          type="button"
+          onClick={() => {
+            document.getElementById("go-composer")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            document.getElementById("go-composer-input")?.focus();
+          }}
+          className="mt-4 w-full rounded-2xl border border-[#00c853] px-4 py-3 text-left text-[14px] font-semibold text-[#00c853]"
+        >
+          selling more than a couple? start here →
+        </button>
+      )}
 
       {/* the board */}
       {rows.length === 0 ? (
@@ -407,8 +425,8 @@ export default function GoClient({ rows, src, reviews }: { rows: BoardRow[]; src
       )}
 
       {/* composer + thread */}
-      <section className="mt-7" aria-label="chat with us">
-        <h2 className="text-[16px] font-bold">got something else, or a few of them?</h2>
+      <section className="mt-7" id="go-composer" aria-label="chat with us">
+        <h2 className="text-[16px] font-bold">{lot ? "tell us what you got" : "got something else, or a few of them?"}</h2>
 
         {msgs.length > 0 && (
           <div ref={threadRef} role="log" aria-live="polite" className="mt-3 max-h-[340px] overflow-y-auto flex flex-col gap-2 pr-1">
@@ -437,8 +455,9 @@ export default function GoClient({ rows, src, reviews }: { rows: BoardRow[]; src
           onSubmit={(e) => { e.preventDefault(); void send(draft); }}
         >
           <input
+            id="go-composer-input"
             className="tcc-input flex-1 px-4 py-3"
-            placeholder="i got 4 phones for sale…"
+            placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             aria-label="tell us what you're selling"
@@ -450,7 +469,7 @@ export default function GoClient({ rows, src, reviews }: { rows: BoardRow[]; src
 
         {msgs.length === 0 && (
           <div className="flex flex-wrap gap-2 mt-3">
-            {CHIPS.map((c) => (
+            {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
               <button
                 key={c}
                 type="button"

@@ -24,6 +24,7 @@ const MAX_TOOL_ROUNDS = 4;
 function smartReply(message: string): string {
   const m = message.toLowerCase();
   if (m.match(/\b(?:\d+|few|couple|several|multiple|bunch)\s+(?:iphones?|phones?|devices?|galaxys?|samsungs?|pixels?)\b/)) return "nice — list what you've got (model, storage, condition for each) and drop your number. we'll text you a real offer for the lot.";
+  if (m.match(/financ|payment plan|still owe|owe money|carrier lock|locked to|need cash/)) return "we buy financed and carrier-locked phones all the time — the offer just prices that in, and you get paid the same day. list what you've got (model, storage, condition) and drop your number, and we'll text you a real offer.";
   if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "Use the instant quote tool on the homepage to get an exact price — pick your device, storage, and condition. Takes about 30 seconds.";
   if (m.match(/iphone|apple/)) return "We buy iPhones from the 11 and newer. Use the quote tool on the homepage to see what yours is worth.";
   if (m.match(/samsung|galaxy|android/)) return "We buy Samsung Galaxy S21 and newer, plus the Z Fold and Z Flip. Use the quote tool for an instant price.";
