@@ -390,7 +390,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (dim === "condition") {
       pushMsgs(
         { from: "user", text: label },
-        { from: "bot", kind: "chips", q: "locked to a carrier?", dim: "carrier", options: CARRIERS },
+        // Financed/carrier-locked sellers arrive believing they can't sell
+        // (Swappa refuses them) — say the opposite here, at the exact chip
+        // that raises the doubt. Same fact the chat brain already states.
+        { from: "bot", kind: "chips", q: "locked to a carrier? still making payments is fine too — we buy those.", dim: "carrier", options: CARRIERS },
       );
       return;
     }
@@ -565,7 +568,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   ? "tap to keep the conversation going"
                   : lot
                     ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too."
-                    : "tap what you got — real number in 30 seconds. cracked ones too."}
+                    : "tap what you got — real number in 30 seconds. cracked or still on payments, we still buy it."}
               </div>
             </div>
           </div>
@@ -610,7 +613,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           </li>
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">3</span>
-            <span><b className="text-white font-semibold">cash</b> — we check it, you get paid on the spot.</span>
+            {/* answers the "…if it matches what you told us" caveat the page
+                raises twice and otherwise never resolves */}
+            <span><b className="text-white font-semibold">cash</b> — we check it while you watch, you get paid on the spot. if something&rsquo;s different than you described, we show you what we found and give you the updated number — your call from there.</span>
           </li>
         </ol>
       </section>
@@ -679,7 +684,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
                 {lot
                   ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. we\u2019ll get you real numbers and cash the same day."
-                  : "tap what you got — or just type it. one phone or a whole drawer, cracked ones too."}
+                  : "tap what you got — or just type it. one phone or a whole drawer. cracked or still on payments, we still buy it."}
               </div>
             </div>
 
