@@ -12,6 +12,12 @@
 import { useEffect, useRef, useState } from "react";
 import type { BoardRow } from "./board";
 
+export type GoReviews = {
+  avg: number;
+  count: number;
+  top: { name: string; body: string; device: string; city: string }[];
+};
+
 const STORAGE_LABELS: Record<string, string> = {
   "64": "64 gb", "128": "128 gb", "256": "256 gb", "512": "512 gb", "1tb": "1 tb", "2tb": "2 tb",
 };
@@ -38,7 +44,7 @@ function newSessionId(src: string) {
   return `go${src ? `-${src}` : ""}-${rand}`.slice(0, 24);
 }
 
-export default function GoClient({ rows, src }: { rows: BoardRow[]; src: string }) {
+export default function GoClient({ rows, src, reviews }: { rows: BoardRow[]; src: string; reviews: GoReviews }) {
   // ---- board / HOLD state ----
   const [openId, setOpenId] = useState<string | null>(null);
   const [step, setStep] = useState(0); // 0 storage · 1 condition · 2 carrier · 3 done
@@ -353,6 +359,53 @@ export default function GoClient({ rows, src }: { rows: BoardRow[]; src: string 
         <a href="/reviews" className="underline text-white/60">reviews from paid sellers</a>
       </p>
 
+      {/* how it works — the meetup fear, answered in three lines */}
+      <section className="mt-7" aria-label="how it works">
+        <h2 className="text-[16px] font-bold">how this works</h2>
+        <ol className="mt-3 flex flex-col gap-2 text-[13px] text-white/75">
+          <li className="flex gap-3">
+            <span className="text-[#00c853] font-bold shrink-0">1</span>
+            <span>tap your phone above — the number you see is the number, locked for 14 days.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="text-[#00c853] font-bold shrink-0">2</span>
+            <span>meet us at a public spot in the austin area (about 15 minutes), or we email you a free prepaid FedEx label.</span>
+          </li>
+          <li className="flex gap-3">
+            <span className="text-[#00c853] font-bold shrink-0">3</span>
+            <span>we check the phone while you watch, then you get paid on the spot — cash, Cash App, Zelle, or BTC. shipped devices are paid same day after inspection.</span>
+          </li>
+        </ol>
+        <p className="text-[12px] text-white/60 mt-2">
+          if the phone matches what you told us, the number doesn&rsquo;t move. that&rsquo;s the whole deal.
+        </p>
+      </section>
+
+      {/* real verified reviews — server-fetched, renders nothing if unavailable */}
+      {reviews.count >= 5 && reviews.top.length > 0 && (
+        <section className="mt-7" aria-label="reviews from verified sellers">
+          <h2 className="text-[16px] font-bold">
+            {reviews.avg}★ from people we&rsquo;ve paid
+          </h2>
+          <div className="mt-3 flex flex-col gap-2">
+            {reviews.top.map((r, i) => (
+              <figure key={i} className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+                <blockquote className="text-[13px] text-white/85">&ldquo;{r.body}&rdquo;</blockquote>
+                <figcaption className="text-[12px] text-white/55 mt-1">
+                  {r.name}
+                  {r.device ? ` · sold a ${r.device}` : ""}
+                  {r.city ? ` · ${r.city}` : ""}
+                  <span className="text-[#00c853]"> · ✓ verified seller</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="text-[12px] mt-2">
+            <a href="/reviews" className="text-white/60 underline">all {reviews.count} reviews →</a>
+          </p>
+        </section>
+      )}
+
       {/* composer + thread */}
       <section className="mt-7" aria-label="chat with us">
         <h2 className="text-[16px] font-bold">got something else, or a few of them?</h2>
@@ -415,6 +468,19 @@ export default function GoClient({ rows, src }: { rows: BoardRow[]; src: string 
       <p className="mt-8 text-[13px]">
         <a href="/" className="text-white/60 underline">everything else — laptops, consoles, watches →</a>
       </p>
+
+      {/* footer — real business, real pages */}
+      <footer className="mt-10 pt-4 border-t border-white/10 text-[12px] text-white/50">
+        <p>TOP CASH CELLULAR LLC · austin tx</p>
+        <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+          <a href="/reviews" className="underline">reviews</a>
+          <a href="/how-it-works" className="underline">how it works</a>
+          <a href="/faq" className="underline">faq</a>
+          <a href="/grading-guide" className="underline">grading guide</a>
+          <a href="/terms" className="underline">terms</a>
+          <a href="/privacy" className="underline">privacy</a>
+        </p>
+      </footer>
 
       <noscript>
         <p className="mt-4 text-[13px] text-white/70">

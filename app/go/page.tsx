@@ -8,7 +8,45 @@
 // types a sentence. Ads keep spending even if the chat is down.
 import type { Metadata } from "next";
 import { computeBoard } from "./board";
-import GoClient from "./go-client";
+import GoClient, { type GoReviews } from "./go-client";
+
+const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
+
+// Best-effort verified-review pull for the trust section. The reviews API
+// is a live proxy to Mission Control, so it must never sit hard on the
+// critical path of a paid click: 1.5s timeout, 5-minute module-scope memo,
+// and the page renders fine with zero reviews if it fails.
+let reviewSnap: { v: GoReviews; at: number } | null = null;
+async function fetchReviews(): Promise<GoReviews> {
+  if (reviewSnap && Date.now() - reviewSnap.at < 5 * 60_000) return reviewSnap.v;
+  const empty: GoReviews = { avg: 0, count: 0, top: [] };
+  const key = process.env.MC_API_KEY || "";
+  if (!key) return empty;
+  try {
+    const r = await fetch(`${MC_API}/api/reviews?limit=100`, {
+      headers: { "x-api-key": key },
+      cache: "no-store",
+      signal: AbortSignal.timeout(1500),
+    });
+    const d = await r.json();
+    const all = (d.reviews || []) as { name?: string; rating?: number; body?: string; device?: string; city?: string; verified?: boolean }[];
+    const verified = all.filter((x) => x.verified && (x.rating || 0) >= 4 && (x.body || "").trim().length >= 25);
+    // Deterministic pick: prefer reviews that name a device (reads more
+    // real), then longer text, capped for the card.
+    verified.sort((x, y) => Number(!!y.device) - Number(!!x.device) || (y.body || "").length - (x.body || "").length);
+    const top = verified.slice(0, 3).map((x) => ({
+      name: (x.name || "verified seller").slice(0, 40),
+      body: (x.body || "").slice(0, 160),
+      device: (x.device || "").slice(0, 40),
+      city: (x.city || "").slice(0, 30),
+    }));
+    const v: GoReviews = { avg: Math.round((d.avg || 0) * 10) / 10, count: d.count || 0, top };
+    reviewSnap = { v, at: Date.now() };
+    return v;
+  } catch {
+    return empty;
+  }
+}
 
 // The board must re-price when the table changes, and this page is tiny —
 // render it fresh per request.
@@ -31,6 +69,6 @@ export default async function GoPage({
   const sp = await searchParams;
   const rawSrc = typeof sp.src === "string" ? sp.src : typeof sp.utm_source === "string" ? sp.utm_source : "";
   const src = rawSrc.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 8);
-  const rows = await computeBoard();
-  return <GoClient rows={rows} src={src} />;
+  const [rows, reviews] = await Promise.all([computeBoard(), fetchReviews()]);
+  return <GoClient rows={rows} src={src} reviews={reviews} />;
 }
