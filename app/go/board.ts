@@ -16,13 +16,13 @@ import { PRICE_TABLE } from "../data/prices";
 
 // Six recognizable, high-payout phones. Edit freely — prices are computed,
 // never hardcoded here.
-export const BOARD_MODELS: { id: string; label: string }[] = [
-  { id: "ip17pm", label: "iPhone 17 Pro Max" },
-  { id: "ip16pm", label: "iPhone 16 Pro Max" },
-  { id: "gs25u", label: "Galaxy S25 Ultra" },
-  { id: "ip15pm", label: "iPhone 15 Pro Max" },
-  { id: "gs24u", label: "Galaxy S24 Ultra" },
-  { id: "ip14pm", label: "iPhone 14 Pro Max" },
+export const BOARD_MODELS: { id: string; label: string; img: string }[] = [
+  { id: "ip17pm", label: "iPhone 17 Pro Max", img: "/devices/iphone-17-pro-max.webp" },
+  { id: "ip16pm", label: "iPhone 16 Pro Max", img: "/devices/iphone-16-pro-max.webp" },
+  { id: "gs25u", label: "Galaxy S25 Ultra", img: "/devices/gs25u.webp" },
+  { id: "ip15pm", label: "iPhone 15 Pro Max", img: "/devices/iphone-15-pro-max.webp" },
+  { id: "gs24u", label: "Galaxy S24 Ultra", img: "/devices/gs24u.webp" },
+  { id: "ip14pm", label: "iPhone 14 Pro Max", img: "/devices/iphone-14-pro-max.webp" },
 ];
 
 export const BOARD_IDS = new Set(BOARD_MODELS.map((m) => m.id));
@@ -30,6 +30,7 @@ export const BOARD_IDS = new Set(BOARD_MODELS.map((m) => m.id));
 export type BoardRow = {
   id: string;
   label: string;
+  img: string;
   upTo: number;
   // PRICE_TABLE storage keys for this model, ascending ("64" … "2tb").
   storages: string[];
@@ -69,7 +70,7 @@ export async function computeBoard(): Promise<BoardRow[]> {
     // A model with no live engine price would render "up to $0" — a broken
     // promise on an ad landing page. Drop the row instead; the funnel link
     // still covers it.
-    if (upTo > 0) rows.push({ id: m.id, label: m.label, upTo, storages, bestStorage });
+    if (upTo > 0) rows.push({ id: m.id, label: m.label, img: m.img, upTo, storages, bestStorage });
   }
   return rows;
 }

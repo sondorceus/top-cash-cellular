@@ -38,7 +38,25 @@ const CARRIERS: { key: string; label: string }[] = [
 ];
 const CHIPS = ["i got a few phones", "how do i get paid", "how does this work"];
 
-type Msg = { from: "user" | "bot"; text: string };
+// Category quick-selects — the FB-funnel pattern: pick what you got, we walk
+// you. iPhone/Samsung run the deterministic model→chips→quote flow; the rest
+// hand the category to the AI brain as a typed opener (it runs the intake).
+const CATEGORIES: { key: string; label: string; img: string; deterministic?: "ip" | "gs" }[] = [
+  { key: "iphone", label: "iPhone", img: "/devices/iphone-16-pro-max.webp", deterministic: "ip" },
+  { key: "samsung", label: "Samsung", img: "/devices/gs25u.webp", deterministic: "gs" },
+  { key: "macbook", label: "MacBook", img: "/devices/macbook-pro-m4.webp" },
+  { key: "ipad", label: "iPad", img: "/ipadbase.webp" },
+  { key: "console", label: "Console", img: "/ps5-series.webp" },
+  { key: "other", label: "Something else", img: "/fold-series.webp" },
+];
+
+type Msg =
+  | { from: "user" | "bot"; text: string }
+  | { from: "bot"; kind: "models"; prefix: "ip" | "gs"; done?: boolean }
+  | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier"; options: { key: string; label: string }[]; done?: boolean }
+  | { from: "bot"; kind: "quote"; label: string; offer: number; done?: boolean }
+  | { from: "bot"; kind: "lockform"; manual: boolean; done?: boolean }
+  | { from: "bot"; kind: "locked"; offer: number | null };
 
 function newSessionId(src: string) {
   const rand = Math.random().toString(36).slice(2, 10);
@@ -75,6 +93,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     return () => { document.body.style.overflow = ""; };
   }, [chatOpen]);
   const [msgs, setMsgs] = useState<Msg[]>([]);
+  // Guided in-chat funnel (Messenger-style quick selects) — deterministic,
+  // engine-priced, zero AI calls. gRow/gSpec track the device being walked.
+  const [gRow, setGRow] = useState<BoardRow | null>(null);
+  const [gSpec, setGSpec] = useState<{ storage?: string; condition?: string; carrier?: string }>({});
+  const [gBusy, setGBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [sessionId] = useState(() => newSessionId(src));
@@ -214,11 +237,123 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     setLocking(false);
   }
 
+  // Retire interactivity on every previous rich message; append new ones.
+  function pushMsgs(...add: Msg[]) {
+    setMsgs((m) => [...m.map((x) => ("kind" in x ? { ...x, done: true } : x)), ...add]);
+  }
+
+  function categoryTap(cat: (typeof CATEGORIES)[number]) {
+    if (gBusy) return;
+    setChatOpen(true);
+    if (cat.deterministic) {
+      pushMsgs(
+        { from: "user", text: cat.label },
+        { from: "bot", text: "solid — which one is it? older models work too, just type the model." },
+        { from: "bot", kind: "models", prefix: cat.deterministic },
+      );
+    } else {
+      // AI runs the intake for everything off the quick path
+      void send(cat.key === "other" ? "i got something else to sell" : `i got a ${cat.label.toLowerCase()} to sell`);
+    }
+  }
+
+  function deviceTap(r: BoardRow) {
+    if (gBusy) return;
+    setChatOpen(true);
+    setGRow(r);
+    setGSpec({});
+    pixelTrack("ViewContent", { content_name: r.label, content_category: "chat" });
+    pushMsgs(
+      { from: "user", text: r.label },
+      { from: "bot", text: `good one — up to $${r.upTo} depending on specs. what storage is it?` },
+      { from: "bot", kind: "chips", q: "", dim: "storage", options: r.storages.map((x) => ({ key: x, label: STORAGE_LABELS[x] || x })) },
+    );
+  }
+
+  async function chipTap(dim: "storage" | "condition" | "carrier", key: string, label: string) {
+    if (!gRow || gBusy) return;
+    const spec = { ...gSpec, [dim]: key };
+    setGSpec(spec);
+    if (dim === "storage") {
+      pushMsgs(
+        { from: "user", text: label },
+        { from: "bot", kind: "chips", q: "what kind of shape is it in?", dim: "condition", options: CONDITIONS },
+      );
+      return;
+    }
+    if (dim === "condition") {
+      pushMsgs(
+        { from: "user", text: label },
+        { from: "bot", kind: "chips", q: "locked to a carrier?", dim: "carrier", options: CARRIERS },
+      );
+      return;
+    }
+    // carrier answered → quote once with the full spec
+    setGBusy(true);
+    pushMsgs({ from: "user", text: label });
+    try {
+      const res = await fetch("/api/go/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: gRow.id, storage: spec.storage, condition: spec.condition, carrier: key }),
+      });
+      const d = await res.json();
+      if (d?.ok && typeof d.offer === "number") {
+        pushMsgs(
+          { from: "bot", kind: "quote", label: `${gRow.label} ${STORAGE_LABELS[spec.storage || ""] || ""}`, offer: d.offer },
+        );
+      } else {
+        pushMsgs(
+          { from: "bot", text: "this one we price by hand — drop your number and we\u2019ll text you a real offer." },
+          { from: "bot", kind: "lockform", manual: true },
+        );
+      }
+    } catch {
+      pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap the carrier again for me." });
+    }
+    setGBusy(false);
+  }
+
+  async function guidedLock(gName: string, gContact: string, gAttest: boolean, manualFlavor: boolean): Promise<string | null> {
+    if (!gRow) return "something went sideways — tap your phone again";
+    if (!gContact.trim()) return "we need a number or email to reach you";
+    if (!gAttest) return "check the box so we know it\u2019s yours to sell";
+    setGBusy(true);
+    try {
+      const res = await fetch("/api/go/lock", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: gRow.id,
+          storage: gSpec.storage ?? gRow.bestStorage,
+          condition: gSpec.condition ?? "good",
+          carrier: gSpec.carrier ?? "unlocked",
+          name: gName.trim(),
+          contact: gContact.trim(),
+          attest: true,
+          src,
+          sessionId,
+        }),
+      });
+      const d = await res.json();
+      setGBusy(false);
+      if (d?.ok) {
+        pixelTrack("Lead", { content_name: gRow.label, value: typeof d.offer === "number" ? d.offer : 0, currency: "USD" });
+        pushMsgs({ from: "bot", kind: "locked", offer: typeof d.offer === "number" && !manualFlavor ? d.offer : null });
+        return null;
+      }
+      return d?.error || "that didn\u2019t go through — try again";
+    } catch {
+      setGBusy(false);
+      return "that didn\u2019t go through — try again";
+    }
+  }
+
   async function send(text: string) {
     const t = text.trim();
     if (!t || sending) return;
     setDraft("");
-    const history = msgs.map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
+    const history = msgs.filter((m): m is { from: "user" | "bot"; text: string } => !("kind" in m)).map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
     setMsgs((m) => [...m, { from: "user", text: t }]);
     setSending(true);
     try {
@@ -263,10 +398,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
       {/* headline */}
       <h1 className="text-[28px] leading-[1.1] font-extrabold mt-4">
-        {lot ? "we buy phones — singles or the whole lot" : "here\u2019s what we\u2019re paying right now"}
+        {lot ? "we buy phones — singles or the whole lot" : "sell your phone — cash in hand today"}
       </h1>
       <p className="text-[14px] text-white/60 mt-2">
-        {lot ? "tell us what you got. cash the same day, no email, no signup." : "tap yours. no email, no signup."}
+        {lot ? "tell us what you got. cash the same day, no email, no signup." : "tap what you got — real number in 30 seconds. no email, no signup."}
       </p>
 
       {lot && (
@@ -282,116 +417,58 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </button>
       )}
 
-      {/* the board */}
-      {rows.length === 0 ? (
-        <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] p-5">
-          <p className="text-[14px] text-white/80">
-            prices are updating right now — <a href="/" className="underline">get your instant quote here</a> or ask us below.
-          </p>
-        </div>
-      ) : (
-      <div className="tcc-selection-frame mt-5">
-        {rows.map((r, i) => (
-          <div key={r.id}>
-            {i > 0 && <div className="h-px mx-1" style={{ background: "rgba(255,255,255,0.14)" }} />}
-            <button
-              type="button"
-              onClick={() => openRow(r)}
-              aria-expanded={openId === r.id}
-              className="w-full flex items-center justify-between px-3 py-[14px] text-left"
-            >
-              <span className="text-[15px] font-semibold">{r.label}</span>
-              <span className="text-[15px] font-semibold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>
-                up to ${r.upTo}
-              </span>
-            </button>
+      {/* chat entry — tapping anything opens the full-screen takeover.
+          The board stays the first paint; immersion starts at engagement. */}
+      <section className="mt-7" id="go-composer" aria-label="chat with us">
+        <style>{`
+          @keyframes goMsgIn { from { opacity: 0; transform: translateY(5px); } }
+          .go-msg { animation: goMsgIn 0.18s ease; }
+          @keyframes goDot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-3px); opacity: 1; } }
+          .go-dot { width: 6px; height: 6px; border-radius: 50%; background: #00c853; display: inline-block; animation: goDot 1.1s ease infinite; }
+          @keyframes goOverlayIn { from { opacity: 0; transform: translateY(14px); } }
+          .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+        `}</style>
+        <h2 className="text-[16px] font-bold">{lot ? "tell us what you got" : "what are you selling?"}</h2>
 
-            {openId === r.id && (
-              <div className="px-3 pb-4 tcc-fade-in">
-                {/* the HOLD */}
-                <div className="flex items-baseline gap-3">
-                  <span className="text-[34px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }} aria-live="polite">
-                    {manual ? "—" : `$${held}`}
-                  </span>
-                  <span className="text-[12px] text-white/50">
-                    {manual
-                      ? "this one we price by hand"
-                      : cause
-                        ? `${cause} — that puts it here`
-                        : step === 0
-                          ? "that's the top number. three quick ones and we lock yours."
-                          : ""}
-                  </span>
-                </div>
-
-                {stepUi}
-
-                {quoteErr && (
-                  <p className="text-[12px] text-amber-400 mt-2" role="alert">
-                    hit a snag — tap that again
-                  </p>
-                )}
-
-                {/* manual-review path: honest, no guessed number */}
-                {manual && !locked && (
-                  <p className="text-[13px] text-white/70 mt-2">
-                    drop your number below and we&rsquo;ll send you a real offer {isDay ? "today" : "in the morning"}.
-                  </p>
-                )}
-
-                {/* lock step */}
-                {(step >= 3 || manual) && !locked && (
-                  <div className="mt-3 flex flex-col gap-2">
-                    {!manual && (
-                      <p className="text-[13px] text-white/70">
-                        that&rsquo;s your number if the phone matches what you told us — we confirm it in person, and it&rsquo;s locked for 14 days.
-                      </p>
-                    )}
-                    <input
-                      className="tcc-input w-full px-4 py-3"
-                      placeholder="name (optional)"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      autoComplete="name"
-                    />
-                    <input
-                      className="tcc-input w-full px-4 py-3"
-                      placeholder="phone or email"
-                      value={contact}
-                      onChange={(e) => setContact(e.target.value)}
-                      autoComplete="tel"
-                      inputMode="text"
-                    />
-                    <label className="flex items-start gap-2 text-[12px] text-white/60">
-                      <input type="checkbox" checked={attest} onChange={(e) => setAttest(e.target.checked)} className="mt-[2px] accent-[#00c853]" />
-                      <span>i&rsquo;m 18+ and this device is mine to sell</span>
-                    </label>
-                    {lockErr && <p className="text-[12px] text-red-400" role="alert">{lockErr}</p>}
-                    <button type="button" onClick={lockIn} disabled={locking} className="tcc-button-primary w-full py-3 text-[15px] font-bold">
-                      {locking ? "locking…" : manual ? "send me a real offer" : "Lock In My Offer"}
-                    </button>
-                    <p className="text-[11px] text-white/55">we&rsquo;ll only use this to reach you about this offer.</p>
-                  </div>
-                )}
-
-                {locked && (
-                  <div className="mt-3 rounded-2xl p-4 border border-white/10 bg-white/[0.06]" role="status">
-                    <p className="text-[15px] font-semibold text-[#00c853]">locked in.</p>
-                    <p className="text-[13px] text-white/70 mt-1">
-                      {isDay ? "we'll reach out shortly to get you paid" : "we'll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.
-                    </p>
-                  </div>
-                )}
+        <button
+          type="button"
+          onClick={() => setChatOpen(true)}
+          className="mt-3 w-full text-left rounded-3xl border border-white/10 bg-white/[0.03] p-3 active:scale-[0.99] transition-transform"
+          aria-haspopup="dialog"
+        >
+          <div className="flex items-end gap-2">
+            <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+            <div className="max-w-[85%]">
+              <div className="text-[11px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
+              <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
+                {msgs.length > 0
+                  ? "tap to keep the conversation going"
+                  : lot
+                    ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too."
+                    : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. cracked ones too."}
               </div>
-            )}
+            </div>
           </div>
-        ))}
-      </div>
-      )}
+          <div className="mt-3 ml-10 grid grid-cols-3 gap-2">
+            {CATEGORIES.map((c) => (
+              <span key={c.key} className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-center">
+                <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 56 }}>
+                  <img src={c.img} alt="" className="max-h-[48px] max-w-[80%] object-contain" />
+                </span>
+                <span className="block text-[12px] font-semibold mt-1.5 text-white">{c.label}</span>
+              </span>
+            ))}
+          </div>
+          <div className="mt-3 ml-10 flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/15 px-4 py-3">
+            <span className="flex-1 text-[15px] text-white/40">{lot ? "i got 15 phones, need cash today…" : "or just type it — i got 4 phones…"}</span>
+            <span className="tcc-button-primary w-[38px] h-[38px] shrink-0 text-[17px] font-bold flex items-center justify-center" style={{ borderRadius: "50%" }}>↑</span>
+          </div>
+        </button>
+      </section>
 
       {/* trust line */}
       <p className="text-[12px] text-white/60 mt-3">
-        the number doesn&rsquo;t move if the phone matches what you told us · same-day cash in the austin area · free shipping label anywhere ·{" "}
+        the number we quote is the number we pay if it matches what you told us · same-day cash in the austin area · free shipping label anywhere ·{" "}
         <a href="/reviews" className="underline text-white/60">reviews from paid sellers</a>
       </p>
 
@@ -401,7 +478,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         <ol className="mt-3 flex flex-col gap-2 text-[13px] text-white/75">
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">1</span>
-            <span>tap your phone above — the number you see is the number, locked for 14 days.</span>
+            <span>tap what you got and answer three quick ones — the number we give you is the number, locked for 14 days.</span>
           </li>
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">2</span>
@@ -455,44 +532,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </section>
       )}
 
-      {/* chat entry — tapping anything opens the full-screen takeover.
-          The board stays the first paint; immersion starts at engagement. */}
-      <section className="mt-7" id="go-composer" aria-label="chat with us">
-        <style>{`
-          @keyframes goMsgIn { from { opacity: 0; transform: translateY(5px); } }
-          .go-msg { animation: goMsgIn 0.18s ease; }
-          @keyframes goDot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-3px); opacity: 1; } }
-          .go-dot { width: 6px; height: 6px; border-radius: 50%; background: #00c853; display: inline-block; animation: goDot 1.1s ease infinite; }
-          @keyframes goOverlayIn { from { opacity: 0; transform: translateY(14px); } }
-          .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
-        `}</style>
-        <h2 className="text-[16px] font-bold">{lot ? "tell us what you got" : "got something else, or a few of them?"}</h2>
 
-        <button
-          type="button"
-          onClick={() => setChatOpen(true)}
-          className="mt-3 w-full text-left rounded-3xl border border-white/10 bg-white/[0.03] p-3 active:scale-[0.99] transition-transform"
-          aria-haspopup="dialog"
-        >
-          <div className="flex items-end gap-2">
-            <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-            <div className="max-w-[85%]">
-              <div className="text-[11px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
-              <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
-                {msgs.length > 0
-                  ? (msgs[msgs.length - 1].from === "bot" ? msgs[msgs.length - 1].text.slice(0, 90) + (msgs[msgs.length - 1].text.length > 90 ? "…" : "") : "tap to keep the conversation going")
-                  : lot
-                    ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too."
-                    : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. cracked ones too."}
-              </div>
-            </div>
-          </div>
-          <div className="mt-3 ml-10 flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/15 px-4 py-3">
-            <span className="flex-1 text-[15px] text-white/40">{lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}</span>
-            <span className="tcc-button-primary w-[38px] h-[38px] shrink-0 text-[17px] font-bold flex items-center justify-center" style={{ borderRadius: "50%" }}>↑</span>
-          </div>
-        </button>
-      </section>
 
       {/* full-screen immersive chat */}
       {chatOpen && (
@@ -518,20 +558,98 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               </div>
             </div>
 
-            {msgs.map((m, i) => (
-              m.from === "user" ? (
-                <div key={i} className="go-msg self-end max-w-[85%] rounded-2xl rounded-br-md px-4 py-3 text-[14px] bg-[#132018] border border-[#00c853]/30">
-                  {m.text}
-                </div>
-              ) : (
-                <div key={i} className="go-msg flex items-end gap-2">
-                  <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                  <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10">
+            {/* category quick-select — the funnel front door, in-thread */}
+            {msgs.length === 0 && (
+              <div className="go-msg ml-10 grid grid-cols-3 gap-2">
+                {CATEGORIES.map((c) => (
+                  <button key={c.key} type="button" disabled={gBusy} onClick={() => categoryTap(c)}
+                    className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-center active:scale-95 transition-transform">
+                    <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 62 }}>
+                      <img src={c.img} alt="" className="max-h-[54px] max-w-[80%] object-contain" />
+                    </span>
+                    <span className="block text-[12px] font-semibold mt-1.5 text-white">{c.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {msgs.map((m, i) => {
+              if (!("kind" in m)) {
+                return m.from === "user" ? (
+                  <div key={i} className="go-msg self-end max-w-[85%] rounded-2xl rounded-br-md px-4 py-3 text-[14px] bg-[#132018] border border-[#00c853]/30">
                     {m.text}
                   </div>
-                </div>
-              )
-            ))}
+                ) : (
+                  <div key={i} className="go-msg flex items-end gap-2">
+                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10">
+                      {m.text}
+                    </div>
+                  </div>
+                );
+              }
+              if (m.kind === "models") {
+                return (
+                  <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                    <DeviceCarousel rows={rows.filter((r) => r.id.startsWith(m.prefix))} onPick={deviceTap} busy={gBusy || !!m.done} />
+                  </div>
+                );
+              }
+              if (m.kind === "chips") {
+                return (
+                  <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                    {m.q && <div className="text-[13px] text-white/60 mb-2">{m.q}</div>}
+                    <div className="flex flex-wrap gap-2">
+                      {m.options.map((o) => (
+                        <button key={o.key} type="button" disabled={!!m.done || gBusy}
+                          onClick={() => void chipTap(m.dim, o.key, o.label)}
+                          className="text-[13px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform">
+                          {o.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+              if (m.kind === "quote") {
+                return (
+                  <div key={i} className="go-msg flex items-end gap-2">
+                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
+                      <div className="text-[13px] text-white/60">{m.label}</div>
+                      <div className="text-[30px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer}</div>
+                      <div className="text-[12px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — confirmed in person, locked for 14 days.</div>
+                      {!m.done && (
+                        <button type="button" disabled={gBusy}
+                          onClick={() => pushMsgs({ from: "bot", kind: "lockform", manual: false })}
+                          className="tcc-button-primary w-full py-3 mt-3 text-[15px] font-bold rounded-2xl">
+                          Lock In My Offer
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+              if (m.kind === "lockform") {
+                return (
+                  <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                    <LockForm manual={m.manual} disabled={!!m.done} onLock={(n, c, a2) => guidedLock(n, c, a2, m.manual)} />
+                  </div>
+                );
+              }
+              if (m.kind === "locked") {
+                return (
+                  <div key={i} className="go-msg flex items-end gap-2">
+                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/40">
+                      <div className="text-[15px] font-semibold text-[#00c853]">locked in{m.offer != null ? ` — $${m.offer}` : ""}.</div>
+                      <div className="text-[13px] text-white/70 mt-1">{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
 
             {sending && (
               <div className="go-msg flex items-end gap-2" role="status" aria-label="replying">
@@ -609,6 +727,54 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </p>
       </noscript>
     </main>
+  );
+}
+
+function DeviceCarousel({ rows, onPick, busy }: { rows: BoardRow[]; onPick: (r: BoardRow) => void; busy: boolean }) {
+  return (
+    <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
+      {rows.map((r) => (
+        <button
+          key={r.id}
+          type="button"
+          disabled={busy}
+          onClick={() => onPick(r)}
+          className="shrink-0 w-[118px] rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform"
+        >
+          <div className="rounded-xl bg-white p-1.5 flex items-center justify-center" style={{ height: 86 }}>
+            <img src={r.img} alt="" className="max-h-full max-w-full object-contain" style={{ borderRadius: 8 }} />
+          </div>
+          <div className="text-[12px] font-semibold mt-1.5 leading-tight text-white">{r.label}</div>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boolean; onLock: (n: string, c: string, a: boolean) => Promise<string | null> }) {
+  const [n, setN] = useState("");
+  const [c, setC] = useState("");
+  const [a, setA] = useState(false);
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="flex flex-col gap-2">
+      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="name (optional)" value={n} onChange={(e) => setN(e.target.value)} autoComplete="name" disabled={disabled} />
+      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="phone or email" value={c} onChange={(e) => setC(e.target.value)} autoComplete="tel" disabled={disabled} />
+      <label className="flex items-start gap-2 text-[12px] text-white/60">
+        <input type="checkbox" checked={a} onChange={(e) => setA(e.target.checked)} className="mt-[2px] accent-[#00c853]" disabled={disabled} />
+        <span>i&rsquo;m 18+ and this device is mine to sell</span>
+      </label>
+      {err && <p className="text-[12px] text-red-400" role="alert">{err}</p>}
+      <button
+        type="button"
+        disabled={disabled || busy}
+        onClick={async () => { setBusy(true); setErr(""); const e = await onLock(n, c, a); if (e) setErr(e); setBusy(false); }}
+        className="tcc-button-primary py-3 text-[15px] font-bold rounded-2xl disabled:opacity-40"
+      >
+        {busy ? "locking…" : manual ? "send me a real offer" : "Lock In My Offer"}
+      </button>
+    </div>
   );
 }
 
