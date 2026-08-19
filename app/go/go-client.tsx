@@ -62,6 +62,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [contact, setContact] = useState("");
   const [attest, setAttest] = useState(false);
   // ---- chat state ----
+  const [showReviews, setShowReviews] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -399,28 +400,41 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </p>
       </section>
 
-      {/* real verified reviews — server-fetched, renders nothing if unavailable */}
+      {/* real verified reviews — collapsed to one line; the cards only
+          render if the visitor asks for them (Sonny 2026-08-19: "don't
+          force the review on people, just have it there if they want") */}
       {reviews.count >= 5 && reviews.top.length > 0 && (
-        <section className="mt-7" aria-label="reviews from verified sellers">
-          <h2 className="text-[16px] font-bold">
-            {reviews.avg}★ from people we&rsquo;ve paid
-          </h2>
-          <div className="mt-3 flex flex-col gap-2">
-            {reviews.top.map((r, i) => (
-              <figure key={i} className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
-                <blockquote className="text-[13px] text-white/85">&ldquo;{r.body}&rdquo;</blockquote>
-                <figcaption className="text-[12px] text-white/55 mt-1">
-                  {r.name}
-                  {r.device ? ` · sold a ${r.device}` : ""}
-                  {r.city ? ` · ${r.city}` : ""}
-                  <span className="text-[#00c853]"> · ✓ verified seller</span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          <p className="text-[12px] mt-2">
-            <a href="/reviews" className="text-white/60 underline">all {reviews.count} reviews →</a>
-          </p>
+        <section className="mt-6" aria-label="reviews from verified sellers">
+          {!showReviews ? (
+            <button
+              type="button"
+              onClick={() => setShowReviews(true)}
+              aria-expanded={false}
+              className="text-[13px] text-white/65 py-2"
+            >
+              <span className="text-[#00c853] font-semibold">{reviews.avg}★</span> from {reviews.count} people we&rsquo;ve paid — see what they say →
+            </button>
+          ) : (
+            <div>
+              <h2 className="text-[16px] font-bold">{reviews.avg}★ from people we&rsquo;ve paid</h2>
+              <div className="mt-3 flex flex-col gap-2">
+                {reviews.top.map((r, i) => (
+                  <figure key={i} className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+                    <blockquote className="text-[13px] text-white/85">&ldquo;{r.body}&rdquo;</blockquote>
+                    <figcaption className="text-[12px] text-white/55 mt-1">
+                      {r.name}
+                      {r.device ? ` · sold a ${r.device}` : ""}
+                      {r.city ? ` · ${r.city}` : ""}
+                      <span className="text-[#00c853]"> · ✓ verified seller</span>
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+              <p className="text-[12px] mt-2">
+                <a href="/reviews" className="text-white/60 underline">all {reviews.count} reviews →</a>
+              </p>
+            </div>
+          )}
         </section>
       )}
 
