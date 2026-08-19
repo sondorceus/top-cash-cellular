@@ -332,6 +332,10 @@ export async function POST(req: NextRequest) {
     let reply = "";
     let quotedAny = false;
     const quotedLines: string[] = [];
+    // Highest engine offer this turn — used as the Lead event's value when a
+    // chat lead completes, so the AI path reports real money to Meta instead
+    // of a valueless conversion. Engine-sourced; never estimated.
+    let leadValue: number | null = null;
 
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
       const response = await client.messages.create({
@@ -360,6 +364,7 @@ export async function POST(req: NextRequest) {
           const q = await runQuote(tu.input);
           if (q.ok && q.offer != null) {
             quotedAny = true;
+            if (leadValue == null || q.offer > leadValue) leadValue = q.offer;
             quotedLines.push(`${q.device}${tu.input.storage ? ` ${tu.input.storage}` : ""} ${tu.input.condition || ""} — $${q.offer}`);
           }
           out = q;
@@ -444,7 +449,16 @@ export async function POST(req: NextRequest) {
         await notifyOwnerSms(`💬 LIVE TopCash chat — quote on the table: ${quotedLines.join(" | ").slice(0, 180)}${contact ? `\nReply to: ${contact}` : ""}\nTake over: ${link}`);
       });
     }
-    return NextResponse.json({ reply, ...(quotedAny ? { quoted: quotedLines } : {}) });
+    // leadCaptured tells the client to fire the Meta Lead pixel. Without it,
+    // the AI path (MacBook / iPad / Console / "something else" tiles and every
+    // lot seller) produced real leads that the pixel never saw, so the
+    // campaign optimized exclusively toward iPhone/Samsung carousel lockers.
+    // Fires on the turn a contact FIRST appears, so it's once per session.
+    return NextResponse.json({
+      reply,
+      ...(quotedAny ? { quoted: quotedLines } : {}),
+      ...(contactJustArrived ? { leadCaptured: true, ...(leadValue != null ? { leadValue } : {}) } : {}),
+    });
   } catch {
     const reply = fallbackReply(message, isHumanHandoff, history.length);
     if (validSession(sessionId)) {
@@ -453,7 +467,9 @@ export async function POST(req: NextRequest) {
         await appendChatMsg(sessionId, "bot", reply);
       });
     }
-    return NextResponse.json({ reply });
+    // Same signal on the fallback path — the lead still reached MC and Sonny's
+    // phone, so Meta should still hear about it.
+    return NextResponse.json({ reply, ...(contactJustArrived ? { leadCaptured: true } : {}) });
   }
 }
 

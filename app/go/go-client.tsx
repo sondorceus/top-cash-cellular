@@ -53,7 +53,7 @@ const CATEGORIES: { key: string; label: string; img: string; deterministic?: "ip
 type Msg =
   | { from: "user" | "bot" | "owner"; text: string }
   | { from: "bot"; kind: "models"; prefix: "ip" | "gs"; done?: boolean }
-  | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier"; options: { key: string; label: string }[]; done?: boolean }
+  | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier" | "another"; options: { key: string; label: string }[]; done?: boolean }
   | { from: "bot"; kind: "quote"; label: string; offer: number; done?: boolean }
   | { from: "bot"; kind: "lockform"; manual: boolean; done?: boolean }
   | { from: "bot"; kind: "locked"; offer: number | null };
@@ -376,8 +376,33 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     );
   }
 
-  async function chipTap(dim: "storage" | "condition" | "carrier", key: string, label: string) {
-    if (!gRow || gBusy) return;
+  async function chipTap(dim: "storage" | "condition" | "carrier" | "another", key: string, label: string) {
+    if (gBusy) return;
+    // Second device: restart the guided flow in place, keeping the thread.
+    // Each device locks as its own lead, threaded to the same session id.
+    if (dim === "another") {
+      if (key === "no") {
+        pushMsgs(
+          { from: "user", text: label },
+          { from: "bot", text: isDay ? "sounds good — we’ll reach out shortly to set it up." : "sounds good — we’ll reach out first thing in the morning to set it up." },
+        );
+        return;
+      }
+      setGRow(null);
+      setGSpec({});
+      if (key === "ip" || key === "gs") {
+        pushMsgs(
+          { from: "user", text: label },
+          { from: "bot", text: "nice — which one is it?" },
+          { from: "bot", kind: "models", prefix: key },
+        );
+      } else {
+        pushMsgs({ from: "user", text: label });
+        void send("i got something else to sell too");
+      }
+      return;
+    }
+    if (!gRow) return;
     const spec = { ...gSpec, [dim]: key };
     setGSpec(spec);
     if (dim === "storage") {
@@ -456,7 +481,26 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       if (d?.ok) {
         pixelTrack("Lead", { content_name: gRow.label, value: typeof d.offer === "number" ? d.offer : 0, currency: "USD" });
         logNote(`LOCKED: ${gRow.label}${typeof d.offer === "number" ? ` $${d.offer}` : " (manual)"} — ${gContact.trim().slice(0, 60)}`);
-        pushMsgs({ from: "bot", kind: "locked", offer: typeof d.offer === "number" && !manualFlavor ? d.offer : null });
+        // Peak trust: they just saw a real number and handed over a way to
+        // reach them. Ask for the second device HERE — every affordance
+        // (category grid, "i got a few phones" chip) is gated on an empty
+        // thread, so without this the locked card is a dead end and a
+        // 3-device seller silently becomes a 1-device seller.
+        pushMsgs(
+          { from: "bot", kind: "locked", offer: typeof d.offer === "number" && !manualFlavor ? d.offer : null },
+          {
+            from: "bot",
+            kind: "chips",
+            q: "got another one?",
+            dim: "another",
+            options: [
+              { key: "ip", label: "another iPhone" },
+              { key: "gs", label: "a Samsung" },
+              { key: "other", label: "something else" },
+              { key: "no", label: "that’s it for now" },
+            ],
+          },
+        );
         return null;
       }
       return d?.error || "that didn\u2019t go through — try again";
@@ -480,6 +524,18 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         body: JSON.stringify({ message: t, history, sessionId }),
       });
       const d = await res.json();
+      // A typed contact IS a lead — the server already routed it to MC and
+      // Sonny's phone. Report it to Meta too, or the campaign only ever
+      // learns from iPhone/Samsung carousel lockers and stops showing the ad
+      // to MacBook / iPad / console / lot sellers. Server fires this once per
+      // session (the turn a contact first appears).
+      if (d?.leadCaptured) {
+        pixelTrack("Lead", {
+          content_name: "chat",
+          content_category: "chat",
+          ...(typeof d.leadValue === "number" ? { value: d.leadValue, currency: "USD" } : {}),
+        });
+      }
       // Owner takeover: the AI stood down and Sonny answers via chat-sync —
       // no bot bubble, his reply arrives on the next poll. Also suppress a
       // bot reply that was already in flight when the takeover flipped.
