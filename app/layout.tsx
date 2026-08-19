@@ -23,6 +23,11 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  // On Android Chrome the on-screen keyboard OVERLAYS the layout viewport by
+  // default, hiding whatever the user is typing into (the /go composer, the
+  // chat widget, checkout fields). This makes the keyboard resize the page
+  // instead, so focused inputs stay visible. No-op on iOS.
+  interactiveWidget: "resizes-content",
 };
 
 export const metadata: Metadata = {
