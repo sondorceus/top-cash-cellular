@@ -68,6 +68,13 @@ const JOBS = [
   ["board.html", [["a1", "board-square.png"], ["a2", "board-story.png"], ["a3", "lot-square.png"], ["a4", "lot-story.png"]]],
   ["flyer.html", [["f1", "flyer-square.png"], ["f2", "flyer-story.png"]]],
 ];
+// Photo tier: renders only when Sonny's real photo is present.
+import { existsSync } from "fs";
+if (existsSync(path.join(here, "real-photo.jpg"))) {
+  JOBS.push(["photo.html", [["p1", "photo-feed.png"], ["p2", "photo-story.png"]]]);
+} else {
+  console.log("(photo tier skipped — drop a real photo at scripts/ad-assets/real-photo.jpg)");
+}
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 2000 } });

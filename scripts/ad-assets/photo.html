@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Cabinet"; src: url("CabinetGrotesk-Variable.woff2") format("woff2"); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #333; font-family: "Cabinet", sans-serif; -webkit-font-smoothing: antialiased; }
+
+  /* Photo-led ads: the real photo IS the creative; brand rides a slim top
+     banner + bottom scrim only. Photo file: real-photo.jpg (dropped in by
+     Sonny; portrait). object-position keeps the cash fan in frame. */
+  .board { position: relative; overflow: hidden; background: #0a0a0a; }
+  .feed { width: 1080px; height: 1350px; }   /* 4:5 — Meta feed's tall slot */
+  .story { width: 1080px; height: 1920px; }
+  .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 62%; }
+
+  .banner {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 2;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%);
+    color: #06340f; font-weight: 800; letter-spacing: 0.02em;
+    padding: 20px 40px; font-size: 38px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.4);
+  }
+  .story .banner { padding: 26px 44px; font-size: 44px; }
+
+  .scrim {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    padding: 140px 48px 40px;
+    background: linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,0.72) 42%, rgba(10,10,10,0.92) 100%);
+    color: #fff;
+  }
+  .headline { font-weight: 800; text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.0; font-size: 72px; }
+  .story .headline { font-size: 84px; }
+  .headline em { font-style: normal; color: #00c853; }
+  .es { color: #00c853; font-weight: 750; text-transform: uppercase; letter-spacing: 0.05em; font-size: 30px; margin-top: 12px; }
+  .story .es { font-size: 36px; }
+  .cta {
+    margin-top: 28px; text-align: center;
+    background: linear-gradient(180deg, #00e676 0%, #00c853 60%, #00a039 100%);
+    color: #06340f; font-weight: 800; border-radius: 24px;
+    font-size: 42px; padding: 26px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), 0 10px 24px rgba(0,0,0,0.5);
+  }
+  .story .cta { font-size: 48px; padding: 34px; }
+  .foot { display: flex; justify-content: space-between; align-items: baseline; margin-top: 20px; }
+  .mark { font-size: 32px; font-weight: 650; }
+  .mark b { color: #00c853; }
+  .site { color: rgba(255,255,255,0.6); font-weight: 600; font-size: 26px; }
+  .story .mark { font-size: 38px; } .story .site { font-size: 30px; }
+</style>
+</head>
+<body>
+
+<!-- p1: real-photo · feed 4:5 -->
+<div class="board feed" id="p1">
+  <img class="photo" src="real-photo.jpg" alt="">
+  <div class="banner"><span>GET PAID TODAY!</span><span>TRADE-INS WELCOME</span></div>
+  <div class="scrim">
+    <div class="headline">WE BUY PHONES<br>FOR <em>CASH</em></div>
+    <div class="es">¡Te pagamos hoy mismo! · Even cracked</div>
+    <div class="cta">TAP → CASH IN HAND TODAY</div>
+    <div class="foot">
+      <div class="mark">top cash <b>cellular</b></div>
+      <div class="site">austin area · topcashcellular.com/go</div>
+    </div>
+  </div>
+</div>
+
+<!-- p2: real-photo · story 9:16 -->
+<div class="board story" id="p2">
+  <img class="photo" src="real-photo.jpg" alt="">
+  <div class="banner"><span>GET PAID TODAY!</span><span>TRADE-INS WELCOME</span></div>
+  <div class="scrim">
+    <div class="headline">WE BUY PHONES<br>FOR <em>CASH</em></div>
+    <div class="es">¡Te pagamos hoy mismo! · Even cracked</div>
+    <div class="cta">TAP → CASH IN HAND TODAY</div>
+    <div class="foot">
+      <div class="mark">top cash <b>cellular</b></div>
+      <div class="site">austin area · topcashcellular.com/go</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
