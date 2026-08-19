@@ -430,10 +430,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         `}</style>
         <h2 className="text-[16px] font-bold">{lot ? "tell us what you got" : "what are you selling?"}</h2>
 
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => setChatOpen(true)}
-          className="mt-3 w-full text-left rounded-3xl border border-white/10 bg-white/[0.03] p-3 active:scale-[0.99] transition-transform"
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setChatOpen(true); } }}
+          className="mt-3 w-full text-left rounded-3xl border border-white/10 bg-white/[0.03] p-3 active:scale-[0.99] transition-transform cursor-pointer"
           aria-haspopup="dialog"
         >
           <div className="flex items-end gap-2">
@@ -445,25 +447,28 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   ? "tap to keep the conversation going"
                   : lot
                     ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too."
-                    : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. cracked ones too."}
+                    : "tap what you got — real number in 30 seconds. cracked ones too."}
               </div>
             </div>
           </div>
+          {/* one tap = straight into the full-screen picker for that category */}
           <div className="mt-3 ml-10 grid grid-cols-3 gap-2">
             {CATEGORIES.map((c) => (
-              <span key={c.key} className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-center">
+              <button key={c.key} type="button" disabled={gBusy}
+                onClick={(e) => { e.stopPropagation(); categoryTap(c); }}
+                className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-center active:scale-95 transition-transform">
                 <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 56 }}>
                   <img src={c.img} alt="" className="max-h-[48px] max-w-[80%] object-contain" />
                 </span>
                 <span className="block text-[12px] font-semibold mt-1.5 text-white">{c.label}</span>
-              </span>
+              </button>
             ))}
           </div>
           <div className="mt-3 ml-10 flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/15 px-4 py-3">
             <span className="flex-1 text-[15px] text-white/40">{lot ? "i got 15 phones, need cash today…" : "or just type it — i got 4 phones…"}</span>
             <span className="tcc-button-primary w-[38px] h-[38px] shrink-0 text-[17px] font-bold flex items-center justify-center" style={{ borderRadius: "50%" }}>↑</span>
           </div>
-        </button>
+        </div>
       </section>
 
       {/* trust line */}
@@ -554,7 +559,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
                 {lot
                   ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. we\u2019ll get you real numbers and cash the same day."
-                  : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. one phone or a whole drawer, cracked ones too."}
+                  : "tap what you got — or just type it. one phone or a whole drawer, cracked ones too."}
               </div>
             </div>
 
