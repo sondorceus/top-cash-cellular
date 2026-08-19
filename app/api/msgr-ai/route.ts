@@ -16,7 +16,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { put, list, del } from "@vercel/blob";
 import { type ConvoState } from "../../lib/msgr-brain";
-import { quoteDevice, type QuoteSpec } from "../../lib/quote";
+import { quoteDevice, normalizeStorage, type QuoteSpec } from "../../lib/quote";
 import { PRICE_TABLE } from "../../data/prices";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { recordOutbound, listSentLedger, sentHash, markDefer, deferActive, senderName, muteToken, loadCtxBlob, saveCtxBlob } from "../../lib/msgr-signals";
@@ -137,6 +137,25 @@ type QuoteToolInput = { model?: string; storage?: string; condition?: string; ca
 async function runQuote(input: QuoteToolInput): Promise<{ ok: boolean; offer?: number; device?: string; slug?: string; reason?: string }> {
   const hit = nameToSlug(input.model || "");
   if (!hit) return { ok: false, reason: "not in the instant catalog — needs a manual quote from the team" };
+  // Off-tier storage guard — twin of the one in lib/sell-tools.ts runQuote
+  // (this route still carries its own runQuote; the sell-tools extraction
+  // never swapped it in). "17 Pro Max 128gb" must get a storage re-check,
+  // not a silent manual-review that treats the phantom config as real.
+  // PRICE_TABLE keys are what we PRICE, not proof of what shipped, so the
+  // reason re-checks without denying the device. 2026-08-19.
+  if (input.storage) {
+    const row = PRICE_TABLE[hit.slug];
+    const keys = row ? Object.keys(row) : [];
+    const norm = normalizeStorage(input.storage);
+    if (keys.length && !keys.includes("base") && (!norm || !keys.includes(norm))) {
+      return {
+        ok: false,
+        device: hit.label,
+        slug: hit.slug,
+        reason: `no instant reference for a ${hit.label} in ${input.storage} — the tiers on the sheet are ${keys.join("/")}. Most sellers misremember storage: have them check Settings > General > About (or the box). If they insist it's ${input.storage}, flag it to the owner as manual — never say the device doesn't exist.`,
+      };
+    }
+  }
   const spec: QuoteSpec = {
     modelId: hit.slug,
     modelLabel: hit.label,

@@ -11,6 +11,7 @@ const NAV: { href: string; ico: string; label: string; primary?: boolean }[] = [
   { href: "/admin/home", ico: "◈", label: "Home", primary: true },
   { href: "/admin", ico: "◉", label: "Leads", primary: true },
   { href: "/admin/customers", ico: "⬡", label: "Customers", primary: true },
+  { href: "/admin/chats", ico: "◍", label: "Live Chats", primary: true },
   { href: "/admin/analytics", ico: "≡", label: "Analytics", primary: true },
   { href: "/admin/prices", ico: "◇", label: "Prices" },
   { href: "/admin/shop", ico: "⬢", label: "Shop" },

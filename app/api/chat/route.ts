@@ -3,6 +3,7 @@ import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
 import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk } from "../../lib/sell-tools";
+import { appendChatMsg, readChat, validSession } from "../../lib/gochat-store";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -98,14 +99,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "message required" }, { status: 400 });
   }
 
-  // Throttle this public, unauthenticated endpoint BEFORE any costly work
-  // (Anthropic tokens, an MC post per message, an owner SMS). On a soft trip
-  // we return a friendly 200 so a fast-typing human isn't shown an error,
-  // but we skip all the fan-out. ~25 msgs / 5 min is generous for real chat.
   const ip = clientIp(req);
-  if (!rateLimit(`chat:${ip}`, 25, 5 * 60_000).ok) {
-    return NextResponse.json({ reply: "You're sending messages really fast! Give me a few seconds, then try again 🙂" });
-  }
   const message = rawMessage.slice(0, MAX_MESSAGE_LEN);
   // Stable per-conversation id from the widget so all of one chat's leads
   // thread together in Mission Control instead of scattering into N comms.
@@ -114,6 +108,27 @@ export async function POST(req: NextRequest) {
   // warm concierge lead-capture flow and the lead is flagged for a real
   // teammate to follow up.
   const isHumanHandoff = payload.mode === "human";
+
+  // Live-takeover gate — checked BEFORE the AI-path rate limit on purpose:
+  // a takeover turn does no Anthropic/MC/SMS work, and dropping a seller's
+  // message mid-negotiation with the owner is the one loss this feature
+  // cannot afford. It has its own (generous) bucket instead.
+  const live = validSession(sessionId) && rateLimit(`chat-gate:${ip}`, 80, 5 * 60_000).ok
+    ? await readChat(sessionId, Date.now())
+    : null;
+  if (live?.takeover) {
+    after(() => { void appendChatMsg(sessionId, "user", message); });
+    return NextResponse.json({ takeover: true, reply: null });
+  }
+
+  // Throttle the AI path BEFORE any costly work (Anthropic tokens, an MC
+  // post per message, an owner SMS). On a soft trip we return a friendly 200
+  // so a fast-typing human isn't shown an error, but we skip all the
+  // fan-out. ~25 msgs / 5 min is generous for real chat.
+  if (!rateLimit(`chat:${ip}`, 25, 5 * 60_000).ok) {
+    return NextResponse.json({ reply: "You're sending messages really fast! Give me a few seconds, then try again 🙂" });
+  }
+
   const rawHistory = Array.isArray(payload.history) ? payload.history : [];
   const history = rawHistory
     .slice(-MAX_HISTORY_LEN)
@@ -360,7 +375,7 @@ export async function POST(req: NextRequest) {
                   from: "topcash-web",
                   fromName: "Top Cash Cellular Chat",
                   role: "system",
-                  body: `[CHAT HANDOFF]${sessionId ? ` sess:${sessionId} ·` : ""} ${sanitizeForMc(summary)}${toolContact ? `\nreply to: ${sanitizeForMc(toolContact)}` : ""}${quotedLines.length ? `\nengine: ${quotedLines.join(" | ")}` : ""}`,
+                  body: `[CHAT HANDOFF]${sessionId ? ` sess:${sessionId} ·` : ""} ${sanitizeForMc(summary)}${toolContact ? `\nreply to: ${sanitizeForMc(toolContact)}` : ""}${quotedLines.length ? `\nengine: ${quotedLines.join(" | ")}` : ""}${validSession(sessionId) ? `\ntake over: https://topcashcellular.com/admin/chats?session=${sessionId}` : ""}`,
                   tags: ["chat-lead", "chat-handoff", "needs-callback", ...(isLot ? ["multi-device"] : []), ...(sessionId ? [`sess-${sessionId}`] : [])],
                   priority: "high",
                 }),
@@ -380,9 +395,60 @@ export async function POST(req: NextRequest) {
     }
 
     if (!reply) reply = fallbackReply(message, isHumanHandoff, history.length);
+
+    // Takeover race check: the gate ran before the tool loop, and the loop
+    // takes seconds — exactly the window in which Sonny clicks "Take over"
+    // from the [CHAT LIVE] ping. If the flag flipped while we were
+    // generating, the AI reply is DISCARDED (never stored, never shown):
+    // Sonny answers this message, not the bot — and never both.
+    if (validSession(sessionId)) {
+      const recheck = await readChat(sessionId, Date.now()).catch(() => null);
+      if (recheck?.takeover) {
+        after(() => { void appendChatMsg(sessionId, "user", message); });
+        return NextResponse.json({ takeover: true, reply: null });
+      }
+    }
+
+    // Persist the turn for the live console, and fire the ONE-per-session
+    // "jump in now" ping the first time an engine quote lands in this chat —
+    // a seller standing at a real number is the takeover moment. Gated by a
+    // ctl marker (not the model's judgment) plus the global SMS backstop.
+    if (validSession(sessionId)) {
+      const finalReply = reply;
+      const shouldPing = quotedAny && !live?.notified && rateLimit("chat-sms:global", 20, 10 * 60_000).ok;
+      after(async () => {
+        await appendChatMsg(sessionId, "user", message);
+        await appendChatMsg(sessionId, "bot", finalReply);
+        if (!shouldPing) return;
+        await appendChatMsg(sessionId, "ctl", "notified");
+        const link = `https://topcashcellular.com/admin/chats?session=${sessionId}`;
+        try {
+          await fetch(`${MC_API}/api/comms`, {
+            method: "POST",
+            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "topcash-web",
+              fromName: "Top Cash Cellular Chat",
+              role: "system",
+              body: `[CHAT LIVE] sess:${sessionId} · quote on the table — ${sanitizeForMc(quotedLines.join(" | "))}${contact ? `\nreply to: ${sanitizeForMc(contact)}` : ""}\ntake over: ${link}`,
+              tags: ["chat-lead", "live-takeover-ready", `sess-${sessionId}`],
+              priority: "high",
+            }),
+          });
+        } catch { /* silent */ }
+        await notifyOwnerSms(`💬 LIVE TopCash chat — quote on the table: ${quotedLines.join(" | ").slice(0, 180)}${contact ? `\nReply to: ${contact}` : ""}\nTake over: ${link}`);
+      });
+    }
     return NextResponse.json({ reply, ...(quotedAny ? { quoted: quotedLines } : {}) });
   } catch {
-    return NextResponse.json({ reply: fallbackReply(message, isHumanHandoff, history.length) });
+    const reply = fallbackReply(message, isHumanHandoff, history.length);
+    if (validSession(sessionId)) {
+      after(async () => {
+        await appendChatMsg(sessionId, "user", message);
+        await appendChatMsg(sessionId, "bot", reply);
+      });
+    }
+    return NextResponse.json({ reply });
   }
 }
 

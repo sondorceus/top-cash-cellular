@@ -1,11 +1,13 @@
 // Shared sell-side AI tools — the REAL quote engine + IMEI identification,
 // exposed as Anthropic tool definitions.
 //
-// Extracted from /api/msgr-ai so the SITE chat (/api/chat) and the MESSENGER
-// bot (/api/msgr-ai) call one implementation instead of two. Both surfaces
-// must price from app/data/prices.ts through quoteDevice() — the same path
-// the funnel uses — so a device can never be worth one number in the chat and
-// a different number in the cart.
+// Extracted from /api/msgr-ai for the SITE chat (/api/chat). NOTE: the
+// Messenger route still runs its own local copies of these tools (the
+// extraction never swapped them in) — a change here must be MIRRORED in
+// app/api/msgr-ai/route.ts until that route is ported. Both surfaces price
+// from app/data/prices.ts through quoteDevice() — the same path the funnel
+// uses — so a device can never be worth one number in the chat and a
+// different number in the cart.
 //
 // What is deliberately NOT here: the per-channel POLICY. Messenger never
 // quotes to the customer; the site chat quotes single catalog devices and
@@ -13,7 +15,7 @@
 // system prompt, not in the tools.
 
 import { after } from "next/server";
-import { quoteDevice, type QuoteSpec } from "./quote";
+import { quoteDevice, normalizeStorage, type QuoteSpec } from "./quote";
 import { PRICE_TABLE } from "../data/prices";
 import { notifyOwnerSms } from "./owner-sms";
 
@@ -124,6 +126,26 @@ export type QuoteToolResult = { ok: boolean; offer?: number; device?: string; sl
 export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> {
   const hit = nameToSlug(input.model || "");
   if (!hit) return { ok: false, reason: "not in the instant catalog — needs a manual quote from the team" };
+  // Off-tier storage guard: a storage we don't carry a price row for must
+  // never be silently routed to "team will quote it" as if the config were
+  // real — the live bot accepted "17 Pro Max 128gb" (2026-08-19). But
+  // PRICE_TABLE keys are the tiers we PRICE, not proof of what shipped
+  // (e.g. gs24fe has no 512 row yet a 512 S24 FE exists), so the reason
+  // nudges a re-check without denying the device — and escalates instead
+  // of dead-ending if the seller insists.
+  if (input.storage) {
+    const row = PRICE_TABLE[hit.slug];
+    const keys = row ? Object.keys(row) : [];
+    const norm = normalizeStorage(input.storage);
+    if (keys.length && !keys.includes("base") && (!norm || !keys.includes(norm))) {
+      return {
+        ok: false,
+        device: hit.label,
+        slug: hit.slug,
+        reason: `no instant price for a ${hit.label} in ${input.storage} — the tiers we price instantly are ${keys.join("/")}. Most sellers misremember storage: have them check Settings > General > About (or the box) and confirm which of ${keys.join("/")} it is. If they're sure it really is ${input.storage}, hand it to the team as a manual quote — do NOT tell them the device doesn't exist, and do NOT invent a number.`,
+      };
+    }
+  }
   const spec: QuoteSpec = {
     modelId: hit.slug,
     modelLabel: hit.label,

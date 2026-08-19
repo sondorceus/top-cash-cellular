@@ -51,7 +51,7 @@ const CATEGORIES: { key: string; label: string; img: string; deterministic?: "ip
 ];
 
 type Msg =
-  | { from: "user" | "bot"; text: string }
+  | { from: "user" | "bot" | "owner"; text: string }
   | { from: "bot"; kind: "models"; prefix: "ip" | "gs"; done?: boolean }
   | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier"; options: { key: string; label: string }[]; done?: boolean }
   | { from: "bot"; kind: "quote"; label: string; offer: number; done?: boolean }
@@ -118,6 +118,48 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   useEffect(() => {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, sending, chatOpen]);
+
+  // Live owner takeover (ManyChat-parity): while the chat is open we poll
+  // chat-sync for messages Sonny sends from /admin/chats and for the
+  // takeover flag. Owner messages render with their own badge so the seller
+  // always knows when a human is typing vs the bot; when takeover is on,
+  // /api/chat stores the seller's messages and stays silent.
+  const [takeover, setTakeover] = useState(false);
+  const takeoverRef = useRef(false);
+  useEffect(() => { takeoverRef.current = takeover; }, [takeover]);
+  const lastSyncRef = useRef(0);
+  const hasActivity = msgs.length > 0;
+  useEffect(() => {
+    if (!chatOpen || !hasActivity) return; // nothing stored server-side until the seller does something
+    const iv = setInterval(async () => {
+      try {
+        const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=${lastSyncRef.current}`, { cache: "no-store" });
+        if (!r.ok) return; // a rate-limited tick must never flip UI state
+        const d = await r.json();
+        if (Array.isArray(d?.msgs) && d.msgs.length) {
+          const fresh = d.msgs.filter((m: { ts?: number }) => typeof m?.ts === "number" && m.ts > lastSyncRef.current);
+          if (fresh.length) {
+            setMsgs((cur) => [...cur, ...fresh.map((m: { text: string }) => ({ from: "owner" as const, text: String(m.text) }))]);
+          }
+        }
+        // Cursor rides the session's newest record (not just owner msgs), so
+        // idle polls stay zero-fetch server-side.
+        if (typeof d?.lastTs === "number" && d.lastTs > lastSyncRef.current) lastSyncRef.current = d.lastTs;
+        if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
+      } catch { /* next tick */ }
+    }, 4000);
+    return () => clearInterval(iv);
+  }, [chatOpen, hasActivity, sessionId]);
+
+  // Guided-funnel breadcrumbs for the owner console — the chip flow never
+  // touches /api/chat, so quote/lock milestones are logged here instead.
+  function logNote(text: string) {
+    void fetch("/api/go/chat-sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session: sessionId, text }),
+    }).catch(() => {});
+  }
 
   // One-shot idle nudge: a lock form that sits untouched for 25s gets a
   // single "just your number works" bubble. Appended straight into state —
@@ -323,6 +365,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         // non-lockers become a retargeting audience (Lead still fires only
         // on lock).
         pixelTrack("InitiateCheckout", { content_name: gRow.label, value: d.offer, currency: "USD" });
+        logNote(`quote shown: ${gRow.label} ${spec.storage || ""} ${spec.condition || ""} ${key} → $${d.offer}`);
         pushMsgs(
           { from: "bot", kind: "quote", label: `${gRow.label} ${STORAGE_LABELS[spec.storage || ""] || ""}`, offer: d.offer },
           { from: "bot", kind: "lockform", manual: false },
@@ -364,6 +407,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       setGBusy(false);
       if (d?.ok) {
         pixelTrack("Lead", { content_name: gRow.label, value: typeof d.offer === "number" ? d.offer : 0, currency: "USD" });
+        logNote(`LOCKED: ${gRow.label}${typeof d.offer === "number" ? ` $${d.offer}` : " (manual)"} — ${gContact.trim().slice(0, 60)}`);
         pushMsgs({ from: "bot", kind: "locked", offer: typeof d.offer === "number" && !manualFlavor ? d.offer : null });
         return null;
       }
@@ -388,7 +432,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         body: JSON.stringify({ message: t, history, sessionId }),
       });
       const d = await res.json();
-      setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }]);
+      // Owner takeover: the AI stood down and Sonny answers via chat-sync —
+      // no bot bubble, his reply arrives on the next poll. Also suppress a
+      // bot reply that was already in flight when the takeover flipped.
+      if ((d?.takeover && !d?.reply) || takeoverRef.current) setTakeover(true);
+      else setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }]);
     } catch {
       setMsgs((m) => [...m, { from: "bot", text: "we're having a moment — try again, or tap your phone on the board above" }]);
     }
@@ -569,7 +617,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="text-[15px] font-semibold leading-tight">top cash <span className="text-[#00c853]">cellular</span></div>
-              <div className="text-[11px] text-white/45 leading-tight">{status || "quotes live 24/7"}</div>
+              <div className="text-[11px] leading-tight">
+                {takeover
+                  ? <span className="text-[#00c853] font-semibold">Sonny is with you — live</span>
+                  : <span className="text-white/45">{status || "quotes live 24/7"}</span>}
+              </div>
             </div>
             <button type="button" onClick={() => setChatOpen(false)} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[18px] flex items-center justify-center active:scale-95">
               ✕
@@ -603,6 +655,21 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
             {msgs.map((m, i) => {
               if (!("kind" in m)) {
+                if (m.from === "owner") {
+                  // Sonny live — visually distinct from the bot on purpose:
+                  // the seller must always know when a human took over.
+                  return (
+                    <div key={i} className="go-msg flex items-end gap-2">
+                      <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
+                      <div className="max-w-[85%]">
+                        <div className="text-[11px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
+                        <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-[#0f2417] border border-[#00c853]/50">
+                          {m.text}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
                 return m.from === "user" ? (
                   <div key={i} className="go-msg self-end max-w-[85%] rounded-2xl rounded-br-md px-4 py-3 text-[14px] bg-[#132018] border border-[#00c853]/30">
                     {m.text}
