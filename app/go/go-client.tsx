@@ -63,6 +63,26 @@ function newSessionId(src: string) {
   return `go${src ? `-${src}` : ""}-${rand}`.slice(0, 24);
 }
 
+// Messenger-style continuity: the session id survives tab closes (7 days),
+// so a returning seller resumes the SAME thread — including replies Sonny
+// sent from /admin/chats while they were gone — instead of starting over.
+const SESSION_KEY = "tcc-go-session";
+function persistentSessionId(src: string): string {
+  if (typeof window === "undefined") return newSessionId(src);
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (raw) {
+      const { sid, ts } = JSON.parse(raw) as { sid?: string; ts?: number };
+      if (typeof sid === "string" && /^go[a-z0-9-]{2,30}$/i.test(sid) && typeof ts === "number" && Date.now() - ts < 7 * 24 * 3600_000) {
+        return sid;
+      }
+    }
+  } catch { /* fall through to a fresh id */ }
+  const sid = newSessionId(src);
+  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ sid, ts: Date.now() })); } catch { /* private mode */ }
+  return sid;
+}
+
 export default function GoClient({ rows, src, reviews, variant = "std" }: { rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot" }) {
   const lot = variant === "lot";
   // ---- board / HOLD state ----
@@ -100,7 +120,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [gBusy, setGBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
-  const [sessionId] = useState(() => newSessionId(src));
+  const [sessionId] = useState(() => persistentSessionId(src));
   const threadRef = useRef<HTMLDivElement>(null);
   // Guards the async chip flow against row-switching: a response for a row
   // that is no longer open must be discarded, never applied to the new row.
@@ -150,6 +170,31 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     }, 4000);
     return () => clearInterval(iv);
   }, [chatOpen, hasActivity, sessionId]);
+
+  // Thread restore, once per page load: a returning seller (persisted
+  // session id) gets their conversation back — bot replies and anything
+  // Sonny sent while they were gone. A fresh session returns nothing and
+  // costs one cheap empty read.
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    void (async () => {
+      try {
+        const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=0&full=1`, { cache: "no-store" });
+        if (!r.ok) return;
+        const d = await r.json();
+        if (Array.isArray(d?.msgs) && d.msgs.length) {
+          setMsgs((cur) => (cur.length ? cur : d.msgs.map((m: { role: string; text: string }) => ({
+            from: m.role === "user" ? ("user" as const) : m.role === "owner" ? ("owner" as const) : ("bot" as const),
+            text: String(m.text),
+          }))));
+        }
+        if (typeof d?.lastTs === "number" && d.lastTs > lastSyncRef.current) lastSyncRef.current = d.lastTs;
+        if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
+      } catch { /* fresh thread */ }
+    })();
+  }, [sessionId]);
 
   // Guided-funnel breadcrumbs for the owner console — the chip flow never
   // touches /api/chat, so quote/lock milestones are logged here instead.

@@ -25,11 +25,15 @@ export async function GET(req: NextRequest) {
   }
   const sid = req.nextUrl.searchParams.get("session") || "";
   const after = Number(req.nextUrl.searchParams.get("after")) || 0;
+  // full=1 → the whole visible thread (user/bot/owner), used ONCE on page
+  // load to restore a returning seller's conversation. Notes stay internal —
+  // they're owner-console breadcrumbs and can carry contact info.
+  const full = req.nextUrl.searchParams.get("full") === "1";
   if (!validGoSession(sid)) return NextResponse.json({ msgs: [], takeover: false, lastTs: 0 });
   const state = await readChat(sid, after);
   const msgs = state.msgs
-    .filter((m) => m.role === "owner")
-    .map((m) => ({ text: m.text, ts: m.ts }));
+    .filter((m) => (full ? m.role !== "note" : m.role === "owner"))
+    .map((m) => ({ role: m.role, text: m.text, ts: m.ts }));
   return NextResponse.json({ msgs, takeover: state.takeover, lastTs: state.lastTs });
 }
 
