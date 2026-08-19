@@ -2,17 +2,32 @@ import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
+import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk } from "../../lib/sell-tools";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
+// Conversation model. Sonnet-tier for the same reason /api/msgr-ai is: the
+// live rule-following failures (re-asking an answered spec, narrating tool
+// use, parroting example lines) are ones Haiku keeps making despite HARD-RULE
+// prompts — and this surface now names real prices, so those failures cost
+// money. Env-overridable for instant rollback.
+const CHAT_MODEL = process.env.CHAT_AI_MODEL || "claude-sonnet-5";
+// Sonnet 5 runs ADAPTIVE THINKING when `thinking` is omitted and would burn
+// the whole token budget thinking. Disable explicitly; not sent for haiku,
+// where omitting the param IS the off state.
+const THINKING_OFF = /sonnet-5|opus-4-[678]/.test(CHAT_MODEL) ? { thinking: { type: "disabled" as const } } : {};
+// Tool round-trips per turn. get_quote on several devices in one message is
+// the realistic ceiling; 4 leaves room without letting a loop run away.
+const MAX_TOOL_ROUNDS = 4;
+
 function smartReply(message: string): string {
   const m = message.toLowerCase();
-  if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "Use the instant quote tool on the homepage to get an exact price — pick your device, storage, and condition. Takes about 30 seconds. Most phones land between $80 and $580+ depending on the model.";
-  if (m.match(/iphone|apple/)) return "We buy iPhones from the 11 and newer. Use the quote tool on the homepage to see what yours is worth — the iPhone 16 Pro Max is up to $580.";
-  if (m.match(/samsung|galaxy|android/)) return "We buy Samsung Galaxy S21 and newer, plus the Z Fold and Z Flip. Use the quote tool for an instant price — the Galaxy S24 Ultra is up to $500.";
-  if (m.match(/macbook|mac|laptop/)) return "We buy MacBooks — Air and Pro, M1 and newer. A MacBook Pro 16\" M4 is up to $1,200. Use the quote tool for your exact model.";
-  if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "We buy PS4, PS5, Xbox One, Xbox Series S/X, and Nintendo Switch. A PS5 is up to $300. Check the quote tool for exact pricing.";
+  if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "Use the instant quote tool on the homepage to get an exact price — pick your device, storage, and condition. Takes about 30 seconds.";
+  if (m.match(/iphone|apple/)) return "We buy iPhones from the 11 and newer. Use the quote tool on the homepage to see what yours is worth.";
+  if (m.match(/samsung|galaxy|android/)) return "We buy Samsung Galaxy S21 and newer, plus the Z Fold and Z Flip. Use the quote tool for an instant price.";
+  if (m.match(/macbook|mac|laptop/)) return "We buy MacBooks — Air and Pro, M1 and newer. Use the quote tool for your exact model.";
+  if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "We buy PS4, PS5, Xbox One, Xbox Series S/X, and Nintendo Switch. Check the quote tool for exact pricing.";
   if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return "We pay by cash, Cash App, Zelle, or BTC. Local Austin pickups are paid same-day, on the spot.";
   if (m.match(/broken|crack|damage|screen/)) return "We buy devices in any condition, including cracked or water-damaged. The offer is lower than a clean device, but we'll still buy it — pick 'Fair' or 'Poor' in the quote tool.";
   if (m.match(/how|work|process|step/)) return "Three steps: use the quote tool for an instant price, we set up a local meetup in Austin (or send a free shipping label), then we inspect and pay you. Local handoffs usually take about 15 minutes.";
@@ -233,32 +248,137 @@ export async function POST(req: NextRequest) {
         ...FACTS,
       ].join(" ")
     : [
-        "You are Theot, the assistant for Top Cash Cellular, a phone & device buyback service in Austin, TX. Keep replies SHORT (2-3 sentences), plain, and helpful.",
+        "You are Theot, the assistant for Top Cash Cellular, a phone & device buyback service serving Austin, Houston and San Antonio, TX. Keep replies SHORT (2-3 sentences), plain, and helpful. Ask only ONE question at a time.",
+        // VOICE: company register — 'we / our team', never the owner's first
+        // person. This is the OPPOSITE of /api/msgr-ai, where the bot texts as
+        // Sonny himself ('i can do 650 cash'). A DM feels like a person; the
+        // website is a business. Sonny 2026-08-19.
+        "Speak as the company: 'we' and 'our team', never 'I can do $X' as if you were the owner. Never name the owner to the customer.",
         TONE,
         ...FACTS,
-        "YOU CAN RELAY MESSAGES TO THE TEAM. If someone wants a human, asks something you can't fully answer, or wants a callback, NEVER say you can't help or can't pass a message along. Instead, ask for their name and best phone number or email, then confirm: 'Got it — I'll pass this to our team and they'll text you back shortly.' Every message is already logged for the team.",
-        "GOAL: help them get a quote or leave their device + a phone/email so we can text an offer. Don't pressure, and never require info to keep chatting.",
+
+        // ---- QUOTING POLICY (site chat) -------------------------------------
+        // This is the OPPOSITE of /api/msgr-ai, and deliberately so. Typed
+        // Messenger never quotes: no structured condition flow, and a number in
+        // a DM becomes an anchor the owner has to honour or walk back. On our
+        // own site the funnel already publishes the exact same number to anyone
+        // who clicks through, so refusing to say it here is theatre — it just
+        // makes the chat worse than the page it sits on. Sonny 2026-08-19.
+        "PRICING — you DO give real prices here, but ONLY ones that came back from the get_quote tool. NEVER invent, estimate, round, or 'ballpark' a number, and never quote from memory or from anything in this prompt. If get_quote did not return a number, you do not have a number.",
+        "SINGLE DEVICE: once you have model + condition (ask for storage and carrier if the model needs them), call get_quote and tell them the number plainly — 'your 13 Pro 256 comes out to $430'. Then offer to lock it in. That is a normal close and you can do it yourself.",
+        "MULTIPLE DEVICES (2 or more): quote each one with its own get_quote call and give them a running total, then STOP SHORT OF CLOSING. Call notify_team with the full itemized list and tell them our team will confirm the package. Do NOT promise a package price, a bundle discount, or any number above the sum of the individual quotes — bulk pricing is the owner's call, not yours.",
+        "NOT IN THE INSTANT CATALOG: if get_quote comes back with no offer (older iPhones, Intel/legacy MacBooks, tablets, watches, consoles, anything unusual), say it needs a real set of eyes on it, call notify_team, and take their contact. Never guess a number for these — some of them are deliberately manual-quote.",
+        "WHOLESALE/VENDOR: someone pitching to SELL us a lot, or asking to buy FROM us, goes straight to notify_team with their details. No quote.",
+        "CONDITION HONESTY: every quote is what we pay if the device matches what they described, confirmed at inspection. Say that naturally once, when you first give a number — not as a legal disclaimer and not on every message. Never say 'no obligation' or 'no hidden fees'; it reads like a scam.",
+
+        "TOOL USE IS INVISIBLE. Never mention tool names, never write stage directions like *checking*, never say you're 'looking it up' or 'running that'. Just answer.",
+        "YOU CAN RELAY MESSAGES TO THE TEAM. If someone wants a human, asks something you can't fully answer, or wants a callback, NEVER say you can't help. Ask for their name and best phone number or email, call notify_team, and confirm plainly that our team will text them back.",
+        "GOAL: get them a real number, or get their device details plus a phone/email so we can text them an offer. Don't pressure, and never require info to keep chatting.",
       ].join(" ");
 
   // Try Anthropic first, fall back to smart replies
   try {
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const messages = history.map((m) => ({
+    // Structural types — this codebase keeps the SDK as a dynamic import and
+    // never pulls in its type namespace, so the conversation is typed locally
+    // and cast at the call site (same pattern as the tools array).
+    type Msg = { role: "user" | "assistant"; content: unknown };
+    const messages: Msg[] = history.map((m) => ({
       role: m.from === "user" ? "user" as const : "assistant" as const,
       content: m.text,
     }));
-    messages.push({ role: "user" as const, content: message });
+    messages.push({ role: "user", content: message });
 
-    const response = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 200,
-      system: systemPrompt,
-      messages,
-    });
+    // Server-side backstop for the multi-device routing rule. The prompt tells
+    // the model to hand 2+ device lots to Sonny rather than closing them, but
+    // the rule must not depend on the model choosing to comply — so we detect
+    // the lot ourselves and re-state the constraint as a system instruction.
+    const isLot = looksBulk(userText);
 
-    const reply = response.content[0].type === "text" ? response.content[0].text : fallbackReply(message, isHumanHandoff, history.length);
-    return NextResponse.json({ reply });
+    // One cache breakpoint on the system block caches tools+system together
+    // (render order is tools → system), so the tool round-trip re-reads the
+    // prefix from cache seconds later instead of re-paying for it.
+    const system = [
+      {
+        type: "text" as const,
+        text: systemPrompt + (isLot ? "\n\nTHIS CONVERSATION IS A MULTI-DEVICE LOT. Quote each device individually and give a running total, then hand off to our team via notify_team. Do NOT close, do NOT name a package price." : ""),
+        cache_control: { type: "ephemeral" as const },
+      },
+    ];
+
+    let reply = "";
+    let quotedAny = false;
+    const quotedLines: string[] = [];
+
+    for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+      const response = await client.messages.create({
+        model: CHAT_MODEL,
+        max_tokens: 400,
+        system,
+        tools: SELL_TOOLS as never,
+        messages: messages as never,
+        ...THINKING_OFF,
+      });
+
+      const textParts = response.content.filter((b) => b.type === "text");
+      if (textParts.length) reply = textParts.map((b) => (b as { text: string }).text).join(" ").trim();
+
+      const toolUses = response.content.filter((b) => b.type === "tool_use") as Array<{
+        type: "tool_use"; id: string; name: string; input: Record<string, unknown>;
+      }>;
+      if (!toolUses.length) break;
+
+      messages.push({ role: "assistant", content: response.content });
+      const results: Array<{ type: "tool_result"; tool_use_id: string; content: string }> = [];
+
+      for (const tu of toolUses) {
+        let out: unknown;
+        if (tu.name === "get_quote") {
+          const q = await runQuote(tu.input);
+          if (q.ok && q.offer != null) {
+            quotedAny = true;
+            quotedLines.push(`${q.device}${tu.input.storage ? ` ${tu.input.storage}` : ""} ${tu.input.condition || ""} — $${q.offer}`);
+          }
+          out = q;
+        } else if (tu.name === "check_imei") {
+          out = await runImeiCheck(tu.input as { imei?: string });
+        } else if (tu.name === "notify_team") {
+          // The site chat's owner alert rides the SAME MC comms + owner-SMS
+          // path the rest of this route uses, so a chat handoff shows up
+          // exactly where every other TCC lead does.
+          const summary = String(tu.input.summary || "").slice(0, 900);
+          const toolContact = String(tu.input.contact || contact || "").slice(0, 120);
+          after(async () => {
+            try {
+              await fetch(`${MC_API}/api/comms`, {
+                method: "POST",
+                headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  from: "topcash-web",
+                  fromName: "Top Cash Cellular Chat",
+                  role: "system",
+                  body: `[CHAT HANDOFF]${sessionId ? ` sess:${sessionId} ·` : ""} ${sanitizeForMc(summary)}${toolContact ? `\nreply to: ${sanitizeForMc(toolContact)}` : ""}${quotedLines.length ? `\nengine: ${quotedLines.join(" | ")}` : ""}`,
+                  tags: ["chat-lead", "chat-handoff", "needs-callback", ...(isLot ? ["multi-device"] : []), ...(sessionId ? [`sess-${sessionId}`] : [])],
+                  priority: "high",
+                }),
+              });
+            } catch { /* silent */ }
+            await notifyOwnerSms(
+              `${isLot ? "📦" : "💬"} TopCash chat${isLot ? " LOT" : ""}: ${summary.slice(0, 220)}${toolContact ? `\nReply to: ${toolContact}` : ""}${quotedLines.length ? `\nEngine: ${quotedLines.join(" | ")}` : ""}`,
+            );
+          });
+          out = { ok: true, note: "team notified" };
+        } else {
+          out = { ok: false, reason: "unknown tool" };
+        }
+        results.push({ type: "tool_result", tool_use_id: tu.id, content: JSON.stringify(out) });
+      }
+      messages.push({ role: "user", content: results });
+    }
+
+    if (!reply) reply = fallbackReply(message, isHumanHandoff, history.length);
+    return NextResponse.json({ reply, ...(quotedAny ? { quoted: quotedLines } : {}) });
   } catch {
     return NextResponse.json({ reply: fallbackReply(message, isHumanHandoff, history.length) });
   }
