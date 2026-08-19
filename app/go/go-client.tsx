@@ -119,6 +119,25 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, sending, chatOpen]);
 
+  // One-shot idle nudge: a lock form that sits untouched for 25s gets a
+  // single "just your number works" bubble. Appended straight into state —
+  // pushMsgs would retire the live form. The timer re-arms on any thread
+  // activity, so it fires 25s after the seller last did anything.
+  const nudgedRef = useRef(false);
+  useEffect(() => {
+    if (nudgedRef.current) return;
+    if (!msgs.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return;
+    const t = setTimeout(() => {
+      setMsgs((cur) => {
+        if (nudgedRef.current) return cur;
+        if (!cur.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return cur;
+        nudgedRef.current = true;
+        return [...cur, { from: "bot", text: "just your number works — we’ll text you the quote so you don’t lose it." }];
+      });
+    }, 25000);
+    return () => clearTimeout(t);
+  }, [msgs]);
+
   const row = rows.find((r) => r.id === openId) || null;
 
   function openRow(r: BoardRow) {
@@ -299,8 +318,14 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       });
       const d = await res.json();
       if (d?.ok && typeof d.offer === "number") {
+        // Quote + capture in ONE beat — the form rides with the number, no
+        // extra tap. InitiateCheckout marks quote-viewers on the pixel so
+        // non-lockers become a retargeting audience (Lead still fires only
+        // on lock).
+        pixelTrack("InitiateCheckout", { content_name: gRow.label, value: d.offer, currency: "USD" });
         pushMsgs(
           { from: "bot", kind: "quote", label: `${gRow.label} ${STORAGE_LABELS[spec.storage || ""] || ""}`, offer: d.offer },
+          { from: "bot", kind: "lockform", manual: false },
         );
       } else {
         pushMsgs(
@@ -632,14 +657,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
                       <div className="text-[13px] text-white/60">{m.label}</div>
                       <div className="text-[30px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer}</div>
-                      <div className="text-[12px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — confirmed in person, locked for 14 days.</div>
-                      {!m.done && (
-                        <button type="button" disabled={gBusy}
-                          onClick={() => pushMsgs({ from: "bot", kind: "lockform", manual: false })}
-                          className="tcc-button-primary w-full py-3 mt-3 text-[15px] font-bold rounded-2xl">
-                          Lock In My Offer
-                        </button>
-                      )}
+                      <div className="text-[12px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
                     </div>
                   </div>
                 );
@@ -787,7 +805,7 @@ function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boo
   return (
     <div className="flex flex-col gap-2">
       <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="name (optional)" value={n} onChange={(e) => setN(e.target.value)} autoComplete="name" disabled={disabled} />
-      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="phone or email" value={c} onChange={(e) => setC(e.target.value)} autoComplete="tel" disabled={disabled} />
+      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="your number — we text you the quote" value={c} onChange={(e) => setC(e.target.value)} autoComplete="tel" disabled={disabled} />
       <label className="flex items-start gap-2 text-[12px] text-white/60">
         <input type="checkbox" checked={a} onChange={(e) => setA(e.target.checked)} className="mt-[2px] accent-[#00c853]" disabled={disabled} />
         <span>i&rsquo;m 18+ and this device is mine to sell</span>
