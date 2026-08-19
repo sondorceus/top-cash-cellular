@@ -51,6 +51,12 @@ export async function POST(req: NextRequest) {
   const sid = typeof body.session === "string" ? body.session : "";
   const text = typeof body.text === "string" ? body.text.slice(0, 300) : "";
   if (!validGoSession(sid) || !text.trim()) return NextResponse.json({ ok: false }, { status: 400 });
+  // CONTACT: notes are what the console's "also text the seller" action
+  // reads to pick the destination number, and the newest one wins — so they
+  // may ONLY be written server-side (lock route / chat route). Accepting one
+  // here would let anyone who knows a session id redirect Sonny's text to a
+  // number of their choosing.
+  if (/^\s*CONTACT\s*:/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
   await appendChatMsg(sid, "note", text);
   return NextResponse.json({ ok: true });
 }
