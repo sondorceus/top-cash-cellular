@@ -112,8 +112,9 @@ export default function LiveChatsPage() {
       </div>
 
       <div className="flex" style={{ height: "calc(100vh - 61px)" }}>
-        {/* inbox */}
-        <div className="w-[280px] shrink-0 border-r border-white/10 overflow-y-auto">
+        {/* inbox — on phones it's the whole screen until a thread opens
+            (the takeover flow starts from an SMS deep link on Sonny's phone) */}
+        <div className={`${open ? "hidden md:block" : "block"} w-full md:w-[280px] shrink-0 border-r border-white/10 overflow-y-auto`}>
           {sessions === null && <p className="p-4 text-[#888] text-[13px]">Loading…</p>}
           {sessions?.length === 0 && <p className="p-4 text-[#888] text-[13px]">No chats yet — sessions appear here the moment someone talks to the bot on /go.</p>}
           {sessions?.map((s) => (
@@ -130,13 +131,14 @@ export default function LiveChatsPage() {
         </div>
 
         {/* thread */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className={`${open ? "flex" : "hidden md:flex"} flex-1 flex-col min-w-0`}>
           {!open ? (
             <p className="p-8 text-[#888] text-[14px]">Pick a chat on the left, or land here from a [CHAT LIVE] alert link.</p>
           ) : (
             <>
               <div className="px-5 py-3 border-b border-white/10 flex items-center gap-3">
-                <span className="text-[13px] font-semibold">{open}</span>
+                <button type="button" onClick={() => setOpen(null)} aria-label="back to inbox" className="md:hidden text-white/70 text-[18px] pr-1">←</button>
+                <span className="text-[13px] font-semibold truncate">{open}</span>
                 <span className={`text-[11px] px-2 py-[2px] rounded-full border ${takeover ? "border-[#00c853]/60 text-[#00c853]" : "border-white/20 text-white/50"}`}>
                   {takeover ? "YOU have this chat" : "bot is answering"}
                 </span>
@@ -187,7 +189,7 @@ export default function LiveChatsPage() {
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
                   placeholder={takeover ? "message the seller as yourself…" : "type to take over and reply as yourself…"}
-                  className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[14px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+                  className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
                 />
                 <button type="submit" disabled={busy || !draft.trim()} className="px-5 rounded-full bg-[#00c853] text-black text-[14px] font-bold disabled:opacity-40">
                   send
