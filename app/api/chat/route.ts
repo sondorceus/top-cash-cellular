@@ -8,10 +8,10 @@ import { appendChatMsg, readChat, validSession } from "../../lib/gochat-store";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
-// Conversation model. Sonnet-tier for the same reason /api/msgr-ai is: the
-// live rule-following failures (re-asking an answered spec, narrating tool
-// use, parroting example lines) are ones Haiku keeps making despite HARD-RULE
-// prompts — and this surface now names real prices, so those failures cost
+// Conversation model. Sonnet-tier because the live rule-following failures
+// (re-asking an answered spec, narrating tool use, parroting example lines)
+// are ones Haiku keeps making despite HARD-RULE prompts — and this surface
+// names real prices, so those failures cost
 // money. Env-overridable for instant rollback.
 const CHAT_MODEL = process.env.CHAT_AI_MODEL || "claude-sonnet-5";
 // Sonnet 5 runs ADAPTIVE THINKING when `thinking` is omitted and would burn
@@ -272,20 +272,17 @@ export async function POST(req: NextRequest) {
     : [
         "You are Theot, the assistant for Top Cash Cellular, a phone & device buyback service serving Austin, Houston and San Antonio, TX. Keep replies SHORT (2-3 sentences), plain, and helpful. Ask only ONE question at a time.",
         // VOICE: company register — 'we / our team', never the owner's first
-        // person. This is the OPPOSITE of /api/msgr-ai, where the bot texts as
-        // Sonny himself ('i can do 650 cash'). A DM feels like a person; the
-        // website is a business. Sonny 2026-08-19.
+        // person. The website is a business; only a DM would text like a
+        // person. Sonny 2026-08-19.
         "Speak as the company: 'we' and 'our team', never 'I can do $X' as if you were the owner. Never name the owner to the customer.",
         TONE,
         ...FACTS,
 
         // ---- QUOTING POLICY (site chat) -------------------------------------
-        // This is the OPPOSITE of /api/msgr-ai, and deliberately so. Typed
-        // Messenger never quotes: no structured condition flow, and a number in
-        // a DM becomes an anchor the owner has to honour or walk back. On our
-        // own site the funnel already publishes the exact same number to anyone
-        // who clicks through, so refusing to say it here is theatre — it just
-        // makes the chat worse than the page it sits on. Sonny 2026-08-19.
+        // This surface DOES name numbers: the funnel already publishes the
+        // exact same number to anyone who clicks through, so refusing to say
+        // it here is theatre — it just makes the chat worse than the page it
+        // sits on. Sonny 2026-08-19.
         "PRICING — you DO give real prices here, but ONLY ones that came back from the get_quote tool. NEVER invent, estimate, round, or 'ballpark' a number, and never quote from memory or from anything in this prompt. If get_quote did not return a number, you do not have a number.",
         "SINGLE DEVICE: once you have model + condition (ask for storage and carrier if the model needs them), call get_quote and tell them the number plainly — 'your 13 Pro 256 comes out to $430'. Then offer to lock it in. That is a normal close and you can do it yourself.",
         "MULTIPLE DEVICES (2 or more): quote each one with its own get_quote call and give them a running total, then STOP SHORT OF CLOSING. Call notify_team with the full itemized list and tell them our team will confirm the package. Do NOT promise a package price, a bundle discount, or any number above the sum of the individual quotes — bulk pricing is the owner's call, not yours.",

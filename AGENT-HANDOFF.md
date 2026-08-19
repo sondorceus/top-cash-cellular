@@ -1,6 +1,6 @@
 # top-cash-cellular (TCC) — read this first
 
-Device buyback funnel, `/shop` storefront, and a Facebook Messenger sales AI.
+Device buyback funnel, `/shop` storefront, and the `/go` ad-landing funnel with a live owner-takeover chat.
 Next.js on Vercel. **This one takes real customer traffic and real money.**
 
 **Live:** topcashcellular.com
@@ -52,7 +52,7 @@ Read the `tcc-pricing` skill before touching any of this.
 |---|---|
 | Funnel | Device → condition → quote → checkout. Calm `popThenRun` animation on selection steps; the 3D phone flip is ONLY for the hero and the local/ship CTAs. |
 | `/shop` storefront | Live since 2026-07-10. Blob-backed reservations, admin at `/admin/shop`, inquiries land in Mission Control tagged `[SHOP-INQUIRY]`. Read `db/README.md` first. |
-| Messenger AI | `app/api/msgr-ai`, `msgr-brain`, `msgr-signals` + a follow-up cron. Both transports live with PSID dedupe. Read the `tcc-msgr-ai` skill before editing. |
+| `/go` ad funnel | Meta-ads landing page: category tiles → guided quote → lock. Live owner takeover at `/admin/chats` (`app/lib/gochat-store.ts`, blob prefix `gochat/`). The Facebook Messenger bot it replaced was retired 2026-08-19 — recover it from git history if ever needed. |
 | Admin | Google OAuth web-flow with a proxy email allowlist. Customer side stays on GSI. |
 | Theot's access | She manages slots/prices/customers/P&L via `x-admin-token`; the token is in the MC vault at key `tcc_admin_token`. |
 

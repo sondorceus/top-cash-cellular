@@ -1,5 +1,5 @@
 // BOT/FUNNEL PARITY GATE — asserts the marketplace-bot quote engine
-// (app/lib/quote.ts, used by msgr-ai and lead tooling) produces EXACTLY the
+// (app/lib/quote.ts, used by the site chat and lead tooling) produces EXACTLY the
 // number the customer funnel would show for the same device spec.
 //
 // Why this exists: the two engines implement "the same" math independently,

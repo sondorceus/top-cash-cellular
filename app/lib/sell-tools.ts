@@ -1,18 +1,16 @@
 // Shared sell-side AI tools — the REAL quote engine + IMEI identification,
 // exposed as Anthropic tool definitions.
 //
-// Extracted from /api/msgr-ai for the SITE chat (/api/chat). NOTE: the
-// Messenger route still runs its own local copies of these tools (the
-// extraction never swapped them in) — a change here must be MIRRORED in
-// app/api/msgr-ai/route.ts until that route is ported. Both surfaces price
-// from app/data/prices.ts through quoteDevice() — the same path the funnel
-// uses — so a device can never be worth one number in the chat and a
-// different number in the cart.
+// The single implementation, consumed by the site chat (/api/chat). It
+// prices from app/data/prices.ts through quoteDevice() — the same path the
+// funnel uses — so a device can never be worth one number in the chat and a
+// different number in the cart. (These began as a copy inside the Messenger
+// brain; that surface was retired 2026-08-19, so there is no longer a twin
+// to keep in sync.)
 //
-// What is deliberately NOT here: the per-channel POLICY. Messenger never
-// quotes to the customer; the site chat quotes single catalog devices and
-// escalates multi-device lots to the owner. That split lives in each route's
-// system prompt, not in the tools.
+// What is deliberately NOT here: the channel POLICY — the site chat quotes
+// single catalog devices and escalates multi-device lots to the owner. That
+// lives in the route's system prompt, not in the tools.
 
 import { after } from "next/server";
 import { quoteDevice, normalizeStorage, type QuoteSpec } from "./quote";
@@ -98,11 +96,9 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
 }
 
 /**
- * Multi-device / bulk-lot detector. Used two ways:
- *  - Messenger: gates follow-up nudges to lots worth chasing.
- *  - Site chat: server-side backstop for the routing rule — a multi-device
- *    seller goes to the owner to close, so this must not depend on the model
- *    choosing to behave.
+ * Multi-device / bulk-lot detector. Server-side backstop for the site chat's
+ * routing rule — a multi-device seller goes to the owner to close, so this
+ * must not depend on the model choosing to behave.
  */
 export function looksBulk(text: string): boolean {
   return (
