@@ -155,6 +155,11 @@ export async function POST(req: NextRequest) {
   const contactSeenBefore = !!detectContact(priorUserText);
   const detectedNow = !!detectContact(message);
   const contactJustArrived = !contactSeenBefore && (detectedNow || (!!fieldContact && history.length === 0));
+  // Park a just-arrived contact in the chat store so the takeover console's
+  // "text seller" action can reach this seller. Note-role = internal only.
+  if (contactJustArrived && contact && validSession(sessionId)) {
+    after(() => { void appendChatMsg(sessionId, "note", `CONTACT: ${contact}`); });
+  }
   const isOpener = history.length === 0;
   const handoffStarted = isHumanHandoff && history.length <= 1;
   const material = isOpener || handoffStarted || contactJustArrived;

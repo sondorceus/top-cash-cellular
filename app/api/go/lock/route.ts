@@ -26,6 +26,7 @@ import { quoteDevice } from "../../../lib/quote";
 import { cachedOverrides } from "../../../lib/overrides-cache";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
+import { appendChatMsg, validSession } from "../../../lib/gochat-store";
 import { BOARD_MODELS } from "../../../go/board";
 import { PRICE_TABLE } from "../../../data/prices";
 
@@ -194,6 +195,13 @@ export async function POST(req: NextRequest) {
   }
   if (!mcOk && !smsOk) {
     return NextResponse.json({ ok: false, error: "couldn't save that — tap it once more" }, { status: 502 });
+  }
+
+  // Park the contact in the chat store so the /admin/chats console can text
+  // this seller from the takeover thread ("text seller" action). Notes are
+  // internal-only — never sent to the seller client.
+  if (validSession(sessionId)) {
+    void appendChatMsg(sessionId, "note", `CONTACT: ${contact}`);
   }
 
   return NextResponse.json({ ok: true, offer });

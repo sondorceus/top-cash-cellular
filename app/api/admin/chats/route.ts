@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { appendChatMsg, listChatSessions, readChat, validSession } from "../../../lib/gochat-store";
+import { sendSellerSms, looksLikePhone } from "../../../lib/seller-sms";
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  let body: { session?: unknown; text?: unknown; takeover?: unknown };
+  let body: { session?: unknown; text?: unknown; takeover?: unknown; sms?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -50,5 +51,22 @@ export async function POST(req: NextRequest) {
   }
   const text = typeof body.text === "string" ? body.text.trim().slice(0, 2000) : "";
   if (text) await appendChatMsg(sid, "owner", text);
-  return NextResponse.json({ ok: true });
+  // sms:true — ALSO text the message to the seller's stored contact (the
+  // CONTACT note the lock/chat paths park). Owner-initiated only: Sonny
+  // decides when a text goes out, the system never does. One-way channel —
+  // the Telnyx number's replies land on the notary webhook, so the text
+  // points the seller back at their /go chat.
+  let smsSent = false;
+  if (text && body.sms === true) {
+    const state = await readChat(sid, 0);
+    const contactNote = [...state.msgs].reverse().find((m) => m.role === "note" && m.text.startsWith("CONTACT: "));
+    const contact = contactNote ? contactNote.text.slice("CONTACT: ".length).trim() : "";
+    if (contact && looksLikePhone(contact)) {
+      smsSent = await sendSellerSms(contact, `${text}\n\n— Top Cash Cellular · reply in your chat: https://topcashcellular.com/go`);
+      await appendChatMsg(sid, "note", smsSent ? `SMS sent to ${contact}` : `SMS FAILED to ${contact}`);
+    } else {
+      await appendChatMsg(sid, "note", "SMS skipped — no phone number on file for this session");
+    }
+  }
+  return NextResponse.json({ ok: true, smsSent });
 }

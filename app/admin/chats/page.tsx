@@ -30,6 +30,7 @@ export default function LiveChatsPage() {
   const [takeover, setTakeoverState] = useState(false);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
+  const [alsoText, setAlsoText] = useState(false);
   const threadRef = useRef<HTMLDivElement>(null);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
@@ -88,7 +89,7 @@ export default function LiveChatsPage() {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight });
   }, [msgs]);
 
-  async function post(body: { session: string; text?: string; takeover?: boolean }) {
+  async function post(body: { session: string; text?: string; takeover?: boolean; sms?: boolean }) {
     setBusy(true);
     try {
       await fetch("/api/admin/chats", {
@@ -174,6 +175,19 @@ export default function LiveChatsPage() {
                 {msgs.length === 0 && <p className="text-[#888] text-[13px]">No messages stored yet for this session.</p>}
               </div>
 
+              {/* "also text" — seller SMS rides the notary Telnyx number via
+                  its relay; owner-initiated per message, never automatic.
+                  Works only when the session has a CONTACT note (lock or
+                  typed contact) — otherwise the thread shows "SMS skipped". */}
+              {(() => {
+                const hasPhone = msgs.some((m) => m.role === "note" && m.text.startsWith("CONTACT: ") && !m.text.includes("@"));
+                return (
+                  <label className={`flex items-center gap-2 px-5 pt-2 text-[12px] ${hasPhone ? "text-white/70" : "text-white/35"}`}>
+                    <input type="checkbox" checked={alsoText} onChange={(e) => setAlsoText(e.target.checked)} className="accent-[#00c853]" />
+                    also text the seller{hasPhone ? "" : " (no number on file yet)"}
+                  </label>
+                );
+              })()}
               <form
                 className="flex gap-2 px-5 py-3 border-t border-white/10"
                 onSubmit={(e) => {
@@ -182,7 +196,7 @@ export default function LiveChatsPage() {
                   if (!t) return;
                   setDraft("");
                   // Sending a message implies takeover — flip it on in the same post.
-                  void post({ session: open, text: t, ...(takeover ? {} : { takeover: true }) });
+                  void post({ session: open, text: t, ...(takeover ? {} : { takeover: true }), ...(alsoText ? { sms: true } : {}) });
                 }}
               >
                 <input
