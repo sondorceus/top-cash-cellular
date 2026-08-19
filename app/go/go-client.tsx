@@ -886,7 +886,11 @@ function DeviceCarousel({ rows, onPick, onOther, busy }: { rows: BoardRow[]; onP
           className="shrink-0 w-[118px] rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform"
         >
           <div className="rounded-xl bg-white p-1.5 flex items-center justify-center" style={{ height: 86 }}>
-            <img src={r.img} alt="" className="max-h-full max-w-full object-contain" style={{ borderRadius: 8 }} />
+            {/* lazy + async: the carousel renders ~28 cards for a line but
+                shows 3 — eager loading fired ~1.5MB the instant a seller
+                tapped iPhone, stalling the cards they can actually see on
+                LTE inside the Facebook in-app browser. */}
+            <img src={r.img} alt="" loading="lazy" decoding="async" width={96} height={96} className="max-h-full max-w-full object-contain" style={{ borderRadius: 8 }} />
           </div>
           <div className="text-[13px] font-semibold mt-1.5 leading-tight text-white">{r.label}</div>
         </button>
