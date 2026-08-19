@@ -477,26 +477,24 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         <a href="/reviews" className="underline text-white/60">reviews from paid sellers</a>
       </p>
 
-      {/* how it works — the meetup fear, answered in three lines */}
+      {/* how it works — offer → meetup → cash, three beats
+          (Sonny 2026-08-19: "way too much text — it should be offer meetup cash") */}
       <section className="mt-7" aria-label="how it works">
         <h2 className="text-[16px] font-bold">how this works</h2>
         <ol className="mt-3 flex flex-col gap-2 text-[13px] text-white/75">
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">1</span>
-            <span>tap what you got and answer three quick ones — the number we give you is the number, locked for 14 days.</span>
+            <span><b className="text-white font-semibold">offer</b> — tap what you got, get your number. locked 14 days.</span>
           </li>
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">2</span>
-            <span>meet us at a public spot in the austin area (about 15 minutes), or we email you a free prepaid FedEx label.</span>
+            <span><b className="text-white font-semibold">meetup</b> — public spot in austin, or free shipping label.</span>
           </li>
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">3</span>
-            <span>we check the phone while you watch, then you get paid on the spot — cash, Cash App, Zelle, or BTC. shipped devices are paid same day after inspection.</span>
+            <span><b className="text-white font-semibold">cash</b> — we check it, you get paid on the spot.</span>
           </li>
         </ol>
-        <p className="text-[12px] text-white/60 mt-2">
-          if the phone matches what you told us, the number doesn&rsquo;t move. that&rsquo;s the whole deal.
-        </p>
       </section>
 
       {/* real verified reviews — collapsed to one line; the cards only
