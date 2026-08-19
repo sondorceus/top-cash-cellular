@@ -445,63 +445,94 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </section>
       )}
 
-      {/* composer + thread */}
+      {/* composer + thread — MC-grade chat: avatar, welcome bubble, entry
+          motion, pill composer. Crisp borders only, no glow (brand rule). */}
       <section className="mt-7" id="go-composer" aria-label="chat with us">
+        <style>{`
+          @keyframes goMsgIn { from { opacity: 0; transform: translateY(5px); } }
+          .go-msg { animation: goMsgIn 0.18s ease; }
+          @keyframes goDot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-3px); opacity: 1; } }
+          .go-dot { width: 6px; height: 6px; border-radius: 50%; background: #00c853; display: inline-block; animation: goDot 1.1s ease infinite; }
+        `}</style>
         <h2 className="text-[16px] font-bold">{lot ? "tell us what you got" : "got something else, or a few of them?"}</h2>
 
-        {msgs.length > 0 && (
-          <div ref={threadRef} role="log" aria-live="polite" className="mt-3 max-h-[340px] overflow-y-auto flex flex-col gap-2 pr-1">
-            {msgs.map((m, i) => (
-              <div
-                key={i}
-                className={
-                  m.from === "user"
-                    ? "self-end max-w-[85%] rounded-2xl px-3 py-2 text-[14px] bg-white/[0.10] border border-white/20"
-                    : "self-start max-w-[85%] rounded-2xl px-3 py-2 text-[14px] bg-white/[0.06] border border-white/10"
-                }
-              >
-                {m.text}
+        <div className="mt-3 rounded-3xl border border-white/10 bg-white/[0.03] p-3">
+          <div ref={threadRef} role="log" aria-live="polite" className="max-h-[360px] overflow-y-auto flex flex-col gap-3 pr-1">
+            {/* standing welcome — rendered instantly, no AI call */}
+            <div className="go-msg flex items-end gap-2">
+              <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+              <div className="max-w-[85%]">
+                <div className="text-[11px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
+                <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
+                  {lot
+                    ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. we\u2019ll get you real numbers and cash the same day."
+                    : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. one phone or a whole drawer, cracked ones too."}
+                </div>
               </div>
+            </div>
+
+            {msgs.map((m, i) => (
+              m.from === "user" ? (
+                <div key={i} className="go-msg self-end max-w-[85%] rounded-2xl rounded-br-md px-4 py-3 text-[14px] bg-[#132018] border border-[#00c853]/30">
+                  {m.text}
+                </div>
+              ) : (
+                <div key={i} className="go-msg flex items-end gap-2">
+                  <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                  <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10">
+                    {m.text}
+                  </div>
+                </div>
+              )
             ))}
+
             {sending && (
-              <div className="self-start text-[12px] text-white/40 px-1" role="status">
-                typing…
+              <div className="go-msg flex items-end gap-2" role="status" aria-label="replying">
+                <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                <div className="rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-white/10 flex gap-[5px] items-center">
+                  <span className="go-dot" /><span className="go-dot" style={{ animationDelay: "0.15s" }} /><span className="go-dot" style={{ animationDelay: "0.3s" }} />
+                </div>
               </div>
             )}
           </div>
-        )}
 
-        <form
-          className="mt-3 flex gap-2"
-          onSubmit={(e) => { e.preventDefault(); void send(draft); }}
-        >
-          <input
-            id="go-composer-input"
-            className="tcc-input flex-1 px-4 py-3"
-            placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            aria-label="tell us what you're selling"
-          />
-          <button type="submit" disabled={sending || !draft.trim()} className="tcc-button-primary px-4 py-2.5 text-[14px] font-bold" aria-label="send">
-            send
-          </button>
-        </form>
+          {msgs.length === 0 && (
+            <div className="flex flex-wrap gap-2 mt-3 ml-10">
+              {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => void send(c)}
+                  className="text-[13px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform"
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          )}
 
-        {msgs.length === 0 && (
-          <div className="flex flex-wrap gap-2 mt-3">
-            {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => void send(c)}
-                className="text-[13px] text-white/80 border border-white/20 rounded-full px-4 py-[11px]"
-              >
-                {c}
-              </button>
-            ))}
-          </div>
-        )}
+          <form
+            className="mt-3 flex gap-2 items-center"
+            onSubmit={(e) => { e.preventDefault(); void send(draft); }}
+          >
+            <input
+              id="go-composer-input"
+              className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+              placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              aria-label="tell us what you're selling"
+            />
+            <button
+              type="submit"
+              disabled={sending || !draft.trim()}
+              style={{ borderRadius: "50%" }} className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[20px] font-bold disabled:opacity-40 flex items-center justify-center"
+              aria-label="send"
+            >
+              ↑
+            </button>
+          </form>
+        </div>
       </section>
 
       {/* long tail */}
