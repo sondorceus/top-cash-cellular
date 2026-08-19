@@ -64,6 +64,16 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [attest, setAttest] = useState(false);
   // ---- chat state ----
   const [showReviews, setShowReviews] = useState(false);
+  // Full-screen chat takeover — opens on engagement (never on load: the
+  // board stays the first paint). X returns to the page with the thread
+  // intact.
+  const [chatOpen, setChatOpen] = useState(false);
+  const overlayInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    document.body.style.overflow = chatOpen ? "hidden" : "";
+    if (chatOpen) setTimeout(() => overlayInputRef.current?.focus(), 60);
+    return () => { document.body.style.overflow = ""; };
+  }, [chatOpen]);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -84,7 +94,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   }, []);
   useEffect(() => {
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
-  }, [msgs, sending]);
+  }, [msgs, sending, chatOpen]);
 
   const row = rows.find((r) => r.id === openId) || null;
 
@@ -445,29 +455,66 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </section>
       )}
 
-      {/* composer + thread — MC-grade chat: avatar, welcome bubble, entry
-          motion, pill composer. Crisp borders only, no glow (brand rule). */}
+      {/* chat entry — tapping anything opens the full-screen takeover.
+          The board stays the first paint; immersion starts at engagement. */}
       <section className="mt-7" id="go-composer" aria-label="chat with us">
         <style>{`
           @keyframes goMsgIn { from { opacity: 0; transform: translateY(5px); } }
           .go-msg { animation: goMsgIn 0.18s ease; }
           @keyframes goDot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-3px); opacity: 1; } }
           .go-dot { width: 6px; height: 6px; border-radius: 50%; background: #00c853; display: inline-block; animation: goDot 1.1s ease infinite; }
+          @keyframes goOverlayIn { from { opacity: 0; transform: translateY(14px); } }
+          .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
         `}</style>
         <h2 className="text-[16px] font-bold">{lot ? "tell us what you got" : "got something else, or a few of them?"}</h2>
 
-        <div className="mt-3 rounded-3xl border border-white/10 bg-white/[0.03] p-3">
-          <div ref={threadRef} role="log" aria-live="polite" className="max-h-[360px] overflow-y-auto flex flex-col gap-3 pr-1">
-            {/* standing welcome — rendered instantly, no AI call */}
+        <button
+          type="button"
+          onClick={() => setChatOpen(true)}
+          className="mt-3 w-full text-left rounded-3xl border border-white/10 bg-white/[0.03] p-3 active:scale-[0.99] transition-transform"
+          aria-haspopup="dialog"
+        >
+          <div className="flex items-end gap-2">
+            <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+            <div className="max-w-[85%]">
+              <div className="text-[11px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
+              <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
+                {msgs.length > 0
+                  ? (msgs[msgs.length - 1].from === "bot" ? msgs[msgs.length - 1].text.slice(0, 90) + (msgs[msgs.length - 1].text.length > 90 ? "…" : "") : "tap to keep the conversation going")
+                  : lot
+                    ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too."
+                    : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. cracked ones too."}
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 ml-10 flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/15 px-4 py-3">
+            <span className="flex-1 text-[15px] text-white/40">{lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}</span>
+            <span className="tcc-button-primary w-[38px] h-[38px] shrink-0 text-[17px] font-bold flex items-center justify-center" style={{ borderRadius: "50%" }}>↑</span>
+          </div>
+        </button>
+      </section>
+
+      {/* full-screen immersive chat */}
+      {chatOpen && (
+        <div style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
+          <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
+            <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="text-[15px] font-semibold leading-tight">top cash <span className="text-[#00c853]">cellular</span></div>
+              <div className="text-[11px] text-white/45 leading-tight">{status || "quotes live 24/7"}</div>
+            </div>
+            <button type="button" onClick={() => setChatOpen(false)} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[18px] flex items-center justify-center active:scale-95">
+              ✕
+            </button>
+          </header>
+
+          <div ref={threadRef} role="log" aria-live="polite" className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
             <div className="go-msg flex items-end gap-2">
               <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-              <div className="max-w-[85%]">
-                <div className="text-[11px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
-                <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
-                  {lot
-                    ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. we\u2019ll get you real numbers and cash the same day."
-                    : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. one phone or a whole drawer, cracked ones too."}
-                </div>
+              <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[14px] bg-white/[0.06] border border-white/10 leading-snug">
+                {lot
+                  ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. we\u2019ll get you real numbers and cash the same day."
+                  : "welcome to top cash — tell us what you\u2019re selling and we\u2019ll get you a real number. one phone or a whole drawer, cracked ones too."}
               </div>
             </div>
 
@@ -494,29 +541,31 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                 </div>
               </div>
             )}
+
+            {msgs.length === 0 && (
+              <div className="flex flex-wrap gap-2 ml-10">
+                {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => void send(c)}
+                    className="text-[13px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform"
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {msgs.length === 0 && (
-            <div className="flex flex-wrap gap-2 mt-3 ml-10">
-              {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => void send(c)}
-                  className="text-[13px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform"
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          )}
-
           <form
-            className="mt-3 flex gap-2 items-center"
+            className="flex gap-2 items-center px-4 py-3 border-t border-white/10"
+            style={{ background: "#0e0e0f", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
             onSubmit={(e) => { e.preventDefault(); void send(draft); }}
           >
             <input
               id="go-composer-input"
+              ref={overlayInputRef}
               className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
               placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
               value={draft}
@@ -526,14 +575,15 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             <button
               type="submit"
               disabled={sending || !draft.trim()}
-              style={{ borderRadius: "50%" }} className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[20px] font-bold disabled:opacity-40 flex items-center justify-center"
+              style={{ borderRadius: "50%" }}
+              className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[20px] font-bold disabled:opacity-40 flex items-center justify-center"
               aria-label="send"
             >
               ↑
             </button>
           </form>
         </div>
-      </section>
+      )}
 
       {/* long tail */}
       <p className="mt-8 text-[13px]">
