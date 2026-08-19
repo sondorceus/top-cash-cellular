@@ -11,6 +11,7 @@
 // client never invents or caches a price.
 import { useEffect, useRef, useState } from "react";
 import type { BoardRow } from "./board";
+import { pixelTrack } from "../components/MetaPixel";
 
 export type GoReviews = {
   avg: number;
@@ -91,6 +92,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (openId === r.id) { setOpenId(null); openIdRef.current = null; return; }
     setOpenId(r.id);
     openIdRef.current = r.id;
+    pixelTrack("ViewContent", { content_name: r.label, content_category: "board" });
     setStep(0);
     setSpec({});
     setHeld(r.upTo);
@@ -186,6 +188,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           // screen under a "locked" banner — the locked card's copy holds
           // for both cases, but the number must not.
           if (!manual && typeof d.offer !== "number") setManual(true);
+          pixelTrack("Lead", {
+            content_name: row.label,
+            value: typeof d.offer === "number" ? d.offer : 0,
+            currency: "USD",
+          });
           setLocked(true);
         }
       } else {

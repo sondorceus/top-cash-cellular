@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
+import MetaPixel from "./components/MetaPixel";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { DEVICES } from "./data/sell-catalog";
 import "./globals.css";
@@ -183,6 +184,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Custom events fire via track() inside the funnel — see
             app/page.tsx funnel_step / funnel_submit / funnel_abandon.  */}
         <Analytics />
+        {/* Meta Pixel (dataset "TCC Web") — no-op unless NEXT_PUBLIC_META_PIXEL_ID is set. */}
+        <MetaPixel />
         {/* Vercel Speed Insights — Core Web Vitals (LCP / CLS / INP /
             TTFB) reported to vercel.com → project → Speed Insights.
             Lets us catch perf regressions on the funnel without
