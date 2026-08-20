@@ -4,6 +4,7 @@ import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
 import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk } from "../../lib/sell-tools";
 import { appendChatMsg, readChat, validSession } from "../../lib/gochat-store";
+import { sendCapiLead } from "../../lib/meta-capi";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -160,6 +161,25 @@ export async function POST(req: NextRequest) {
   if (contactJustArrived && contact && validSession(sessionId)) {
     after(() => { void appendChatMsg(sessionId, "note", `CONTACT: ${contact}`); });
   }
+  // Server-side twin of the client's chat-lead pixel (same chatlead-<sid>
+  // event id → Meta dedupes; if the in-app webview ate the browser event,
+  // this copy still trains the campaign). Once per session by construction —
+  // contactJustArrived only fires the turn a contact first appears.
+  if (contactJustArrived && contact && sessionId) {
+    const capiIp = ip;
+    const capiUa = req.headers.get("user-agent");
+    after(() => {
+      void sendCapiLead({
+        eventId: `chatlead-${sessionId}`,
+        // /go sessions are "go-..."; anything else is the main-site widget.
+        sourceUrl: sessionId.startsWith("go") ? "https://topcashcellular.com/go" : "https://topcashcellular.com/",
+        ip: capiIp,
+        userAgent: capiUa,
+        contact,
+        contentName: "chat",
+      });
+    });
+  }
   const isOpener = history.length === 0;
   const handoffStarted = isHumanHandoff && history.length <= 1;
   const material = isOpener || handoffStarted || contactJustArrived;
@@ -264,6 +284,7 @@ export async function POST(req: NextRequest) {
     ? [
         "You are Theot, the assistant for Top Cash Cellular (Austin, TX device buyback). The visitor just asked to talk to a human, so a real teammate will follow up — greet them plainly, gather what the team needs, and keep it brief (2-3 sentences). Ask only ONE question at a time.",
         TONE,
+        "LANGUAGE: reply in the language the customer writes in — natural Spanish for Spanish, same plain register.",
         "Be honest: you are the team's assistant and a real person follows up — never claim to literally be a human, but never say you 'can't help' or 'can't pass a message' either.",
         "Collect, conversationally, only what's still missing, in this rough order: (1) what device they're selling (model + storage) and its condition; (2) their name; (3) the best phone number or email for the team to reach them. The moment you have a device AND a way to contact them, confirm by name: 'Thanks, {name} — I've passed this to our team and they'll text you a firm offer shortly,' then mention they can get an instant ballpark from the instant quote flow while they wait.",
         "Be straightforward, not salesy. State the facts (same-day pay, local-or-ship) only if relevant; don't pitch. Never pressure; if they decline to share info, stay helpful and still offer the quote tool.",
@@ -275,6 +296,7 @@ export async function POST(req: NextRequest) {
         // person. The website is a business; only a DM would text like a
         // person. Sonny 2026-08-19.
         "Speak as the company: 'we' and 'our team', never 'I can do $X' as if you were the owner. Never name the owner to the customer.",
+        "LANGUAGE: reply in the language the customer writes in. If they write Spanish, answer in natural Spanish (same plain, calm register — 'te pagamos hoy mismo' energy, not textbook formal). Numbers, device names and the get_quote flow work the same in any language.",
         TONE,
         ...FACTS,
 

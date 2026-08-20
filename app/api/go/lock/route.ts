@@ -27,6 +27,8 @@ import { cachedOverrides } from "../../../lib/overrides-cache";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { appendChatMsg, validSession } from "../../../lib/gochat-store";
+import { sendCapiLead } from "../../../lib/meta-capi";
+import { after } from "next/server";
 import { BOARD_MODELS } from "../../../go/board";
 import { PRICE_TABLE } from "../../../data/prices";
 
@@ -89,6 +91,7 @@ export async function POST(req: NextRequest) {
   const attest = body.attest === true;
   const src = String(body.src || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 8);
   const sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
+  const eventId = String(body.eventId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
 
   if (!entry || !Object.hasOwn(PRICE_TABLE[model] || {}, storage) || !CONDITIONS.has(condition) || !CARRIERS.has(carrier)) {
     return NextResponse.json({ ok: false, error: "bad spec" }, { status: 400 });
@@ -203,6 +206,25 @@ export async function POST(req: NextRequest) {
   if (validSession(sessionId)) {
     void appendChatMsg(sessionId, "note", `CONTACT: ${contact}`);
   }
+
+  // Server-side twin of the client's Lead pixel (same event id → Meta
+  // dedupes). The FB in-app webview drops browser events exactly here, at
+  // the money moment — this copy survives it. Best-effort, after-response.
+  after(() => {
+    // Only when the client sent its dedup id: a client that reached this
+    // POST also attempted the pixel, so a server copy WITHOUT the shared id
+    // (stale pre-deploy bundle) would double-count, not backfill.
+    if (!eventId) return;
+    void sendCapiLead({
+      eventId,
+      sourceUrl: "https://topcashcellular.com/go",
+      ip: clientIp(req),
+      userAgent: req.headers.get("user-agent"),
+      contact,
+      value: typeof offer === "number" ? offer : null,
+      contentName: specLine.slice(0, 90),
+    });
+  });
 
   return NextResponse.json({ ok: true, offer });
 }

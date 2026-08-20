@@ -19,9 +19,12 @@ declare global {
 
 /** Fire a pixel event from anywhere client-side; silent no-op when the
  *  pixel is disabled or not yet loaded. */
-export function pixelTrack(event: string, params?: Record<string, unknown>) {
+export function pixelTrack(event: string, params?: Record<string, unknown>, eventId?: string) {
   if (typeof window !== "undefined" && window.fbq) {
-    window.fbq("track", event, params || {});
+    // eventID lets the Conversions API send a server-side twin of the same
+    // event; Meta dedupes the pair and keeps whichever arrived intact.
+    if (eventId) window.fbq("track", event, params || {}, { eventID: eventId });
+    else window.fbq("track", event, params || {});
   }
 }
 

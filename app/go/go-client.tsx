@@ -460,6 +460,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (!gContact.trim()) return "we need a number or email to reach you";
     if (!gAttest) return "check the box so we know it\u2019s yours to sell";
     setGBusy(true);
+    // Per-lock dedup id, shared with the server: the pixel Lead and the
+    // Conversions API Lead carry the SAME event id, so Meta keeps one copy.
+    // Per-lock (not per-session) because "got another one?" means a session
+    // can lock several devices, each its own conversion.
+    const lockEventId = `lock-${sessionId}-${Date.now().toString(36)}`;
     try {
       const res = await fetch("/api/go/lock", {
         method: "POST",
@@ -474,12 +479,13 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           attest: true,
           src,
           sessionId,
+          eventId: lockEventId,
         }),
       });
       const d = await res.json();
       setGBusy(false);
       if (d?.ok) {
-        pixelTrack("Lead", { content_name: gRow.label, value: typeof d.offer === "number" ? d.offer : 0, currency: "USD" });
+        pixelTrack("Lead", { content_name: gRow.label, value: typeof d.offer === "number" ? d.offer : 0, currency: "USD" }, lockEventId);
         logNote(`LOCKED: ${gRow.label}${typeof d.offer === "number" ? ` $${d.offer}` : " (manual)"} — ${gContact.trim().slice(0, 60)}`);
         // Peak trust: they just saw a real number and handed over a way to
         // reach them. Ask for the second device HERE — every affordance
@@ -530,11 +536,13 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       // to MacBook / iPad / console / lot sellers. Server fires this once per
       // session (the turn a contact first appears).
       if (d?.leadCaptured) {
+        // chatlead-<sessionId> matches the server's CAPI event id — the chat
+        // lead fires once per session, so the session id alone is the key.
         pixelTrack("Lead", {
           content_name: "chat",
           content_category: "chat",
           ...(typeof d.leadValue === "number" ? { value: d.leadValue, currency: "USD" } : {}),
-        });
+        }, `chatlead-${sessionId}`);
       }
       // Owner takeover: the AI stood down and Sonny answers via chat-sync —
       // no bot bubble, his reply arrives on the next poll. Also suppress a
