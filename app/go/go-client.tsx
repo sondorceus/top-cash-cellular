@@ -542,7 +542,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       if ((d?.takeover && !d?.reply) || takeoverRef.current) setTakeover(true);
       else setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }]);
     } catch {
-      setMsgs((m) => [...m, { from: "bot", text: "we're having a moment — try again, or tap your phone on the board above" }]);
+      setMsgs((m) => [...m, { from: "bot", text: "we're having a moment — try that again, or tap your phone above and we'll price it." }]);
     }
     setSending(false);
   }

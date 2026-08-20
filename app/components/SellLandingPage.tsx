@@ -201,7 +201,7 @@ export default function SellLandingPage({ config }: { config: LandingConfig }) {
       <section className="max-w-lg mx-auto px-4 pt-8 pb-12 w-full">
         <div className="bg-[#00c853]/10 border border-[#00c853]/20 rounded-2xl p-6 text-center">
           <p className="text-lg font-bold mb-1">Get your number first</p>
-          <p className="text-[#e6e6e6] text-sm mb-4">30-second quote. No account, no obligation.</p>
+          <p className="text-[#e6e6e6] text-sm mb-4">30-second quote. No account, no signup.</p>
           <Link href="/?ask=handoff" className="inline-block bg-[#00c853] text-[#0a0a0a] px-8 py-3 rounded-2xl font-semibold hover:bg-[#00e676] transition">
             Get My Quote
           </Link>

@@ -1119,7 +1119,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                           Cancel
                         </button>
                       </div>
-                      <p className="text-[10px] text-[#666] leading-relaxed">No obligation — we&apos;ll review your number and reply. Your device stays yours until you accept.</p>
+                      <p className="text-[10px] text-[#666] leading-relaxed">We&apos;ll review your number and reply. Your device stays yours until you accept.</p>
                     </div>
                   )}
                 </div>

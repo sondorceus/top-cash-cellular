@@ -11994,7 +11994,7 @@ export default function Home() {
               const guarantees = handoffMethod === "local" ? [
                 { icon: G_TARGET, title: "Transparent Pricing", body: "What you see is what you get. We walk through the device with you in person before paying — no surprise deductions, no haggling." },
                 { icon: G_PEOPLE, title: "Inspection in Front of You", body: "Test the device together at handoff. We tell you exactly what we checked and how it matched your description before any cash changes hands." },
-                { icon: G_REFRESH, title: "Walk Away Anytime", body: "Not happy with our final offer? Just don't hand over the device — no obligation, no pressure, no hard feelings." },
+                { icon: G_REFRESH, title: "Walk Away Anytime", body: "Not happy with our final offer? Just don't hand over the device. You keep it, we shake hands, no hard feelings." },
                 { icon: G_BOLT, title: "Cash in 15 Minutes", body: "Quote → meet → inspect → cash. Average local handoff wraps in under 15 minutes. Cash on the spot, or Zelle / Cash App / Venmo / BTC instantly." },
               ] : handoffMethod === "ship" ? [
                 { icon: G_TARGET, title: "Transparent Pricing", body: "Your quote is what we pay if the device matches your description. If anything differs we email photos + a written explanation before adjusting — never a silent change." },

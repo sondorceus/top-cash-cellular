@@ -26,21 +26,21 @@ function smartReply(message: string): string {
   const m = message.toLowerCase();
   if (m.match(/\b(?:\d+|few|couple|several|multiple|bunch)\s+(?:iphones?|phones?|devices?|galaxys?|samsungs?|pixels?)\b/)) return "nice — list what you've got (model, storage, condition for each) and drop your number. we'll text you a real offer for the lot.";
   if (m.match(/financ|payment plan|still owe|owe money|carrier lock|locked to|need cash/)) return "we buy financed and carrier-locked phones all the time — the offer just prices that in, and you get paid the same day. list what you've got (model, storage, condition) and drop your number, and we'll text you a real offer.";
-  if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "Use the instant quote tool on the homepage to get an exact price — pick your device, storage, and condition. Takes about 30 seconds.";
-  if (m.match(/iphone|apple/)) return "We buy iPhones from the 11 and newer. Use the quote tool on the homepage to see what yours is worth.";
-  if (m.match(/samsung|galaxy|android/)) return "We buy Samsung Galaxy S21 and newer, plus the Z Fold and Z Flip. Use the quote tool for an instant price.";
-  if (m.match(/macbook|mac|laptop/)) return "We buy MacBooks — Air and Pro, M1 and newer. Use the quote tool for your exact model.";
-  if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "We buy PS4, PS5, Xbox One, Xbox Series S/X, and Nintendo Switch. Check the quote tool for exact pricing.";
-  if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return "We pay by cash, Cash App, Zelle, or BTC. Local Austin pickups are paid same-day, on the spot.";
-  if (m.match(/broken|crack|damage|screen/)) return "We buy devices in any condition, including cracked or water-damaged. The offer is lower than a clean device, but we'll still buy it — pick 'Fair' or 'Poor' in the quote tool.";
-  if (m.match(/how|work|process|step/)) return "Three steps: use the quote tool for an instant price, we set up a local meetup in Austin (or send a free shipping label), then we inspect and pay you. Local handoffs usually take about 15 minutes.";
-  if (m.match(/where|location|store|address|visit|come in|walk.?in|austin|meet|pickup/)) return "We're online-first — no walk-in store. You can meet us at a safe public spot in the Austin area (paid on the spot in about 15 minutes) or ship free with a prepaid label, whichever's easier.";
-  if (m.match(/ship|mail|send/)) return "Yes, we ship. We send a free prepaid FedEx label — pack it, drop it off, and we pay same-day after inspection (usually the next business day after it arrives). No store visit needed.";
-  if (m.match(/human|person|talk|call.?back|text.*back|representative|agent|someone/)) return "Sure — I can pass your message to our team and they'll get back to you. Leave your name and the best phone or email to reach you, and we'll text you back.";
-  if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return "Welcome to Top Cash Cellular. Got a device to sell? I can help with pricing, how the process works, or any other questions.";
-  if (m.match(/thank|thanks|thx|appreciate/)) return "You're welcome. When you're ready, tap 'Get Your Quote' on the homepage — or ask me anything else.";
-  if (m.match(/bye|later|done|gtg/)) return "Anytime. When you're ready to sell, use the quote tool or email support@topcashcellular.com.";
-  return "I can help with device pricing, how the buyback works, payment methods, or what we buy. Ask something like 'How much is my iPhone 15 Pro worth?' or use the instant quote tool on the homepage.";
+  if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "tell me the model, storage and condition and i'll get you a real number — takes about 30 seconds.";
+  if (m.match(/iphone|apple/)) return "we buy iPhones — 11 and newer price instantly, older ones we quote by hand. which one have you got?";
+  if (m.match(/samsung|galaxy|android/)) return "we buy Galaxy S20 and newer, plus the Z Fold and Z Flip. which one have you got?";
+  if (m.match(/macbook|mac|laptop/)) return "we buy MacBooks — Air and Pro, M1 and newer. which one have you got?";
+  if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "we buy PS4, PS5, Xbox One, Xbox Series S/X and Switch. which one have you got?";
+  if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return "we pay cash, Cash App, Zelle or BTC — your pick. local austin handoffs get paid on the spot.";
+  if (m.match(/broken|crack|damage|screen/)) return "we buy cracked and water-damaged too — the number is lower than a clean one, but we still buy it. just tell us what's wrong with it.";
+  if (m.match(/how|work|process|step/)) return "three steps: you get a real number, we meet in the austin area or send you a free shipping label, then we check it and pay you. local handoffs run about 15 minutes.";
+  if (m.match(/where|location|store|address|visit|come in|walk.?in|austin|meet|pickup/)) return "we're online-first — no walk-in store. we meet at a public spot in the austin area and pay on the spot, or we send a free prepaid label, whichever is easier.";
+  if (m.match(/ship|mail|send/)) return "yes — we send a free prepaid FedEx label. pack it, drop it off, and we pay the same day we inspect it.";
+  if (m.match(/human|person|talk|call.?back|text.*back|representative|agent|someone/)) return "sure — drop your name and the best number or email and our team will text you back.";
+  if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return "welcome to top cash. what have you got to sell?";
+  if (m.match(/thank|thanks|thx|appreciate/)) return "anytime. whenever you're ready, just tell us what you've got.";
+  if (m.match(/bye|later|done|gtg/)) return "anytime. when you're ready, tell us what you've got or email support@topcashcellular.com.";
+  return "i can help with pricing, how the buyback works, payment, or what we buy. try something like 'how much is my iPhone 15 Pro worth?'";
 }
 
 // Strip square brackets from chat input before forwarding to MC. The
@@ -126,7 +126,7 @@ export async function POST(req: NextRequest) {
   // so a fast-typing human isn't shown an error, but we skip all the
   // fan-out. ~25 msgs / 5 min is generous for real chat.
   if (!rateLimit(`chat:${ip}`, 25, 5 * 60_000).ok) {
-    return NextResponse.json({ reply: "You're sending messages really fast! Give me a few seconds, then try again 🙂" });
+    return NextResponse.json({ reply: "give me a few seconds to catch up, then send that again." });
   }
 
   const rawHistory = Array.isArray(payload.history) ? payload.history : [];
@@ -253,7 +253,7 @@ export async function POST(req: NextRequest) {
   // Shared facts both personas must respect.
   const FACTS = [
     "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
-    "We buy: iPhones 11+, Samsung Galaxy S21+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote tool on the homepage (~30 seconds).",
+    "We buy: iPhones (11+ price instantly, older ones we quote by hand), Samsung Galaxy S20+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote flow (~30 seconds).",
   ];
   // Default assistant vs. the warm concierge lead-capture flow.
   // Tone rule applied to BOTH personas: plain, calm, human — like a real
@@ -265,7 +265,7 @@ export async function POST(req: NextRequest) {
         "You are Theot, the assistant for Top Cash Cellular (Austin, TX device buyback). The visitor just asked to talk to a human, so a real teammate will follow up — greet them plainly, gather what the team needs, and keep it brief (2-3 sentences). Ask only ONE question at a time.",
         TONE,
         "Be honest: you are the team's assistant and a real person follows up — never claim to literally be a human, but never say you 'can't help' or 'can't pass a message' either.",
-        "Collect, conversationally, only what's still missing, in this rough order: (1) what device they're selling (model + storage) and its condition; (2) their name; (3) the best phone number or email for the team to reach them. The moment you have a device AND a way to contact them, confirm by name: 'Thanks, {name} — I've passed this to our team and they'll text you a firm offer shortly,' then mention they can get an instant ballpark from the quote tool on the homepage while they wait.",
+        "Collect, conversationally, only what's still missing, in this rough order: (1) what device they're selling (model + storage) and its condition; (2) their name; (3) the best phone number or email for the team to reach them. The moment you have a device AND a way to contact them, confirm by name: 'Thanks, {name} — I've passed this to our team and they'll text you a firm offer shortly,' then mention they can get an instant ballpark from the instant quote flow while they wait.",
         "Be straightforward, not salesy. State the facts (same-day pay, local-or-ship) only if relevant; don't pitch. Never pressure; if they decline to share info, stay helpful and still offer the quote tool.",
         ...FACTS,
       ].join(" ")
