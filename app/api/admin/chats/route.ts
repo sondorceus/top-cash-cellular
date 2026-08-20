@@ -11,6 +11,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { appendChatMsg, listChatSessions, readChat, validSession } from "../../../lib/gochat-store";
+import { sidToken } from "../../../lib/go-sid-token";
 import { sendSellerSms, looksLikePhone } from "../../../lib/seller-sms";
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
@@ -62,7 +63,14 @@ export async function POST(req: NextRequest) {
     const contactNote = [...state.msgs].reverse().find((m) => m.role === "note" && m.text.startsWith("CONTACT: "));
     const contact = contactNote ? contactNote.text.slice("CONTACT: ".length).trim() : "";
     if (contact && looksLikePhone(contact)) {
-      smsSent = await sendSellerSms(contact, `${text}\n\n— Top Cash Cellular · reply in your chat: https://topcashcellular.com/go`);
+      // ?sid=&k= lets the /go client adopt THIS session in whatever browser
+      // the SMS opens (the seller's original session id lives in the Meta
+      // in-app webview's localStorage — a bare /go link dumped them into a
+      // fresh empty thread and their replies never reached this console).
+      // k is the HMAC adoption proof only this authed route can mint; the
+      // client ignores ?sid= links without a valid one (session fixation).
+      const kTok = sidToken(sid);
+      smsSent = await sendSellerSms(contact, `${text}\n\n— Top Cash Cellular · reply in your chat: https://topcashcellular.com/go${kTok ? `?sid=${sid}&k=${kTok}` : ""}`);
       await appendChatMsg(sid, "note", smsSent ? `SMS sent to ${contact}` : `SMS FAILED to ${contact}`);
     } else {
       await appendChatMsg(sid, "note", "SMS skipped — no phone number on file for this session");

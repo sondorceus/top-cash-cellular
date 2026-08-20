@@ -3,7 +3,7 @@ import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
 import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk } from "../../lib/sell-tools";
-import { appendChatMsg, readChat, validSession } from "../../lib/gochat-store";
+import { appendChatMsg, readChat, takeoverStale, validSession } from "../../lib/gochat-store";
 import { sendCapiLead } from "../../lib/meta-capi";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -53,21 +53,21 @@ function smartReply(message: string): string {
   const m = message.toLowerCase();
   if (m.match(/\b(?:\d+|few|couple|several|multiple|bunch)\s+(?:iphones?|phones?|devices?|galaxys?|samsungs?|pixels?)\b/)) return "nice — list what you've got (model, storage, condition for each) and drop your number. we'll text you a real offer for the lot.";
   if (m.match(/financ|payment plan|still owe|owe money|carrier lock|locked to|need cash/)) return "we buy financed and carrier-locked phones all the time — the offer just prices that in, and you get paid the same day. list what you've got (model, storage, condition) and drop your number, and we'll text you a real offer.";
-  if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "tell me the model, storage and condition and i'll get you a real number — takes about 30 seconds.";
-  if (m.match(/iphone|apple/)) return "we buy iPhones — 11 and newer price instantly, older ones we quote by hand. which one have you got?";
-  if (m.match(/samsung|galaxy|android/)) return "we buy Galaxy S20 and newer, plus the Z Fold and Z Flip. which one have you got?";
-  if (m.match(/macbook|mac|laptop/)) return "we buy MacBooks — Air and Pro, M1 and newer. which one have you got?";
-  if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "we buy PS4, PS5, Xbox One, Xbox Series S/X and Switch. which one have you got?";
-  if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return "we pay cash, Cash App, Zelle or BTC — your pick. local austin handoffs get paid on the spot.";
-  if (m.match(/broken|crack|damage|screen/)) return "we buy cracked and water-damaged too — the number is lower than a clean one, but we still buy it. just tell us what's wrong with it.";
-  if (m.match(/how|work|process|step/)) return "three steps: you get a real number, we meet in the austin area or send you a free shipping label, then we check it and pay you. local handoffs run about 15 minutes.";
-  if (m.match(/where|location|store|address|visit|come in|walk.?in|austin|meet|pickup/)) return "we're online-first — no walk-in store. we meet at a public spot in the austin area and pay on the spot, or we send a free prepaid label, whichever is easier.";
-  if (m.match(/ship|mail|send/)) return "yes — we send a free prepaid FedEx label. pack it, drop it off, and we pay the same day we inspect it.";
+  if (m.match(/price|worth|how much|value|quote|sell.*for/)) return "tell us the model, storage and condition, plus your number — we'll text you the real offer.";
+  if (m.match(/iphone|apple/)) return "we buy iPhones — 11 and newer price instantly, older ones we quote by hand. which one have you got? drop your number too and we'll text you the offer.";
+  if (m.match(/samsung|galaxy|android/)) return "we buy Galaxy S20 and newer, plus the Z Fold and Z Flip. which one have you got? drop your number too and we'll text you the offer.";
+  if (m.match(/macbook|mac|laptop/)) return "we buy MacBooks — Air and Pro, M1 and newer. which one have you got? drop your number too and we'll text you the offer.";
+  if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return "we buy PS4, PS5, Xbox One, Xbox Series S/X and Switch. which one have you got? drop your number too and we'll text you the offer.";
+  if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return "we pay cash, Cash App, Zelle or BTC — your pick. local austin handoffs get paid on the spot. tell us what you've got and drop your number and we'll text you a real offer.";
+  if (m.match(/broken|crack|damage|screen/)) return "we buy cracked and water-damaged too — the number is lower than a clean one, but we still buy it. tell us what's wrong with it and drop your number and we'll text you a real offer.";
+  if (m.match(/how|work|process|step/)) return "three steps: you get a real number, we meet in the austin area or send you a free shipping label, then we check it and pay you. local handoffs run about 15 minutes. tell us what you've got and drop your number to start.";
+  if (m.match(/where|location|store|address|visit|come in|walk.?in|austin|meet|pickup/)) return "we're online-first — no walk-in store. we meet at a public spot in the austin area and pay on the spot, or we send a free prepaid label, whichever is easier. drop your number and we'll set it up by text.";
+  if (m.match(/ship|mail|send/)) return "yes — we send a free prepaid FedEx label. pack it, drop it off, and we pay the same day we inspect it. tell us what you've got and drop your number to get started.";
   if (m.match(/human|person|talk|call.?back|text.*back|representative|agent|someone/)) return "sure — drop your name and the best number or email and our team will text you back.";
   if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return "welcome to top cash. what have you got to sell?";
   if (m.match(/thank|thanks|thx|appreciate/)) return "anytime. whenever you're ready, just tell us what you've got.";
   if (m.match(/bye|later|done|gtg/)) return "anytime. when you're ready, tell us what you've got or email support@topcashcellular.com.";
-  return "i can help with pricing, how the buyback works, payment, or what we buy. try something like 'how much is my iPhone 15 Pro worth?'";
+  return "we can help with pricing, how the buyback works, payment, or what we buy. tell us what you've got — model, storage, condition — and drop your number, and we'll text you a real offer.";
 }
 
 // Strip square brackets from chat input before forwarding to MC. The
@@ -85,10 +85,23 @@ function sanitizeForMc(s: string): string {
 // "text me at 512-555-1212" gets a reachable lead even if they never
 // fill the optional contact field. Returns "" when nothing looks like
 // contact info.
+//
+// Digit-run guards: a 15-digit IMEI (which check_imei actively invites the
+// seller to paste) or a tracking number matched the old unanchored phone
+// regex on its first 10 digits — firing a junk lead at a random number AND
+// permanently suppressing the real contact (the IMEI sat in priorUserText as
+// contactSeenBefore). Same class as the IMG:: blob-timestamp bug. So: strip
+// 12+ digit runs (with separators collapsed) first, and anchor the phone
+// match so it can't start or end inside a longer run.
 function detectContact(s: string): string {
   const email = s.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/)?.[0];
   if (email) return email;
-  const phone = s.match(/(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/)?.[0];
+  // CONTIGUOUS runs only: a separator-tolerant scrub fused "5125551212
+  // 256gb" into one run and deleted the real phone. IMEIs/tracking numbers
+  // are pasted contiguously (dial *#06#), so \d{12,} catches them while a
+  // phone followed by storage/asking-price digits survives.
+  const scrubbed = s.replace(/\d{12,}/g, " ");
+  const phone = scrubbed.match(/(?<!\d)(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}(?!\d)/)?.[0];
   return phone || "";
 }
 
@@ -150,10 +163,23 @@ export async function POST(req: NextRequest) {
   // a takeover turn does no Anthropic/MC/SMS work, and dropping a seller's
   // message mid-negotiation with the owner is the one loss this feature
   // cannot afford. It has its own (generous) bucket instead.
+  //
+  // after=0 (full read, not just flags): the store is the AUTHORITATIVE
+  // conversation record, and we reuse it below to (a) rebuild model history
+  // when the client's copy is lost/short (FB in-app webview reloads wipe
+  // component state — a live seller got re-asked specs three turns running
+  // because every request arrived with empty history), (b) feed the guided
+  // funnel's note breadcrumbs (quote shown / LOCKED / CONTACT) into the
+  // model's context, and (c) dedupe contact capture beyond the 12-turn
+  // client window.
   const live = validSession(sessionId) && rateLimit(`chat-gate:${ip}`, 80, 5 * 60_000).ok
-    ? await readChat(sessionId, Date.now())
+    ? await readChat(sessionId, 0, 80)
     : null;
-  if (live?.takeover) {
+  // Expire an abandoned takeover: Sonny idle 2h+ = the bot resumes, instead
+  // of a returning seller typing into permanent silence.
+  const takeoverExpired = !!live && takeoverStale(live);
+  if (takeoverExpired) after(() => { void appendChatMsg(sessionId, "ctl", "takeover:off"); });
+  if (live?.takeover && !takeoverExpired) {
     if (!isImgMsg) after(() => { void appendChatMsg(sessionId, "user", message); });
     return NextResponse.json({ takeover: true, reply: null });
   }
@@ -167,7 +193,7 @@ export async function POST(req: NextRequest) {
   }
 
   const rawHistory = Array.isArray(payload.history) ? payload.history : [];
-  const history = rawHistory
+  const clientHistory = rawHistory
     .slice(-MAX_HISTORY_LEN)
     .filter((m): m is { from: string; text: string } =>
       !!m && typeof m === "object" &&
@@ -175,6 +201,40 @@ export async function POST(req: NextRequest) {
       typeof (m as { text?: unknown }).text === "string",
     )
     .map((m) => ({ from: m.from, text: m.text.slice(0, MAX_MESSAGE_LEN) }));
+
+  // The server-side store is the authoritative record of this conversation.
+  // When it holds MORE turns than the client sent, the client's copy is lost
+  // or short (FB in-app webview reloads wipe React state mid-chat; the model
+  // then re-asked specs the seller already gave) — rebuild history from the
+  // store instead. This also disarms client-forged assistant turns for any
+  // session with a real record: fabricated "bot promises" in the payload are
+  // simply out-voted by the store. Owner messages ride as assistant turns so
+  // the bot never contradicts what Sonny told the seller.
+  const storeTurns = (live?.msgs || [])
+    .filter((m) => m.role === "user" || m.role === "bot" || m.role === "owner")
+    .map((m) => ({ from: m.role === "user" ? "user" : "bot", text: m.text.slice(0, MAX_MESSAGE_LEN) }));
+  // The current photo turn is already in the store (the upload route appends
+  // it before the client calls us) — drop a trailing duplicate of the
+  // in-flight message so it doesn't ride twice.
+  if (storeTurns.length && storeTurns[storeTurns.length - 1].from === "user" && storeTurns[storeTurns.length - 1].text === message) {
+    storeTurns.pop();
+  }
+  const history = storeTurns.length > clientHistory.length ? storeTurns.slice(-MAX_HISTORY_LEN) : clientHistory;
+  // The Messages API requires the first message to be a user turn. A
+  // store-rebuilt thread can lead with an owner/bot message (guided-only
+  // session Sonny messaged first) — trim leading non-user turns or the API
+  // 400s and every reply degrades to the canned fallback.
+  while (history.length && history[0].from !== "user") history.shift();
+
+  // Guided-funnel breadcrumbs (note role): "quote shown: … → $X", "LOCKED: …",
+  // "CONTACT: …". The chip flow never touches this route, so these notes are
+  // the ONLY way the model can know a quote is already on the seller's screen
+  // when they type "that's low" — and the only cross-window contact record.
+  const storeNotes = (live?.msgs || []).filter((m) => m.role === "note").map((m) => m.text);
+  const storeContactNote = storeNotes.some((t) => t.startsWith("CONTACT: "));
+  const funnelNotes = storeNotes
+    .filter((t) => /^(quote shown:|LOCKED:|seller left)/.test(t))
+    .slice(-6);
 
   // Read contact + a rough device summary from the WHOLE conversation, not
   // just this message, so a number typed two turns ago still reaches staff.
@@ -192,13 +252,37 @@ export async function POST(req: NextRequest) {
   // message buried real leads in chatter; instead we post only on material
   // turns — the opener, a human-handoff start, or the turn a contact first
   // appears — all threaded by sessionId so one chat reads as one lead.
-  const contactSeenBefore = !!detectContact(priorUserText);
+  // contactSeenBefore also consults the store's CONTACT note: the typed-text
+  // window is only 12 turns, and the widget's optional contact FIELD never
+  // appears in typed history at all — the note is the durable dedup record.
+  const contactSeenBefore = !!detectContact(priorUserText) || storeContactNote;
   const detectedNow = !!detectContact(detectText(message));
-  const contactJustArrived = !contactSeenBefore && (detectedNow || (!!fieldContact && history.length === 0));
+  // A contact field filled in MID-conversation counts too (it used to count
+  // only on the very first message — a visitor who asked a question first and
+  // then filled the field never became a lead). The store CONTACT note is the
+  // durable dedup; the in-memory once-gate below covers the window before a
+  // freshly-written note becomes list-visible (the widget re-sends the field
+  // on EVERY request, so without it one conversation could fire a lead per
+  // turn until the note landed).
+  const fieldCounts = !!fieldContact && (live ? !storeContactNote : history.length === 0);
+  const contactJustArrived = !contactSeenBefore && (detectedNow || fieldCounts)
+    && rateLimit(`lead-once:${sessionId || ip}`, 1, 30 * 60_000).ok;
   // Park a just-arrived contact in the chat store so the takeover console's
   // "text seller" action can reach this seller. Note-role = internal only.
+  // AWAITED (not after()): the very next turn's dedup reads this note.
   if (contactJustArrived && contact && validSession(sessionId)) {
-    after(() => { void appendChatMsg(sessionId, "note", `CONTACT: ${contact}`); });
+    await appendChatMsg(sessionId, "note", `CONTACT: ${contact}`);
+  }
+  // A DIFFERENT number typed later must still update the note (the console's
+  // "text seller" and the SMS deep-link read the newest one) — without the
+  // full lead fan-out, which stays once per session.
+  if (!contactJustArrived && detectedNow && validSession(sessionId)) {
+    const nowContact = detectContact(detectText(message)).slice(0, 120);
+    const storeContactVal = [...storeNotes].reverse().find((t) => t.startsWith("CONTACT: "))?.slice("CONTACT: ".length).trim() || "";
+    if (nowContact && storeContactVal && nowContact.toLowerCase() !== storeContactVal.toLowerCase()
+      && nowContact.replace(/\D/g, "") !== storeContactVal.replace(/\D/g, "")) {
+      after(() => { void appendChatMsg(sessionId, "note", `CONTACT: ${nowContact}`); });
+    }
   }
   // Server-side twin of the client's chat-lead pixel (same chatlead-<sid>
   // event id → Meta dedupes; if the in-app webview ate the browser event,
@@ -314,6 +398,11 @@ export async function POST(req: NextRequest) {
     "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
     "We buy: iPhones (11+ price instantly, older ones we quote by hand), Samsung Galaxy S20+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote flow (~30 seconds).",
     "PHOTOS: the customer can attach photos of their device (camera button in the chat). When a photo arrives you can SEE it — acknowledge what's visible in one short plain line (cracks, screen damage, wear, or that it looks clean) and use it as the condition when you quote. If their damage description is vague, you may ask them to snap a quick photo. A photo never finalizes anything — condition is still confirmed at inspection, said once and naturally, never as a legal disclaimer.",
+    // Sourced from the live FAQ + /go page — the funnel's core closing
+    // promise, previously missing here, so the bot couldn't use or even
+    // confirm it (and "lock it in" was an empty word on this surface).
+    "PRICE LOCK: every number we quote is locked for 14 days from the quote — if the device matches what they described, that's the number, no re-quote at the meetup. Use it naturally when you give a number or when someone hesitates, and pair it with the number ask ('that price holds 14 days — drop your number and we'll text it to you so it's saved'). Past 14 days we re-quote at current market.",
+    "REVIEWS: real reviews from paid sellers live at topcashcellular.com/reviews — point people there if they ask about us or want to leave one.",
   ];
   // Default assistant vs. the warm concierge lead-capture flow.
   // Tone rule applied to BOTH personas: plain, calm, human — like a real
@@ -346,15 +435,18 @@ export async function POST(req: NextRequest) {
         // it here is theatre — it just makes the chat worse than the page it
         // sits on. Sonny 2026-08-19.
         "PRICING — you DO give real prices here, but ONLY ones that came back from the get_quote tool. NEVER invent, estimate, round, or 'ballpark' a number, and never quote from memory or from anything in this prompt. If get_quote did not return a number, you do not have a number.",
-        "SINGLE DEVICE: once you have model + condition (ask for storage and carrier if the model needs them), call get_quote and tell them the number plainly — 'your 13 Pro 256 comes out to $430'. Then offer to lock it in. That is a normal close and you can do it yourself.",
-        "MULTIPLE DEVICES (2 or more): quote each one with its own get_quote call and give them a running total, then STOP SHORT OF CLOSING. Call notify_team with the full itemized list and tell them our team will confirm the package. Do NOT promise a package price, a bundle discount, or any number above the sum of the individual quotes — bulk pricing is the owner's call, not yours.",
-        "NOT IN THE INSTANT CATALOG: if get_quote comes back with no offer (older iPhones, Intel/legacy MacBooks, tablets, watches, consoles, anything unusual), say it needs a real set of eyes on it, call notify_team, and take their contact. Never guess a number for these — some of them are deliberately manual-quote.",
+        "SINGLE DEVICE: once you have model + condition (ask for storage and carrier if the model needs them), call get_quote and tell them the number plainly, with the close in the same message — your own words each time, shaped like: 'your 13 Pro 256 comes out to $430 — want to lock it in? it holds 14 days. drop your number and we'll text it to you either way.' Never a bare yes/no 'want to lock it in?' with no number ask. When they say yes: collect name + phone if you don't have them, call notify_team with the exact spec and engine number, and confirm the concrete next step — cash meetup in the Austin area or a free shipping label, their pick, with the standard follow-up timing.",
+        "MULTIPLE DEVICES (2 or more): our team prices lots directly and these are our best sellers to work with. The MOMENT you learn it's more than one device, get their phone number FIRST — before working the full list — something like 'more than one, got it — drop your number so our team can text you the combined offer, then let's run through them.' Then quote each device with get_quote and keep a short running recap as numbers land ('so far: 13 Pro 256 good $430 + S22 cracked $95 — $525 total so far'). The itemized sum is real; anything beyond it is the owner's call — NEVER name a package price or bundle discount, and never close the lot yourself. When the list is done — or the seller slows down, gives partial answers, or goes quiet — call notify_team with whatever you have (itemized list + their number); missing specs are fine, the team fills gaps by text. End concretely: the team will text their combined offer with the standard follow-up timing.",
+        "NOT IN THE INSTANT CATALOG (MacBooks, iPads, consoles, watches, older iPhones, anything unusual): these are ALWAYS a manual quote from the team — so get their name and phone number within the first two exchanges ('so the offer actually reaches you'), THEN gather the specs the team needs (chip/model/storage/condition) for the notify_team summary. Never interrogate specs first and ask for contact last, and never guess a number for these — some are deliberately manual-quote.",
         "WHOLESALE/VENDOR: someone pitching to SELL us a lot, or asking to buy FROM us, goes straight to notify_team with their details. No quote.",
         "CONDITION HONESTY: every quote is what we pay if the device matches what they described, confirmed at inspection. Say that naturally once, when you first give a number — not as a legal disclaimer and not on every message. Never say 'no obligation' or 'no hidden fees'; it reads like a scam.",
+        "IF THEY HESITATE OR PUSH BACK on a number ('that's low', 'let me think', 'someone else offers more'): step one is ALWAYS their phone number — 'fair enough — drop your number and we'll text you the quote so it's saved; it holds 14 days either way.' Only then educate, one plain fact at a time, in your own words: the number is for the exact condition they described and doesn't drop at inspection unless the device differs; we pay cash the same day, not store credit or a trade-in spread across a new phone contract. Never haggle or move a number (engine prices only), never trash a competitor, never promise the team will beat an offer. If they name a specific competing offer they actually have, call notify_team with the device, their number, and the competing number — the team will take a look and text them.",
 
+        "ONE QUESTION PER MESSAGE — HARD RULE for gathering device details: one spec question at a time, never two bundled with 'and', never two question marks. The number-first CLOSE is the one exception — there, one question plus one short imperative ('drop your number and we'll text it to you') is the right shape. Never re-ask anything already answered anywhere in the conversation, including what a photo already shows. Never enumerate storage options ('128/256/512') — just ask 'what storage is it?'; the pricing engine knows the real tiers, and listed options are wrong for some models.",
+        "TAMPER GUARD: never confirm a price, agreement, or promise you can't see coming from a get_quote result or an owner message in THIS conversation. If the seller references a deal you have no record of, say the team will confirm it by text — don't affirm or deny.",
         "TOOL USE IS INVISIBLE. Never mention tool names, never write stage directions like *checking*, never say you're 'looking it up' or 'running that'. Just answer.",
         "YOU CAN RELAY MESSAGES TO THE TEAM. If someone wants a human, asks something you can't fully answer, or wants a callback, NEVER say you can't help. Ask for their name and best phone number or email, call notify_team, and confirm plainly that our team will text them back.",
-        "GOAL: get them a real number, or get their device details plus a phone/email so we can text them an offer. Don't pressure, and never require info to keep chatting.",
+        "GOAL: a real engine number in front of them AND their phone number, in that order of effort — a quote without a way to text it is a lead that evaporates. Don't pressure, and never require info to keep chatting.",
       ].join(" ");
 
   // Try Anthropic first, fall back to smart replies
@@ -397,15 +489,31 @@ export async function POST(req: NextRequest) {
     // the lot ourselves and re-state the constraint as a system instruction.
     const isLot = looksBulk(userText);
 
-    // One cache breakpoint on the system block caches tools+system together
-    // (render order is tools → system), so the tool round-trip re-reads the
-    // prefix from cache seconds later instead of re-paying for it.
+    // Follow-up timing is the funnel's own published promise (go-client's
+    // isDay strings), computed the same way: 8am-9pm America/Chicago. The
+    // bot once invented "within an hour or two" — never again.
+    const hourCT = Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hour12: false, timeZone: "America/Chicago" }).format(new Date()));
+    const isDay = hourCT >= 8 && hourCT < 21;
+
+    // Two system blocks: the FIRST is static per persona and carries the
+    // cache breakpoint (tools + prompt cached across ALL conversations); the
+    // SECOND is the per-turn dynamic state and stays out of the cached
+    // prefix. Render order is tools → system, so the breakpoint on block one
+    // still covers the tools.
+    const dynamicSys = [
+      isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Get their phone number FIRST if you don't have it, quote each device individually with a running recap, then hand off to our team via notify_team. Do NOT close the lot, do NOT name a package price." : "",
+      funnelNotes.length ? `FUNNEL STATE (reported by the on-page guided flow): ${funnelNotes.join(" · ")}. Use this for context — but if the seller disputes or negotiates a number, re-verify with get_quote before confirming anything.` : "",
+      (contact || storeContactNote) ? "A phone number or email for this seller is ALREADY on file — never ask for it again; the close moves to confirming the next step (meetup or label)." : "",
+      `FOLLOW-UP TIMING: it is currently ${isDay ? "business hours — when the team takes over, the only promise you make is 'our team will text you shortly'" : "after hours — when the team takes over, the only promise you make is 'our team will text you first thing in the morning'"}. Never invent a more specific window.`,
+    ].filter(Boolean).join("\n\n");
+
     const system = [
       {
         type: "text" as const,
-        text: systemPrompt + (isLot ? "\n\nTHIS CONVERSATION IS A MULTI-DEVICE LOT. Quote each device individually and give a running total, then hand off to our team via notify_team. Do NOT close, do NOT name a package price." : ""),
+        text: systemPrompt,
         cache_control: { type: "ephemeral" as const },
       },
+      { type: "text" as const, text: dynamicSys },
     ];
 
     let reply = "";
@@ -448,7 +556,13 @@ export async function POST(req: NextRequest) {
           }
           out = q;
         } else if (tu.name === "check_imei") {
-          out = await runImeiCheck(tu.input as { imei?: string });
+          // Sickw lookups are PAID (~$0.05 each) and one message can carry
+          // many Luhn-valid IMEIs across MAX_TOOL_ROUNDS — bound them like
+          // every other costly path. The graceful reason keeps the flow
+          // alive: the bot takes the IMEI down and hands off instead.
+          out = rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok
+            ? await runImeiCheck(tu.input as { imei?: string })
+            : { ok: false, reason: "lookup unavailable right now — take the IMEI down and notify_team; the team will run it" };
         } else if (tu.name === "notify_team") {
           // The site chat's owner alert rides the SAME MC comms + owner-SMS
           // path the rest of this route uses, so a chat handoff shows up
@@ -462,26 +576,43 @@ export async function POST(req: NextRequest) {
           // phone. The MC comm (console, not a buzz) still always posts.
           const notifySmsOk = rateLimit(`chat-sms:${ip}`, 3, 15 * 60_000).ok
             && rateLimit("chat-sms:global", 20, 10 * 60_000).ok;
-          after(async () => {
-            try {
-              await fetch(`${MC_API}/api/comms`, {
-                method: "POST",
-                headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  from: "topcash-web",
-                  fromName: "Top Cash Cellular Chat",
-                  role: "system",
-                  body: `[CHAT HANDOFF]${sessionId ? ` sess:${sessionId} ·` : ""} ${sanitizeForMc(summary)}${toolContact ? `\nreply to: ${sanitizeForMc(toolContact)}` : ""}${quotedLines.length ? `\nengine: ${quotedLines.join(" | ")}` : ""}${validSession(sessionId) ? `\ntake over: https://topcashcellular.com/admin/chats?session=${sessionId}` : ""}`,
-                  tags: ["chat-lead", "chat-handoff", "needs-callback", ...(isLot ? ["multi-device"] : []), ...(sessionId ? [`sess-${sessionId}`] : [])],
-                  priority: "high",
-                }),
-              });
-            } catch { /* silent */ }
-            if (notifySmsOk) await notifyOwnerSms(
+          // The MC post is AWAITED (5s cap): this comm is the only record of
+          // a multi-device lot — lots never lock through /go/lock — and the
+          // bot is about to tell the seller "the team was notified". A silent
+          // failure here loses the highest-value lead type while the bot
+          // vouches for it (the same lesson /go/lock's awaited delivery
+          // encodes). On failure the model is told honestly so it falls back
+          // to collecting the number in-thread.
+          let handoffOk = false;
+          try {
+            const r = await fetch(`${MC_API}/api/comms`, {
+              method: "POST",
+              headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+              signal: AbortSignal.timeout(5000),
+              body: JSON.stringify({
+                from: "topcash-web",
+                fromName: "Top Cash Cellular Chat",
+                role: "system",
+                body: `[CHAT HANDOFF]${sessionId ? ` sess:${sessionId} ·` : ""} ${sanitizeForMc(summary)}${toolContact ? `\nreply to: ${sanitizeForMc(toolContact)}` : ""}${quotedLines.length ? `\nengine: ${quotedLines.join(" | ")}` : ""}${validSession(sessionId) ? `\ntake over: https://topcashcellular.com/admin/chats?session=${sessionId}` : ""}`,
+                tags: ["chat-lead", "chat-handoff", "needs-callback", ...(isLot ? ["multi-device"] : []), ...(sessionId ? [`sess-${sessionId}`] : [])],
+                priority: "high",
+              }),
+            });
+            handoffOk = r.ok;
+          } catch { /* handoffOk stays false */ }
+          // Recoverable breadcrumb in the chat store either way — the console
+          // shows the itemized intake even if MC ate the comm.
+          if (validSession(sessionId)) {
+            after(() => { void appendChatMsg(sessionId, "note", `HANDOFF${handoffOk ? "" : " (MC POST FAILED)"}: ${summary.slice(0, 400)}${toolContact ? ` · reply to: ${toolContact}` : ""}`); });
+          }
+          if (notifySmsOk) {
+            after(() => notifyOwnerSms(
               `${isLot ? "📦" : "💬"} TopCash chat${isLot ? " LOT" : ""}: ${summary.slice(0, 220)}${toolContact ? `\nReply to: ${toolContact}` : ""}${quotedLines.length ? `\nEngine: ${quotedLines.join(" | ")}` : ""}`,
-            );
-          });
-          out = { ok: true, note: "team notified" };
+            ));
+          }
+          out = handoffOk || notifySmsOk
+            ? { ok: true, note: "team notified" }
+            : { ok: false, reason: "could not reach the team system — get their phone number in the chat and tell them the conversation is saved and the team will text them; do not promise a time window" };
         } else {
           out = { ok: false, reason: "unknown tool" };
         }
@@ -499,7 +630,7 @@ export async function POST(req: NextRequest) {
     // Sonny answers this message, not the bot — and never both.
     if (validSession(sessionId)) {
       const recheck = await readChat(sessionId, Date.now()).catch(() => null);
-      if (recheck?.takeover) {
+      if (recheck?.takeover && !takeoverStale(recheck)) {
         if (!isImgMsg) after(() => { void appendChatMsg(sessionId, "user", message); });
         return NextResponse.json({ takeover: true, reply: null });
       }

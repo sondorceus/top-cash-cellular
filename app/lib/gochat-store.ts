@@ -24,6 +24,10 @@ export type ChatState = {
   takeover: boolean;
   notified: boolean;
   lastTs: number;
+  // When the takeover last changed / the owner last spoke — lets callers
+  // expire an abandoned takeover instead of muting the bot forever.
+  takeoverTs: number;
+  lastOwnerTs: number;
 };
 
 const SID_RE = /^[a-z0-9_-]{4,32}$/i;
@@ -69,11 +73,26 @@ function parsePath(pathname: string): Parsed | null {
   return null;
 }
 
-export async function readChat(sid: string, after = 0): Promise<ChatState> {
-  const empty: ChatState = { msgs: [], takeover: false, notified: false, lastTs: 0 };
+// `cap` bounds CONTENT fetches to the newest N non-ctl records — the chat
+// route reads the store every turn and only needs recent history + notes;
+// flags (takeover/notified/ts) stay pathname-derived over the FULL record
+// list regardless.
+export async function readChat(sid: string, after = 0, cap = Infinity): Promise<ChatState> {
+  const empty: ChatState = { msgs: [], takeover: false, notified: false, lastTs: 0, takeoverTs: 0, lastOwnerTs: 0 };
   if (!validSession(sid)) return empty;
   try {
-    const { blobs } = await list({ prefix: `gochat/${sid}/`, limit: 1000 });
+    // Paginate like listChatSessions does — a single list() silently truncates
+    // at the SDK's 1000-blob page, and blobs list OLDEST-first (paths start
+    // with the ms timestamp), so truncation would hide the NEWEST records:
+    // takeover ctl flags and owner messages. Bounded at 5 pages.
+    const blobs: { url: string; pathname: string }[] = [];
+    let cursor: string | undefined;
+    for (let page = 0; page < 5; page++) {
+      const res = await list({ prefix: `gochat/${sid}/`, limit: 1000, cursor });
+      blobs.push(...res.blobs);
+      if (!res.hasMore || !res.cursor) break;
+      cursor = res.cursor;
+    }
     const parsed = blobs
       .map((b) => ({ url: b.url, p: parsePath(b.pathname) }))
       .filter((b): b is { url: string; p: Parsed } => b.p !== null)
@@ -81,14 +100,17 @@ export async function readChat(sid: string, after = 0): Promise<ChatState> {
     let takeover = false;
     let notified = false;
     let lastTs = 0;
+    let takeoverTs = 0;
+    let lastOwnerTs = 0;
     for (const b of parsed) {
       if (b.p.ts > lastTs) lastTs = b.p.ts;
+      if (b.p.role === "owner" && b.p.ts > lastOwnerTs) lastOwnerTs = b.p.ts;
       if (b.p.role !== "ctl") continue;
-      if (b.p.cmd === "tkon") takeover = true;
-      else if (b.p.cmd === "tkoff") takeover = false;
+      if (b.p.cmd === "tkon") { takeover = true; takeoverTs = b.p.ts; }
+      else if (b.p.cmd === "tkoff") { takeover = false; takeoverTs = b.p.ts; }
       if (b.p.cmd === "ntf") notified = true;
     }
-    const wanted = parsed.filter((b) => b.p.role !== "ctl" && b.p.ts > after);
+    const wanted = parsed.filter((b) => b.p.role !== "ctl" && b.p.ts > after).slice(-(Number.isFinite(cap) ? cap : parsed.length));
     const fetched = await Promise.all(
       wanted.map((b) =>
         fetch(b.url, { cache: "no-store" })
@@ -97,10 +119,21 @@ export async function readChat(sid: string, after = 0): Promise<ChatState> {
           .catch(() => null),
       ),
     );
-    return { msgs: fetched.filter((m): m is StoredMsg => m !== null), takeover, notified, lastTs };
+    return { msgs: fetched.filter((m): m is StoredMsg => m !== null), takeover, notified, lastTs, takeoverTs, lastOwnerTs };
   } catch {
     return empty;
   }
+}
+
+// An abandoned takeover must not mute the bot forever (live case: a seller's
+// session ended on takeover:on with zero owner messages after — every message
+// they send all week would be swallowed silently). Stale = takeover on and
+// the owner hasn't touched the thread (flag or message) in 2 hours.
+export const TAKEOVER_STALE_MS = 2 * 3600_000;
+export function takeoverStale(state: ChatState, now = Date.now()): boolean {
+  if (!state.takeover) return false;
+  const lastOwnerActivity = Math.max(state.takeoverTs, state.lastOwnerTs);
+  return lastOwnerActivity > 0 && now - lastOwnerActivity > TAKEOVER_STALE_MS;
 }
 
 /**

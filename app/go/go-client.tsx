@@ -69,6 +69,10 @@ const CATEGORIES: { key: string; label: string; img: string; deterministic?: "ip
 
 type Msg =
   | { from: "user" | "bot" | "owner"; text: string }
+  // Local-only error bubble: rendered like a bot message but NEVER included
+  // in the history sent to /api/chat (the kind filter drops it) — a client
+  // hiccup line must not ride into the model as a real bot turn.
+  | { from: "bot"; kind: "err"; text: string }
   | { from: "bot"; kind: "models"; prefix: "ip" | "gs"; done?: boolean }
   | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier" | "another"; options: { key: string; label: string }[]; done?: boolean }
   | { from: "bot"; kind: "quote"; label: string; offer: number; done?: boolean }
@@ -93,6 +97,11 @@ function newSessionId(src: string) {
 // so a returning seller resumes the SAME thread — including replies Sonny
 // sent from /admin/chats while they were gone — instead of starting over.
 const SESSION_KEY = "tcc-go-session";
+// The owner's SMS deep-link (?sid=&k=) is adopted in the restore effect —
+// AFTER the server verifies k — never here: an unverified ?sid= would let
+// anyone who shares a crafted /go link plant their own (readable) session in
+// a victim's browser.
+const GO_SID_SHAPE = /^go(-[a-z0-9]{1,10})?-[a-z0-9]{2,12}$/i;
 function persistentSessionId(src: string): string {
   if (typeof window === "undefined") return newSessionId(src);
   try {
@@ -150,7 +159,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // show the crack. File input is hidden; the camera button triggers it.
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [sessionId] = useState(() => persistentSessionId(src));
+  // Settable: the restore effect swaps in a server-verified ?sid= session
+  // from the owner's SMS deep-link.
+  const [sessionId, setSessionId] = useState(() => persistentSessionId(src));
   const threadRef = useRef<HTMLDivElement>(null);
   // Guards the async chip flow against row-switching: a response for a row
   // that is no longer open must be discarded, never applied to the new row.
@@ -188,6 +199,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [takeover, setTakeover] = useState(false);
   const takeoverRef = useRef(false);
   useEffect(() => { takeoverRef.current = takeover; }, [takeover]);
+  // AI-path close signals: the server returns `quoted` when Theot named an
+  // engine number and `leadCaptured` when a contact landed. The nudges key on
+  // these too — an AI quote is just as much "a real number on screen" as a
+  // guided quote card, and a captured contact means stop asking for one.
+  const [aiQuoted, setAiQuoted] = useState(false);
+  const [contactCaptured, setContactCaptured] = useState(false);
   const lastSyncRef = useRef(0);
   const hasActivity = msgs.length > 0;
   useEffect(() => {
@@ -217,24 +234,73 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // Sonny sent while they were gone. A fresh session returns nothing and
   // costs one cheap empty read.
   const restoredRef = useRef(false);
+  // Any seller interaction this page load (tile tap, chip, typed message,
+  // photo) — rehydration must never clobber a flow they already started.
+  const interactedRef = useRef(false);
   useEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
     void (async () => {
+      // Owner SMS deep-link adoption: ?sid=&k= — the server checks k (an
+      // HMAC only the authed console can mint) and vouches with adopt:true;
+      // anything else is ignored and we restore the local session as usual.
+      let sid = sessionId;
+      let adoptParam = "";
       try {
-        const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=0&full=1`, { cache: "no-store" });
+        const qs = new URLSearchParams(window.location.search);
+        const urlSid = qs.get("sid") || "";
+        const urlK = qs.get("k") || "";
+        if (GO_SID_SHAPE.test(urlSid) && urlSid.length <= 32 && /^[a-f0-9]{20}$/i.test(urlK)) {
+          sid = urlSid;
+          adoptParam = `&k=${urlK}`;
+        }
+      } catch { /* local session */ }
+      try {
+        const r = await fetch(`/api/go/chat-sync?session=${sid}&after=0&full=1${adoptParam}`, { cache: "no-store" });
         if (!r.ok) return;
         const d = await r.json();
+        if (adoptParam) {
+          if (!d?.adopt) return; // server refused the deep-link — keep the local session untouched
+          setSessionId(sid);
+          try { localStorage.setItem(SESSION_KEY, JSON.stringify({ sid, ts: Date.now() })); } catch { /* private mode */ }
+          setChatOpen(true); // the SMS said "reply in your chat" — the board would be a dead end
+        }
         if (Array.isArray(d?.msgs) && d.msgs.length) {
-          setMsgs((cur) => (cur.length ? cur : d.msgs.map((m: { role: string; text: string }) => ({
+          const restored: Msg[] = d.msgs.map((m: { role: string; text: string }) => ({
             from: m.role === "user" ? ("user" as const) : m.role === "owner" ? ("owner" as const) : ("bot" as const),
             text: String(m.text),
-          }))));
+          }));
+          // MERGE, never discard: if the seller tapped a tile before this
+          // fetch resolved, dropping the restored thread also skipped the
+          // cursor past Sonny's while-away replies — they'd never render.
+          // Restored records are strictly older than anything from this
+          // page load, so they belong in front.
+          setMsgs((cur) => (cur.length ? [...restored, ...cur] : restored));
+        }
+        // Re-hydrate an un-locked guided quote — the highest-intent restore
+        // moment. The server returns it only when no lock followed and the
+        // quote is inside its 14-day window; we skip it when Sonny is live
+        // or the seller already started a new flow this page load (their
+        // taps must never get clobbered with last week's device).
+        const pq = d?.pendingQuote;
+        if (pq && typeof pq.model === "string" && !d?.takeover && !interactedRef.current) {
+          const row = rows.find((x) => x.id === pq.model);
+          if (row && typeof pq.offer === "number") {
+            setGRow(row);
+            setGSpec({ storage: String(pq.storage || ""), condition: String(pq.condition || ""), carrier: String(pq.carrier || "") });
+            setMsgs((cur) => [
+              ...cur,
+              { from: "bot", text: `welcome back — your number on the ${row.label} is still good. lock it in below and we’ll text it to you.` },
+              { from: "bot", kind: "quote", label: `${row.label} ${STORAGE_LABELS[String(pq.storage)] || ""}`, offer: pq.offer },
+              { from: "bot", kind: "lockform", manual: false },
+            ]);
+          }
         }
         if (typeof d?.lastTs === "number" && d.lastTs > lastSyncRef.current) lastSyncRef.current = d.lastTs;
         if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
       } catch { /* fresh thread */ }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);
 
   // Guided-funnel breadcrumbs for the owner console — the chip flow never
@@ -254,6 +320,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // card. One-shot per page load; never fires once they've locked.
   const awayNudgedRef = useRef(false);
   const hiddenAtRef = useRef(0);
+  const aiQuotedRef = useRef(false);
+  useEffect(() => { aiQuotedRef.current = aiQuoted; }, [aiQuoted]);
+  const contactCapturedRef = useRef(false);
+  useEffect(() => { contactCapturedRef.current = contactCaptured; }, [contactCaptured]);
   useEffect(() => {
     const onVis = () => {
       if (document.visibilityState === "hidden") {
@@ -261,10 +331,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         return;
       }
       if (awayNudgedRef.current) return;
+      // Never talk over a live takeover, and never ask for a number we have.
+      if (takeoverRef.current || contactCapturedRef.current) return;
       if (!hiddenAtRef.current || Date.now() - hiddenAtRef.current < 30_000) return;
       setMsgs((cur) => {
         if (awayNudgedRef.current) return cur;
-        const hasQuote = cur.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform"));
+        const hasQuote = aiQuotedRef.current || cur.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform"));
         const isLocked = cur.some((m) => "kind" in m && m.kind === "locked");
         if (!hasQuote || isLocked) return cur;
         awayNudgedRef.current = true;
@@ -287,18 +359,38 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // activity, so it fires 25s after the seller last did anything.
   const nudgedRef = useRef(false);
   useEffect(() => {
-    if (nudgedRef.current) return;
+    if (nudgedRef.current || takeover) return;
     if (!msgs.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return;
     const t = setTimeout(() => {
       setMsgs((cur) => {
-        if (nudgedRef.current) return cur;
+        if (nudgedRef.current || takeoverRef.current) return cur;
         if (!cur.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return cur;
         nudgedRef.current = true;
+        logNote("idle lockform — nudged: just your number works");
         return [...cur, { from: "bot", text: "just your number works — we’ll text you the quote so you don’t lose it." }];
       });
     }, 25000);
     return () => clearTimeout(t);
-  }, [msgs]);
+  }, [msgs, takeover]);
+
+  // AI-path twin of the idle nudge: Theot named an engine number in plain
+  // text (no lock form exists on that path), the seller went quiet, and no
+  // contact is on file — one bubble, 45s after the last activity. This was
+  // the dominant observed loss: quote-then-silence with the last message
+  // never asking for a number.
+  const aiNudgedRef = useRef(false);
+  useEffect(() => {
+    if (aiNudgedRef.current || !aiQuoted || contactCaptured || takeover) return;
+    const t = setTimeout(() => {
+      setMsgs((cur) => {
+        if (aiNudgedRef.current || takeoverRef.current || contactCapturedRef.current) return cur;
+        aiNudgedRef.current = true;
+        logNote("idle after AI quote — nudged for number");
+        return [...cur, { from: "bot", text: "that number holds for 14 days — drop your phone number and we’ll text it to you so it’s saved." }];
+      });
+    }, 45000);
+    return () => clearTimeout(t);
+  }, [msgs, aiQuoted, contactCaptured, takeover]);
 
   const row = rows.find((r) => r.id === openId) || null;
 
@@ -425,7 +517,15 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
   function categoryTap(cat: (typeof CATEGORIES)[number]) {
     if (gBusy) return;
+    interactedRef.current = true;
     setChatOpen(true);
+    // Sonny is live: the deterministic flow must not quote a second number
+    // over his negotiation. Route the tap's intent through send() — it's
+    // stored for the console and the bot stays silent.
+    if (takeoverRef.current) {
+      void send(`i got a ${cat.label.toLowerCase()} to sell`);
+      return;
+    }
     if (cat.deterministic) {
       pushMsgs(
         { from: "user", text: cat.label },
@@ -440,7 +540,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
   function deviceTap(r: BoardRow) {
     if (gBusy) return;
+    interactedRef.current = true;
     setChatOpen(true);
+    if (takeoverRef.current) {
+      void send(r.label);
+      return;
+    }
     setGRow(r);
     setGSpec({});
     pixelTrack("ViewContent", { content_name: r.label, content_category: "chat" });
@@ -453,6 +558,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
   async function chipTap(dim: "storage" | "condition" | "carrier" | "another", key: string, label: string) {
     if (gBusy) return;
+    interactedRef.current = true;
+    if (takeoverRef.current) {
+      void send(label);
+      return;
+    }
     // Second device: restart the guided flow in place, keeping the thread.
     // Each device locks as its own lead, threaded to the same session id.
     if (dim === "another") {
@@ -504,7 +614,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       const res = await fetch("/api/go/quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: gRow.id, storage: spec.storage, condition: spec.condition, carrier: key }),
+        // sessionId → the quote route writes the "quote shown"/QSPEC
+        // breadcrumbs SERVER-SIDE with the engine result in hand (they feed
+        // the chat brain's funnel context + restore-time rehydration, so
+        // they must not be client-authored).
+        body: JSON.stringify({ model: gRow.id, storage: spec.storage, condition: spec.condition, carrier: key, sessionId }),
       });
       const d = await res.json();
       if (d?.ok && typeof d.offer === "number") {
@@ -513,7 +627,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         // non-lockers become a retargeting audience (Lead still fires only
         // on lock).
         pixelTrack("InitiateCheckout", { content_name: gRow.label, value: d.offer, currency: "USD" });
-        logNote(`quote shown: ${gRow.label} ${spec.storage || ""} ${spec.condition || ""} ${key} → $${d.offer}`);
         pushMsgs(
           { from: "bot", kind: "quote", label: `${gRow.label} ${STORAGE_LABELS[spec.storage || ""] || ""}`, offer: d.offer },
           { from: "bot", kind: "lockform", manual: false },
@@ -561,7 +674,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       setGBusy(false);
       if (d?.ok) {
         pixelTrack("Lead", { content_name: gRow.label, value: typeof d.offer === "number" ? d.offer : 0, currency: "USD" }, lockEventId);
-        logNote(`LOCKED: ${gRow.label}${typeof d.offer === "number" ? ` $${d.offer}` : " (manual)"} — ${gContact.trim().slice(0, 60)}`);
+        // (the LOCKED breadcrumb is written server-side by /api/go/lock)
         // Peak trust: they just saw a real number and handed over a way to
         // reach them. Ask for the second device HERE — every affordance
         // (category grid, "i got a few phones" chip) is gated on an empty
@@ -597,17 +710,35 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     // IMG::blob: local URLs, and a text send would snapshot those into history
     // as junk the model can't read.
     if (!t || sending || uploading) return;
+    interactedRef.current = true;
     setDraft("");
     const history = msgs.filter((m): m is { from: "user" | "bot"; text: string } => !("kind" in m)).map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
     setMsgs((m) => [...m, { from: "user", text: t }]);
     setSending(true);
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: t, history, sessionId }),
-      });
+      // One silent retry: a dropped webview fetch used to swallow the turn
+      // entirely — the seller saw an error bubble, the store never got their
+      // message, and Sonny priced from a thread with a hole in it.
+      let res: Response;
+      try {
+        res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: t, history, sessionId }),
+        });
+      } catch {
+        await new Promise((r) => setTimeout(r, 900));
+        res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: t, history, sessionId }),
+        });
+      }
       const d = await res.json();
+      // Close-signal tracking for the nudges: an engine number was named /
+      // a contact landed.
+      if (Array.isArray(d?.quoted) && d.quoted.length) setAiQuoted(true);
+      if (d?.leadCaptured) setContactCaptured(true);
       // A typed contact IS a lead — the server already routed it to MC and
       // Sonny's phone. Report it to Meta too, or the campaign only ever
       // learns from iPhone/Samsung carousel lockers and stops showing the ad
@@ -625,10 +756,20 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       // Owner takeover: the AI stood down and Sonny answers via chat-sync —
       // no bot bubble, his reply arrives on the next poll. Also suppress a
       // bot reply that was already in flight when the takeover flipped.
-      if ((d?.takeover && !d?.reply) || takeoverRef.current) setTakeover(true);
-      else setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }]);
+      // The server is authoritative: a real reply means the bot answered
+      // (including after it expired a stale takeover) — render it and clear
+      // the live banner. The bot-reply-raced-by-takeover case is already
+      // handled server-side (the post-generation recheck discards it).
+      if (d?.takeover && !d?.reply) setTakeover(true);
+      else {
+        if (takeoverRef.current) setTakeover(false);
+        setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }]);
+      }
     } catch {
-      setMsgs((m) => [...m, { from: "bot", text: "we're having a moment — try that again, or tap your phone above and we'll price it." }]);
+      // kind:"err" keeps this local-only bubble OUT of the history sent to
+      // the model, and the breadcrumb lets the console see the gap.
+      logNote(`client send failed: ${t.slice(0, 80)}`);
+      setMsgs((m) => [...m, { from: "bot", kind: "err", text: "we're having a moment — try that again, or tap your phone above and we'll price it." }]);
     }
     setSending(false);
   }
@@ -669,14 +810,18 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // silent and Sonny sees the photos in the console instead.
   async function sendPhotos(files: File[]) {
     if (uploading || files.length === 0) return;
+    interactedRef.current = true;
     const MAX_BATCH = 6;
     const batch = files.slice(0, MAX_BATCH); // per-pick cap; they can attach again
     const history = msgs.filter((m): m is { from: "user" | "bot"; text: string } => !("kind" in m)).map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
-    // A number is already on screen (guided quote/lock card) — a photo must NOT
-    // trigger an AI reply that could name a DIFFERENT number under it (the
-    // two-numbers bait-and-switch this page exists to avoid). The photo still
-    // uploads, pings Sonny, and is stored; we just don't run the model turn.
-    const quoteOnScreen = msgs.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform" || m.kind === "locked"));
+    // A number is ACTIVELY on screen (un-retired guided quote/lock card) — a
+    // photo must NOT trigger an AI reply that could name a DIFFERENT number
+    // under it (the two-numbers bait-and-switch this page exists to avoid).
+    // The photo still uploads, pings Sonny, and is stored; we just don't run
+    // the model turn. Done/locked cards don't count: after a lock, the next
+    // device's photos need the AI turn again — the suppression used to be
+    // forever-sticky and muted every photo after any lock.
+    const quoteOnScreen = msgs.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform") && !m.done);
     const locals = batch.map((f) => URL.createObjectURL(f));
     setMsgs((m) => [...m, ...locals.map((u) => ({ from: "user" as const, text: `IMG::${u}` }))]);
     setUploading(true);
@@ -734,8 +879,13 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           body: JSON.stringify({ message: `IMG::${last}`, history: batchHistory, sessionId }),
         });
         const dd = await res.json();
-        if ((dd?.takeover && !dd?.reply) || takeoverRef.current) setTakeover(true);
-        else if (dd?.reply) setMsgs((m) => [...m, { from: "bot", text: dd.reply }]);
+        if (Array.isArray(dd?.quoted) && dd.quoted.length) setAiQuoted(true);
+        if (dd?.leadCaptured) setContactCaptured(true);
+        if (dd?.takeover && !dd?.reply) setTakeover(true);
+        else if (dd?.reply) {
+          if (takeoverRef.current) setTakeover(false);
+          setMsgs((m) => [...m, { from: "bot", text: dd.reply }]);
+        }
       } catch { /* photos are stored + surfaced either way */ }
       setSending(false);
     }
@@ -1020,6 +1170,17 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                     <div className={`max-w-[85%] rounded-2xl rounded-bl-md ${pad} text-[15px] bg-white/[0.06] border border-white/10`}>
                       {body}
+                    </div>
+                  </div>
+                );
+              }
+              if (m.kind === "err") {
+                // Local-only error bubble — bot-styled, never sent as history.
+                return (
+                  <div key={i} className="go-msg flex items-end gap-2">
+                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10">
+                      {m.text}
                     </div>
                   </div>
                 );

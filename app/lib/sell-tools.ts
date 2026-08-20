@@ -16,6 +16,7 @@ import { after } from "next/server";
 import { quoteDevice, normalizeStorage, type QuoteSpec } from "./quote";
 import { PRICE_TABLE } from "../data/prices";
 import { notifyOwnerSms } from "./owner-sms";
+import { rateLimit } from "./rate-limit";
 
 const have = (slug: string): boolean => !!PRICE_TABLE[slug];
 
@@ -100,10 +101,22 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
  * routing rule — a multi-device seller goes to the owner to close, so this
  * must not depend on the model choosing to behave.
  */
+const BULK_DEVICE_WORDS = "iphones?|samsungs?|galaxys?|pixels?|phones?|devices?|macbooks?|laptops?|ipads?|tablets?|consoles?|celulares|tel[eé]fonos";
 export function looksBulk(text: string): boolean {
   return (
-    /\b(?:two|three|four|five|six|\d{1,2})\s+(?:iphones?|samsungs?|galaxys?|pixels?|phones?|devices?|macbooks?|laptops?|ipads?|tablets?|consoles?)\b/i.test(text) ||
-    /\b(?:bulk|wholesale|a lot of (?:phones|devices)|several (?:phones|devices))\b/i.test(text)
+    // "3 iphones", "15 phones", "two galaxys" — numeric quantifier must be 2+
+    // (a bare "1 phone"/"one phone" is a single and must NOT arm lot handling).
+    new RegExp(`\\b(?:[2-9]|[1-9]\\d|two|three|four|five|six|seven|eight|nine|ten|dozen)\\s*x?\\s+(?:${BULK_DEVICE_WORDS})\\b`, "i").test(text) ||
+    // Informal quantifiers — including the /go page's own starter chip
+    // "i got a few phones" and Spanish "varios telefonos".
+    new RegExp(`\\b(?:a\\s+)?(?:few|couple|bunch|handful|lot|lots|several|multiple|pair|varios|unos)\\s+(?:of\\s+)?(?:${BULK_DEVICE_WORDS})\\b`, "i").test(text) ||
+    // Mixed-device lots with no numeral: "an iphone and a macbook",
+    // "my phone and my wife's phone". The second device REQUIRES an
+    // article/possessive ("a"/"an"/"another"/"my"/"her"...) so ordinary
+    // condition clauses — "cracked and phone still works", "and phone
+    // case" — never read as a second device.
+    /\b(?:iphones?|galaxys?|samsungs?|pixels?|macbooks?|ipads?|phones?)[^.!?\n]{0,24}\b(?:and|&|\+|y)\s+(?:an?|another|my|his|her|our|wife'?s|husband'?s|una?|otro|mi)\s+(?:[a-z']+\s+){0,2}(?:iphones?|galaxys?|samsungs?|pixels?|macbooks?|ipads?|xbox|ps[45]|switch|phones?|tablets?|consoles?)\b/i.test(text) ||
+    /\b(?:bulk|wholesale|whole\s+lot|both\s+(?:phones|iphones|devices)|all\s+(?:of\s+)?them)\b/i.test(text)
   );
 }
 
@@ -142,12 +155,18 @@ export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> 
       };
     }
   }
+  const carrier = (input.carrier || "unlocked").toLowerCase();
   const spec: QuoteSpec = {
     modelId: hit.slug,
     modelLabel: hit.label,
     storage: input.storage,
     condition: (input.condition || "good").toLowerCase(),
-    carrier: (input.carrier || "unlocked").toLowerCase(),
+    carrier,
+    // Mirror the /go board's assumption: answering "verizon" = a
+    // Verizon-LOCKED phone. Without this flag quote.ts:190-197 charges NO
+    // deduction for verizon and the chat overquoted the same phone the
+    // board prices lower ($55-$246/device depending on model).
+    carrierLocked: carrier === "verizon",
     isPhone: true,
     // Volunteered issues → buyer-sheet schedule deductions (deductions.ts),
     // so the reference number is already honest for a known-MDM / dead-Face-ID
@@ -206,7 +225,12 @@ export async function runImeiCheck(input: { imei?: string }): Promise<Record<str
     const blacklisted = !!blacklistRaw && /black|locked|reported|stolen/i.test(blacklistRaw);
     if (blacklisted || findMyOn) {
       const flags = [blacklisted ? "BLACKLISTED" : "", findMyOn ? "Find My ON" : ""].filter(Boolean).join(" + ");
-      after(() => notifyOwnerSms(`⚠️ TCC IMEI flag: ${model || "unknown model"} (${clean}) — ${flags}. Bot is quoting normally; your call.`));
+      // Same global SMS backstop as every other owner-text path — a spray of
+      // flagged IMEIs must not be able to bomb the owner's phone (this was
+      // the one ungated notifyOwnerSms on the chat surface).
+      if (rateLimit("chat-sms:global", 20, 10 * 60_000).ok) {
+        after(() => notifyOwnerSms(`⚠️ TCC IMEI flag: ${model || "unknown model"} (${clean}) — ${flags}. Bot is quoting normally; your call.`));
+      }
     }
     // The model only learns WHAT the device is.
     return { ok: true, model };
@@ -236,7 +260,7 @@ export const SELL_TOOLS = [
           enum: ["sealed", "mint", "good", "fair", "broken"],
           description: "sealed=new in plastic, mint=like new, good, fair=visible wear, broken=cracked/not working.",
         },
-        carrier: { type: "string", enum: ["unlocked", "att", "tmobile", "verizon", "other"] },
+        carrier: { type: "string", enum: ["unlocked", "att", "tmobile", "verizon", "other"], description: "The carrier the phone is LOCKED to. 'verizon' means locked to Verizon — if they say it's a Verizon phone but unlocked/paid off, use 'unlocked'." },
         mdm_locked: { type: "boolean", description: "true ONLY if the customer said the phone has an MDM / company / school management lock. Never ask about it unprompted." },
         faceid_broken: { type: "boolean", description: "true ONLY if the customer said Face ID / Touch ID doesn't work. Never ask about it unprompted." },
       },
@@ -253,7 +277,7 @@ export const SELL_TOOLS = [
         summary: {
           type: "string",
           description:
-            "Complete itemized intake — EVERY device with storage/condition/carrier per unit + their asking number, e.g. '2x iPhone 15 Pro Max sealed 256: one unlocked, one AT&T — wants 700/ea'. The owner prices from this line alone, so missing details cost money.",
+            "Complete itemized intake — EVERY device with storage/condition/carrier per unit + their asking number, e.g. '2x iPhone 15 Pro Max sealed 256: one unlocked, one AT&T — wants 700/ea'. The owner prices from this line alone, so missing details cost money. FACTS ONLY: list devices, specs, and what the seller SAID (attributed, e.g. 'seller claims mint'). NEVER state a price as agreed, promised, or confirmed — no agreement exists until the owner makes one.",
         },
         contact: { type: "string", description: "Phone or email if given, else empty." },
       },

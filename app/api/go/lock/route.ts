@@ -200,11 +200,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "couldn't save that — tap it once more" }, { status: 502 });
   }
 
-  // Park the contact in the chat store so the /admin/chats console can text
-  // this seller from the takeover thread ("text seller" action). Notes are
-  // internal-only — never sent to the seller client.
+  // Park the contact + the lock milestone in the chat store so the
+  // /admin/chats console can text this seller and the chat brain knows the
+  // lock happened. Notes are internal-only — never sent to the seller
+  // client — and written HERE (server-side, engine result in hand) so the
+  // LOCKED breadcrumb can't be client-forged.
   if (validSession(sessionId)) {
     void appendChatMsg(sessionId, "note", `CONTACT: ${contact}`);
+    void appendChatMsg(sessionId, "note", `LOCKED: ${specLine}${offer != null ? ` $${offer}` : " (manual)"} — ${contact.slice(0, 60)}`);
   }
 
   // Server-side twin of the client's Lead pixel (same event id → Meta

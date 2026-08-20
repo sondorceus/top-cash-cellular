@@ -4,9 +4,11 @@
 // scraper (the funnel exposes prices anyway, but no reason to hand out a
 // clean JSON API for the whole catalog).
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { quoteDevice } from "../../../lib/quote";
 import { cachedOverrides } from "../../../lib/overrides-cache";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
+import { appendChatMsg, validGoSession } from "../../../lib/gochat-store";
 import { BOARD_MODELS } from "../../../go/board";
 import { PRICE_TABLE } from "../../../data/prices";
 
@@ -56,6 +58,22 @@ export async function POST(req: NextRequest) {
   ).catch(() => null);
   if (!r || r.offer == null || r.manualReview) {
     return NextResponse.json({ ok: false, manualReview: true });
+  }
+  // Chat-funnel breadcrumbs, written SERVER-SIDE with the engine result in
+  // hand — the chat brain's FUNNEL STATE context and the restore-time
+  // pendingQuote both read these, so they must never be client-authored
+  // (a forged "quote shown: … → $950" note would put an invented number in
+  // the bot's mouth). The client passes sessionId only from the in-chat
+  // chip flow; the bare board flow omits it. Notes here are engine-true by
+  // construction: worst case an abuser writes REAL quotes for REAL specs
+  // into their own session.
+  const sessionId = String(body && (body as { sessionId?: unknown }).sessionId || "");
+  if (validGoSession(sessionId)) {
+    const offer = r.offer;
+    after(async () => {
+      await appendChatMsg(sessionId, "note", `quote shown: ${entry.label} ${storage} ${condition} ${carrier} → $${offer}`);
+      await appendChatMsg(sessionId, "note", `QSPEC: ${model}|${storage}|${condition}|${carrier}|${offer}`);
+    });
   }
   return NextResponse.json({ ok: true, offer: r.offer });
 }
