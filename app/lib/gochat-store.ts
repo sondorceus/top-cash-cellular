@@ -197,3 +197,66 @@ async function pruneSessionImages(sids: string[]): Promise<void> {
     } catch { /* a failed prune retries on the next stale sweep */ }
   }
 }
+
+// ── Phone → session lookup (INBOUND seller SMS) ──────────────────────────
+//
+// Sellers reply to the texts /admin/chats sends them, and those replies land
+// on the NOTARY project's Telnyx webhook — it owns the number we borrow. That
+// webhook hands them back to /api/go/sms-inbound, which needs to know which
+// thread the reply belongs to. Match = the newest session whose latest
+// "CONTACT: " note is the same 10-digit number.
+//
+// Deliberately bounded (this runs off a webhook): a window of recent sessions,
+// and ONLY note-role blobs are fetched — role is pathname-encoded, so
+// narrowing to notes costs zero fetches.
+
+/** Last 10 digits, or "" if that's not a phone. Comparison key for contacts. */
+export function phoneKey(v: unknown): string {
+  const d = String(v ?? "").replace(/\D/g, "");
+  return d.length >= 10 ? d.slice(-10) : "";
+}
+
+const CONTACT_PREFIX = "CONTACT: ";
+
+/** Newest CONTACT note for one session, or "" — notes only, capped. */
+async function latestContactFor(sid: string): Promise<string> {
+  if (!validSession(sid)) return "";
+  try {
+    const { blobs } = await list({ prefix: `gochat/${sid}/`, limit: 1000 });
+    const notes = blobs
+      .map((b) => ({ url: b.url, p: parsePath(b.pathname) }))
+      .filter((b): b is { url: string; p: Parsed } => b.p !== null && b.p.role === "note")
+      .sort((a, b) => b.p.ts - a.p.ts)
+      // Every owner text parks an "SMS sent to …" note, so a chatty thread can
+      // push CONTACT down the list — 15 clears any realistic negotiation.
+      .slice(0, 15);
+    const texts = await Promise.all(
+      notes.map((n) =>
+        fetch(n.url, { cache: "no-store" })
+          .then((r) => r.json())
+          .then((j) => (j && typeof j.text === "string" ? (j.text as string) : ""))
+          .catch(() => ""),
+      ),
+    );
+    // notes is newest-first, so the first hit IS the newest CONTACT.
+    return texts.find((t) => t.startsWith(CONTACT_PREFIX))?.slice(CONTACT_PREFIX.length).trim() || "";
+  } catch {
+    return "";
+  }
+}
+
+export async function findSessionByPhone(
+  phone: string,
+  maxAgeMs = 14 * 24 * 3600_000,
+  maxSessions = 20,
+): Promise<string | null> {
+  const want = phoneKey(phone);
+  if (!want) return null;
+  const cutoff = Date.now() - maxAgeMs;
+  const recent = (await listChatSessions()).filter((s) => s.lastTs >= cutoff).slice(0, maxSessions);
+  const contacts = await Promise.all(recent.map((s) => latestContactFor(s.sid)));
+  // listChatSessions is newest-first — if a seller has used the number twice,
+  // the reply belongs to the thread they're actually mid-negotiation on.
+  const i = contacts.findIndex((c) => c !== "" && phoneKey(c) === want);
+  return i === -1 ? null : recent[i].sid;
+}
