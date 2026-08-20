@@ -38,6 +38,23 @@ const CARRIERS: { key: string; label: string }[] = [
 ];
 const CHIPS = ["i got a few phones", "how do i get paid", "how does this work"];
 
+// The seller's own avatar — a neutral person glyph on a dark circle, so their
+// bubbles read as "you" and the thread looks like a real two-sided chat
+// (bot/owner carry the green-ringed logo; this stays neutral, no green glow).
+function SellerAvatar() {
+  return (
+    <span
+      aria-hidden
+      className="w-[30px] h-[30px] rounded-full bg-white/[0.09] border border-white/15 flex items-center justify-center shrink-0"
+    >
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="3.4" />
+        <path d="M5.5 19.5c0-3.4 2.9-5.5 6.5-5.5s6.5 2.1 6.5 5.5" />
+      </svg>
+    </span>
+  );
+}
+
 // Category quick-selects — the FB-funnel pattern: pick what you got, we walk
 // you. iPhone/Samsung run the deterministic model→chips→quote flow; the rest
 // hand the category to the AI brain as a typed opener (it runs the intake).
@@ -873,8 +890,8 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
               <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
                 {lot
-                  ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. we\u2019ll get you real numbers and cash the same day."
-                  : "tap what you got — or just type it. one phone or a whole drawer. cracked or still on payments, we still buy it."}
+                  ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. snap a pic of the pile if it\u2019s easier. we\u2019ll get you real numbers and cash the same day."
+                  : "tap what you got — or just type it. one phone or a whole drawer. cracked or still on payments, we still buy it. you can also tap 📷 to send a photo."}
               </div>
             </div>
 
@@ -929,8 +946,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   );
                 }
                 return m.from === "user" ? (
-                  <div key={i} className={`go-msg self-end max-w-[85%] rounded-2xl rounded-br-md ${pad} text-[15px] bg-[#132018] border border-[#00c853]/30`}>
-                    {body}
+                  <div key={i} className="go-msg flex items-end gap-2 justify-end">
+                    <div className={`max-w-[80%] rounded-2xl rounded-br-md ${pad} text-[15px] bg-[#132018] border border-[#00c853]/30`}>
+                      {body}
+                    </div>
+                    <SellerAvatar />
                   </div>
                 ) : (
                   <div key={i} className="go-msg flex items-end gap-2">
@@ -1033,6 +1053,24 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             )}
           </div>
 
+          {/* Photo affordance — stays until they've sent one, so the option is
+              discoverable even after the greeting scrolls away. Tapping it opens
+              the picker too. */}
+          {!msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) && (
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="mx-4 mb-1 flex items-center justify-center gap-1.5 text-[12px] text-white/50 py-1 active:scale-[0.98] disabled:opacity-40"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
+                <circle cx="12" cy="13" r="3.6" />
+              </svg>
+              tap to add a photo of your device — helps us price it
+            </button>
+          )}
+
           <form
             className="flex gap-2 items-center px-4 py-3 border-t border-white/10"
             style={{ background: "#0e0e0f", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
@@ -1057,7 +1095,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
               aria-label="send a photo of your device"
-              className="w-[46px] h-[46px] shrink-0 rounded-full bg-white/[0.06] border border-white/15 text-white/75 flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform"
+              className={`w-[46px] h-[46px] shrink-0 rounded-full bg-white/[0.06] border flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform ${msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) ? "border-white/15 text-white/75" : "border-[#00c853]/45 text-[#00c853]"}`}
               style={{ borderRadius: "50%" }}
             >
               {uploading ? (
