@@ -27,8 +27,7 @@ import {
 import {
   getResellEstimateForModel,
   resellMultiplierForCondition,
-  MARGIN_FLOOR_MULT,
-  EBAY_FEE_MULT,
+  marginCapFor,
   applyGalaxyDrop,
 } from "./resell-estimates";
 import { deductionAmount } from "../data/deductions";
@@ -218,8 +217,18 @@ export async function quoteDevice(
     const resell = getResellEstimateForModel(id, spec.modelLabel);
     const condMult = resellMultiplierForCondition(cond, spec.brokenGlass);
     const estResellNow = resell != null ? Math.round(resell * condMult) : null;
-    // resell × eBay-net (−13% FVF) × margin floor — mirror of the funnel cap.
-    const marginCap = estResellNow != null ? Math.round(estResellNow * EBAY_FEE_MULT * MARGIN_FLOOR_MULT) : null;
+    // Shared cap — carrier-aware, so a model with real NET_PAYOUTS (locked vs
+    // unlocked wholesale) is capped against what we ACTUALLY get paid for
+    // that exact carrier state. Mirror of the funnel cap by construction:
+    // both call marginCapFor.
+    const marginCap = marginCapFor({
+      modelId: id,
+      label: spec.modelLabel,
+      condition: cond,
+      brokenGlass: spec.brokenGlass,
+      carrier,
+      carrierLocked: spec.carrierLocked,
+    });
     const capped = marginCap != null && rawQuote > marginCap;
     const cappedQuote = capped ? marginCap! : rawQuote;
     // Galaxy S23+ blanket −$75 (mirror of the funnel). Monotone floor

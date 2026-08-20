@@ -84,7 +84,7 @@ export const CATALOG_PRICE_BY_MODEL_ID: Record<string, number> = {
   ip16e: 420,
   ip16p: 418,
   ip16plus: 336,
-  ip16pm: 485,
+  ip16pm: 450,
   ip17: 453,
   ip17air: 813,
   ip17e: 448,

@@ -2,7 +2,7 @@
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import { track as vercelTrack } from "@vercel/analytics";
 import { BRAND_ICONS } from "./components/brand-icons";
-import { getResellEstimateForModel, resellMultiplierForCondition, MARGIN_FLOOR_MULT, EBAY_FEE_MULT, applyGalaxyDrop } from "./lib/resell-estimates";
+import { getResellEstimateForModel, resellMultiplierForCondition, marginCapFor, applyGalaxyDrop } from "./lib/resell-estimates";
 import SKU_LABELS from "./data/sku-labels.json";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
@@ -2769,9 +2769,11 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   // sealed iPhone 17 PM, Ultra 2/3, consoles, …) aren't capped in the funnel
   // either, so they keep the raw headline.
   const label = (SKU_LABELS as Record<string, string>)[m.id];
-  const resell = getResellEstimateForModel(m.id, label ?? null);
-  if (resell != null) {
-    val = Math.min(val, Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT));
+  // Best config = sealed + UNLOCKED (the headline is the best case), so the
+  // carrier-aware cap is asked for the unlocked payout.
+  const cap = marginCapFor({ modelId: m.id, label: label ?? null, condition: "sealed", carrier: "unlocked" });
+  if (cap != null) {
+    val = Math.min(val, cap);
   }
   return applyGalaxyDrop(val, m.id);
 };
@@ -6046,8 +6048,17 @@ export default function Home() {
   const workingResell = model ? getResellEstimateForModel(model.id, model.label) : null;
   const condMult = resellMultiplierForCondition(condition?.id, brokenGlass);
   const estResellNow = workingResell != null ? Math.round(workingResell * condMult) : null;
-  // resell × eBay-net (−13% FVF) × margin floor — never quote over what eBay nets us.
-  const marginCap = estResellNow != null ? Math.round(estResellNow * EBAY_FEE_MULT * MARGIN_FLOOR_MULT) : null;
+  // Shared, carrier-aware cap (marginCapFor) — identical call shape to the
+  // server engine, so the funnel and the chat/board can never name two
+  // different numbers for the same phone.
+  const marginCap = model ? marginCapFor({
+    modelId: model.id,
+    label: model.label,
+    condition: condition?.id,
+    brokenGlass,
+    carrier: carrier?.id,
+    carrierLocked: carrierLock?.id === "yes",
+  }) : null;
   // Apply cap silently if base quote exceeds it.
   const quoteAfterCap = (marginCap != null && rawQuote > marginCap) ? marginCap : rawQuote;
   // Force manual review ONLY when we have a resell comp AND that comp's

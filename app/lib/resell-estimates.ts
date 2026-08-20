@@ -197,6 +197,63 @@ export const MARGIN_FLOOR_MULT = 0.75; // 25% margin target
 export const EBAY_FEE_MULT = 0.87; // 1 − 0.13 eBay FVF
 
 /**
+ * NET WHOLESALE PAYOUTS — what the owner actually RECEIVES per device, split
+ * by carrier state because a locked unit sells for materially less.
+ *
+ * These are NET (money in hand from the wholesale buyer), NOT a Swappa/eBay
+ * gross comp — so the cap uses them WITHOUT the EBAY_FEE_MULT haircut.
+ * Charging a 13% eBay fee against a channel that never pays one would
+ * underquote sellers by that much.
+ *
+ * A model listed here OVERRIDES its RESELL_ESTIMATES comp above: the owner's
+ * real payout beats a scraped median every time. Every entry must be sourced
+ * to the owner + date — never estimate one.
+ */
+export const NET_PAYOUTS: Record<string, { unlocked: number; locked: number }> = {
+  // Owner 2026-08-20: "we pay 443 but i get paid 470 … update what i get
+  // paid to 470 and 600". The stale $743 Swappa comp implied a $485 ceiling,
+  // which left ~6% margin on a locked mint unit and went negative on the
+  // good/fair locked cells.
+  ip16pm: { unlocked: 600, locked: 470 },
+};
+
+/** A carrier answer counts as LOCKED for payout purposes. Mirrors the
+ *  carrier-deduction rule exactly: "verizon" is only locked when the seller
+ *  answered the lock question yes — a paid-off Verizon phone is unlocked. */
+function isLockedCarrier(carrier?: string | null, carrierLocked?: boolean): boolean {
+  const c = (carrier || "unlocked").toLowerCase();
+  if (c === "verizon") return !!carrierLocked;
+  return c === "att" || c === "tmobile" || c === "other";
+}
+
+/**
+ * The ONE margin-cap calculation every surface must use — funnel, /go board,
+ * chat brain, and the server lead guards — so a phone can never be worth one
+ * number on the page and a different one in the chat.
+ *
+ * Returns null when we have no resell reference for the model; callers then
+ * keep the raw PRICE_TABLE quote exactly as before.
+ */
+export function marginCapFor(opts: {
+  modelId?: string | null;
+  label?: string | null;
+  condition?: string | null;
+  brokenGlass?: "front" | "back" | "both" | null;
+  carrier?: string | null;
+  carrierLocked?: boolean;
+}): number | null {
+  const condMult = resellMultiplierForCondition(opts.condition ?? undefined, opts.brokenGlass);
+  const net = opts.modelId ? NET_PAYOUTS[opts.modelId] : undefined;
+  if (net) {
+    const base = isLockedCarrier(opts.carrier, opts.carrierLocked) ? net.locked : net.unlocked;
+    return Math.round(base * condMult * MARGIN_FLOOR_MULT);
+  }
+  const resell = getResellEstimateForModel(opts.modelId ?? null, opts.label ?? null);
+  if (resell == null) return null;
+  return Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
+}
+
+/**
  * Galaxy S23-and-up blanket price cut. Skywalker 2026-07-05: "Atlas doesn't
  * really buy Galaxy" — so trim the whole S23+ lineup by a flat $75 off the
  * LIVE offer (applied after the margin cap, since these SKUs are cap-bound
