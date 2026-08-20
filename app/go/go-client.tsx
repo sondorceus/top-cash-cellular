@@ -120,6 +120,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [gBusy, setGBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  // Photo attach — the flaw a phone-buyback chat can't have: sellers WANT to
+  // show the crack. File input is hidden; the camera button triggers it.
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [sessionId] = useState(() => persistentSessionId(src));
   const threadRef = useRef<HTMLDivElement>(null);
   // Guards the async chip flow against row-switching: a response for a row
@@ -518,7 +522,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
   async function send(text: string) {
     const t = text.trim();
-    if (!t || sending) return;
+    // Block while a photo batch uploads: the in-flight bubbles still hold
+    // IMG::blob: local URLs, and a text send would snapshot those into history
+    // as junk the model can't read.
+    if (!t || sending || uploading) return;
     setDraft("");
     const history = msgs.filter((m): m is { from: "user" | "bot"; text: string } => !("kind" in m)).map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
     setMsgs((m) => [...m, { from: "user", text: t }]);
@@ -553,6 +560,125 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       setMsgs((m) => [...m, { from: "bot", text: "we're having a moment — try that again, or tap your phone above and we'll price it." }]);
     }
     setSending(false);
+  }
+
+  // Downscale on-device before upload: phone camera shots run 3-12MB and
+  // Vercel cuts request bodies at ~4.5MB — 1600px JPEG q0.82 lands ~200-500KB
+  // and uploads fast on cell data. Falls back to the original file when the
+  // browser can't decode (rare formats); the server still enforces its cap.
+  async function downscalePhoto(file: File): Promise<Blob> {
+    try {
+      // imageOrientation:"from-image" bakes EXIF rotation into the pixels so a
+      // portrait phone shot doesn't upload sideways (canvas re-encode drops the
+      // EXIF tag, which would otherwise leave it rotated for Theot + Sonny).
+      const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+      const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+      const w = Math.max(1, Math.round(bmp.width * scale));
+      const h = Math.max(1, Math.round(bmp.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return file;
+      ctx.drawImage(bmp, 0, 0, w, h);
+      bmp.close();
+      const out = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/jpeg", 0.82));
+      return out && out.size > 0 ? out : file;
+    } catch {
+      return file;
+    }
+  }
+
+  // Photo message flow, MULTI-photo native (sellers send several angles, or
+  // one shot per phone in a lot): every picked file gets its own optimistic
+  // local-preview bubble, uploads run one at a time (order preserved, no
+  // burst against the rate limit), each swaps in its real URL — then ONE
+  // /api/chat turn covers the whole batch, so Theot reacts once to all the
+  // photos instead of narrating each. During owner takeover the bot stays
+  // silent and Sonny sees the photos in the console instead.
+  async function sendPhotos(files: File[]) {
+    if (uploading || files.length === 0) return;
+    const MAX_BATCH = 6;
+    const batch = files.slice(0, MAX_BATCH); // per-pick cap; they can attach again
+    const history = msgs.filter((m): m is { from: "user" | "bot"; text: string } => !("kind" in m)).map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
+    // A number is already on screen (guided quote/lock card) — a photo must NOT
+    // trigger an AI reply that could name a DIFFERENT number under it (the
+    // two-numbers bait-and-switch this page exists to avoid). The photo still
+    // uploads, pings Sonny, and is stored; we just don't run the model turn.
+    const quoteOnScreen = msgs.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform" || m.kind === "locked"));
+    const locals = batch.map((f) => URL.createObjectURL(f));
+    setMsgs((m) => [...m, ...locals.map((u) => ({ from: "user" as const, text: `IMG::${u}` }))]);
+    setUploading(true);
+    const uploaded: string[] = [];
+    for (let i = 0; i < batch.length; i++) {
+      const localUrl = locals[i];
+      try {
+        const jpg = await downscalePhoto(batch[i]);
+        const fd = new FormData();
+        fd.append("session", sessionId);
+        fd.append("file", jpg, "photo.jpg");
+        const r = await fetch("/api/go/upload", { method: "POST", body: fd });
+        const d = await r.json().catch(() => null);
+        if (r.ok && d?.ok && typeof d.url === "string") {
+          const url: string = d.url;
+          uploaded.push(url);
+          setMsgs((cur) => cur.map((m) => (!("kind" in m) && m.text === `IMG::${localUrl}` ? { ...m, text: `IMG::${url}` } : m)));
+        } else {
+          // Drop the failed preview and add a bot-styled error (NOT a fake
+          // user bubble — that read as the seller's own text and rode history).
+          setMsgs((cur) => [
+            ...cur.filter((m) => !(!("kind" in m) && m.text === `IMG::${localUrl}`)),
+            { from: "bot", text: photoError(d?.error, r.status) },
+          ]);
+        }
+      } catch {
+        setMsgs((cur) => [
+          ...cur.filter((m) => !(!("kind" in m) && m.text === `IMG::${localUrl}`)),
+          { from: "bot", text: "that photo didn’t go through — try again." },
+        ]);
+      }
+      URL.revokeObjectURL(localUrl); // the bubble now holds the CDN url (or is gone) — free the original File
+    }
+    if (batch.length < files.length) {
+      setMsgs((m) => [...m, { from: "bot", text: `got the first ${MAX_BATCH} — tap the camera again to send the rest.` }]);
+    }
+    // Re-enable the composer as soon as uploads finish — before the (possibly
+    // slow) model turn — so the next batch isn't blocked by generation.
+    setUploading(false);
+    if (uploaded.length && !takeoverRef.current) {
+      if (quoteOnScreen) {
+        setMsgs((m) => [...m, { from: "bot", text: uploaded.length > 1 ? "got the pics — we’ll factor them into your offer." : "got the pic — we’ll factor it into your offer." }]);
+        return;
+      }
+      // One bot turn for the batch: earlier photos ride in as history (the
+      // server turns recent IMG:: entries into vision blocks), the last one
+      // is the message itself.
+      const last = uploaded[uploaded.length - 1];
+      const batchHistory = [...history, ...uploaded.slice(0, -1).map((u) => ({ from: "user", text: `IMG::${u}` }))];
+      setSending(true);
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: `IMG::${last}`, history: batchHistory, sessionId }),
+        });
+        const dd = await res.json();
+        if ((dd?.takeover && !dd?.reply) || takeoverRef.current) setTakeover(true);
+        else if (dd?.reply) setMsgs((m) => [...m, { from: "bot", text: dd.reply }]);
+      } catch { /* photos are stored + surfaced either way */ }
+      setSending(false);
+    }
+  }
+
+  // Turn an upload error into seller-friendly copy. The killer case is HEIF
+  // (Samsung "high efficiency" in Chrome/webview isn't auto-transcoded) — a
+  // screenshot is always JPEG/PNG, so that's the universal rescue.
+  function photoError(serverErr: unknown, status: number): string {
+    const e = String(serverErr || "");
+    if (status === 429) return "one sec — sending those a little fast. try that photo again in a moment.";
+    if (/photos only|isn't a photo/i.test(e)) return "that photo format didn’t go through — screenshot it and send the screenshot instead.";
+    if (/too large/i.test(e)) return "that photo was too big — try again and it’ll compress it.";
+    return "that photo didn’t go through — try again.";
   }
 
   const stepUi =
@@ -769,6 +895,24 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
             {msgs.map((m, i) => {
               if (!("kind" in m)) {
+                // IMG::<url> = a photo message. Only render our own optimistic
+                // blob: preview or a validated blob-store URL as an <img> — a
+                // restored/forged IMG:: pointing elsewhere renders as text, not
+                // an external beacon.
+                const raw = m.text.startsWith("IMG::") ? m.text.slice(5) : null;
+                const img = raw && (raw.startsWith("blob:") || /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/gochat-img\//i.test(raw)) ? raw : null;
+                const body = img ? (
+                  <span className="relative block">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img} alt="device photo" className="block max-w-full rounded-xl" style={{ maxHeight: 260 }} />
+                    {img.startsWith("blob:") && (
+                      <span className="absolute bottom-1.5 right-2 rounded-full bg-black/55 px-2 py-[2px] text-[11px] text-white/85">sending…</span>
+                    )}
+                  </span>
+                ) : (
+                  m.text
+                );
+                const pad = img ? "p-1.5" : "px-4 py-3";
                 if (m.from === "owner") {
                   // Sonny live — visually distinct from the bot on purpose:
                   // the seller must always know when a human took over.
@@ -777,22 +921,22 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                       <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
                       <div className="max-w-[85%]">
                         <div className="text-[12px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
-                        <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-[#0f2417] border border-[#00c853]/50">
-                          {m.text}
+                        <div className={`rounded-2xl rounded-bl-md ${pad} text-[15px] bg-[#0f2417] border border-[#00c853]/50`}>
+                          {body}
                         </div>
                       </div>
                     </div>
                   );
                 }
                 return m.from === "user" ? (
-                  <div key={i} className="go-msg self-end max-w-[85%] rounded-2xl rounded-br-md px-4 py-3 text-[15px] bg-[#132018] border border-[#00c853]/30">
-                    {m.text}
+                  <div key={i} className={`go-msg self-end max-w-[85%] rounded-2xl rounded-br-md ${pad} text-[15px] bg-[#132018] border border-[#00c853]/30`}>
+                    {body}
                   </div>
                 ) : (
                   <div key={i} className="go-msg flex items-end gap-2">
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10">
-                      {m.text}
+                    <div className={`max-w-[85%] rounded-2xl rounded-bl-md ${pad} text-[15px] bg-white/[0.06] border border-white/10`}>
+                      {body}
                     </div>
                   </div>
                 );
@@ -894,6 +1038,37 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             style={{ background: "#0e0e0f", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
             onSubmit={(e) => { e.preventDefault(); void send(draft); }}
           >
+            {/* photo attach — sellers WANT to show the crack; on phones this
+                opens camera-or-gallery. Hidden input, camera button triggers. */}
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={(e) => {
+                const fs = Array.from(e.target.files || []);
+                e.target.value = "";
+                if (fs.length) void sendPhotos(fs);
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              aria-label="send a photo of your device"
+              className="w-[46px] h-[46px] shrink-0 rounded-full bg-white/[0.06] border border-white/15 text-white/75 flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform"
+              style={{ borderRadius: "50%" }}
+            >
+              {uploading ? (
+                <span className="go-dot" />
+              ) : (
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
+                  <circle cx="12" cy="13" r="3.6" />
+                </svg>
+              )}
+            </button>
             <input
               id="go-composer-input"
               ref={overlayInputRef}
@@ -905,7 +1080,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             />
             <button
               type="submit"
-              disabled={sending || !draft.trim()}
+              disabled={sending || uploading || !draft.trim()}
               style={{ borderRadius: "50%" }}
               className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[21px] font-bold disabled:opacity-40 flex items-center justify-center"
               aria-label="send"

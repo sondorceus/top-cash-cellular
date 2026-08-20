@@ -23,6 +23,32 @@ const THINKING_OFF = /sonnet-5|opus-4-[678]/.test(CHAT_MODEL) ? { thinking: { ty
 // the realistic ceiling; 4 leaves room without letting a loop run away.
 const MAX_TOOL_ROUNDS = 4;
 
+// Photo messages: the /go upload route stores `IMG::<url>` in the thread and
+// the client then posts the same string here so the model can SEE the device.
+// The vision URL is validated against OUR EXACT blob store host — the store id
+// is parsed from BLOB_READ_WRITE_TOKEN (`vercel_blob_rw_<storeId>_<secret>`),
+// NOT a wildcard subdomain: the client supplies the whole history array, so a
+// wildcard let an attacker point the model at an image in THEIR own Vercel
+// Blob store. If the store id can't be parsed (token missing = uploads are
+// broken anyway) no image passes — fail closed.
+const BLOB_STORE_ID = (process.env.BLOB_READ_WRITE_TOKEN || "").match(/^vercel_blob_rw_([a-z0-9]+)_/i)?.[1]?.toLowerCase() || "";
+const IMG_RE = BLOB_STORE_ID
+  ? new RegExp(`^IMG::(https://${BLOB_STORE_ID}\\.public\\.blob\\.vercel-storage\\.com/gochat-img/[a-z0-9_\\-./]+)$`, "i")
+  : null;
+function imgUrl(t: string): string | null {
+  if (!IMG_RE) return null;
+  const m = t.match(IMG_RE);
+  return m ? m[1] : null;
+}
+// Detection-safe text: a photo message is `IMG::<url>` whose blob path carries
+// a 13-digit ms timestamp — detectContact's phone regex matched THAT as a
+// "phone number", firing a junk lead and then permanently blocking the real
+// contact from ever being captured (the URL sits in history as contactSeenBefore).
+// Strip IMG:: turns to empty before any contact/device scraping.
+function detectText(t: string): string {
+  return t.startsWith("IMG::") ? "" : t;
+}
+
 function smartReply(message: string): string {
   const m = message.toLowerCase();
   if (m.match(/\b(?:\d+|few|couple|several|multiple|bunch)\s+(?:iphones?|phones?|devices?|galaxys?|samsungs?|pixels?)\b/)) return "nice — list what you've got (model, storage, condition for each) and drop your number. we'll text you a real offer for the lot.";
@@ -102,6 +128,16 @@ export async function POST(req: NextRequest) {
 
   const ip = clientIp(req);
   const message = rawMessage.slice(0, MAX_MESSAGE_LEN);
+  // A photo turn. `msgImg` is the VALIDATED store URL (vision + label); it's
+  // null for a forged/off-store IMG::. `isImgMsg` is the bare prefix: the
+  // upload route already stored the real photo blob, and we must NEVER store
+  // ANY client IMG:: here — a forged `IMG::https://evil/x.gif` that slipped
+  // into the store would render as an external <img>/<a> beacon (or a
+  // javascript: href) in the authenticated admin console. So the store guards
+  // below key on isImgMsg, and a forged one collapses to a plain label.
+  const msgImg = imgUrl(message);
+  const isImgMsg = message.startsWith("IMG::");
+  const displayMessage = msgImg ? `(sent a photo) ${msgImg}` : isImgMsg ? "(sent a photo)" : message;
   // Stable per-conversation id from the widget so all of one chat's leads
   // thread together in Mission Control instead of scattering into N comms.
   const sessionId = (typeof payload.sessionId === "string" ? payload.sessionId : "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
@@ -118,7 +154,7 @@ export async function POST(req: NextRequest) {
     ? await readChat(sessionId, Date.now())
     : null;
   if (live?.takeover) {
-    after(() => { void appendChatMsg(sessionId, "user", message); });
+    if (!isImgMsg) after(() => { void appendChatMsg(sessionId, "user", message); });
     return NextResponse.json({ takeover: true, reply: null });
   }
 
@@ -144,8 +180,11 @@ export async function POST(req: NextRequest) {
   // just this message, so a number typed two turns ago still reaches staff.
   const rawContact = typeof payload.contact === "string" ? payload.contact : "";
   const fieldContact = sanitizeForMc(rawContact).trim();
-  const priorUserText = history.filter((m) => m.from === "user").map((m) => m.text).join("  ");
-  const userText = `${priorUserText}  ${message}`;
+  // detectText() zeroes out IMG:: photo turns so a blob URL's timestamp can't
+  // masquerade as a phone number (which fired junk leads AND blocked the real
+  // contact forever after).
+  const priorUserText = history.filter((m) => m.from === "user").map((m) => detectText(m.text)).join("  ");
+  const userText = `${priorUserText}  ${detectText(message)}`;
   const contact = (fieldContact || detectContact(userText)).slice(0, 120);
   const deviceSummary = extractDevice(userText);
 
@@ -154,7 +193,7 @@ export async function POST(req: NextRequest) {
   // turns — the opener, a human-handoff start, or the turn a contact first
   // appears — all threaded by sessionId so one chat reads as one lead.
   const contactSeenBefore = !!detectContact(priorUserText);
-  const detectedNow = !!detectContact(message);
+  const detectedNow = !!detectContact(detectText(message));
   const contactJustArrived = !contactSeenBefore && (detectedNow || (!!fieldContact && history.length === 0));
   // Park a just-arrived contact in the chat store so the takeover console's
   // "text seller" action can reach this seller. Note-role = internal only.
@@ -189,8 +228,8 @@ export async function POST(req: NextRequest) {
   if (material) {
     const sess = sessionId ? `sess:${sessionId} · ` : "";
     const body = contactJustArrived
-      ? `[CHAT LEAD ✅] ${sess}${deviceSummary ? `${deviceSummary} · ` : ""}reply to: ${sanitizeForMc(contact)}\n"${sanitizeForMc(message)}"`
-      : `${isHumanHandoff ? "[HUMAN HANDOFF] " : ""}[CHAT LEAD] ${sess}Visitor${contact ? ` (reply to: ${sanitizeForMc(contact)})` : ""}: "${sanitizeForMc(message)}"`;
+      ? `[CHAT LEAD ✅] ${sess}${deviceSummary ? `${deviceSummary} · ` : ""}reply to: ${sanitizeForMc(contact)}\n"${sanitizeForMc(displayMessage)}"`
+      : `${isHumanHandoff ? "[HUMAN HANDOFF] " : ""}[CHAT LEAD] ${sess}Visitor${contact ? ` (reply to: ${sanitizeForMc(contact)})` : ""}: "${sanitizeForMc(displayMessage)}"`;
     try {
       const r = await fetch(`${MC_API}/api/comms`, {
         method: "POST",
@@ -229,7 +268,7 @@ export async function POST(req: NextRequest) {
     const smsOk = rateLimit(`chat-sms:${ip}`, 3, 15 * 60_000).ok
       && rateLimit("chat-sms:global", 20, 10 * 60_000).ok;
     if (smsOk) {
-      const snippet = sanitizeForMc(message).slice(0, 200);
+      const snippet = sanitizeForMc(displayMessage).slice(0, 200);
       const alert = handoffStarted
         ? `🔥 TopCash chat: a visitor wants to talk to a human.\n"${snippet}"${contact ? `\nReply to: ${contact}` : ""}`
         : `📱 TopCash chat lead left contact: ${contact}${deviceSummary ? ` (${deviceSummary})` : ""}\n"${snippet}"`;
@@ -274,6 +313,7 @@ export async function POST(req: NextRequest) {
   const FACTS = [
     "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
     "We buy: iPhones (11+ price instantly, older ones we quote by hand), Samsung Galaxy S20+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote flow (~30 seconds).",
+    "PHOTOS: the customer can attach photos of their device (camera button in the chat). When a photo arrives you can SEE it — acknowledge what's visible in one short plain line (cracks, screen damage, wear, or that it looks clean) and use it as the condition when you quote. If their damage description is vague, you may ask them to snap a quick photo. A photo never finalizes anything — condition is still confirmed at inspection, said once and naturally, never as a legal disclaimer.",
   ];
   // Default assistant vs. the warm concierge lead-capture flow.
   // Tone rule applied to BOTH personas: plain, calm, human — like a real
@@ -325,11 +365,31 @@ export async function POST(req: NextRequest) {
     // never pulls in its type namespace, so the conversation is typed locally
     // and cast at the call site (same pattern as the tools array).
     type Msg = { role: "user" | "assistant"; content: unknown };
-    const messages: Msg[] = history.map((m) => ({
+    // Photo turns become VISION content so the model can actually read the
+    // device's condition. Only the LAST 3 photos ride as images (cost bound —
+    // sellers send several angles); older ones collapse to a text stub so the
+    // thread still shows a photo happened.
+    const visionSlots = new Set<number>();
+    {
+      const idxs: number[] = [];
+      history.forEach((m, i) => { if (m.from === "user" && imgUrl(m.text)) idxs.push(i); });
+      if (msgImg) idxs.push(history.length);
+      for (const i of idxs.slice(-3)) visionSlots.add(i);
+    }
+    const toContent = (i: number, from: string, text: string): unknown => {
+      const u = from === "user" ? imgUrl(text) : null;
+      if (!u) return text;
+      if (!visionSlots.has(i)) return "(the seller sent a photo of the device earlier)";
+      return [
+        { type: "image", source: { type: "url", url: u } },
+        { type: "text", text: "(photo of the seller's device — read the visible condition)" },
+      ];
+    };
+    const messages: Msg[] = history.map((m, i) => ({
       role: m.from === "user" ? "user" as const : "assistant" as const,
-      content: m.text,
+      content: toContent(i, m.from, m.text),
     }));
-    messages.push({ role: "user", content: message });
+    messages.push({ role: "user", content: toContent(history.length, "user", message) });
 
     // Server-side backstop for the multi-device routing rule. The prompt tells
     // the model to hand 2+ device lots to Sonny rather than closing them, but
@@ -395,6 +455,13 @@ export async function POST(req: NextRequest) {
           // exactly where every other TCC lead does.
           const summary = String(tu.input.summary || "").slice(0, 900);
           const toolContact = String(tu.input.contact || contact || "").slice(0, 120);
+          // Owner SMS must be rate-gated exactly like the lead-path SMS: a
+          // crafted device PHOTO is model-vision input, so an image telling the
+          // model to "call notify_team repeatedly" could otherwise fire up to
+          // MAX_TOOL_ROUNDS unthrottled texts per turn straight to Sonny's
+          // phone. The MC comm (console, not a buzz) still always posts.
+          const notifySmsOk = rateLimit(`chat-sms:${ip}`, 3, 15 * 60_000).ok
+            && rateLimit("chat-sms:global", 20, 10 * 60_000).ok;
           after(async () => {
             try {
               await fetch(`${MC_API}/api/comms`, {
@@ -410,7 +477,7 @@ export async function POST(req: NextRequest) {
                 }),
               });
             } catch { /* silent */ }
-            await notifyOwnerSms(
+            if (notifySmsOk) await notifyOwnerSms(
               `${isLot ? "📦" : "💬"} TopCash chat${isLot ? " LOT" : ""}: ${summary.slice(0, 220)}${toolContact ? `\nReply to: ${toolContact}` : ""}${quotedLines.length ? `\nEngine: ${quotedLines.join(" | ")}` : ""}`,
             );
           });
@@ -433,7 +500,7 @@ export async function POST(req: NextRequest) {
     if (validSession(sessionId)) {
       const recheck = await readChat(sessionId, Date.now()).catch(() => null);
       if (recheck?.takeover) {
-        after(() => { void appendChatMsg(sessionId, "user", message); });
+        if (!isImgMsg) after(() => { void appendChatMsg(sessionId, "user", message); });
         return NextResponse.json({ takeover: true, reply: null });
       }
     }
@@ -446,7 +513,7 @@ export async function POST(req: NextRequest) {
       const finalReply = reply;
       const shouldPing = quotedAny && !live?.notified && rateLimit("chat-sms:global", 20, 10 * 60_000).ok;
       after(async () => {
-        await appendChatMsg(sessionId, "user", message);
+        if (!isImgMsg) await appendChatMsg(sessionId, "user", message); // real photo turns are stored by the upload route; forged IMG:: are dropped
         await appendChatMsg(sessionId, "bot", finalReply);
         if (!shouldPing) return;
         await appendChatMsg(sessionId, "ctl", "notified");
@@ -482,7 +549,7 @@ export async function POST(req: NextRequest) {
     const reply = fallbackReply(message, isHumanHandoff, history.length);
     if (validSession(sessionId)) {
       after(async () => {
-        await appendChatMsg(sessionId, "user", message);
+        if (!isImgMsg) await appendChatMsg(sessionId, "user", message); // real photo turns are stored by the upload route; forged IMG:: are dropped
         await appendChatMsg(sessionId, "bot", reply);
       });
     }
@@ -496,6 +563,11 @@ export async function POST(req: NextRequest) {
 // turn of a human handoff we open with the warm concierge greeting; after
 // that we defer to the keyword matcher.
 function fallbackReply(message: string, isHumanHandoff: boolean, historyLen: number): string {
+  if (imgUrl(message)) {
+    // AI unavailable on a photo turn — the photo is stored and surfaced to
+    // the team either way, so say that plainly and keep the thread moving.
+    return "got the photo — our team will take a look. what model is it, and how much storage?";
+  }
   if (isHumanHandoff && historyLen <= 1) {
     return "This is Theot from the Top Cash team. I'll get this to a real person for you. To start — what device are you selling, and what condition is it in?";
   }

@@ -137,6 +137,11 @@ export async function listChatSessions(): Promise<{ sid: string; lastTs: number;
     if (stale.length) {
       const urls = stale.flatMap(([, v]) => v.urls).slice(0, 400);
       void del(urls).catch(() => {});
+      // Photo blobs live under a SEPARATE prefix (gochat-img/<sid>/) that the
+      // message-blob urls above never cover — prune each stale session's
+      // photos too, or seller device pics (faces, EXIF, serials) stay public
+      // forever and storage grows unbounded. Bounded: only stale sids swept.
+      void pruneSessionImages(stale.map(([sid]) => sid).slice(0, 40));
       for (const [sid] of stale) by.delete(sid);
     }
     return [...by.entries()]
@@ -145,5 +150,17 @@ export async function listChatSessions(): Promise<{ sid: string; lastTs: number;
       .slice(0, 100);
   } catch {
     return [];
+  }
+}
+
+// Delete every photo blob for the given (stale) sessions. Best-effort and
+// bounded — called from the retention sweep so nothing runs unbounded per load.
+async function pruneSessionImages(sids: string[]): Promise<void> {
+  for (const sid of sids) {
+    if (!validSession(sid)) continue;
+    try {
+      const { blobs } = await list({ prefix: `gochat-img/${sid}/`, limit: 1000 });
+      if (blobs.length) await del(blobs.map((b) => b.url));
+    } catch { /* a failed prune retries on the next stale sweep */ }
   }
 }

@@ -160,14 +160,28 @@ export default function LiveChatsPage() {
                   }
                   const mine = m.role === "owner";
                   const seller = m.role === "user";
+                  // IMG::<url> = a photo the seller attached — render the
+                  // picture, click opens full size in a new tab. Host-validated
+                  // to our blob store (defense in depth: /api/chat already
+                  // refuses to store client IMG::, but never render an
+                  // unvalidated URL as <img>/<a> in the authed console — a
+                  // forged one would be an external beacon or a javascript: href).
+                  const img = /^IMG::https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/gochat-img\//i.test(m.text) ? m.text.slice(5) : null;
                   return (
-                    <div key={i} className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-[13px] ${
+                    <div key={i} className={`max-w-[75%] rounded-2xl ${img ? "p-1.5" : "px-4 py-2.5"} text-[13px] ${
                       mine ? "self-end bg-[#0f2417] border border-[#00c853]/50"
                         : seller ? "self-start bg-white/[0.08] border border-white/15"
                           : "self-start bg-white/[0.03] border border-white/10 text-white/70"
                     }`}>
                       {!seller && <div className={`text-[10px] mb-0.5 ${mine ? "text-[#00c853]" : "text-white/35"}`}>{mine ? "you" : "bot"}</div>}
-                      {m.text}
+                      {img ? (
+                        <a href={img} target="_blank" rel="noopener noreferrer">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={img} alt="seller photo" className="block max-w-full rounded-xl" style={{ maxHeight: 220 }} />
+                        </a>
+                      ) : (
+                        m.text
+                      )}
                       <div className="text-[10px] text-white/30 mt-1">{ago(m.ts)}</div>
                     </div>
                   );
