@@ -73,7 +73,16 @@ type Msg =
   | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier" | "another"; options: { key: string; label: string }[]; done?: boolean }
   | { from: "bot"; kind: "quote"; label: string; offer: number; done?: boolean }
   | { from: "bot"; kind: "lockform"; manual: boolean; done?: boolean }
-  | { from: "bot"; kind: "locked"; offer: number | null };
+  | { from: "bot"; kind: "locked"; offer: number | null }
+  | { from: "bot"; kind: "msgr" };
+
+// FB Page handle for the "keep this chat on Messenger" affordance (m.me deep
+// link). Meta policy: we can never MESSAGE someone cold — they must open the
+// thread — so the play is getting warm sellers to start one; the thread then
+// lands in the Page inbox with their real name, reachable for follow-up.
+// Env-gated (set NEXT_PUBLIC_FB_PAGE to the page's handle, the bit after
+// facebook.com/); unset = the affordance never renders.
+const MSGR_HANDLE = process.env.NEXT_PUBLIC_FB_PAGE || "";
 
 function newSessionId(src: string) {
   const rand = Math.random().toString(36).slice(2, 10);
@@ -156,7 +165,18 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     setIsDay(day);
     setStatus(day ? "online now · same-day cash" : "quotes live 24/7");
   }, []);
+  // Auto-scroll ONLY when the seller is already at (or near) the bottom.
+  // Unconditional scrolling yanked them back down every time state changed
+  // while they were scrolled up reading their photos/the quote — the
+  // "it jumps me back to the bottom" bug. nearBottom tracks their real scroll
+  // position; opening the chat resets it so a fresh open still lands at the
+  // latest message.
+  const nearBottomRef = useRef(true);
   useEffect(() => {
+    if (chatOpen) nearBottomRef.current = true;
+  }, [chatOpen]);
+  useEffect(() => {
+    if (!nearBottomRef.current) return;   // they scrolled up on purpose — never yank
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, sending, chatOpen]);
 
@@ -226,6 +246,40 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       body: JSON.stringify({ session: sessionId, text }),
     }).catch(() => {});
   }
+
+  // COMEBACK NUDGE: a seller who had a real number on screen, left the tab for
+  // 30s+, and came back is the highest-risk/highest-intent moment on the page —
+  // one bubble asking for their phone (so the reminder can reach them even if
+  // they leave for good) plus, when configured, a "keep this chat on Messenger"
+  // card. One-shot per page load; never fires once they've locked.
+  const awayNudgedRef = useRef(false);
+  const hiddenAtRef = useRef(0);
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === "hidden") {
+        hiddenAtRef.current = Date.now();
+        return;
+      }
+      if (awayNudgedRef.current) return;
+      if (!hiddenAtRef.current || Date.now() - hiddenAtRef.current < 30_000) return;
+      setMsgs((cur) => {
+        if (awayNudgedRef.current) return cur;
+        const hasQuote = cur.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform"));
+        const isLocked = cur.some((m) => "kind" in m && m.kind === "locked");
+        if (!hasQuote || isLocked) return cur;
+        awayNudgedRef.current = true;
+        logNote("seller left and came back — nudged for number" + (MSGR_HANDLE ? " + messenger" : ""));
+        return [
+          ...cur,
+          { from: "bot", text: "welcome back — your number’s still good. drop your phone number and we’ll text it to you so it’s saved even if you head out." },
+          ...(MSGR_HANDLE ? [{ from: "bot" as const, kind: "msgr" as const }] : []),
+        ];
+      });
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // One-shot idle nudge: a lock form that sits untouched for 25s gets a
   // single "just your number works" bubble. Appended straight into state —
@@ -885,7 +939,16 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             </button>
           </header>
 
-          <div ref={threadRef} role="log" aria-live="polite" className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3">
+          <div
+            ref={threadRef}
+            role="log"
+            aria-live="polite"
+            className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              nearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+            }}
+          >
             <div className="go-msg flex items-end gap-2">
               <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
               <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
@@ -1011,6 +1074,26 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                 return (
                   <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
                     <LockForm manual={m.manual} disabled={!!m.done} onLock={(n, c, a2) => guidedLock(n, c, a2, m.manual)} />
+                  </div>
+                );
+              }
+              if (m.kind === "msgr") {
+                return (
+                  <div key={i} className="go-msg ml-10 max-w-[85%]">
+                    <a
+                      href={`https://m.me/${MSGR_HANDLE}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 active:scale-[0.98] transition-transform"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-[#00c853] shrink-0" aria-hidden>
+                        <path d="M12 2C6.5 2 2 6.14 2 11.25c0 2.9 1.45 5.49 3.72 7.18V22l3.4-1.87c.91.25 1.87.39 2.88.39 5.5 0 10-4.14 10-9.27S17.5 2 12 2zm1.06 12.47-2.55-2.72-4.98 2.72 5.48-5.82 2.61 2.72 4.92-2.72-5.48 5.82z" />
+                      </svg>
+                      <span className="text-[14px] text-white/85 leading-snug">
+                        <span className="font-semibold text-white">keep this chat on Messenger</span>
+                        <span className="block text-white/55 text-[13px]">message us there and your quote follows you</span>
+                      </span>
+                    </a>
                   </div>
                 );
               }

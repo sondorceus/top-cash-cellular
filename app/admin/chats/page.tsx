@@ -58,7 +58,14 @@ export default function LiveChatsPage() {
       .then((d) => {
         if (!d) return;
         const fresh: StoredMsg[] = Array.isArray(d.msgs) ? d.msgs : [];
-        setMsgs((cur) => (after === 0 ? fresh : [...cur, ...fresh.filter((m) => m.ts > after)]));
+        // Return the SAME array when nothing new: an unconditional spread made
+        // every 4s poll a new identity → re-render → the scroll effect yanked
+        // the thread to the bottom while Sonny was scrolled up reading photos.
+        setMsgs((cur) => {
+          if (after === 0) return fresh;
+          const add = fresh.filter((m) => m.ts > after);
+          return add.length ? [...cur, ...add] : cur;
+        });
         const maxTs = fresh.length ? Math.max(...fresh.map((m) => m.ts)) : after;
         cursorRef.current = { sid, ts: Math.max(after, maxTs, typeof d.lastTs === "number" ? d.lastTs : 0) };
         setTakeoverState(!!d.takeover);
@@ -85,9 +92,16 @@ export default function LiveChatsPage() {
     const iv = setInterval(loadInbox, 15000);
     return () => clearInterval(iv);
   }, [loadInbox]);
+  // Only follow new messages when already near the bottom — scrolling up to
+  // read must never get yanked back down by a poll tick.
+  const nearBottomRef = useRef(true);
   useEffect(() => {
+    if (!nearBottomRef.current) return;
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight });
   }, [msgs]);
+  useEffect(() => {
+    nearBottomRef.current = true;   // fresh thread open → land at the latest
+  }, [open]);
 
   async function post(body: { session: string; text?: string; takeover?: boolean; sms?: boolean }) {
     setBusy(true);
@@ -153,7 +167,14 @@ export default function LiveChatsPage() {
                 </button>
               </div>
 
-              <div ref={threadRef} className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-2">
+              <div
+                ref={threadRef}
+                className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-2"
+                onScroll={(e) => {
+                  const el = e.currentTarget;
+                  nearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+                }}
+              >
                 {msgs.map((m, i) => {
                   if (m.role === "note") {
                     return <div key={i} className="text-[11px] text-[#00c853]/80 text-center py-1">— {m.text} —</div>;
