@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
 import { HeaderSearch } from "../../components/HeaderSearch";
 import { DEVICES, getOemComparison, getDevice } from "../../data/sell-catalog";
@@ -38,16 +39,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function SellDevicePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const device = getDevice(slug);
-  if (!device) {
-    return (
-      <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Device not found</h1>
-          <Link href="/" className="text-[#00c853] hover:underline">Back to Home</Link>
-        </div>
-      </main>
-    );
-  }
+  // Unknown slug must be a REAL 404. This branch used to render a "Device not
+  // found" page with HTTP 200 and index,follow, so /sell/<any-string> was an
+  // unbounded indexable URL space — anyone could mint junk pages on the domain
+  // and Google would crawl them. Verified live 2026-08-20. notFound() serves
+  // the 404 page with the correct status.
+  if (!device) notFound();
 
   const related = DEVICES.filter((d) => d.category === device.category && d.slug !== device.slug).slice(0, 4);
   const cmp = getOemComparison(slug, device.price);
