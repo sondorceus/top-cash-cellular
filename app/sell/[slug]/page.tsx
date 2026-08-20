@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `Sell ${device.name} for Cash in Austin TX | Up to $${device.price} | Top Cash Cellular`,
     description: `Sell your ${device.name} for up to $${device.price} in Austin TX. Instant quote, same-day payout. Cash, Cash App, Zelle, or BTC.${tail}`,
+    alternates: { canonical: `/sell/${device.slug}` },
     openGraph: {
       title: `Sell ${device.name} — Up to $${device.price}`,
       description: `Get up to $${device.price} for your ${device.name}. Instant quote, same-day cash payout in Austin TX.`,

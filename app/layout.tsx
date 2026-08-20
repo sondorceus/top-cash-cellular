@@ -58,7 +58,12 @@ export const metadata: Metadata = {
     images: ["https://topcashcellular.com/logo.jpg"],
   },
   robots: { index: true, follow: true },
-  alternates: { canonical: "https://topcashcellular.com" },
+  // metadataBase makes every page-level relative canonical absolute.
+  // A hardcoded canonical HERE is inherited by every route that does not
+  // set its own — which pointed all 167 /sell/[slug] pages and /bulk at
+  // the homepage, telling Google the whole programmatic surface was
+  // duplicate content. Canonicals belong on the pages. 2026-08-20.
+  metadataBase: new URL("https://topcashcellular.com"),
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
