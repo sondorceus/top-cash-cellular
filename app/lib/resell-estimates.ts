@@ -107,11 +107,8 @@ export const RESELL_MODEL_IDS: Record<string, string> = {
  * above) still returns null here because its label won't match either.
  */
 export function getResellEstimateForModel(modelId: string | undefined | null, label: string | undefined | null): number | null {
-  if (modelId) {
-    const key = RESELL_MODEL_IDS[modelId];
-    if (key) return RESELL_ESTIMATES[key] ?? null;
-  }
-  return getResellEstimate(label);
+  const key = resellLabelFor(modelId, label);
+  return key ? RESELL_ESTIMATES[key] ?? null : null;
 }
 
 /**
@@ -124,12 +121,27 @@ export function getResellEstimateForModel(modelId: string | undefined | null, la
  * "iPhone 16 Pro Max 256GB" still matches "iPhone 16 Pro Max").
  */
 export function getResellEstimate(modelName: string | undefined | null): number | null {
+  const key = resellLabelFor(null, modelName);
+  return key ? RESELL_ESTIMATES[key] ?? null : null;
+}
+
+/**
+ * Which RESELL_ESTIMATES key a query resolves to. The matching rules live
+ * HERE, in one place, so callers that need the KEY (not just the value —
+ * e.g. the consumer-comp check) can never drift from the lookup itself.
+ */
+export function resellLabelFor(modelId: string | undefined | null, modelName: string | undefined | null): string | null {
+  if (modelId) {
+    // Exact-id mapping wins and does NOT fall back to fuzzy label matching.
+    const mapped = RESELL_MODEL_IDS[modelId];
+    if (mapped) return RESELL_ESTIMATES[mapped] != null ? mapped : null;
+  }
   if (!modelName) return null;
   const m = modelName.trim();
   if (!m) return null;
-  let best: { key: string; val: number } | null = null;
-  for (const [key, val] of Object.entries(RESELL_ESTIMATES)) {
-    if (m === key) return val;
+  let best: { key: string } | null = null;
+  for (const key of Object.keys(RESELL_ESTIMATES)) {
+    if (m === key) return key;
     if (!m.includes(key)) continue;
     // Trailing-token guard. A substring key must not match a query that
     // carries a model-distinguishing token BEYOND the key — otherwise
@@ -139,9 +151,9 @@ export function getResellEstimate(modelName: string | undefined | null): number 
     // (" M4", " (M3)") still match because the key reaches the query's end.
     const rest = m.slice(m.indexOf(key) + key.length).trim();
     if (rest !== "" && !/^\d+\s?(gb|tb)$/i.test(rest)) continue;
-    if (!best || key.length > best.key.length) best = { key, val };
+    if (!best || key.length > best.key.length) best = { key };
   }
-  return best ? best.val : null;
+  return best ? best.key : null;
 }
 
 /**
@@ -217,6 +229,48 @@ export const NET_PAYOUTS: Record<string, { unlocked: number; locked: number }> =
   ip16pm: { unlocked: 600, locked: 470 },
 };
 
+/**
+ * CONSUMER-COMP HAIRCUT.
+ *
+ * Some RESELL_ESTIMATES entries are Swappa/eBay medians — what a phone sells
+ * for CONSUMER-to-consumer — not what our wholesale exit actually pays. The
+ * 16 Pro Max measured that gap exactly: its eBay median said $743 while the
+ * owner's real payout is $470. A comp that high sets a ceiling that high,
+ * which means overpaying sellers.
+ *
+ * Owner 2026-08-20: "just reduce by 10-20 dollars on the ones priced a bit
+ * too high, use your judgement." So until each model's real payout replaces
+ * its comp in NET_PAYOUTS, these take a modest flat trim, scaled inside that
+ * $10-20 range so a $137 Pixel isn't cut as hard as a $619 iPhone 17 Pro.
+ *
+ * Deliberately NOT trimmed:
+ *   - NET_PAYOUTS models — those are the owner's real numbers already.
+ *   - iPhone 13 family — its comps were BACK-CALCULATED from his own payouts
+ *     ("170 unlocked, 120 locked"), so they're already truth, not a scrape.
+ *   - Pixels — sourced from Atlas grade_a wholesale, i.e. a real exit price.
+ *   - Watches / consoles — PRICE_TABLE sits under the cap, so it never bites.
+ */
+const CONSUMER_COMP_LABELS = new Set([
+  "iPhone 17 Pro", "iPhone 17",
+  "iPhone 16 Pro", "iPhone 16 Plus", "iPhone 16",
+  "iPhone 15 Pro Max", "iPhone 15 Pro", "iPhone 15",
+  "iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14",
+  "Galaxy S26 Ultra", "Galaxy S25 Ultra", "Galaxy S24 Ultra", "Galaxy S26", "Galaxy S25",
+]);
+
+/**
+ * The trim, derived from the model's FULL-condition cap (condition multiplier
+ * 1.0) rather than the per-cell cap — so it's one constant per model. That
+ * matters: subtracting a constant from an ordered ladder keeps it ordered,
+ * while a per-cell trim could invert two adjacent conditions at a tier
+ * boundary and trip the monotonic invariant gate.
+ */
+function consumerCompTrim(fullCap: number): number {
+  if (fullCap < 250) return 10;
+  if (fullCap < 450) return 15;
+  return 20;
+}
+
 /** A carrier answer counts as LOCKED for payout purposes. Mirrors the
  *  carrier-deduction rule exactly: "verizon" is only locked when the seller
  *  answered the lock question yes — a paid-off Verizon phone is unlocked. */
@@ -250,7 +304,15 @@ export function marginCapFor(opts: {
   }
   const resell = getResellEstimateForModel(opts.modelId ?? null, opts.label ?? null);
   if (resell == null) return null;
-  return Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
+  const cap = Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
+  // Consumer-median comps run high (see CONSUMER_COMP_LABELS). Trim is keyed
+  // to the model's full-condition cap so it's constant across the ladder.
+  const matched = resellLabelFor(opts.modelId ?? null, opts.label ?? null);
+  if (matched && CONSUMER_COMP_LABELS.has(matched)) {
+    const fullCap = Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
+    return Math.max(0, cap - consumerCompTrim(fullCap));
+  }
+  return cap;
 }
 
 /**

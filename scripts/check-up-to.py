@@ -38,6 +38,20 @@ rs_src = (REPO / "app" / "lib" / "resell-estimates.ts").read_text(encoding="utf-
 m = re.search(r"RESELL_ESTIMATES[^=]*=\s*\{(.*?)\n\};", rs_src, re.S)
 RESELL = {k.replace('\\"', '"'): int(v) for k, v in re.findall(r'"((?:[^"\\]|\\.)*)":\s*(\d+)', m.group(1))}
 
+# NET_PAYOUTS — the owner's REAL wholesale proceeds, already net, so the cap
+# skips the eBay haircut (mirror of marginCapFor). Ceilings are the best
+# config, i.e. UNLOCKED.
+_np = re.search(r"NET_PAYOUTS[^=]*=\s*\{(.*?)\n\};", rs_src, re.S)
+NET_UNLOCKED = {mid: int(u) for mid, u in re.findall(r"(\w+):\s*\{\s*unlocked:\s*(\d+)", _np.group(1) if _np else "")}
+
+# CONSUMER_COMP_LABELS — Swappa/eBay consumer medians that skew high, so their
+# caps take a modest flat trim (mirror of consumerCompTrim).
+_cc = re.search(r"CONSUMER_COMP_LABELS\s*=\s*new Set\(\[(.*?)\]\)", rs_src, re.S)
+CONSUMER_COMP = {s.replace('\\"', '"') for s in re.findall(r'"((?:[^"\\]|\\.)*)"', _cc.group(1) if _cc else "")}
+
+def consumer_trim(full_cap):
+    return 10 if full_cap < 250 else 15 if full_cap < 450 else 20
+
 cat_path = REPO / "app" / "data" / "catalog-prices.ts"
 cat_src = cat_path.read_text(encoding="utf-8")
 CAT = {k: int(v) for k, v in re.findall(r"^\s+(\w+):\s*(\d+),", cat_src, re.M)}
@@ -65,6 +79,33 @@ def resell_of(label):
         if best is None or len(key) > len(best[0]): best = (key, val)
     return best[1] if best else None
 
+def resell_key_of(label):
+    """The matched RESELL_ESTIMATES key (mirror of resellLabelFor's label path)."""
+    if not label: return None
+    q = label.strip()
+    if q in RESELL: return q
+    best = None
+    for key in RESELL:
+        if key not in q: continue
+        rest = q[q.index(key) + len(key):].strip()
+        if rest != "" and not re.match(r"^\d+\s?(gb|tb)$", rest, re.I): continue
+        if best is None or len(key) > len(best): best = key
+    return best
+
+def cap_of(mid, cond):
+    """Full mirror of marginCapFor() for the UNLOCKED case."""
+    cm = COND_MULT.get(cond, 1.0)
+    net = NET_UNLOCKED.get(mid)
+    if net is not None:
+        return jround(net * cm * 0.75)
+    label = SKU.get(mid)
+    resell = resell_of(label)
+    if resell is None: return None
+    cap = jround(jround(resell * cm) * 0.87 * 0.75)
+    if resell_key_of(label) in CONSUMER_COMP:
+        cap = max(0, cap - consumer_trim(jround(resell * 0.87 * 0.75)))
+    return cap
+
 def dt_of(mid):
     if mid.startswith("ipad"): return "ipad"
     if mid.startswith("ip"): return "iphone"
@@ -82,15 +123,14 @@ def ceiling_of(mid, debug=False):
     dt = dt_of(mid)
     pop = 25 if dt in ("iphone", "android", "pixel", "ipad") else 0
     acc_amt = 30 if dt == "macbook" else 10 if dt == "iphone" else 0
-    resell = resell_of(SKU.get(mid))
     gd = galaxy_drop(mid)
     best = 0
     for st, conds in table.items():
         for cond, cell in conds.items():
             if cell <= 0: continue
             offer = cell + pop + (acc_amt if cond != "sealed" else 0)
-            if resell is not None:
-                cap = jround(jround(resell * COND_MULT.get(cond, 1.0)) * 0.87 * 0.75)
+            cap = cap_of(mid, cond)
+            if cap is not None:
                 offer = min(offer, cap)
             if gd and offer >= 250:
                 offer = max(offer - gd, 249)  # applyGalaxyDrop monotone floor
@@ -101,9 +141,9 @@ def ceiling_of(mid, debug=False):
 def runtime_card(stored, mid):
     """what getMaxPrice displays for a stored catalog value"""
     val = stored
-    resell = resell_of(SKU.get(mid))
-    if resell is not None:
-        val = min(val, jround(resell * 0.87 * 0.75))
+    cap = cap_of(mid, "sealed")   # getMaxPrice asks for the best config
+    if cap is not None:
+        val = min(val, cap)
     gd = galaxy_drop(mid)
     if gd and val >= 250: val = max(val - gd, 249)  # applyGalaxyDrop monotone floor
     return val
