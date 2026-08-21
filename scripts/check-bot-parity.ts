@@ -20,10 +20,7 @@
 
 import { readFileSync } from "fs";
 import { PRICE_TABLE, MIN_OFFER, carrierGapForCondition, CARRIER_DEDUCTIONS, MANUAL_REVIEW_DEVICES } from "../app/data/prices";
-import {
-  getResellEstimate, resellMultiplierForCondition,
-  MARGIN_FLOOR_MULT, EBAY_FEE_MULT, applyGalaxyDrop,
-} from "../app/lib/resell-estimates";
+import { marginCapFor, applyGalaxyDrop } from "../app/lib/resell-estimates";
 import { quoteDevice, type PriceOverrides } from "../app/lib/quote";
 
 const EMPTY: PriceOverrides = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
@@ -60,10 +57,12 @@ function funnelOffer(id: string, st: string, cond: string, carrier: string, vzLo
   const base = Math.max(0, Math.round(cell - gap));
   const bonus = base > 0 ? 25 : 0;
   const raw = Math.max(0, base + bonus);
-  const resell = getResellEstimate(LABELS[id]);
-  const condMult = resellMultiplierForCondition(cond, null);
-  const est = resell != null ? Math.round(resell * condMult) : null;
-  const cap = est != null ? Math.round(est * EBAY_FEE_MULT * MARGIN_FLOOR_MULT) : null;
+  // The margin cap is no longer duplicated per surface — page.tsx and
+  // quote.ts both call marginCapFor (carrier-aware, and NET_PAYOUTS models
+  // skip the eBay haircut), so the funnel model here calls it too. The
+  // independently-implemented parts this gate actually guards — cells,
+  // carrier gaps, bonuses, galaxy drop, MIN_OFFER — stay duplicated above.
+  const cap = marginCapFor({ modelId: id, label: LABELS[id], condition: cond, carrier, carrierLocked: vzLocked });
   const capped = cap != null && raw > cap ? cap : raw;
   const final = applyGalaxyDrop(capped, id);
   const manual = final < MIN_OFFER || (cap != null && cap < MIN_OFFER);
