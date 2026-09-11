@@ -227,10 +227,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [gBusy, setGBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
-  // "save this chat" bar — a phone field above the composer until a number
-  // lands. The number goes through send() like any message, so the server's
-  // contact detection, lead post, owner alert and pixel all fire as usual.
-  const [saveNum, setSaveNum] = useState("");
   // Photo attach — the flaw a phone-buyback chat can't have: sellers WANT to
   // show the crack. File input is hidden; the camera button triggers it.
   const [uploading, setUploading] = useState(false);
@@ -390,6 +386,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         }
         if (typeof d?.lastTs === "number" && d.lastTs > lastSyncRef.current) lastSyncRef.current = d.lastTs;
         if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
+        if (d?.contactOnFile) setContactCaptured(true);
       } catch { /* fresh thread */ }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -843,7 +840,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       // Close-signal tracking for the nudges: an engine number was named /
       // a contact landed.
       if (Array.isArray(d?.quoted) && d.quoted.length) setAiQuoted(true);
-      if (d?.leadCaptured) setContactCaptured(true);
+      // contactOnFile covers a number given earlier in the session (or via the
+      // lock): leadCaptured only fires the FIRST time, so a returning or
+      // already-captured seller kept seeing the number asks.
+      if (d?.leadCaptured || d?.contactOnFile) setContactCaptured(true);
       // A typed contact IS a lead — the server already routed it to MC and
       // Sonny's phone. Report it to Meta too, or the campaign only ever
       // learns from iPhone/Samsung carousel lockers and stops showing the ad
@@ -985,6 +985,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         });
         const dd = await res.json();
         if (Array.isArray(dd?.quoted) && dd.quoted.length) setAiQuoted(true);
+        if (dd?.contactOnFile) setContactCaptured(true);
         if (dd?.leadCaptured) {
           setContactCaptured(true);
           // Same browser-side Lead the typed path fires — a photo-sender
@@ -1414,38 +1415,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               </svg>
               tap to add a photo of your device — helps us price it
             </button>
-          )}
-
-          {/* save-this-chat bar: shown once the seller has said anything and
-              no number is on file; hidden while a lock form (its own number
-              ask) is live, after a lock, and during a takeover. */}
-          {hasUserMsg && !contactCaptured && !takeover && !lastLockRef.current && !msgs.some((m) => "kind" in m && m.kind === "lockform" && !m.done) && (
-            <form
-              className="mx-4 mb-2 flex gap-2 items-center"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const v = saveNum.trim();
-                if (v.replace(/\D/g, "").length < 10 && !v.includes("@")) return;
-                // send() refuses while a message or photo is in flight — keep
-                // the typed number in the field in that case, never drop it.
-                if (sending || uploading) return;
-                setSaveNum("");
-                void send(v);
-              }}
-            >
-              <input
-                value={saveNum}
-                onChange={(e) => setSaveNum(e.target.value)}
-                placeholder="your number — so we can text you if we get cut off"
-                inputMode="tel"
-                autoComplete="tel"
-                aria-label="your phone number, so we can text you"
-                className="flex-1 min-w-0 px-4 py-[10px] rounded-full bg-white/[0.06] border border-[#00c853]/45 text-[15px] text-white placeholder-white/45 focus:outline-none focus:border-[#00c853]"
-              />
-              <button type="submit" disabled={sending || uploading} className="tcc-button-primary px-4 py-[10px] rounded-full text-[15px] font-bold shrink-0 disabled:opacity-40">
-                save
-              </button>
-            </form>
           )}
 
           <form

@@ -50,8 +50,11 @@ export async function GET(req: NextRequest) {
   // pending quote parsed from the client's QSPEC breadcrumb, and only when
   // no lock happened after it.
   let pendingQuote: { model: string; storage: string; condition: string; carrier: string; offer: number } | null = null;
+  // Whether a contact is already on file — a boolean only, never the note.
+  let contactOnFile = false;
   if (full) {
     const notes = state.msgs.filter((m) => m.role === "note");
+    contactOnFile = notes.some((m) => m.text.startsWith("CONTACT: "));
     const lastQspec = [...notes].reverse().find((m) => m.text.startsWith("QSPEC: "));
     const lastLock = [...notes].reverse().find((m) => m.text.startsWith("LOCKED:"));
     // 14-day gate mirrors the published price-lock promise — past it the
@@ -67,7 +70,7 @@ export async function GET(req: NextRequest) {
       }
     }
   }
-  return NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}) });
+  return NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}) });
 }
 
 export async function POST(req: NextRequest) {

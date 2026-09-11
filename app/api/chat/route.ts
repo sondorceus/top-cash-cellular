@@ -739,6 +739,9 @@ export async function POST(req: NextRequest) {
     await Promise.all(pendingNotes).catch(() => {});
     return NextResponse.json({
       reply,
+      // A contact is on file for this session (this turn, an earlier turn, or
+      // the lock) — the client stops every number ask on this.
+      contactOnFile: !!(contact || storeContactNote),
       ...(quotedAny ? { quoted: quotedLines } : {}),
       ...(contactJustArrived ? { leadCaptured: true, ...(leadValue != null ? { leadValue } : {}) } : {}),
     });
