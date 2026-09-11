@@ -455,58 +455,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // One-shot idle nudge: a lock form that sits untouched for 25s gets a
-  // single "just your number works" bubble. Appended straight into state —
-  // pushMsgs would retire the live form. The timer re-arms on any thread
-  // activity, so it fires 25s after the seller last did anything.
-  const nudgedRef = useRef(false);
-  useEffect(() => {
-    if (nudgedRef.current || takeover) return;
-    if (!msgs.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return;
-    const t = setTimeout(() => {
-      setMsgs((cur) => {
-        if (nudgedRef.current || takeoverRef.current) return cur;
-        if (!cur.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return cur;
-        nudgedRef.current = true;
-        logNote("idle lockform — nudged: just your number works");
-        return [...cur, { from: "bot", text: "just your number works — we’ll text you the quote so you don’t lose it." }];
-      });
-    }, 25000);
-    return () => clearTimeout(t);
-  }, [msgs, takeover]);
-
-  // AI-path twin of the idle nudge: Theot named an engine number in plain
-  // text (no lock form exists on that path), the seller went quiet, and no
-  // contact is on file — one bubble, 45s after the last activity. This was
-  // the dominant observed loss: quote-then-silence with the last message
-  // never asking for a number.
-  const aiNudgedRef = useRef(false);
-  // Any thread the seller typed in qualifies (not just quoted ones): chats
-  // get cut off in the Facebook browser, and a saved number is the
-  // difference between a lead and nothing. Sonny 2026-09-11: "nudge more
-  // for the number in case we get lost at the start of chat".
+  // Timed nudge bubbles (25s lock-form, 45s idle) are GONE — Sonny 2026-09-11:
+  // "it nudged me 3 times, that's insane". The bot asks once with the first
+  // real quote; the only client-side ask left is the comeback bubble when a
+  // seller with a number on screen leaves the tab and returns, plus the
+  // standing note at the top of the chat and the save-this-chat bar.
   const hasUserMsg = msgs.some((m) => !("kind" in m) && m.from === "user");
-  useEffect(() => {
-    if (aiNudgedRef.current || !(aiQuoted || hasUserMsg) || contactCaptured || takeover) return;
-    if (msgs.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return; // the lock form is already the ask
-    const t = setTimeout(() => {
-      setMsgs((cur) => {
-        if (aiNudgedRef.current || takeoverRef.current || contactCapturedRef.current) return cur;
-        aiNudgedRef.current = true;
-        logNote(aiQuotedRef.current ? "idle after AI quote — nudged for number" : "idle in chat — nudged for number");
-        return [
-          ...cur,
-          {
-            from: "bot",
-            text: aiQuotedRef.current
-              ? "that number holds for 14 days — drop your phone number and we’ll text it to you so it’s saved."
-              : "quick one — drop your phone number so this chat is saved if we get cut off. we’ll text you the offer.",
-          },
-        ];
-      });
-    }, 45000);
-    return () => clearTimeout(t);
-  }, [msgs, aiQuoted, hasUserMsg, contactCaptured, takeover]);
 
   // Retire interactivity on every previous rich message; append new ones.
   function pushMsgs(...add: Msg[]) {
