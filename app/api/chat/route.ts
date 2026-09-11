@@ -128,7 +128,7 @@ const MAX_MESSAGE_LEN = 2000;
 const MAX_HISTORY_LEN = 12;
 
 export async function POST(req: NextRequest) {
-  let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown };
+  let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown; fbp?: unknown; fbc?: unknown; src?: unknown };
   try {
     payload = await req.json();
   } catch {
@@ -291,15 +291,21 @@ export async function POST(req: NextRequest) {
   if (contactJustArrived && contact && sessionId) {
     const capiIp = ip;
     const capiUa = req.headers.get("user-agent");
+    const capiFbp = typeof payload.fbp === "string" ? payload.fbp : null;
+    const capiFbc = typeof payload.fbc === "string" ? payload.fbc : null;
+    // The /go client sends its ad tag so the conversion URL carries it.
+    const capiSrc = (typeof payload.src === "string" ? payload.src : "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 8);
     after(() => {
       void sendCapiLead({
         eventId: `chatlead-${sessionId}`,
         // /go sessions are "go-..."; anything else is the main-site widget.
-        sourceUrl: sessionId.startsWith("go") ? "https://topcashcellular.com/go" : "https://topcashcellular.com/",
+        sourceUrl: sessionId.startsWith("go") ? `https://topcashcellular.com/go${capiSrc ? `?src=${capiSrc}` : ""}` : "https://topcashcellular.com/",
         ip: capiIp,
         userAgent: capiUa,
         contact,
         contentName: "chat",
+        fbp: capiFbp,
+        fbc: capiFbc,
       });
     });
   }

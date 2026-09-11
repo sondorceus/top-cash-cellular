@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { appendChatMsg, listChatSessions, readChat, validSession } from "../../../lib/gochat-store";
 import { sidToken } from "../../../lib/go-sid-token";
-import { sendSellerSms, looksLikePhone } from "../../../lib/seller-sms";
+import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
@@ -62,7 +62,12 @@ export async function POST(req: NextRequest) {
     const state = await readChat(sid, 0);
     const contactNote = [...state.msgs].reverse().find((m) => m.role === "note" && m.text.startsWith("CONTACT: "));
     const contact = contactNote ? contactNote.text.slice("CONTACT: ".length).trim() : "";
-    if (contact && looksLikePhone(contact)) {
+    const optedOut = notesHaveOptOut(state.msgs.filter((m) => m.role === "note").map((m) => m.text));
+    if (optedOut) {
+      // The seller texted STOP — the message still lands in the web chat,
+      // the text does not go out. Surfaced in the console as a note.
+      await appendChatMsg(sid, "note", "SMS skipped — seller opted out by texting STOP");
+    } else if (contact && looksLikePhone(contact)) {
       // ?sid=&k= lets the /go client adopt THIS session in whatever browser
       // the SMS opens (the seller's original session id lives in the Meta
       // in-app webview's localStorage — a bare /go link dumped them into a

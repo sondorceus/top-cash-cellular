@@ -10,12 +10,20 @@
 // server sends the SAME event_id here — Meta keeps one copy. Event ids are
 // derived from the sessionId so both sides can compute them independently.
 //
+// MATCH QUALITY (2026-09-11): the client now forwards the pixel's own
+// browser ids — _fbp (browser id) and _fbc (the click id Meta stamps as
+// ?fbclid= on every ad click, cookied by MetaPixel.tsx) — so a conversion
+// matches the ad click directly instead of on IP + UA + one hashed contact.
+// META_TEST_EVENT_CODE (optional env) routes events to Events Manager's
+// Test Events tab for verification without touching production data.
+//
 // Best-effort by design: no-ops without META_CAPI_TOKEN, never throws, and
 // callers run it inside after() so it can't delay a seller-facing response.
 import { createHash } from "crypto";
 
 const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "";
 const CAPI_TOKEN = process.env.META_CAPI_TOKEN || "";
+const TEST_EVENT_CODE = process.env.META_TEST_EVENT_CODE || "";
 
 function sha256(v: string): string {
   return createHash("sha256").update(v).digest("hex");
@@ -39,6 +47,14 @@ export function hashPhone(contact: string): string | null {
   return d.length === 11 ? sha256(d) : null;
 }
 
+// Cookie shapes Meta documents: fb.<subdomainIndex>.<creationTime>.<id>.
+// Anything else is dropped — a malformed value is rejected by the API and
+// can fail the whole event.
+const FB_COOKIE_RE = /^fb\.\d\.\d{10,16}\.[A-Za-z0-9_-]{4,200}$/;
+function fbCookie(v: unknown): string | null {
+  return typeof v === "string" && FB_COOKIE_RE.test(v) ? v : null;
+}
+
 export type CapiLead = {
   eventId: string;
   sourceUrl: string;
@@ -47,6 +63,8 @@ export type CapiLead = {
   contact?: string | null; // raw phone or email; hashed here, never sent plain
   value?: number | null;
   contentName?: string | null;
+  fbp?: string | null; // _fbp cookie, forwarded by the client
+  fbc?: string | null; // _fbc cookie (fbclid), forwarded by the client
 };
 
 export async function sendCapiLead(e: CapiLead): Promise<boolean> {
@@ -61,6 +79,10 @@ export async function sendCapiLead(e: CapiLead): Promise<boolean> {
     if (em) user_data.em = [em];
     if (ph) user_data.ph = [ph];
   }
+  const fbp = fbCookie(e.fbp);
+  const fbc = fbCookie(e.fbc);
+  if (fbp) user_data.fbp = fbp;
+  if (fbc) user_data.fbc = fbc;
   const body = {
     data: [{
       event_name: "Lead",
@@ -73,6 +95,7 @@ export async function sendCapiLead(e: CapiLead): Promise<boolean> {
         ? { custom_data: { ...(e.value != null ? { value: e.value, currency: "USD" } : {}), ...(e.contentName ? { content_name: e.contentName } : {}) } }
         : {}),
     }],
+    ...(TEST_EVENT_CODE ? { test_event_code: TEST_EVENT_CODE } : {}),
   };
   try {
     const res = await fetch(`https://graph.facebook.com/v21.0/${PIXEL_ID}/events?access_token=${CAPI_TOKEN}`, {

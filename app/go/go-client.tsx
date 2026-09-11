@@ -1,9 +1,11 @@
 "use client";
 
-// /go interactive surface: the board (tap → HOLD → three chips → real
-// number → lock), and the composer (type → /api/chat, the same brain as
-// Messenger but with site-chat policy: it quotes singles, lots go to the
-// team).
+// /go interactive surface: category tiles → full-screen chat. iPhone/Samsung
+// run the deterministic flow (model carousel → three chips → engine number →
+// one-field lock → MEET/SHIP chips); everything else types to /api/chat, the
+// site-chat brain (quotes singles, lots go to the team). The old in-page
+// price board was removed 2026-09-11 — it had been dead code since the
+// funnel-first rewrite (72e157a).
 //
 // Brand rules honored here: dark only, green is a crisp accent (no glow),
 // seller language (lock in / get paid, never cart-speak), company voice
@@ -11,7 +13,7 @@
 // client never invents or caches a price.
 import { useEffect, useRef, useState } from "react";
 import type { BoardRow } from "./board";
-import { pixelTrack } from "../components/MetaPixel";
+import { pixelTrack, fbCookies } from "../components/MetaPixel";
 
 export type GoReviews = {
   avg: number;
@@ -34,7 +36,12 @@ const CARRIERS: { key: string; label: string }[] = [
   { key: "att", label: "at&t" },
   { key: "tmobile", label: "t-mobile" },
   { key: "verizon", label: "verizon" },
-  { key: "other", label: "other" },
+  // "other" used to read as the catch-all — a seller who meant "unlocked"
+  // tapped it and got $204 on a $433 phone. Name what it actually is, and
+  // give the unsure a chip that prices at the middle (AT&T) tier and says
+  // the number only goes UP at inspection.
+  { key: "other", label: "other carrier (cricket, metro, boost…)" },
+  { key: "unknown", label: "not sure" },
 ];
 const CHIPS = ["i got a few phones", "how do i get paid", "how does this work"];
 
@@ -74,10 +81,12 @@ type Msg =
   // hiccup line must not ride into the model as a real bot turn.
   | { from: "bot"; kind: "err"; text: string }
   | { from: "bot"; kind: "models"; prefix: "ip" | "gs"; done?: boolean }
-  | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier" | "another"; options: { key: string; label: string }[]; done?: boolean }
-  | { from: "bot"; kind: "quote"; label: string; offer: number; done?: boolean }
+  | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier" | "another" | "handoff"; options: { key: string; label: string }[]; done?: boolean }
+  // note: an extra line under the number (e.g. the "not sure" carrier caveat)
+  | { from: "bot"; kind: "quote"; label: string; offer: number; note?: string; done?: boolean }
   | { from: "bot"; kind: "lockform"; manual: boolean; done?: boolean }
-  | { from: "bot"; kind: "locked"; offer: number | null }
+  // until: ISO lock deadline from /api/go/lock — rendered as "holds until <date>"
+  | { from: "bot"; kind: "locked"; offer: number | null; until?: string }
   | { from: "bot"; kind: "msgr" };
 
 // FB Page handle for the "keep this chat on Messenger" affordance (m.me deep
@@ -120,21 +129,14 @@ function persistentSessionId(src: string): string {
 
 export default function GoClient({ rows, src, reviews, variant = "std" }: { rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot" }) {
   const lot = variant === "lot";
-  // ---- board / HOLD state ----
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [step, setStep] = useState(0); // 0 storage · 1 condition · 2 carrier · 3 done
-  const [spec, setSpec] = useState<{ storage?: string; condition?: string; carrier?: string }>({});
-  const [held, setHeld] = useState(0); // current on-screen number (engine-sourced)
-  const [cause, setCause] = useState(""); // why the number last moved
-  const [manual, setManual] = useState(false);
-  const [quoting, setQuoting] = useState(false);
-  // ---- lock state ----
-  const [locking, setLocking] = useState(false);
-  const [locked, setLocked] = useState(false);
-  const [lockErr, setLockErr] = useState("");
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [attest, setAttest] = useState(false);
+  // Value anchor for the first paint — the page promises "real number in 30
+  // seconds" and used to show none until the third tap. Three live engine
+  // ceilings, server-rendered (rows come from the server, no Date involved),
+  // so an iPhone-7 seller self-selects out and a 17 Pro Max seller leans in.
+  const anchors = ["ip17pm", "gs25u", "ip14pm"]
+    .map((id) => rows.find((r) => r.id === id))
+    .filter((r): r is BoardRow => !!r)
+    .map((r) => `${r.label.replace(/^iPhone |^Galaxy /, "")} up to $${r.upTo.toLocaleString("en-US")}`);
   // ---- chat state ----
   const [showReviews, setShowReviews] = useState(false);
   // Full-screen chat takeover — opens on engagement (never on load: the
@@ -163,9 +165,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // from the owner's SMS deep-link.
   const [sessionId, setSessionId] = useState(() => persistentSessionId(src));
   const threadRef = useRef<HTMLDivElement>(null);
-  // Guards the async chip flow against row-switching: a response for a row
-  // that is no longer open must be discarded, never applied to the new row.
-  const openIdRef = useRef<string | null>(null);
+  // What the seller just locked — the handoff chips POST it to /api/delivery
+  // after the lock form (and its contact) is gone.
+  const lastLockRef = useRef<{ model: string; contact: string; offer: number | null } | null>(null);
   // Business-hours status. Client-only (Date at render would mismatch the
   // server HTML), and both strings are TRUE at all hours — quotes run 24/7.
   const [status, setStatus] = useState("");
@@ -338,13 +340,23 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         if (awayNudgedRef.current) return cur;
         const hasQuote = aiQuotedRef.current || cur.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform"));
         const isLocked = cur.some((m) => "kind" in m && m.kind === "locked");
-        if (!hasQuote || isLocked) return cur;
+        // AI-path threads (MacBook / iPad / console / "something else") never
+        // get a quote card, so the old quote-only gate left the largest
+        // uncovered segment with no catch at all. Any thread the seller
+        // actually typed in counts.
+        const hasThread = cur.some((m) => !("kind" in m) && m.from === "user");
+        if (isLocked || (!hasQuote && !hasThread)) return cur;
         awayNudgedRef.current = true;
-        logNote("seller left and came back — nudged for number" + (MSGR_HANDLE ? " + messenger" : ""));
+        logNote(`seller left and came back${hasQuote ? "" : " (no quote yet)"} — nudged for number` + (MSGR_HANDLE && hasQuote ? " + messenger" : ""));
         return [
           ...cur,
-          { from: "bot", text: "welcome back — your number’s still good. drop your phone number and we’ll text it to you so it’s saved even if you head out." },
-          ...(MSGR_HANDLE ? [{ from: "bot" as const, kind: "msgr" as const }] : []),
+          {
+            from: "bot",
+            text: hasQuote
+              ? "welcome back — your number’s still good. drop your phone number and we’ll text it to you so it’s saved even if you head out."
+              : "still here — drop your phone number and we’ll text you the offer so it’s saved even if you head out.",
+          },
+          ...(MSGR_HANDLE && hasQuote ? [{ from: "bot" as const, kind: "msgr" as const }] : []),
         ];
       });
     };
@@ -392,127 +404,28 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     return () => clearTimeout(t);
   }, [msgs, aiQuoted, contactCaptured, takeover]);
 
-  const row = rows.find((r) => r.id === openId) || null;
-
-  function openRow(r: BoardRow) {
-    if (openId === r.id) { setOpenId(null); openIdRef.current = null; return; }
-    setOpenId(r.id);
-    openIdRef.current = r.id;
-    pixelTrack("ViewContent", { content_name: r.label, content_category: "board" });
-    setStep(0);
-    setSpec({});
-    setHeld(r.upTo);
-    setCause("");
-    setManual(false);
-    setLocked(false);
-    setLockErr("");
-    setQuoteErr(false);
-  }
-
-  // One chip answered → re-quote with ceiling defaults on the unanswered
-  // dims, so the number only ever moves because of a fact the seller gave.
-  // The step only advances on a real engine answer: {ok} moves the number
-  // with the tapped chip as the cause; {manualReview} exits to the honest
-  // hand-quote path. A transient network/429 failure does NEITHER — it
-  // re-enables the chips with a retry line, because telling a seller "we
-  // price this one by hand" over a dropped packet is a lie that costs the
-  // instant close.
-  const [quoteErr, setQuoteErr] = useState(false);
-  async function answer(dim: "storage" | "condition" | "carrier", key: string, label: string) {
-    if (!row || quoting) return;
-    const rid = row.id;
-    const next = { ...spec, [dim]: key };
-    setQuoting(true);
-    setQuoteErr(false);
-    try {
-      const res = await fetch("/api/go/quote", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: row.id,
-          storage: next.storage ?? row.bestStorage,
-          condition: next.condition ?? "sealed",
-          carrier: next.carrier ?? "unlocked",
-        }),
-      });
-      const d = await res.json();
-      if (openIdRef.current !== rid) { setQuoting(false); return; } // row switched mid-flight
-      if (d?.ok && typeof d.offer === "number") {
-        setSpec(next);
-        setHeld(d.offer);
-        setCause(label);
-        setManual(false);
-        setStep((s) => s + 1);
-      } else if (d?.manualReview) {
-        setSpec(next);
-        setManual(true);
-        setStep((s) => s + 1);
-      } else {
-        setQuoteErr(true);
-      }
-    } catch {
-      setQuoteErr(true);
-    }
-    setQuoting(false);
-  }
-
-  async function lockIn() {
-    if (!row || locking) return;
-    if (!contact.trim()) { setLockErr("we need a number or email to reach you"); return; }
-    if (!attest) { setLockErr("check the box so we know it's yours to sell"); return; }
-    setLockErr("");
-    setLocking(true);
-    try {
-      const res = await fetch("/api/go/lock", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: row.id,
-          storage: spec.storage ?? row.bestStorage,
-          condition: spec.condition ?? "sealed",
-          carrier: spec.carrier ?? "unlocked",
-          name: name.trim(),
-          contact: contact.trim(),
-          attest: true,
-          src,
-          sessionId,
-        }),
-      });
-      const d = await res.json();
-      if (d?.ok) {
-        if (typeof d.offer === "number" && d.offer !== held && !manual) {
-          // The engine moved since they tapped (a live price edit mid-
-          // session). Locking a number they never saw is the bait-and-switch
-          // this page exists to kill — show the live number and make the
-          // lock an explicit second tap.
-          setHeld(d.offer);
-          setCause("prices just updated — this is the live number");
-          setLockErr("the live number is $" + d.offer + " — tap again to lock that");
-        } else {
-          // Engine returned no number at lock time (device flipped to
-          // manual-review mid-session): don't leave a stale figure on
-          // screen under a "locked" banner — the locked card's copy holds
-          // for both cases, but the number must not.
-          if (!manual && typeof d.offer !== "number") setManual(true);
-          pixelTrack("Lead", {
-            content_name: row.label,
-            value: typeof d.offer === "number" ? d.offer : 0,
-            currency: "USD",
-          });
-          setLocked(true);
-        }
-      } else {
-        setLockErr(d?.error || "that didn't go through — try again");
-      }
-    } catch {
-      setLockErr("that didn't go through — try again");
-    }
-    setLocking(false);
-  }
-
   // Retire interactivity on every previous rich message; append new ones.
   function pushMsgs(...add: Msg[]) {
     setMsgs((m) => [...m.map((x) => ("kind" in x ? { ...x, done: true } : x)), ...add]);
+  }
+
+  // "got another one?" — asked after the handoff choice. Every affordance
+  // (category grid, "i got a few phones" chip) is gated on an empty thread,
+  // so without this the locked card is a dead end and a 3-device seller
+  // silently becomes a 1-device seller.
+  function anotherChips(): Msg {
+    return {
+      from: "bot",
+      kind: "chips",
+      q: "got another one?",
+      dim: "another",
+      options: [
+        { key: "ip", label: "another iPhone" },
+        { key: "gs", label: "a Samsung" },
+        { key: "other", label: "something else" },
+        { key: "no", label: "that’s it for now" },
+      ],
+    };
   }
 
   function categoryTap(cat: (typeof CATEGORIES)[number]) {
@@ -556,7 +469,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     );
   }
 
-  async function chipTap(dim: "storage" | "condition" | "carrier" | "another", key: string, label: string) {
+  async function chipTap(dim: "storage" | "condition" | "carrier" | "another" | "handoff", key: string, label: string) {
     if (gBusy) return;
     interactedRef.current = true;
     if (takeoverRef.current) {
@@ -585,6 +498,42 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         pushMsgs({ from: "user", text: label });
         void send("i got something else to sell too");
       }
+      return;
+    }
+    // Handoff, asked right after the lock: local vs ship was never captured
+    // on this page (every /go lead read "Handoff: TBD"), so Sonny had to text
+    // just to learn which. Posts the same [DELIVERY OPTION] comm the homepage
+    // funnel writes; the seller's own MEET/SHIP text reply does the same.
+    if (dim === "handoff") {
+      const lk = lastLockRef.current;
+      pushMsgs({ from: "user", text: label });
+      if (key === "later" || !lk) {
+        pushMsgs({ from: "bot", text: "no problem — we’ll text you and sort it out." }, anotherChips());
+        return;
+      }
+      const method = key === "meet" ? "local" : "shipping";
+      void fetch("/api/delivery", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          method,
+          name: "",
+          ...(lk.contact.includes("@") ? { email: lk.contact } : { phone: lk.contact }),
+          model: lk.model,
+          quote: lk.offer != null ? String(lk.offer) : "",
+          area: method === "local" ? "Austin area (chosen on /go)" : "",
+          session: sessionId,
+        }),
+      }).catch(() => {});
+      pushMsgs(
+        {
+          from: "bot",
+          text: method === "local"
+            ? "perfect — we’ll text you to set up a time and a public spot in the austin area."
+            : "perfect — we’ll text you for the address and send your free FedEx label.",
+        },
+        anotherChips(),
+      );
       return;
     }
     if (!gRow) return;
@@ -628,7 +577,15 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         // on lock).
         pixelTrack("InitiateCheckout", { content_name: gRow.label, value: d.offer, currency: "USD" });
         pushMsgs(
-          { from: "bot", kind: "quote", label: `${gRow.label} ${STORAGE_LABELS[spec.storage || ""] || ""}`, offer: d.offer },
+          {
+            from: "bot",
+            kind: "quote",
+            label: `${gRow.label} ${STORAGE_LABELS[spec.storage || ""] || ""}`,
+            offer: d.offer,
+            ...(key === "unknown"
+              ? { note: "priced as carrier-locked since you’re not sure — it only goes up at inspection if it turns out unlocked." }
+              : {}),
+          },
           { from: "bot", kind: "lockform", manual: false },
         );
       } else {
@@ -643,16 +600,26 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     setGBusy(false);
   }
 
-  async function guidedLock(gName: string, gContact: string, gAttest: boolean, manualFlavor: boolean): Promise<string | null> {
+  // One field, one tap. The attestation rides in the button label ("I'm 18+
+  // and it's mine to sell") — tapping IS the affirmation, recorded server-side
+  // as [ATTEST: yes] exactly as before; the checkbox and the optional name
+  // field were two extra taps at the one moment we have their attention.
+  async function guidedLock(gContact: string, manualFlavor: boolean): Promise<string | null> {
     if (!gRow) return "something went sideways — tap your phone again";
-    if (!gContact.trim()) return "we need a number or email to reach you";
-    if (!gAttest) return "check the box so we know it\u2019s yours to sell";
+    const c = gContact.trim();
+    if (!c) return "we need a number or email to reach you";
     setGBusy(true);
     // Per-lock dedup id, shared with the server: the pixel Lead and the
     // Conversions API Lead carry the SAME event id, so Meta keeps one copy.
     // Per-lock (not per-session) because "got another one?" means a session
     // can lock several devices, each its own conversion.
     const lockEventId = `lock-${sessionId}-${Date.now().toString(36)}`;
+    // The number on the seller's screen. The server refuses to write a lead
+    // when the engine disagrees (moved:true) — a mid-session price edit can
+    // never lock a figure they haven't seen, and never double-posts a lead.
+    const shown = [...msgs].reverse().find((m): m is Extract<Msg, { kind: "quote" }> => "kind" in m && m.kind === "quote" && !m.done);
+    const quotedOffer = !manualFlavor && shown ? shown.offer : null;
+    const { fbp, fbc } = fbCookies();
     try {
       const res = await fetch("/api/go/lock", {
         method: "POST",
@@ -662,40 +629,48 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           storage: gSpec.storage ?? gRow.bestStorage,
           condition: gSpec.condition ?? "good",
           carrier: gSpec.carrier ?? "unlocked",
-          name: gName.trim(),
-          contact: gContact.trim(),
+          name: "",
+          contact: c,
           attest: true,
           src,
           sessionId,
           eventId: lockEventId,
+          quotedOffer,
+          fbp,
+          fbc,
         }),
       });
       const d = await res.json();
       setGBusy(false);
       if (d?.ok) {
-        pixelTrack("Lead", { content_name: gRow.label, value: typeof d.offer === "number" ? d.offer : 0, currency: "USD" }, lockEventId);
-        // (the LOCKED breadcrumb is written server-side by /api/go/lock)
+        const offer: number | null = typeof d.offer === "number" ? d.offer : null;
+        lastLockRef.current = { model: `${gRow.label} ${STORAGE_LABELS[gSpec.storage || ""] || ""}`.trim(), contact: c, offer };
+        pixelTrack("Lead", { content_name: gRow.label, value: offer ?? 0, currency: "USD" }, lockEventId);
+        // (the LOCKED breadcrumb + the confirmation text are server-side)
         // Peak trust: they just saw a real number and handed over a way to
-        // reach them. Ask for the second device HERE — every affordance
-        // (category grid, "i got a few phones" chip) is gated on an empty
-        // thread, so without this the locked card is a dead end and a
-        // 3-device seller silently becomes a 1-device seller.
+        // reach them. Ask how they want to get paid HERE, then the second
+        // device (anotherChips, after the handoff choice).
         pushMsgs(
-          { from: "bot", kind: "locked", offer: typeof d.offer === "number" && !manualFlavor ? d.offer : null },
+          { from: "bot", kind: "locked", offer: offer != null && !manualFlavor ? offer : null, until: typeof d.lockUntil === "string" ? d.lockUntil : undefined },
           {
             from: "bot",
             kind: "chips",
-            q: "got another one?",
-            dim: "another",
+            q: "how do you want to get paid?",
+            dim: "handoff",
             options: [
-              { key: "ip", label: "another iPhone" },
-              { key: "gs", label: "a Samsung" },
-              { key: "other", label: "something else" },
-              { key: "no", label: "that’s it for now" },
+              { key: "meet", label: "meet in austin — cash on the spot" },
+              { key: "ship", label: "ship it — free label" },
+              { key: "later", label: "not sure yet" },
             ],
           },
         );
         return null;
+      }
+      if (d?.moved && typeof d.offer === "number") {
+        const live: number = d.offer;
+        logNote(`price moved at lock: $${quotedOffer ?? "?"} → $${live}`);
+        setMsgs((cur) => cur.map((m) => ("kind" in m && m.kind === "quote" && !m.done ? { ...m, offer: live } : m)));
+        return `the live number is $${live} — tap again to lock that`;
       }
       return d?.error || "that didn\u2019t go through — try again";
     } catch {
@@ -724,14 +699,14 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: t, history, sessionId }),
+          body: JSON.stringify({ message: t, history, sessionId, src, ...fbCookies() }),
         });
       } catch {
         await new Promise((r) => setTimeout(r, 900));
         res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: t, history, sessionId }),
+          body: JSON.stringify({ message: t, history, sessionId, src, ...fbCookies() }),
         });
       }
       const d = await res.json();
@@ -876,11 +851,16 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: `IMG::${last}`, history: batchHistory, sessionId }),
+          body: JSON.stringify({ message: `IMG::${last}`, history: batchHistory, sessionId, src, ...fbCookies() }),
         });
         const dd = await res.json();
         if (Array.isArray(dd?.quoted) && dd.quoted.length) setAiQuoted(true);
-        if (dd?.leadCaptured) setContactCaptured(true);
+        if (dd?.leadCaptured) {
+          setContactCaptured(true);
+          // Same browser-side Lead the typed path fires — a photo-sender
+          // whose contact landed on this turn was previously CAPI-only.
+          pixelTrack("Lead", { content_name: "chat", content_category: "chat", ...(typeof dd.leadValue === "number" ? { value: dd.leadValue, currency: "USD" } : {}) }, `chatlead-${sessionId}`);
+        }
         if (dd?.takeover && !dd?.reply) setTakeover(true);
         else if (dd?.reply) {
           if (takeoverRef.current) setTakeover(false);
@@ -902,22 +882,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     return "that photo didn’t go through — try again.";
   }
 
-  const stepUi =
-    row && !locked && !manual && step < 3 ? (
-      step === 0 ? (
-        <ChipRow
-          q="what storage is it"
-          chips={row.storages.map((s) => ({ key: s, label: STORAGE_LABELS[s] || s }))}
-          onPick={(k, l) => answer("storage", k, l)}
-          disabled={quoting}
-        />
-      ) : step === 1 ? (
-        <ChipRow q="what kind of shape is it in" chips={CONDITIONS} onPick={(k, l) => answer("condition", k, l)} disabled={quoting} />
-      ) : (
-        <ChipRow q="locked to a carrier" chips={CARRIERS} onPick={(k, l) => answer("carrier", k, l)} disabled={quoting} />
-      )
-    ) : null;
-
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white px-4 pb-16 pt-3" style={{ maxWidth: 560, margin: "0 auto" }}>
       {/* header */}
@@ -935,6 +899,19 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       <p className="text-[15px] text-white/60 mt-2">
         {lot ? "tell us what you got. cash the same day, no email, no signup." : "tap what you got — real number in 30 seconds. no email, no signup."}
       </p>
+      {/* live engine ceilings, server-rendered — a real number on the first
+          paint (the ad promised one), and a filter: junk-tier sellers self-
+          select out, 17 Pro Max sellers lean in */}
+      {anchors.length >= 2 && (
+        <p className="text-[14px] text-white/80 mt-2" style={{ fontVariantNumeric: "tabular-nums" }}>
+          {anchors.map((a, i) => (
+            <span key={a}>
+              {i > 0 && <span className="text-white/35"> · </span>}
+              <span className="text-[#00c853] font-semibold">{a.split(" up to ")[0]}</span> up to {a.split(" up to ")[1]}
+            </span>
+          ))}
+        </p>
+      )}
 
       {lot && (
         <button
@@ -1226,6 +1203,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
                       <div className="text-[14px] text-white/60">{m.label}</div>
                       <div className="text-[32px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer}</div>
+                      {m.note && <div className="text-[13px] text-[#00c853]/90 mt-1">{m.note}</div>}
                       <div className="text-[13px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
                     </div>
                   </div>
@@ -1234,7 +1212,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               if (m.kind === "lockform") {
                 return (
                   <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <LockForm manual={m.manual} disabled={!!m.done} onLock={(n, c, a2) => guidedLock(n, c, a2, m.manual)} />
+                    <LockForm manual={m.manual} disabled={!!m.done} onLock={(c) => guidedLock(c, m.manual)} />
                   </div>
                 );
               }
@@ -1263,8 +1241,13 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   <div key={i} className="go-msg flex items-end gap-2">
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/40">
-                      <div className="text-[16px] font-semibold text-[#00c853]">locked in{m.offer != null ? ` — $${m.offer}` : ""}.</div>
-                      <div className="text-[14px] text-white/70 mt-1">{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                      <div className="text-[16px] font-semibold text-[#00c853]">
+                        locked in{m.offer != null ? ` — $${m.offer}` : ""}.
+                        {m.until && (
+                          <span className="text-white/60 font-normal"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric" })}.</span>
+                        )}
+                      </div>
+                      <div className="text-[14px] text-white/70 mt-1">we just sent you the details. {isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
                     </div>
                   </div>
                 );
@@ -1438,57 +1421,44 @@ function DeviceCarousel({ rows, onPick, onOther, busy }: { rows: BoardRow[]; onP
   );
 }
 
-function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boolean; onLock: (n: string, c: string, a: boolean) => Promise<string | null> }) {
-  const [n, setN] = useState("");
+// One field + one tap. The 18+/ownership attestation is the button label
+// itself (tapping affirms it — the server still records [ATTEST: yes]), and
+// the line under it is the express consent for the texts about this quote.
+function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boolean; onLock: (c: string) => Promise<string | null> }) {
   const [c, setC] = useState("");
-  const [a, setA] = useState(false);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
+  const submit = async () => {
+    if (busy || disabled) return;
+    setBusy(true);
+    setErr("");
+    const e = await onLock(c);
+    if (e) setErr(e);
+    setBusy(false);
+  };
   return (
-    <div className="flex flex-col gap-2">
-      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="name (optional)" value={n} onChange={(e) => setN(e.target.value)} autoComplete="name" disabled={disabled} />
-      <input className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]" placeholder="your number — we text you the quote" value={c} onChange={(e) => setC(e.target.value)} autoComplete="tel" disabled={disabled} />
-      <label className="flex items-start gap-2 text-[13px] text-white/60">
-        <input type="checkbox" checked={a} onChange={(e) => setA(e.target.checked)} className="mt-[2px] accent-[#00c853]" disabled={disabled} />
-        <span>i&rsquo;m 18+ and this device is mine to sell</span>
-      </label>
+    <form className="flex flex-col gap-2" onSubmit={(e) => { e.preventDefault(); void submit(); }}>
+      <input
+        className="px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+        placeholder="your number — we text you the quote"
+        value={c}
+        onChange={(e) => setC(e.target.value)}
+        autoComplete="tel"
+        inputMode="tel"
+        enterKeyHint="done"
+        disabled={disabled}
+        aria-label="your phone number or email"
+      />
       {err && <p className="text-[13px] text-red-400" role="alert">{err}</p>}
       <button
-        type="button"
+        type="submit"
         disabled={disabled || busy}
-        onClick={async () => { setBusy(true); setErr(""); const e = await onLock(n, c, a); if (e) setErr(e); setBusy(false); }}
         className="tcc-button-primary py-3 text-[16px] font-bold rounded-2xl disabled:opacity-40"
       >
-        {busy ? "locking…" : manual ? "send me a real offer" : "Lock In My Offer"}
+        {busy ? "locking…" : manual ? "send me a real offer — I’m 18+ and it’s mine to sell" : "Lock it in — I’m 18+ and it’s mine to sell"}
       </button>
-    </div>
+      <p className="text-[12px] text-white/45 leading-snug">by tapping you confirm you&rsquo;re 18+ and this device is yours to sell, and you&rsquo;re ok with a few texts about this quote. reply STOP any time.</p>
+    </form>
   );
 }
 
-function ChipRow({
-  q, chips, onPick, disabled,
-}: {
-  q: string;
-  chips: { key: string; label: string }[];
-  onPick: (key: string, label: string) => void;
-  disabled: boolean;
-}) {
-  return (
-    <div className="mt-3">
-      <p className="text-[14px] text-white/70 mb-2">{q}</p>
-      <div className="flex flex-wrap gap-2">
-        {chips.map((c) => (
-          <button
-            key={c.key}
-            type="button"
-            disabled={disabled}
-            onClick={() => onPick(c.key, c.label)}
-            className="text-[14px] text-white/85 border border-white/20 rounded-full px-4 py-[11px] disabled:opacity-50"
-          >
-            {c.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}

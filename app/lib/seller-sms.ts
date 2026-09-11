@@ -4,23 +4,34 @@
 // this side only holds the shared SMS_RELAY_TOKEN.
 //
 // Sonny 2026-08-19: "we can use that number since its setup and ready."
-// ONE-WAY channel by design — replies to the number land on the notary's
-// inbound webhook, not here. Write texts that don't invite a reply (point
-// the seller back at their /go chat instead). Keep it transactional; the
-// number's carrier registration belongs to the notary brand.
+// The channel is TWO-WAY since 142ce8c: the notary webhook forwards every
+// inbound text to /api/go/sms-inbound, which drops the reply into the
+// seller's /go thread (and handles STOP / MEET / SHIP keywords). Keep texts
+// transactional — about the seller's own quote — the number's carrier
+// registration belongs to the notary brand.
 //
 // Best-effort like owner-sms: never throws, returns false on any failure.
+import { phoneKey } from "./gochat-store";
 
 const RELAY_URL = "https://itsofficialnotarys.com/api/sms/relay";
 
+/** +1XXXXXXXXXX for a US number in any common shape, else null. */
+export function toE164(v: string): string | null {
+  const d = String(v || "").replace(/\D/g, "");
+  if (d.length === 10) return `+1${d}`;
+  if (d.length === 11 && d.startsWith("1")) return `+${d}`;
+  return null;
+}
+
 export async function sendSellerSms(to: string, body: string): Promise<boolean> {
   const token = process.env.SMS_RELAY_TOKEN || "";
-  if (!token || !to || !body.trim()) return false;
+  const dest = toE164(to);
+  if (!token || !dest || !body.trim()) return false;
   try {
     const res = await fetch(RELAY_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-relay-token": token },
-      body: JSON.stringify({ to, body: body.slice(0, 480) }),
+      body: JSON.stringify({ to: dest, body: body.slice(0, 480) }),
     });
     return res.ok;
   } catch {
@@ -31,4 +42,29 @@ export async function sendSellerSms(to: string, body: string): Promise<boolean> 
 /** Loose US phone detector for stored contacts (skips emails). */
 export function looksLikePhone(contact: string): boolean {
   return !contact.includes("@") && contact.replace(/\D/g, "").length >= 10;
+}
+
+// ── Opt-out (STOP) ────────────────────────────────────────────────────────
+// A seller who texts STOP is recorded in two places: a session note (so the
+// takeover console and the lock route see it without a network hop) and an
+// MC marker keyed on the 10-digit number (so the crons, which already load
+// the comms window, can skip the number across sessions).
+export const STOP_RE = /^\s*(stop|stopall|unsubscribe|cancel|end|quit)\b/i;
+export const SMS_STOP_NOTE = "SMS-STOP";
+
+export function smsOptOutMarker(phone: string): string {
+  return `[SMS-OPT-OUT: ${phoneKey(phone) || "unknown"}]`;
+}
+
+/** True when any note in the session records a STOP. */
+export function notesHaveOptOut(notes: string[]): boolean {
+  return notes.some((t) => t.startsWith(SMS_STOP_NOTE));
+}
+
+/** True when an [SMS-OPT-OUT: <key>] marker exists for this number. */
+export function optedOutIn(messages: { body?: string }[], phone: string): boolean {
+  const key = phoneKey(phone);
+  if (!key) return false;
+  const re = new RegExp(`\\[SMS-OPT-OUT:\\s*${key}\\]`);
+  return messages.some((m) => !!m.body && re.test(m.body));
 }

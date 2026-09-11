@@ -90,7 +90,9 @@ export async function POST(req: NextRequest) {
   // LOCKED:/HANDOFF feed the chat brain's funnel context and restore-time
   // quote rehydration — a client-forged one would put an invented number in
   // the bot's mouth (or on the seller's screen as a "still good" quote).
-  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|SMS)\s*[:\s]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
+  // SMS-STOP / HANDOFF-CHOICE are read by the reminders cron and the lock
+  // route (opt-out, handoff already chosen) — server-written only, like the rest.
+  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|SMS)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
   await appendChatMsg(sid, "note", text);
   return NextResponse.json({ ok: true });
 }

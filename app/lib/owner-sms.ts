@@ -8,6 +8,7 @@
 // if it's ever revived. The exported name keeps its historical "Sms" for the
 // ~dozen call sites.
 import { mailShell, esc, MAIL } from "./email-shell";
+import { sendSellerSms } from "./seller-sms";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -84,7 +85,20 @@ async function sendEmailAlert(body: string): Promise<boolean> {
   }
 }
 
+// Third channel (2026-09-11): the same Telnyx relay that texts sellers also
+// texts the OWNER. Email alone lost a $780 lead ("took too long to follow
+// up") — a lock, a chat contact, a photo, or a takeover-ready ping now lands
+// on Sonny's phone as a text, not just in an inbox. The first URL in the
+// body stays inline as a tappable link.
+async function sendRelaySms(body: string): Promise<boolean> {
+  return sendSellerSms(OWNER_PHONE, body.replace(/[ \t]+/g, " ").trim().slice(0, 460));
+}
+
 export async function notifyOwnerSms(body: string): Promise<boolean> {
-  const [sms, mail] = await Promise.allSettled([sendSms(body), sendEmailAlert(body)]);
-  return (sms.status === "fulfilled" && sms.value) || (mail.status === "fulfilled" && mail.value);
+  const [sms, mail, relay] = await Promise.allSettled([sendSms(body), sendEmailAlert(body), sendRelaySms(body)]);
+  return (
+    (sms.status === "fulfilled" && sms.value) ||
+    (mail.status === "fulfilled" && mail.value) ||
+    (relay.status === "fulfilled" && relay.value)
+  );
 }

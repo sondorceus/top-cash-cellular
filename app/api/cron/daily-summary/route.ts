@@ -80,9 +80,13 @@ export async function GET(req: NextRequest) {
     rejected: number;
     revenue: number;
     deviceTally: Record<string, number>;
+    // /go ad funnel: locks (a [NEW BUYBACK LEAD] with source=go) and chat
+    // contacts ([CHAT LEAD ✅] on a go- session) — the ad spend's output.
+    goLocks: number;
+    goChat: number;
   };
-  const day: DayBucket = { newLeads: 0, paid: 0, shipped: 0, received: 0, rejected: 0, revenue: 0, deviceTally: {} };
-  const week: DayBucket = { newLeads: 0, paid: 0, shipped: 0, received: 0, rejected: 0, revenue: 0, deviceTally: {} };
+  const day: DayBucket = { newLeads: 0, paid: 0, shipped: 0, received: 0, rejected: 0, revenue: 0, deviceTally: {}, goLocks: 0, goChat: 0 };
+  const week: DayBucket = { newLeads: 0, paid: 0, shipped: 0, received: 0, rejected: 0, revenue: 0, deviceTally: {}, goLocks: 0, goChat: 0 };
   let allTimeRevenue = 0;
   let allTimePaid = 0;
 
@@ -116,15 +120,21 @@ export async function GET(req: NextRequest) {
       leadQuote.set(m.id, quote);
       leadDevice.set(m.id, model);
       if (!isInternal) {
+        const isGo = /source=go\b/i.test(parseField(m.body, "Source") || "");
         if (ts >= yesterdayStart) {
           day.newLeads++;
           day.deviceTally[model] = (day.deviceTally[model] || 0) + 1;
+          if (isGo) day.goLocks++;
         }
         if (ts >= weekStart) {
           week.newLeads++;
           week.deviceTally[model] = (week.deviceTally[model] || 0) + 1;
+          if (isGo) week.goLocks++;
         }
       }
+    } else if (/^\[CHAT LEAD ✅\]\s+sess:go-/.test(m.body)) {
+      if (ts >= yesterdayStart) day.goChat++;
+      if (ts >= weekStart) week.goChat++;
     } else if (m.body.startsWith("[ERROR:")) {
       // Error-monitor event. Surface in the digest.
       const ctxMatch = m.body.match(/^\[ERROR:\s*([^\]]+)\]/);
@@ -177,7 +187,8 @@ export async function GET(req: NextRequest) {
   // HTML email — quick scannable digest, mobile-friendly width.
   const html = buildDigestHtml({ day, week, topDevices, allTimeRevenue, allTimePaid, dayErrors, weekErrors });
   const errorTag = dayErrors.some((e) => e.critical) ? " 🚨" : dayErrors.length ? " ⚠️" : "";
-  const subject = `📊 Top Cash daily${errorTag} — ${day.newLeads} new · ${day.paid} paid · $${day.revenue.toLocaleString()} (24h)`;
+  const goTag = day.goLocks || day.goChat ? ` · go ${day.goLocks}+${day.goChat}` : "";
+  const subject = `📊 Top Cash daily${errorTag} — ${day.newLeads} new · ${day.paid} paid · $${day.revenue.toLocaleString()} (24h)${goTag}`;
 
   // Send via Resend if configured. If not, return the payload so the
   // operator can preview/debug.
@@ -213,8 +224,8 @@ export async function GET(req: NextRequest) {
 }
 
 function buildDigestHtml(args: {
-  day: { newLeads: number; paid: number; shipped: number; received: number; rejected: number; revenue: number };
-  week: { newLeads: number; paid: number; shipped: number; received: number; rejected: number; revenue: number };
+  day: { newLeads: number; paid: number; shipped: number; received: number; rejected: number; revenue: number; goLocks: number; goChat: number };
+  week: { newLeads: number; paid: number; shipped: number; received: number; rejected: number; revenue: number; goLocks: number; goChat: number };
   topDevices: string;
   allTimeRevenue: number;
   allTimePaid: number;
@@ -264,6 +275,7 @@ ${stat("Revenue", `$${day.revenue.toLocaleString()}`, "#00c853")}
 </tr>
 </table>
 ${topDevices !== "—" ? `<p style="margin:12px 4px 0;font-size:12px;color:#a0a0a0">Top devices: <span style="color:#dcdcdc">${topDevices}</span></p>` : ""}
+<p style="margin:8px 4px 0;font-size:12px;color:#a0a0a0">/go ads: <span style="color:#dcdcdc">${day.goLocks} lock${day.goLocks === 1 ? "" : "s"} · ${day.goChat} chat lead${day.goChat === 1 ? "" : "s"}</span> (24h) · week <span style="color:#dcdcdc">${week.goLocks} · ${week.goChat}</span> · <a href="https://topcashcellular.com/admin/analytics" style="color:#00c853;text-decoration:none">funnel →</a></p>
 </td></tr>
 ${errorPanel}
 <tr><td style="padding:24px 24px 8px 24px">

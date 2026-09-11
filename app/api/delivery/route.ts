@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
+import { appendChatMsg, validGoSession } from "../../lib/gochat-store";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -42,22 +43,32 @@ export async function POST(req: NextRequest) {
   const payout = clean(data.payout, 80);
   const address = (typeof data.address === "object" && data.address) ? data.address as Record<string, unknown> : null;
   const area = clean(data.area, 80);
+  // /go sellers choose right after the lock — the chat session ties the
+  // choice to their thread (deep-linkable from the comm, and the reminders
+  // cron reads the HANDOFF-CHOICE note to stop nudging). Only ids the /go
+  // client can mint are accepted.
+  const session = typeof data.session === "string" && validGoSession(data.session) ? data.session : "";
 
   if (method !== "shipping" && method !== "local") {
     return NextResponse.json({ error: "method must be shipping or local" }, { status: 400 });
   }
-  if (!name || (!phone && !email)) {
-    return NextResponse.json({ error: "name + contact required" }, { status: 400 });
+  // A contact is required; the name is not — /go collects no name (its lock
+  // is one field), and the homepage funnel always sends one anyway.
+  if (!phone && !email) {
+    return NextResponse.json({ error: "contact required" }, { status: 400 });
   }
+  const displayName = name || (session ? "/go seller" : "Seller");
 
   const lines: string[] = [
     `[DELIVERY OPTION] ${method.toUpperCase()}`,
-    `Name: ${name}`,
+    `Name: ${displayName}`,
     phone ? `Phone: ${phone}` : null,
     email ? `Email: ${email}` : null,
     model ? `Device: ${model}` : null,
     quote ? `Quote: $${quote}` : null,
     payout ? `Payout: ${payout}` : null,
+    session ? `Session: ${session}` : null,
+    session ? `Chat: https://topcashcellular.com/admin/chats?session=${session}` : null,
   ].filter(Boolean) as string[];
 
   if (method === "shipping" && address) {
@@ -91,10 +102,14 @@ export async function POST(req: NextRequest) {
     });
   } catch {}
 
+  if (session) {
+    void appendChatMsg(session, "note", `HANDOFF-CHOICE: ${method === "local" ? "local meetup" : "ship (free label)"} — chosen on /go`);
+  }
+
   const summary = method === "shipping"
-    ? `${name} chose SHIP ${model || "device"} from ${clean(address?.city, 80) || "?"}, ${clean(address?.state, 2) || "?"} ${clean(address?.zip, 10) || ""}. Send label.`
-    : `${name} chose LOCAL meetup in ${area || "Austin area"} for ${model || "device"}. Reach out to schedule.`;
-  await notifyOwnerSms(`DELIVERY: ${summary}`);
+    ? `${displayName} chose SHIP ${model || "device"}${address ? ` from ${clean(address?.city, 80) || "?"}, ${clean(address?.state, 2) || "?"} ${clean(address?.zip, 10) || ""}. Send label.` : " — text for the address, then send the label."}`
+    : `${displayName} chose LOCAL meetup in ${area || "Austin area"} for ${model || "device"}. Reach out to schedule.`;
+  await notifyOwnerSms(`DELIVERY: ${summary}${phone ? ` · ${phone}` : email ? ` · ${email}` : ""}${session ? `\nhttps://topcashcellular.com/admin/chats?session=${session}` : ""}`);
 
   return NextResponse.json({ ok: true });
 }

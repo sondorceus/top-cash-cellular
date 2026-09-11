@@ -1,11 +1,11 @@
 // /go — the paid-ads landing page. One job: a cold Meta/Google click on a
-// phone sees a real number in the server HTML (zero taps, zero JS, zero
-// model call), then either taps their device into the deterministic chip
-// flow (the HOLD) or types into the chat.
+// phone sees three live engine ceilings in the server HTML (zero taps), then
+// taps their device into the deterministic chip flow (model → storage →
+// condition → carrier → real number → one-field lock) or types into the chat.
 //
 // Deliberately NOT the homepage: no nav, no sections, no funnel import.
-// The board + chips run without the AI; the model only wakes when someone
-// types a sentence. Ads keep spending even if the chat is down.
+// The chips run without the AI; the model only wakes when someone types a
+// sentence. Ads keep spending even if the chat is down.
 import type { Metadata } from "next";
 import { computeBoard } from "./board";
 import GoClient, { type GoReviews } from "./go-client";

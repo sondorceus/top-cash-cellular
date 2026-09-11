@@ -82,6 +82,26 @@ export default function AnalyticsPage() {
     return () => clearInterval(id);
   }, []);
 
+  // /go ad funnel — read from the chat store, per ad tag. Separate fetch
+  // (a bounded blob walk) so a slow store never delays the lead numbers.
+  type GoRow = { sessions: number; quoted: number; contact: number; locked: number; handoff: number; nudged: number; owner: number; value: number };
+  type GoFunnel = {
+    days: number;
+    totals: GoRow & { quotedNoContact: number; quotedNoContactValue: number; lockRate: number };
+    bySrc: Record<string, GoRow>;
+    byDay: Array<{ day: string } & GoRow>;
+    truncated: boolean;
+  };
+  const [go, setGo] = useState<GoFunnel | null>(null);
+  const [goError, setGoError] = useState<string | null>(null);
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
+    fetch(`/api/admin/go-funnel?days=30`, { headers: token ? { "x-admin-token": token } : {} })
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(setGo)
+      .catch((e) => setGoError(e.message));
+  }, [refreshTick]);
+
   if (error) return <main className="min-h-screen bg-[#0a0a0a] text-white p-8"><p className="text-red-400">{error}</p></main>;
   if (!data) return <main className="min-h-screen bg-[#0a0a0a] text-white p-8"><p className="text-[#888]">Loading…</p></main>;
 
@@ -202,6 +222,73 @@ export default function AnalyticsPage() {
             </div>
           </section>
         </div>
+
+        {/* /GO AD FUNNEL — sessions → quoted → contact → locked, per ad tag */}
+        <section className="bg-white/[0.03] border border-white/10 rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <h2 className="font-bold text-[15px]">/go ad funnel — last {go?.days ?? 30} days</h2>
+            <span className="text-[12px] text-[#aaa]">from the chat store · per ?src= tag</span>
+          </div>
+          {goError && <p className="text-[#666] text-sm">Funnel unavailable: {goError}</p>}
+          {!go && !goError && <p className="text-[#666] text-sm">Loading…</p>}
+          {go && (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4">
+                {([
+                  ["sessions", go.totals.sessions, "engaged the page"],
+                  ["quoted", go.totals.quoted, "saw a real number"],
+                  ["contact", go.totals.contact, "left a phone/email"],
+                  ["locked", go.totals.locked, `${go.totals.lockRate}% of quoted · $${go.totals.value.toLocaleString()}`],
+                  ["chose meet/ship", go.totals.handoff, "handoff picked"],
+                ] as [string, number, string][]).map(([k, v, sub]) => (
+                  <div key={k} className="bg-white/[0.04] border border-white/10 rounded-xl p-3">
+                    <p className="text-[11px] text-[#888] uppercase tracking-wider">{k}</p>
+                    <p className="text-2xl font-extrabold">{v}</p>
+                    <p className="text-[11px] text-[#aaa]">{sub}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[12px] text-[#bdbdbd] mb-3">
+                <span className="text-yellow-300 font-semibold">{go.totals.quotedNoContact}</span> quote-viewers left no contact
+                (${go.totals.quotedNoContactValue.toLocaleString()} of offers on screen) — the retargeting audience.
+                {go.totals.nudged > 0 && <> {go.totals.nudged} got an on-page nudge.</>}
+                {go.totals.owner > 0 && <> Sonny replied in {go.totals.owner}.</>}
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[12px]">
+                  <thead>
+                    <tr className="text-[#888] text-left">
+                      <th className="py-1 pr-3">src</th><th className="py-1 pr-3">sessions</th><th className="py-1 pr-3">quoted</th><th className="py-1 pr-3">contact</th><th className="py-1 pr-3">locked</th><th className="py-1 pr-3">meet/ship</th><th className="py-1">locked $</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(go.bySrc).sort((a, b) => b[1].sessions - a[1].sessions).map(([src, r]) => (
+                      <tr key={src} className="border-t border-white/5">
+                        <td className="py-1 pr-3 font-mono text-white">{src}</td>
+                        <td className="py-1 pr-3">{r.sessions}</td><td className="py-1 pr-3">{r.quoted}</td><td className="py-1 pr-3">{r.contact}</td>
+                        <td className="py-1 pr-3 font-bold text-[#00c853]">{r.locked}</td><td className="py-1 pr-3">{r.handoff}</td><td className="py-1">${r.value.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {go.byDay.length > 0 && (
+                <div className="mt-3 space-y-1">
+                  {go.byDay.slice(0, 14).map((d) => (
+                    <div key={d.day} className="flex items-center gap-2 text-[12px]">
+                      <span className="w-24 text-[#888] font-mono">{d.day}</span>
+                      <span className="w-16 text-[#aaa]">{d.sessions} sess</span>
+                      <span className="w-16 text-[#aaa]">{d.quoted} quoted</span>
+                      <span className="w-16 text-[#aaa]">{d.contact} contact</span>
+                      <span className="w-16 font-bold text-white">{d.locked} locked</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {go.truncated && <p className="text-[11px] text-[#666] mt-2">Note budget hit — oldest sessions in the window are unclassified.</p>}
+            </>
+          )}
+        </section>
 
         {/* VISITOR ANALYTICS POINTERS */}
         <section className="bg-[#00c853]/[0.05] border border-[#00c853]/20 rounded-2xl p-5">

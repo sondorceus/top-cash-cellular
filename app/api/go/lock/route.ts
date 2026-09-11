@@ -1,4 +1,4 @@
-// /api/go/lock — the /go board's "Lock In My Offer". Re-quotes SERVER-SIDE
+// /api/go/lock — the /go chat's "Lock it in". Re-quotes SERVER-SIDE
 // (the client's number is never trusted), then records the lead as a
 // STANDARD single-device [NEW BUYBACK LEAD] — the exact body format
 // /api/lead writes — so a GO lock lands in the real lead system (admin
@@ -7,6 +7,21 @@
 // Unlike the chat route's fire-and-forget fan-out, delivery is AWAITED —
 // "locked in." must not render unless at least one alert path actually
 // accepted the lead.
+//
+// 2026-09-11 additions (the retention audit):
+//   • PRICE-MOVED GUARD — the client sends the number it showed; if the
+//     engine says something else now, we answer {moved:true, offer} BEFORE
+//     any lead is written. The old flow posted the lead, then asked the
+//     seller to "tap again" — two leads, two owner alerts, one seller.
+//   • CONFIRMATION — the page promised "we'll text it to you" three times
+//     and never did. A phone contact now gets one transactional text (offer,
+//     lock-until date, MEET/SHIP keywords, deep link back to this thread);
+//     an email contact gets the same by email. STOP is honored.
+//   • Session: / Lock-Until: lines in the lead body so the crons can find
+//     the thread and count down the 14-day lock.
+//   • carrier "unknown" ("not sure" chip) prices at the AT&T tier and says so
+//     in the lead — Sonny's default from the audit; a seller who tapped
+//     "other" when they meant "unlocked" was quoted $204 on a $433 phone.
 //
 // Why not POST /api/lead internally: that route hard-requires a name and
 // rejects phone-bearing leads without an SMS-marketing opt-in (its TCPA
@@ -26,16 +41,22 @@ import { quoteDevice } from "../../../lib/quote";
 import { cachedOverrides } from "../../../lib/overrides-cache";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
-import { appendChatMsg, validSession } from "../../../lib/gochat-store";
+import { appendChatMsg, readChat, validSession, validGoSession } from "../../../lib/gochat-store";
 import { sendCapiLead } from "../../../lib/meta-capi";
+import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
+import { sidToken } from "../../../lib/go-sid-token";
+import { mailShell, esc, MAIL } from "../../../lib/email-shell";
 import { after } from "next/server";
 import { BOARD_MODELS } from "../../../go/board";
 import { PRICE_TABLE } from "../../../data/prices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
+const RESEND_KEY = process.env.RESEND_API_KEY || "";
 const CONDITIONS = new Set(["sealed", "mint", "good", "fair", "broken"]);
-const CARRIERS = new Set(["unlocked", "att", "tmobile", "verizon", "other"]);
+const CARRIERS = new Set(["unlocked", "att", "tmobile", "verizon", "other", "unknown"]);
+// The published promise: every quoted number holds 14 days.
+const LOCK_DAYS = 14;
 
 // Display strings for the lead body. The admin margin recompute feeds the
 // Condition string through resellMultiplierForCondition()'s substring
@@ -48,6 +69,7 @@ const CONDITION_DISPLAY: Record<string, string> = {
 };
 const CARRIER_DISPLAY: Record<string, string> = {
   unlocked: "Unlocked", att: "AT&T", tmobile: "T-Mobile", verizon: "Verizon", other: "Other",
+  unknown: "Not sure (priced as carrier-locked)",
 };
 const STORAGE_DISPLAY: Record<string, string> = {
   "64": "64GB", "128": "128GB", "256": "256GB", "512": "512GB", "1tb": "1TB", "2tb": "2TB",
@@ -64,6 +86,68 @@ function sanitize(s: string): string {
 
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
 const PHONE_RE = /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+
+function lockDateLabel(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" });
+}
+
+// The seller-facing confirmation. One text or one email, about THIS quote
+// only — the number they typed into "your number — we text you the quote".
+async function sendConfirmation(opts: {
+  contact: string; isEmail: boolean; label: string; storage: string; offer: number | null;
+  lockUntil: string; sessionId: string;
+}): Promise<{ sent: boolean; channel: "sms" | "email" | "none"; reason?: string }> {
+  const { contact, isEmail, label, storage, offer, lockUntil, sessionId } = opts;
+  const tok = validGoSession(sessionId) ? sidToken(sessionId) : "";
+  const link = `https://topcashcellular.com/go${tok ? `?sid=${sessionId}&k=${tok}` : ""}`;
+  const dev = `${label} ${STORAGE_DISPLAY[storage] || storage}`;
+  const until = lockDateLabel(lockUntil);
+  if (!isEmail) {
+    if (!looksLikePhone(contact)) return { sent: false, channel: "none", reason: "not a phone" };
+    // A seller who texted STOP in this thread must never get another text —
+    // the session note is the cheap local check (the cross-session marker is
+    // consulted by the crons, which already hold the comms window).
+    if (validSession(sessionId)) {
+      const state = await readChat(sessionId, 0);
+      if (notesHaveOptOut(state.msgs.filter((m) => m.role === "note").map((m) => m.text))) {
+        return { sent: false, channel: "sms", reason: "opted out" };
+      }
+    }
+    const body = offer != null
+      ? `Top Cash Cellular: your ${dev} offer is locked at $${offer} until ${until}. Reply MEET for a cash meetup in the Austin area or SHIP for a free FedEx label. Your chat: ${link} — Reply STOP to opt out.`
+      : `Top Cash Cellular: we're pricing your ${dev} by hand — we'll text you a real offer shortly. Reply MEET if you're in the Austin area or SHIP for a free FedEx label. Your chat: ${link} — Reply STOP to opt out.`;
+    return { sent: await sendSellerSms(contact, body), channel: "sms" };
+  }
+  if (!RESEND_KEY) return { sent: false, channel: "email", reason: "no resend key" };
+  try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(RESEND_KEY);
+    const title = offer != null ? `Locked in — $${offer} for your ${esc(dev)}` : `We're pricing your ${esc(dev)} by hand`;
+    const intro = offer != null
+      ? `That number holds until <strong style="color:${MAIL.ink}">${esc(until)}</strong> if the device matches what you told us. Meet up in the Austin area for cash on the spot, or we send a free FedEx label — your pick. Reply to this email with <strong style="color:${MAIL.ink}">MEET</strong> or <strong style="color:${MAIL.ink}">SHIP</strong>, or pick it back up in your chat.`
+      : `We'll send you a real offer shortly. Reply to this email with <strong style="color:${MAIL.ink}">MEET</strong> if you're in the Austin area or <strong style="color:${MAIL.ink}">SHIP</strong> for a free FedEx label, or pick it back up in your chat.`;
+    const r = await resend.emails.send({
+      from: "Top Cash Cellular <noreply@topcashcellular.com>",
+      replyTo: "support@topcashcellular.com",
+      to: contact,
+      subject: offer != null ? `Your ${dev} offer is locked — $${offer} until ${until}` : `Your ${dev} — we're pricing it by hand`,
+      html: mailShell({
+        preheader: offer != null ? `$${offer} locked until ${until}` : "a real offer is on the way",
+        eyebrow: "Your offer",
+        title,
+        introHtml: `<span style="color:${MAIL.body}">${intro}</span>`,
+        buttonHref: link,
+        buttonLabel: "Open my chat",
+      }),
+      text: offer != null
+        ? `Your ${dev} offer is locked at $${offer} until ${until}. Reply MEET for a cash meetup in the Austin area or SHIP for a free FedEx label. Your chat: ${link}`
+        : `We're pricing your ${dev} by hand and will send a real offer shortly. Reply MEET if you're in the Austin area or SHIP for a free FedEx label. Your chat: ${link}`,
+    });
+    return { sent: !r.error, channel: "email", reason: r.error ? String(r.error.message || "resend error") : undefined };
+  } catch (e) {
+    return { sent: false, channel: "email", reason: e instanceof Error ? e.message : "threw" };
+  }
+}
 
 export async function POST(req: NextRequest) {
   const ip = clientIp(req);
@@ -92,6 +176,9 @@ export async function POST(req: NextRequest) {
   const src = String(body.src || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 8);
   const sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
   const eventId = String(body.eventId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
+  // The number the seller is looking at. Optional (older bundles don't send
+  // it); when present the engine must agree or no lead is written.
+  const quotedOffer = typeof body.quotedOffer === "number" && Number.isFinite(body.quotedOffer) ? Math.round(body.quotedOffer) : null;
 
   if (!entry || !Object.hasOwn(PRICE_TABLE[model] || {}, storage) || !CONDITIONS.has(condition) || !CARRIERS.has(carrier)) {
     return NextResponse.json({ ok: false, error: "bad spec" }, { status: 400 });
@@ -112,13 +199,17 @@ export async function POST(req: NextRequest) {
   }
 
   // Engine is the only price authority — quote fresh at lock time.
+  // "unknown" = the seller isn't sure about the carrier: priced at the AT&T
+  // tier (the middle of the locked gaps) and labeled as such in the lead, so
+  // the number goes UP at inspection if it turns out unlocked, never down.
+  const engineCarrier = carrier === "unknown" ? "att" : carrier;
   const r = await quoteDevice(
     {
       modelId: model,
       modelLabel: entry.label,
       storage,
       condition,
-      carrier,
+      carrier: engineCarrier,
       // "locked to a carrier" answered "verizon" = a Verizon-locked phone.
       carrierLocked: carrier === "verizon",
       isPhone: true,
@@ -126,6 +217,14 @@ export async function POST(req: NextRequest) {
     await cachedOverrides(),
   ).catch(() => null);
   const offer = r && r.offer != null && !r.manualReview ? r.offer : null;
+
+  // PRICE-MOVED GUARD: the engine disagrees with the number on the seller's
+  // screen (a live price edit mid-session). Answer with the live number and
+  // write NOTHING — the client repaints the card and the lock becomes an
+  // explicit second tap on a number they've actually seen.
+  if (quotedOffer != null && offer != null && offer !== quotedOffer) {
+    return NextResponse.json({ ok: false, moved: true, offer });
+  }
 
   const isEmail = EMAIL_RE.test(contact);
   const specLine = `${entry.label} ${storage} ${condition} ${carrier}`;
@@ -136,13 +235,17 @@ export async function POST(req: NextRequest) {
   const ua = sanitize(req.headers.get("user-agent") || "unknown");
   const visitorId = sanitize(req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
   const safeIp = sanitize(ip).slice(0, 60);
+  const lockUntil = new Date(Date.now() + LOCK_DAYS * 24 * 3600_000).toISOString();
+  const hasGoSession = validGoSession(sessionId);
 
   // Standard single-device lead body — field-for-field the /api/lead
   // shape. Quote: TBD (custom) is the funnel's own no-engine-price
   // convention (manual-review model, or engine down at lock time).
   // SMS opt-in: /go collects a contact for THIS offer only, never
-  // marketing consent, so a phone lead is recorded as opted OUT and the
-  // admin status-SMS gate will refuse to market-text it.
+  // marketing consent, so a phone lead is recorded as opted OUT of
+  // marketing texts. The transactional texts about this quote (confirmation,
+  // one reminder, the lock-expiry note) are what the seller asked for when
+  // they typed a number into "we text you the quote"; STOP ends them.
   const mcBody = [
     `[NEW BUYBACK LEAD]`,
     `Name: ${name}`,
@@ -159,9 +262,11 @@ export async function POST(req: NextRequest) {
     `Source-IP: ${safeIp}`,
     `Source-UA: ${ua}`,
     visitorId ? `Visitor-ID: ${visitorId}` : null,
+    hasGoSession ? `Session: ${sessionId}` : null,
+    `Lock-Until: ${lockUntil}`,
     `[ATTEST: yes] Customer affirmed 18+ & legal ownership at submit (IP ${safeIp})`,
     `--- Handoff: TBD (seller picks) ---`,
-    `Action: 14-day price lock from the /go board — reach out to arrange an Austin-area meetup or send a free FedEx label, seller's pick.`,
+    `Action: 14-day price lock from /go — seller was texted MEET/SHIP; reach out to arrange an Austin-area meetup or send a free FedEx label, seller's pick.`,
   ].filter(Boolean).join("\n");
 
   // AWAITED delivery — a lead that vanishes after "locked in." is worse
@@ -191,7 +296,7 @@ export async function POST(req: NextRequest) {
   let smsOk = false;
   try {
     smsOk = await notifyOwnerSms(
-      `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\nReply to: ${contact}${name ? ` (${name})` : ""}\nhttps://topcashcellular.com/admin`,
+      `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}`,
     );
   } catch (e) {
     console.error("[go/lock] owner alert threw:", e);
@@ -210,24 +315,38 @@ export async function POST(req: NextRequest) {
     void appendChatMsg(sessionId, "note", `LOCKED: ${specLine}${offer != null ? ` $${offer}` : " (manual)"} — ${contact.slice(0, 60)}`);
   }
 
-  // Server-side twin of the client's Lead pixel (same event id → Meta
-  // dedupes). The FB in-app webview drops browser events exactly here, at
-  // the money moment — this copy survives it. Best-effort, after-response.
-  after(() => {
+  after(async () => {
+    // The seller's confirmation — the text the page promised. After the
+    // response so a slow relay never delays "locked in.".
+    const c = await sendConfirmation({ contact, isEmail, label: entry.label, storage, offer, lockUntil, sessionId });
+    if (validSession(sessionId)) {
+      void appendChatMsg(
+        sessionId,
+        "note",
+        c.sent
+          ? `${c.channel === "sms" ? "SMS" : "Email"} sent to ${contact} (lock confirmation)`
+          : `${c.channel === "sms" ? "SMS" : c.channel === "email" ? "Email" : "Confirmation"} ${c.reason === "opted out" ? "skipped" : "FAILED"} to ${contact} (lock confirmation${c.reason ? ` — ${c.reason}` : ""})`,
+      );
+    }
+    // Server-side twin of the client's Lead pixel (same event id → Meta
+    // dedupes). The FB in-app webview drops browser events exactly here, at
+    // the money moment — this copy survives it. Best-effort.
     // Only when the client sent its dedup id: a client that reached this
     // POST also attempted the pixel, so a server copy WITHOUT the shared id
     // (stale pre-deploy bundle) would double-count, not backfill.
     if (!eventId) return;
     void sendCapiLead({
       eventId,
-      sourceUrl: "https://topcashcellular.com/go",
+      sourceUrl: `https://topcashcellular.com/go${src ? `?src=${src}` : ""}`,
       ip: clientIp(req),
       userAgent: req.headers.get("user-agent"),
       contact,
       value: typeof offer === "number" ? offer : null,
       contentName: specLine.slice(0, 90),
+      fbp: typeof body.fbp === "string" ? body.fbp : null,
+      fbc: typeof body.fbc === "string" ? body.fbc : null,
     });
   });
 
-  return NextResponse.json({ ok: true, offer });
+  return NextResponse.json({ ok: true, offer, lockUntil });
 }

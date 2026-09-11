@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
+import { listChatSessions, readChat, validGoSession } from "../../../lib/gochat-store";
 
 // Operational watchdog — catches the SILENT, money/trust-losing failures the
 // customer reminder cron can't, because they happen on the OPS side after a
@@ -10,6 +11,13 @@ import { notifyOwnerSms } from "../../../lib/owner-sms";
 //   • shipped_unreceived — package shipped 7+ days ago, never arrived (lost?)
 //   • label_unshipped    — customer got a label 4+ days ago, never shipped
 //   • counter_norespond  — counter-offer sent 3+ days ago, no accept/decline
+//   • go_unworked        — a /go lock 24h+ old with no status flip, no owner
+//                          reply in its chat, and no handoff choice (2026-09-11:
+//                          every /go lock of the first campaign sat like this)
+//   • go_silent (site)   — /go had chat activity in the prior week and none
+//                          in the last 24h: the ads stopped (paused, out of
+//                          budget, payment failed). Fires on the TRANSITION
+//                          only, so deliberately-off ads don't nag forever.
 //
 // Ports the notary watchdog's re-alert-suppression idea to TCC's MC model:
 // each alert writes a [WATCHDOG-ALERT: leadId] cat=… marker, and we re-nag a
@@ -29,7 +37,7 @@ const INTERNAL_EMAILS = (process.env.TCC_INTERNAL_EMAILS || "sondorceus@gmail.co
 const H = 60 * 60 * 1000;
 const D = 24 * H;
 
-type Cat = "received_unpaid" | "tested_unpaid" | "shipped_unreceived" | "label_unshipped" | "counter_norespond";
+type Cat = "received_unpaid" | "tested_unpaid" | "shipped_unreceived" | "label_unshipped" | "counter_norespond" | "go_unworked";
 
 // Per-category: how long a trade sits in this state before it's flagged, the
 // re-nag cooldown, whether it warrants an owner SMS (not just the email), and
@@ -40,7 +48,13 @@ const RULES: Record<Cat, { staleMs: number; cooldownMs: number; urgent: boolean;
   shipped_unreceived: { staleMs: 7 * D, cooldownMs: 2 * D, urgent: false, label: "Shipped, never arrived" },
   label_unshipped:    { staleMs: 4 * D, cooldownMs: 2 * D, urgent: false, label: "Got label, never shipped" },
   counter_norespond:  { staleMs: 3 * D, cooldownMs: 2 * D, urgent: false, label: "Counter sent, no reply" },
+  go_unworked:        { staleMs: 1 * D, cooldownMs: 1 * D, urgent: true,  label: "GO lock, nobody reached out" },
 };
+
+// go_silent: the transition from "ads were landing sellers" to "nothing in
+// 24h". 3-day cooldown — Sonny usually knows why (budget), this is the
+// backstop for the time he doesn't.
+const GO_SILENT_COOLDOWN_MS = 3 * D;
 
 function field(body: string, key: string): string {
   return body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"))?.[1]?.trim() || "";
@@ -94,11 +108,18 @@ export async function GET(req: NextRequest) {
   const deleted = new Set<string>();
   // (leadId|cat) -> latest watchdog-alert timestamp, for cooldown.
   const alertedAt = new Map<string, string>();
+  // /go sessions whose seller already chose meet/ship (chips or MEET/SHIP
+  // text) — the [DELIVERY OPTION] comm carries the Session: line.
+  const handoffChosen = new Set<string>();
 
   for (const m of messages) {
     const body = m.body;
     if (!body) continue;
     if (/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(body)) leads.set(m.id, { ts: m.timestamp, body });
+    if (/^\[DELIVERY OPTION\]/i.test(body)) {
+      const sess = field(body, "Session");
+      if (sess) handoffChosen.add(sess);
+    }
     const sm = body.match(/\[STATUS:\s*(\w+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
     if (sm) {
       const lid = sm[2];
@@ -139,6 +160,12 @@ export async function GET(req: NextRequest) {
     if (counterAtByLead.has(leadId) && !counterRespByLead.has(leadId)) {
       consider.push({ cat: "counter_norespond", since: ms(counterAtByLead.get(leadId)) });
     }
+    // A /go lock nobody has touched: no status flip at all, no handoff
+    // choice. (Owner replies in the chat thread are checked below, async.)
+    const goSession = field(lead.body, "Session");
+    if (/source=go\b/i.test(field(lead.body, "Source")) && !statusByLead.has(leadId) && !(goSession && handoffChosen.has(goSession))) {
+      consider.push({ cat: "go_unworked", since: ms(lead.ts) });
+    }
 
     for (const { cat, since } of consider) {
       const rule = RULES[cat];
@@ -156,6 +183,54 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // go_unworked, second pass: drop the ones Sonny answered in the chat thread
+  // (an owner message in the session = he's on it). Bounded blob reads.
+  for (let i = flags.length - 1, checks = 0; i >= 0 && checks < 12; i--) {
+    const f = flags[i];
+    if (f.cat !== "go_unworked") continue;
+    const sess = field(leads.get(f.leadId)?.body || "", "Session");
+    if (!validGoSession(sess)) continue;
+    checks++;
+    const state = await readChat(sess, 0);
+    const notes = state.msgs.filter((x) => x.role === "note").map((x) => x.text);
+    if (state.lastOwnerTs > 0 || notes.some((t) => t.startsWith("HANDOFF-CHOICE:"))) flags.splice(i, 1);
+  }
+
+  // ---- /GO SILENCE (ads stopped) -------------------------------------------
+  // The /go page writes a session the moment a seller engages, so "no new
+  // session activity in 24h" after a week that had some is the earliest
+  // signal that delivery stopped — days before the lead-silence alarm below.
+  let goActive24 = 0;
+  let goActivePriorWeek = 0;
+  try {
+    const sessions = await listChatSessions();
+    for (const s of sessions) {
+      if (!/^go-/i.test(s.sid)) continue;
+      if (s.lastTs >= now - D) goActive24++;
+      else if (s.lastTs >= now - 7 * D) goActivePriorWeek++;
+    }
+  } catch { /* store unavailable — skip this alarm rather than misfire */ }
+  const lastGoSilentAlert = ms(alertedAt.get("SITE|go_silent"));
+  const goSilentAlarm =
+    goActive24 === 0 && goActivePriorWeek > 0 &&
+    !(lastGoSilentAlert && now - lastGoSilentAlert < GO_SILENT_COOLDOWN_MS);
+  if (goSilentAlarm && !dryRun) {
+    const msg = `🔕 TCC /go: no ad-page activity in 24h (${goActivePriorWeek} sessions the week before). Ads may have stopped — paused, out of budget, or a payment failure. Check Ads Manager.`;
+    await notifyOwnerSms(msg);
+    await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "tcc-admin",
+        fromName: "TCC Admin",
+        role: "system",
+        body: `[WATCHDOG-ALERT: SITE] cat=go_silent priorWeek=${goActivePriorWeek} at=${new Date(now).toISOString()}\n${msg}`,
+        tags: ["watchdog", "go_silent", "urgent"],
+        priority: "high",
+      }),
+    }).catch(() => {});
+  }
+
   // ---- THE SILENCE ALARM ---------------------------------------------------
   // Every other category here watches a trade that already exists. Nothing
   // watched for the funnel producing no trades at all, which is the more
@@ -171,8 +246,8 @@ export async function GET(req: NextRequest) {
     !(lastNoLeadAlert && now - lastNoLeadAlert < NO_LEADS_COOLDOWN_MS);
   const silentDays = Math.floor(silentForMs / D);
 
-  if (flags.length === 0 && !noLeadsAlarm) {
-    return NextResponse.json({ ok: true, flagged: 0, lastLeadAt: lastLeadTs || null, silentDays });
+  if (flags.length === 0 && !noLeadsAlarm && !goSilentAlarm) {
+    return NextResponse.json({ ok: true, flagged: 0, lastLeadAt: lastLeadTs || null, silentDays, goActive24, goActivePriorWeek });
   }
 
   if (noLeadsAlarm && !dryRun) {
@@ -197,11 +272,11 @@ export async function GET(req: NextRequest) {
   }
 
   if (flags.length === 0) {
-    return NextResponse.json({ ok: true, flagged: 0, noLeadsAlarm, silentDays, dryRun });
+    return NextResponse.json({ ok: true, flagged: 0, noLeadsAlarm, goSilentAlarm, goActive24, goActivePriorWeek, silentDays, dryRun });
   }
 
   // Build the digest, grouped by category (urgent first).
-  const order: Cat[] = ["received_unpaid", "tested_unpaid", "shipped_unreceived", "label_unshipped", "counter_norespond"];
+  const order: Cat[] = ["go_unworked", "received_unpaid", "tested_unpaid", "shipped_unreceived", "label_unshipped", "counter_norespond"];
   const byCat = new Map<Cat, Flag[]>();
   for (const f of flags) (byCat.get(f.cat) || byCat.set(f.cat, []).get(f.cat)!).push(f);
 
@@ -221,6 +296,9 @@ export async function GET(req: NextRequest) {
       wouldFlag: flags.length,
       wouldSms: flags.filter((f) => RULES[f.cat].urgent).length > 0,
       noLeadsAlarm,
+      goSilentAlarm,
+      goActive24,
+      goActivePriorWeek,
       silentDays,
       lastLeadAt: lastLeadTs || null,
       byCategory: Object.fromEntries(order.filter((c) => byCat.has(c)).map((c) => [c, byCat.get(c)!.length])),
@@ -248,8 +326,12 @@ export async function GET(req: NextRequest) {
   let smsSent = false;
   if (urgent.length > 0) {
     const lead = urgent[0];
+    const goCount = urgent.filter((f) => f.cat === "go_unworked").length;
+    const payCount = urgent.length - goCount;
     smsSent = await notifyOwnerSms(
-      `⏰ TCC watchdog: ${urgent.length} unpaid trade${urgent.length === 1 ? "" : "s"} need payout. e.g. ${lead.name} (${lead.device}) — ${RULES[lead.cat].label.toLowerCase()} ${lead.ageDays}d. Check the board.`,
+      goCount && !payCount
+        ? `⏰ TCC watchdog: ${goCount} /go lock${goCount === 1 ? "" : "s"} nobody reached out to. e.g. ${lead.device} ${lead.quote} — ${lead.ageDays}d. https://topcashcellular.com/admin/chats`
+        : `⏰ TCC watchdog: ${payCount} unpaid trade${payCount === 1 ? "" : "s"} need payout${goCount ? ` + ${goCount} /go lock${goCount === 1 ? "" : "s"} unworked` : ""}. e.g. ${lead.name} (${lead.device}) — ${RULES[lead.cat].label.toLowerCase()} ${lead.ageDays}d. Check the board.`,
     );
   }
 

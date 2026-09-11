@@ -13,7 +13,9 @@ import { BOARD_MODELS } from "../../../go/board";
 import { PRICE_TABLE } from "../../../data/prices";
 
 const CONDITIONS = new Set(["sealed", "mint", "good", "fair", "broken"]);
-const CARRIERS = new Set(["unlocked", "att", "tmobile", "verizon", "other"]);
+// "unknown" = the "not sure" chip: priced at the AT&T tier (middle of the
+// locked gaps) so the number can only go UP at inspection. Mirrors /go/lock.
+const CARRIERS = new Set(["unlocked", "att", "tmobile", "verizon", "other", "unknown"]);
 
 export async function POST(req: NextRequest) {
   const ip = clientIp(req);
@@ -45,7 +47,7 @@ export async function POST(req: NextRequest) {
       modelLabel: entry.label,
       storage,
       condition,
-      carrier,
+      carrier: carrier === "unknown" ? "att" : carrier,
       // The /go chip question is "locked to a carrier" — answering
       // "verizon" IS declaring a Verizon-locked phone. att/tmobile gaps
       // apply off the carrier name alone, but the Verizon deduction only

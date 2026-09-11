@@ -2,25 +2,39 @@ import { NextRequest, NextResponse } from "next/server";
 import { mailLogo, mailButton } from "../../../lib/email-shell";
 import { randomBytes } from "crypto";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
+import { sendSellerSms, optedOutIn, looksLikePhone } from "../../../lib/seller-sms";
+import { sidToken } from "../../../lib/go-sid-token";
+import { readChat, validGoSession, phoneKey } from "../../../lib/gochat-store";
 
 // Hourly reminder cron — Skywalker 2026-05-18 "remind 24hr after they
 // get quote to meet/respond/ship, make custom depending on shipping
 // or meeting, and another for review 24hr if marked paid".
 //
-// Two reminder kinds, both idempotent via [REMINDER-SENT: leadId]
-// markers persisted to MC. The cron is safe to run every hour — it
-// only fires reminders for the specific 24-48h aging window AND will
-// not double-fire for the same lead.
+// Reminder kinds, all idempotent via [REMINDER-SENT: id] kind=… markers
+// persisted to MC. The cron is safe to run every hour — it only fires
+// inside each kind's aging window AND never double-fires for the same id.
 //
-// QUOTE REMINDER (fired once, 24-48h after submission, only if still
-// in quote_requested status):
+// QUOTE REMINDER (once, 24h–7d after submission, still quote_requested):
 //   • ship handoff → "Your label is in your inbox, drop at FedEx"
 //   • local handoff → "Ready to meet? Reply with time + spot"
-//   • no handoff set → "Quote still locked, come back when ready"
+//   • no handoff set → "Quote still locked" — for /go leads the CTA is the
+//     seller's own chat thread (deep link) + MEET/SHIP keywords
 //
-// REVIEW REMINDER (fired once, 24-48h after paid/met flip, only if
-// the customer hasn't already submitted a review):
-//   • Yellow review CTA with the token URL minted by the status route
+// EXPIRY REMINDER (once, inside the last 36h of a /go lead's 14-day lock,
+//   still quote_requested): "your lock ends <date> — MEET or SHIP".
+//
+// CHAT REMINDER (once, 24h–7d after a [CHAT LEAD ✅] with a contact and no
+//   lock, no owner engagement in the thread): "still want to sell the X?"
+//   These were 6 of the first 10 ad contacts and sat outside every cron.
+//
+// REVIEW REMINDER (once, 24h–7d after paid/met flip, no review yet).
+//
+// SMS rides the Telnyx relay (app/lib/seller-sms.ts) — the Twilio account is
+// dead ("i dont have twilo", 2026-07-05), which is why phone-only /go locks
+// silently received nothing for three weeks. STOP is honored via the
+// [SMS-OPT-OUT: <number>] marker the inbound route writes.
+//
+// ?dry=1 → compute every candidate, send nothing, list what WOULD go.
 //
 // Auth: CRON_SECRET on the Authorization header. Vercel auto-sends
 // this on cron-fired requests. Manual hits get 401.
@@ -29,10 +43,8 @@ export const runtime = "nodejs";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
-const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
-const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
+const SITE = "https://topcashcellular.com";
 
 // 24-48 hour aging window. Reminders only fire once per lead per kind.
 const REMIND_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -42,23 +54,16 @@ const REMIND_AFTER_MS = 24 * 60 * 60 * 1000;
 // reminded flag keeps it idempotent — each lead still gets exactly one. 7d
 // bounds it so genuinely stale leads aren't re-engaged forever. (bug fix)
 const REMIND_UNTIL_MS = 7 * 24 * 60 * 60 * 1000;
+// Expiry note goes out inside the last 36h of the lock.
+const EXPIRY_LEAD_MS = 36 * 60 * 60 * 1000;
+// Per-run cap on chat-thread reads (each is a blob list + a few fetches).
+const MAX_CHAT_CHECKS = 20;
+
+type Kind = "quote" | "review" | "expiry" | "chat";
 
 async function sendSms(to: string, body: string): Promise<boolean> {
-  if (!TWILIO_SID || !TWILIO_AUTH) return false;
-  const digits = to.replace(/\D/g, "");
-  const e164 = digits.length === 10 ? `+1${digits}` : digits.length === 11 && digits.startsWith("1") ? `+${digits}` : null;
-  if (!e164) return false;
-  try {
-    const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
-      method: "POST",
-      headers: {
-        "Authorization": "Basic " + Buffer.from(`${TWILIO_SID}:${TWILIO_AUTH}`).toString("base64"),
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ To: e164, From: TWILIO_FROM, Body: body }),
-    });
-    return res.ok;
-  } catch { return false; }
+  if (!looksLikePhone(to)) return false;
+  return sendSellerSms(to, body);
 }
 
 async function sendEmail(to: string, subject: string, html: string, text: string): Promise<boolean> {
@@ -90,7 +95,7 @@ function parseField(body: string, key: string): string | undefined {
   return v || undefined;
 }
 
-async function logReminderSent(leadId: string, kind: "quote" | "review") {
+async function logReminderSent(leadId: string, kind: Kind) {
   const marker = `[REMINDER-SENT: ${leadId}] kind=${kind} at=${new Date().toISOString()}`;
   try {
     await fetch(`${MC_API}/api/comms`, {
@@ -141,7 +146,23 @@ type LeadShape = {
   model?: string;
   quote?: string;
   handoffMethod?: "ship" | "local" | undefined;
+  // /go leads only: the chat session (deep-linkable) and the lock deadline.
+  session?: string;
+  lockUntil?: string;
+  isGo?: boolean;
 };
+
+// The seller's own thread when we know it (HMAC-signed so the /go client
+// adopts it in whatever browser the text opens), else the bare page.
+function goLink(session?: string): string {
+  if (!session || !validGoSession(session)) return `${SITE}/go`;
+  const k = sidToken(session);
+  return k ? `${SITE}/go?sid=${session}&k=${k}` : `${SITE}/go`;
+}
+
+function dateLabel(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" });
+}
 
 function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | "none") {
   const first = (lead.name || "there").split(" ")[0];
@@ -172,15 +193,65 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
       }),
     };
   }
+  if (lead.isGo) {
+    // /go seller: no handoff was ever asked on the page. The reminder IS the
+    // handoff ask — MEET/SHIP by text, or the thread itself.
+    const link = goLink(lead.session);
+    const until = lead.lockUntil ? ` until ${dateLabel(lead.lockUntil)}` : "";
+    return {
+      smsBody: `Top Cash: Hi ${first}, your ${device} offer (${quoteStr}) is still locked${until}. Reply MEET for a cash meetup in the Austin area or SHIP for a free FedEx label — or pick it back up here: ${link} Reply STOP to opt out.`,
+      emailSubject: `Reminder: your ${device} offer is still locked`,
+      emailHtml: wrapEmail({
+        title: "Your offer is still locked in",
+        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your offer for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still locked${until}.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply <strong style="color:#fff">MEET</strong> for a cash meetup in the Austin area or <strong style="color:#fff">SHIP</strong> for a free FedEx label — or pick it back up in your chat.</p>`,
+        ctaHref: link,
+        ctaLabel: "Open my chat →",
+      }),
+    };
+  }
   // No handoff picked yet — gentle nudge back to the funnel.
   return {
-    smsBody: `Top Cash: Hi ${first}, your quote for ${device} (${quoteStr}) is still locked in. Pick local meetup or free FedEx pickup whenever you're ready: https://topcashcellular.com. Reply STOP to opt out.`,
+    smsBody: `Top Cash: Hi ${first}, your quote for ${device} (${quoteStr}) is still locked in. Pick local meetup or free FedEx pickup whenever you're ready: ${SITE}. Reply STOP to opt out.`,
     emailSubject: `Reminder: your ${device} quote is still good`,
     emailHtml: wrapEmail({
       title: "Your quote is still locked in",
       bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your quote for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still good.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Local meetup (same-day cash) or free FedEx pickup — pick whichever works.</p>`,
-      ctaHref: "https://topcashcellular.com",
+      ctaHref: SITE,
       ctaLabel: "Finish your trade →",
+    }),
+  };
+}
+
+function templateExpiry(lead: LeadShape) {
+  const first = (lead.name || "there").split(" ")[0];
+  const device = lead.model || lead.device || "your device";
+  const quoteStr = lead.quote ? `${lead.quote}` : "your locked-in price";
+  const until = lead.lockUntil ? dateLabel(lead.lockUntil) : "soon";
+  const link = goLink(lead.session);
+  return {
+    smsBody: `Top Cash: Hi ${first}, heads up — your ${quoteStr} lock on the ${device} ends ${until}. Reply MEET or SHIP to get paid before it does, or pick it back up here: ${link} Reply STOP to opt out.`,
+    emailSubject: `Your ${device} lock ends ${until}`,
+    emailHtml: wrapEmail({
+      title: `Your lock ends ${until}`,
+      accent: "#ffb400",
+      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your <span style="color:#00c853;font-weight:700">${quoteStr}</span> offer on the <span style="color:#00c853;font-weight:600">${device}</span> holds until <strong style="color:#fff">${until}</strong>. After that we re-quote at the current market.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply <strong style="color:#fff">MEET</strong> for a cash meetup in the Austin area or <strong style="color:#fff">SHIP</strong> for a free FedEx label.</p>`,
+      ctaHref: link,
+      ctaLabel: "Open my chat →",
+    }),
+  };
+}
+
+function templateChat(device: string, session: string) {
+  const link = goLink(session);
+  const dev = device || "your device";
+  return {
+    smsBody: `Top Cash: still want to sell the ${dev}? your number holds 14 days — pick it back up here and we'll get you paid: ${link} Reply STOP to opt out.`,
+    emailSubject: `Still want to sell your ${dev}?`,
+    emailHtml: wrapEmail({
+      title: `Still want to sell your ${dev}?`,
+      bodyHtml: `<p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your chat with us is saved and any number we gave you holds 14 days.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Pick it back up whenever you're ready — cash meetup in the Austin area or a free FedEx label, your pick.</p>`,
+      ctaHref: link,
+      ctaLabel: "Open my chat →",
     }),
   };
 }
@@ -201,6 +272,14 @@ function templateReviewReminder(lead: LeadShape, reviewUrl: string) {
   };
 }
 
+// A [CHAT LEAD ✅] with a contact — the site chat's lead record.
+type ChatLead = { id: string; timestamp: string; session: string; device: string; contact: string };
+function parseChatLead(id: string, timestamp: string, body: string): ChatLead | null {
+  const m = body.match(/^\[CHAT LEAD ✅\]\s+sess:(go-[a-z0-9-]{2,30})\s+·\s+(?:(.+?)\s+·\s+)?reply to:\s*([^\n]+)/i);
+  if (!m) return null;
+  return { id, timestamp, session: m[1], device: (m[2] || "").trim().slice(0, 80), contact: m[3].trim().slice(0, 120) };
+}
+
 export async function GET(req: NextRequest) {
   // Auth — Vercel cron sends `Authorization: Bearer ${CRON_SECRET}`.
   const auth = req.headers.get("authorization") || "";
@@ -208,6 +287,7 @@ export async function GET(req: NextRequest) {
   if (!secret || auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const dryRun = req.nextUrl.searchParams.get("dry") === "1";
 
   // Pull a generous slice of MC comms — needs to cover both the lead
   // submission timestamps AND any [REMINDER-SENT]/[REVIEW-USED] markers
@@ -217,15 +297,15 @@ export async function GET(req: NextRequest) {
   // ([REMINDER-SENT]/[REVIEW-USED]/[STATUS]) that suppress a re-send are
   // equally recent — but on a busy feed the newest 1000 messages can span
   // less than 7 days, so a still-eligible lead (or its dedup marker) could
-  // fall outside the slice → a duplicate or missed reminder. 14 days of
-  // history (well inside the live feed, no archive needed) covers it.
+  // fall outside the slice → a duplicate or missed reminder. 21 days of
+  // history covers the 14-day lock expiry window with margin.
   let messages: { id?: string; body?: string; timestamp: string }[] = [];
   try {
     messages = await fetchCommsPaged({
       apiKey: MC_KEY,
       includeArchive: false,
-      sinceMs: 14 * 24 * 60 * 60 * 1000,
-      maxPages: 8,
+      sinceMs: 21 * 24 * 60 * 60 * 1000,
+      maxPages: 10,
     });
     if (messages.length === 0) {
       return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
@@ -236,10 +316,12 @@ export async function GET(req: NextRequest) {
 
   // Index status updates, reminders, review-used markers.
   const statusByLead = new Map<string, { status: string; ts: string }>();
-  const quoteRemindedSet = new Set<string>();
-  const reviewRemindedSet = new Set<string>();
+  const remindedByKind: Record<Kind, Set<string>> = { quote: new Set(), review: new Set(), expiry: new Set(), chat: new Set() };
   const reviewUsedLeads = new Set<string>();
   const reviewTokenByLead = new Map<string, { token: string; expires?: string }>();
+  // Contacts that DID lock (any [NEW BUYBACK LEAD] in the window) — a chat
+  // lead whose number later locked needs no "still want to sell" nudge.
+  const lockedContacts = new Set<string>();
   for (const m of messages) {
     if (!m.body) continue;
     const sm = m.body.match(/\[STATUS:\s*(\w+)\]/i);
@@ -254,9 +336,8 @@ export async function GET(req: NextRequest) {
     const rm = m.body.match(/\[REMINDER-SENT:\s*([\w-]+)\]/i);
     if (rm) {
       const lid = rm[1];
-      const kind = m.body.match(/kind=(quote|review)/i)?.[1]?.toLowerCase();
-      if (kind === "quote") quoteRemindedSet.add(lid);
-      else if (kind === "review") reviewRemindedSet.add(lid);
+      const kind = m.body.match(/kind=(quote|review|expiry|chat)/i)?.[1]?.toLowerCase() as Kind | undefined;
+      if (kind) remindedByKind[kind].add(lid);
     }
     const rtm = m.body.match(/\[REVIEW-TOKEN:\s*([\w-]+)\]/i);
     if (rtm) {
@@ -267,23 +348,46 @@ export async function GET(req: NextRequest) {
     }
     const rum = m.body.match(/\[REVIEW-USED:\s*[\w]+\]\s+leadId=([\w-]+)/i);
     if (rum) reviewUsedLeads.add(rum[1]);
+    if (/\[NEW BUYBACK LEAD/i.test(m.body)) {
+      const p = phoneKey(parseField(m.body, "Phone") || "");
+      const e = (parseField(m.body, "Email") || "").toLowerCase();
+      if (p) lockedContacts.add(p);
+      if (e) lockedContacts.add(e);
+    }
   }
 
   const now = Date.now();
   const quoteCandidates: LeadShape[] = [];
+  const expiryCandidates: LeadShape[] = [];
   const reviewCandidates: { lead: LeadShape; statusTs: string }[] = [];
+  const chatCandidates: ChatLead[] = [];
+
+  const isDeleted = (id: string) => {
+    const lastDel = messages.filter((mm) => mm.body && new RegExp(`\\[DELETED-LEAD:\\s*${id}\\]`, "i").test(mm.body)).map((mm) => mm.timestamp).sort().pop();
+    if (!lastDel) return false;
+    const lastRes = messages.filter((mm) => mm.body && new RegExp(`\\[RESTORED-LEAD:\\s*${id}\\]`, "i").test(mm.body)).map((mm) => mm.timestamp).sort().pop();
+    return !lastRes || lastRes < lastDel;
+  };
 
   for (const m of messages) {
-    if (!m.body) continue;
-    if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
-    if (!m.id) continue;
-    // Deleted leads (soft-trashed) → skip. They re-surface only on restore.
-    if (messages.some((mm) => mm.body && new RegExp(`\\[DELETED-LEAD:\\s*${m.id}\\]`, "i").test(mm.body))) {
-      // Check if restored after; only skip if delete is the latest action.
-      const lastDel = messages.filter((mm) => mm.body && new RegExp(`\\[DELETED-LEAD:\\s*${m.id}\\]`, "i").test(mm.body)).map((mm) => mm.timestamp).sort().pop();
-      const lastRes = messages.filter((mm) => mm.body && new RegExp(`\\[RESTORED-LEAD:\\s*${m.id}\\]`, "i").test(mm.body)).map((mm) => mm.timestamp).sort().pop();
-      if (lastDel && (!lastRes || lastRes < lastDel)) continue;
+    if (!m.body || !m.id) continue;
+    // Chat-contact leads (site chat) — their own candidate list.
+    if (/^\[CHAT LEAD ✅\]/.test(m.body)) {
+      const cl = parseChatLead(m.id, m.timestamp, m.body);
+      if (!cl) continue;
+      const age = now - new Date(m.timestamp).getTime();
+      if (age < REMIND_AFTER_MS || age >= REMIND_UNTIL_MS) continue;
+      if (remindedByKind.chat.has(m.id)) continue;
+      const pk = phoneKey(cl.contact);
+      const ek = cl.contact.includes("@") ? cl.contact.toLowerCase() : "";
+      if ((pk && lockedContacts.has(pk)) || (ek && lockedContacts.has(ek))) continue; // they locked — the lead cron covers them
+      if (pk && optedOutIn(messages, cl.contact)) continue;
+      chatCandidates.push(cl);
+      continue;
     }
+    if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
+    // Deleted leads (soft-trashed) → skip. They re-surface only on restore.
+    if (isDeleted(m.id)) continue;
     const name = parseField(m.body, "Name");
     const phone = parseField(m.body, "Phone");
     const email = parseField(m.body, "Email");
@@ -294,18 +398,23 @@ export async function GET(req: NextRequest) {
       : /--- Handoff:\s*LOCAL MEETUP/i.test(m.body)
         ? "local"
         : undefined;
+    const source = parseField(m.body, "Source") || "";
     const lead: LeadShape = {
       id: m.id,
       body: m.body,
       timestamp: m.timestamp,
       name,
-      phone,
+      phone: phone && optedOutIn(messages, phone) ? undefined : phone,
       email,
       device: deviceLine.split(" — ")[0],
       model: deviceLine.split(" — ")[1],
       quote: parseField(m.body, "Quote"),
       handoffMethod,
+      session: parseField(m.body, "Session"),
+      lockUntil: parseField(m.body, "Lock-Until"),
+      isGo: /source=go\b/i.test(source),
     };
+    if (!lead.phone && !lead.email) continue; // opted out and no email
 
     const status = statusByLead.get(m.id);
     const statusName = status?.status || "quote_requested";
@@ -317,21 +426,54 @@ export async function GET(req: NextRequest) {
     // since the lead may never have had a [STATUS:] update.
     if (statusName === "quote_requested") {
       const subAge = now - new Date(m.timestamp).getTime();
-      if (subAge >= REMIND_AFTER_MS && subAge < REMIND_UNTIL_MS && !quoteRemindedSet.has(m.id)) {
+      if (subAge >= REMIND_AFTER_MS && subAge < REMIND_UNTIL_MS && !remindedByKind.quote.has(m.id)) {
         quoteCandidates.push(lead);
+      }
+      // Expiry — /go leads only (they carry Lock-Until), inside the last 36h.
+      if (lead.lockUntil && !remindedByKind.expiry.has(m.id)) {
+        const untilMs = new Date(lead.lockUntil).getTime();
+        if (Number.isFinite(untilMs) && now >= untilMs - EXPIRY_LEAD_MS && now < untilMs) {
+          expiryCandidates.push(lead);
+        }
       }
     }
 
     // Review reminder — paid or met, status flipped 24-48h ago, no
     // review submitted yet, no review-reminder sent yet.
     if (statusName === "paid" || statusName === "met") {
-      if (ageMs >= REMIND_AFTER_MS && ageMs < REMIND_UNTIL_MS && !reviewRemindedSet.has(m.id) && !reviewUsedLeads.has(m.id)) {
+      if (ageMs >= REMIND_AFTER_MS && ageMs < REMIND_UNTIL_MS && !remindedByKind.review.has(m.id) && !reviewUsedLeads.has(m.id)) {
         reviewCandidates.push({ lead, statusTs });
       }
     }
   }
 
+  // Chat candidates: skip threads Sonny already worked (an owner message),
+  // threads that locked after the chat lead posted, and threads where the
+  // seller already picked a handoff by text. Bounded per run.
+  const chatReady: ChatLead[] = [];
+  for (const cl of chatCandidates.slice(0, MAX_CHAT_CHECKS)) {
+    const state = await readChat(cl.session, 0);
+    const notes = state.msgs.filter((x) => x.role === "note").map((x) => x.text);
+    if (state.lastOwnerTs > 0) continue;
+    if (notes.some((t) => t.startsWith("LOCKED:") || t.startsWith("HANDOFF-CHOICE:") || t.startsWith("SMS-STOP"))) continue;
+    chatReady.push(cl);
+  }
+
+  if (dryRun) {
+    return NextResponse.json({
+      ok: true,
+      dryRun: true,
+      quote: quoteCandidates.map((l) => ({ id: l.id, go: !!l.isGo, channel: l.phone ? "sms" : "email", session: l.session || null })),
+      expiry: expiryCandidates.map((l) => ({ id: l.id, lockUntil: l.lockUntil, channel: l.phone ? "sms" : "email" })),
+      chat: chatReady.map((c) => ({ id: c.id, session: c.session, device: c.device, channel: c.contact.includes("@") ? "email" : "sms" })),
+      review: reviewCandidates.map((r) => ({ id: r.lead.id })),
+      skippedChatChecks: Math.max(0, chatCandidates.length - MAX_CHAT_CHECKS),
+    });
+  }
+
   let quoteSent = 0;
+  let expirySent = 0;
+  let chatSent = 0;
   let reviewSent = 0;
   const errors: string[] = [];
 
@@ -345,7 +487,7 @@ export async function GET(req: NextRequest) {
       if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
       const results = await Promise.all(tasks);
       // Only mark reminded if a channel actually delivered. sendSms/sendEmail
-      // return false (they don't throw) on a Twilio/Resend failure, so the old
+      // return false (they don't throw) on a relay/Resend failure, so the old
       // unconditional log would permanently suppress the retry after an outage.
       if (results.some(Boolean)) {
         await logReminderSent(lead.id, "quote");
@@ -355,6 +497,43 @@ export async function GET(req: NextRequest) {
       }
     } catch (e) {
       errors.push(`quote ${lead.id}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  // Fire expiry notes.
+  for (const lead of expiryCandidates) {
+    try {
+      const tmpl = templateExpiry(lead);
+      const tasks: Promise<boolean>[] = [];
+      if (lead.phone) tasks.push(sendSms(lead.phone, tmpl.smsBody));
+      if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
+      const results = await Promise.all(tasks);
+      if (results.some(Boolean)) {
+        await logReminderSent(lead.id, "expiry");
+        expirySent++;
+      } else {
+        errors.push(`expiry ${lead.id}: all channels failed`);
+      }
+    } catch (e) {
+      errors.push(`expiry ${lead.id}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  // Fire chat-contact reminders.
+  for (const cl of chatReady) {
+    try {
+      const tmpl = templateChat(cl.device, cl.session);
+      const ok = cl.contact.includes("@")
+        ? await sendEmail(cl.contact, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody)
+        : await sendSms(cl.contact, tmpl.smsBody);
+      if (ok) {
+        await logReminderSent(cl.id, "chat");
+        chatSent++;
+      } else {
+        errors.push(`chat ${cl.id}: send failed`);
+      }
+    } catch (e) {
+      errors.push(`chat ${cl.id}: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
@@ -394,7 +573,7 @@ export async function GET(req: NextRequest) {
       if (lead.name) params.set("name", lead.name);
       const dev = lead.model || lead.device;
       if (dev) params.set("device", dev);
-      const reviewUrl = `https://topcashcellular.com/reviews/new?${params.toString()}`;
+      const reviewUrl = `${SITE}/reviews/new?${params.toString()}`;
       const tmpl = templateReviewReminder(lead, reviewUrl);
       const tasks: Promise<boolean>[] = [];
       if (lead.phone) tasks.push(sendSms(lead.phone, tmpl.smsBody));
@@ -416,6 +595,10 @@ export async function GET(req: NextRequest) {
     ok: true,
     quoteCandidates: quoteCandidates.length,
     quoteSent,
+    expiryCandidates: expiryCandidates.length,
+    expirySent,
+    chatCandidates: chatReady.length,
+    chatSent,
     reviewCandidates: reviewCandidates.length,
     reviewSent,
     errors: errors.length > 0 ? errors : undefined,
