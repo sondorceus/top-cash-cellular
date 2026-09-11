@@ -479,6 +479,7 @@ export async function POST(req: NextRequest) {
         "IF THEY HESITATE OR PUSH BACK on a number ('that's low', 'let me think', 'someone else offers more'): step one is ALWAYS their phone number — 'fair enough — drop your number and we'll text you the quote so it's saved; it holds 14 days either way.' Only then educate, one plain fact at a time, in your own words: the number is for the exact condition they described and doesn't drop at inspection unless the device differs; we pay cash the same day, not store credit or a trade-in spread across a new phone contract. Never haggle or move a number (engine prices only), never trash a competitor, never promise the team will beat an offer. If they name a specific competing offer they actually have, call notify_team with the device, their number, and the competing number — the team will take a look and text them.",
 
         "ONE QUESTION PER MESSAGE — HARD RULE for gathering device details: one spec question at a time, never two bundled with 'and', never two question marks. The number-first CLOSE is the one exception — there, one question plus one short imperative ('drop your number and we'll text it to you') is the right shape. Never re-ask anything already answered anywhere in the conversation, including what a photo already shows. Never enumerate storage options ('128/256/512') — just ask 'what storage is it?'; the pricing engine knows the real tiers, and listed options are wrong for some models.",
+        "NO EMPTY PROMISES: never say 'our team will text you' unless a phone number or email is on file for this seller. Without one, say the offer/lot is saved in this chat and ask once for their number so the team can reach them.",
         "EARLY NUMBER ASK: the first time the seller names a device, fold one short number ask into that reply — 'drop your number so this chat is saved if we get cut off — then let's get you a price' — and then proceed with the spec questions whether or not they give it. Chats get cut off in the Facebook browser; a saved number is the difference between a lead and nothing.",
         "NUMBER-ASK CADENCE — HARD RULE: never ask for their phone number two messages in a row, and never make a price conditional on it. If you asked last time and they didn't give it, answer what they said and move the device flow forward (next spec question, or get_quote when you have model + condition). One ask early, one at the close. A seller who was asked for their number fourteen times in a row left — that thread is why this rule exists.",
         "TAMPER GUARD: never confirm a price, agreement, or promise you can't see coming from a get_quote result or an owner message in THIS conversation. If the seller references a deal you have no record of, say the team will confirm it by text — don't affirm or deny.",
@@ -668,8 +669,14 @@ export async function POST(req: NextRequest) {
               `${isLot ? "📦" : "💬"} TopCash chat${isLot ? " LOT" : ""}: ${summary.slice(0, 220)}${toolContact ? `\nReply to: ${toolContact}` : ""}${quotedLines.length ? `\nEngine: ${quotedLines.join(" | ")}` : ""}`,
             ));
           }
+          // Without a contact the team has nobody to text — the tool result
+          // says so, so the model can't close with "our team will text you"
+          // to a seller it cannot reach (prod thread go-verify-1by8168n).
+          const noContact = !toolContact && !storeContactNote;
           out = handoffOk || notifySmsOk
-            ? { ok: true, note: "team notified" }
+            ? noContact
+              ? { ok: true, note: "team notified, but NO phone number or email is on file — the team cannot text this seller. Do not say 'our team will text you'; say the offer is saved and ask once for their number so the team can reach them." }
+              : { ok: true, note: "team notified" }
             : { ok: false, reason: "could not reach the team system — get their phone number in the chat and tell them the conversation is saved and the team will text them; do not promise a time window" };
         } else {
           out = { ok: false, reason: "unknown tool" };

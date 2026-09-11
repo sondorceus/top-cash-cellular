@@ -1440,6 +1440,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                 e.preventDefault();
                 const v = saveNum.trim();
                 if (v.replace(/\D/g, "").length < 10 && !v.includes("@")) return;
+                // send() refuses while a message or photo is in flight — keep
+                // the typed number in the field in that case, never drop it.
+                if (sending || uploading) return;
                 setSaveNum("");
                 void send(v);
               }}
