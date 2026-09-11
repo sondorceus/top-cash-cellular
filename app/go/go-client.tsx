@@ -1212,6 +1212,14 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               ✕
             </button>
           </header>
+          {/* small standing note instead of the bot opening with "drop your
+              number" (Sonny 2026-09-11: "write it small at the top while
+              messaging so they know") */}
+          {!contactCaptured && !takeover && !lastLockRef.current && (
+            <div className="px-4 py-1.5 text-[12px] text-white/50 border-b border-white/10" style={{ background: "#0e0e0f" }}>
+              your chat is saved — drop your number any time and we&rsquo;ll text you the offer, even if this gets cut off.
+            </div>
+          )}
 
           <div
             ref={threadRef}
