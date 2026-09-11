@@ -258,7 +258,7 @@ export const SELL_TOOLS = [
         condition: {
           type: "string",
           enum: ["sealed", "mint", "good", "fair", "broken"],
-          description: "sealed=new in plastic, mint=like new, good, fair=visible wear, broken=cracked/not working.",
+          description: "sealed=new in plastic; mint=like new; good=normal use; fair=visible wear (scuffs, scratches, dents) but NO cracks; broken=cracked screen or back, bad battery, or other damage but it still powers on (this IS the cracked tier — a cracked phone is 'broken', never 'fair'). A device that won't turn on, has liquid damage, or is 'for parts' is not quotable — don't call this for it.",
         },
         carrier: { type: "string", enum: ["unlocked", "att", "tmobile", "verizon", "other"], description: "The carrier the phone is LOCKED to. 'verizon' means locked to Verizon — if they say it's a Verizon phone but unlocked/paid off, use 'unlocked'." },
         mdm_locked: { type: "boolean", description: "true ONLY if the customer said the phone has an MDM / company / school management lock. Never ask about it unprompted." },
