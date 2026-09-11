@@ -162,8 +162,12 @@ export async function GET(req: NextRequest) {
     }
     // A /go lock nobody has touched: no status flip at all, no handoff
     // choice. (Owner replies in the chat thread are checked below, async.)
+    // Bounded to the lock's first week: past that the seller has had the 24h
+    // reminder and the expiry note, and a daily nag about a three-week-old
+    // lock is noise, not a signal (the first dry run flagged three of those).
     const goSession = field(lead.body, "Session");
-    if (/source=go\b/i.test(field(lead.body, "Source")) && !statusByLead.has(leadId) && !(goSession && handoffChosen.has(goSession))) {
+    const goAge = now - ms(lead.ts);
+    if (/source=go\b/i.test(field(lead.body, "Source")) && goAge < 7 * D && !statusByLead.has(leadId) && !(goSession && handoffChosen.has(goSession))) {
       consider.push({ cat: "go_unworked", since: ms(lead.ts) });
     }
 
