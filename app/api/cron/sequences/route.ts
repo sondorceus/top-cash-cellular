@@ -113,6 +113,11 @@ export async function GET(req: NextRequest) {
     if (status !== "quote_requested") continue; // progressed/closed → not "abandoned"
     const email = field(lead.body, "Email");
     if (!email || INTERNAL_EMAILS.includes(email.toLowerCase())) continue;
+    // Only real dollar quotes get the "your offer is still good — {quote}"
+    // copy: recycle-only ($0) and manual-review (TBD) leads would read as
+    // nonsense. Those are worked by hand.
+    const quoteNum = Number(field(lead.body, "Quote").replace(/,/g, "").match(/\$\s*(\d+)/)?.[1] || 0);
+    if (!(quoteNum > 0)) continue;
 
     const lastStep = maxStepByLead.get(leadId) || 0;
     const next = seq.steps.find((s) => s.position === lastStep + 1);
@@ -122,6 +127,10 @@ export async function GET(req: NextRequest) {
     // Due only once enough days have passed since the quote was given.
     const dueAt = ms(lead.ts) + cumulativeDelayDays(seq, next.position) * D;
     if (now < dueAt) continue;
+    // Send inside a 3-day window after due, never later: flipping the cron on
+    // (or a multi-day outage) must not blast step 1 at every stale lead in the
+    // 21-day fetch window. A lead that missed its window is simply skipped.
+    if (now >= dueAt + 3 * D) continue;
 
     const vars: SeqVars = {
       firstName: (field(lead.body, "Name") || "there").split(/\s+/)[0],
