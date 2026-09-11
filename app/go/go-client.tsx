@@ -131,6 +131,8 @@ type Msg =
   // note: an extra line under the number (e.g. the "not sure" carrier caveat)
   | { from: "bot"; kind: "quote"; label: string; offer: number; note?: string; done?: boolean }
   | { from: "bot"; kind: "lockform"; manual: boolean; done?: boolean }
+  // tiny opt-in phone field, opened by the "leave my number" chip at the start
+  | { from: "bot"; kind: "numberform"; done?: boolean }
   // until: ISO lock deadline from /api/go/lock — rendered as "holds until <date>"
   // confirmed: sms/email = delivered before the response; pending = still sending; failed = channel refused
   | { from: "bot"; kind: "locked"; offer: number | null; until?: string; confirmed?: "sms" | "email" | "pending" | "failed" }
@@ -1167,14 +1169,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               ✕
             </button>
           </header>
-          {/* small standing note instead of the bot opening with "drop your
-              number" (Sonny 2026-09-11: "write it small at the top while
-              messaging so they know") */}
-          {!contactCaptured && !takeover && !lastLockRef.current && (
-            <div className="px-4 py-1.5 text-[12px] text-white/50 border-b border-white/10" style={{ background: "#0e0e0f" }}>
-              your chat is saved — drop your number any time and we&rsquo;ll text you the offer, even if this gets cut off.
-            </div>
-          )}
 
           <div
             ref={threadRef}
@@ -1299,6 +1293,19 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   </div>
                 );
               }
+              if (m.kind === "numberform") {
+                return (
+                  <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                    <NumberForm
+                      disabled={!!m.done}
+                      onSave={(v) => {
+                        setMsgs((cur) => cur.map((x) => ("kind" in x && x.kind === "numberform" ? { ...x, done: true } : x)));
+                        void send(v);
+                      }}
+                    />
+                  </div>
+                );
+              }
               if (m.kind === "chips") {
                 return (
                   <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
@@ -1384,7 +1391,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             )}
 
             {msgs.length === 0 && (
-              <div className="flex flex-wrap gap-2 ml-10">
+              <div className="flex flex-wrap gap-2 ml-10 items-center">
                 {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
                   <button
                     key={c}
@@ -1395,6 +1402,17 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     {c}
                   </button>
                 ))}
+                {/* the ONE opt-in way to leave a number early — a tiny chip,
+                    nothing standing, nothing timed (Sonny 2026-09-11) */}
+                {!contactCaptured && (
+                  <button
+                    type="button"
+                    onClick={() => { logNote("tapped leave my number"); interactedRef.current = true; pushMsgs({ from: "bot", kind: "numberform" }); }}
+                    className="text-[13px] text-white/55 border border-white/15 rounded-full px-3 py-[8px] active:scale-95 transition-transform"
+                  >
+                    leave my number
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -1569,6 +1587,36 @@ function ModelPicker({ rows, line, onLine, onPick, onOther, busy }: {
         <div className="text-[13px] font-semibold mt-1.5 leading-tight text-white">don&rsquo;t see yours? tell us</div>
       </button>
     </div>
+  );
+}
+
+// The opt-in phone field behind the "leave my number" chip. Goes through
+// send() as a plain message, so the server's contact detection, lead post,
+// owner alert and pixel all fire exactly as for a typed number.
+function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: string) => void }) {
+  const [v, setV] = useState("");
+  const ok = v.replace(/\D/g, "").length >= 10 || v.includes("@");
+  return (
+    <form
+      className="rounded-2xl border border-white/10 bg-white/[0.06] p-3 flex flex-col gap-2 max-w-[92%]"
+      onSubmit={(e) => { e.preventDefault(); if (ok && !disabled) onSave(v.trim()); }}
+    >
+      <div className="text-[13px] text-white/60">we&rsquo;ll text you the offer — even if this chat gets cut off.</div>
+      <div className="flex gap-2">
+        <input
+          value={v}
+          onChange={(e) => setV(e.target.value)}
+          placeholder="your number"
+          autoComplete="tel"
+          aria-label="your phone number"
+          disabled={disabled}
+          className="flex-1 min-w-0 px-4 py-[10px] rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+        />
+        <button type="submit" disabled={disabled || !ok} className="tcc-button-primary px-4 py-[10px] rounded-full text-[15px] font-bold shrink-0 disabled:opacity-40">
+          save
+        </button>
+      </div>
+    </form>
   );
 }
 
