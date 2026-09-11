@@ -1,9 +1,10 @@
 "use client";
 
-// /go interactive surface: category tiles → full-screen chat. iPhone/Samsung
-// run the deterministic flow (model carousel → three chips → engine number →
-// one-field lock → MEET/SHIP chips); everything else types to /api/chat, the
-// site-chat brain (quotes singles, lots go to the team). The old in-page
+// /go interactive surface: category tiles → full-screen chat. iPhone, Samsung,
+// iPad, Console and MacBook all run the deterministic flow (two-stage model
+// picker → the model's own chip steps → engine number → one-field lock →
+// MEET/SHIP chips); "Something else" and anything typed goes to /api/chat,
+// the site-chat brain (quotes singles, lots go to the team). The old in-page
 // price board was removed 2026-09-11 — it had been dead code since the
 // funnel-first rewrite (72e157a).
 //
@@ -12,7 +13,7 @@
 // ("we"), and every dollar figure on screen came from the engine — the
 // client never invents or caches a price.
 import { useEffect, useRef, useState } from "react";
-import type { BoardRow } from "./board";
+import type { BoardRow, GoStep } from "./board";
 import { pixelTrack, fbCookies } from "../components/MetaPixel";
 
 export type GoReviews = {
@@ -22,7 +23,7 @@ export type GoReviews = {
 };
 
 const STORAGE_LABELS: Record<string, string> = {
-  "64": "64 gb", "128": "128 gb", "256": "256 gb", "512": "512 gb", "1tb": "1 tb", "2tb": "2 tb",
+  "64": "64 gb", "128": "128 gb", "256": "256 gb", "512": "512 gb", "1tb": "1 tb", "2tb": "2 tb", "4tb": "4 tb", "8tb": "8 tb",
 };
 const CONDITIONS: { key: string; label: string }[] = [
   { key: "sealed", label: "sealed in box" },
@@ -38,11 +39,48 @@ const CARRIERS: { key: string; label: string }[] = [
   { key: "verizon", label: "verizon" },
   // "other" used to read as the catch-all — a seller who meant "unlocked"
   // tapped it and got $204 on a $433 phone. Name what it actually is, and
-  // give the unsure a chip that prices at the middle (AT&T) tier and says
-  // the number only goes UP at inspection.
+  // give the unsure a chip that prices at the AT&T tier (server:
+  // app/go/spec.ts) with a note that says exactly which way it can move.
   { key: "other", label: "other carrier (cricket, metro, boost…)" },
   { key: "unknown", label: "not sure" },
 ];
+// Consoles use the homepage's 4-tier ladder (no "like new" chip).
+const CONDITIONS4: { key: string; label: string }[] = [
+  { key: "sealed", label: "sealed in box" },
+  { key: "good", label: "good — works, normal wear" },
+  { key: "fair", label: "some wear" },
+  { key: "broken", label: "broken / won’t power on" },
+];
+const CONNECTIVITY: { key: string; label: string }[] = [
+  { key: "wifi", label: "wi-fi only" },
+  { key: "cellular", label: "wi-fi + cellular" },
+];
+const DISC_OPTIONS: { key: string; label: string }[] = [
+  { key: "disc", label: "has a disc drive" },
+  { key: "digital", label: "digital edition" },
+];
+// MacBook "anything off with it?" — the two flat deductions the homepage
+// asks about (battery −$80, missing charger −$50), as one chip.
+const MAC_EXTRAS: { key: string; label: string }[] = [
+  { key: "ok", label: "battery fine, charger included" },
+  { key: "batt", label: "battery warning (below 80%)" },
+  { key: "chrg", label: "no charger" },
+  { key: "both", label: "battery warning + no charger" },
+];
+// Picker groups: phones split by brand; iPads, consoles and MacBooks by category.
+type Group = "ip" | "gs" | "ipad" | "console" | "macbook";
+function rowsFor(rows: BoardRow[], group: Group): BoardRow[] {
+  if (group === "ip" || group === "gs") return rows.filter((r) => r.cat === "phone" && r.id.startsWith(group));
+  return rows.filter((r) => r.cat === group);
+}
+// Chip label for a storage/edition key ("" for a console's implicit "base").
+function storageLabel(r: BoardRow, key: string): string {
+  return r.storageLabels?.[key] ?? STORAGE_LABELS[key] ?? (key === "base" ? "" : key);
+}
+function quoteLabel(r: BoardRow, key?: string): string {
+  const s = key ? storageLabel(r, key) : "";
+  return s ? `${r.label} ${s}` : r.label;
+}
 const CHIPS = ["i got a few phones", "how do i get paid", "how does this work"];
 
 // The seller's own avatar — a neutral person glyph on a dark circle, so their
@@ -65,12 +103,18 @@ function SellerAvatar() {
 // Category quick-selects — the FB-funnel pattern: pick what you got, we walk
 // you. iPhone/Samsung run the deterministic model→chips→quote flow; the rest
 // hand the category to the AI brain as a typed opener (it runs the intake).
-const CATEGORIES: { key: string; label: string; img: string; deterministic?: "ip" | "gs" }[] = [
+const CATEGORIES: { key: string; label: string; img: string; deterministic?: Group }[] = [
   { key: "iphone", label: "iPhone", img: "/devices/iphone-16-pro-max.webp", deterministic: "ip" },
   { key: "samsung", label: "Samsung", img: "/devices/gs25u.webp", deterministic: "gs" },
-  { key: "macbook", label: "MacBook", img: "/devices/macbook-pro-m4.webp" },
-  { key: "ipad", label: "iPad", img: "/ipadbase.webp" },
-  { key: "console", label: "Console", img: "/ps5-series.webp" },
+  // MacBooks (M-series) price through the homepage's additive math, ported
+  // server-side 2026-09-11 (app/lib/macbook-quote.ts). Intel/legacy models
+  // stay on the chat path via "older or don't see it".
+  { key: "macbook", label: "MacBook", img: "/devices/macbook-pro-m4.webp", deterministic: "macbook" },
+  // iPads and consoles are price-table devices — same engine as phones, so
+  // they get the chip flow too (2026-09-11; they used to drop into a chat
+  // that asked for a number before showing one — zero contacts that way).
+  { key: "ipad", label: "iPad", img: "/ipadbase.webp", deterministic: "ipad" },
+  { key: "console", label: "Console", img: "/ps5-series.webp", deterministic: "console" },
   { key: "other", label: "Something else", img: "/fold-series.webp" },
 ];
 
@@ -80,13 +124,16 @@ type Msg =
   // in the history sent to /api/chat (the kind filter drops it) — a client
   // hiccup line must not ride into the model as a real bot turn.
   | { from: "bot"; kind: "err"; text: string }
-  | { from: "bot"; kind: "models"; prefix: "ip" | "gs"; done?: boolean }
-  | { from: "bot"; kind: "chips"; q: string; dim: "storage" | "condition" | "carrier" | "another" | "handoff"; options: { key: string; label: string }[]; done?: boolean }
+  // line: once the seller picks a line ("14", "S24") the same message kind
+  // renders that line's variants instead of the line chips.
+  | { from: "bot"; kind: "models"; group: Group; line?: string; done?: boolean }
+  | { from: "bot"; kind: "chips"; q: string; dim: GoStep | "another" | "handoff"; options: { key: string; label: string }[]; done?: boolean }
   // note: an extra line under the number (e.g. the "not sure" carrier caveat)
   | { from: "bot"; kind: "quote"; label: string; offer: number; note?: string; done?: boolean }
   | { from: "bot"; kind: "lockform"; manual: boolean; done?: boolean }
   // until: ISO lock deadline from /api/go/lock — rendered as "holds until <date>"
-  | { from: "bot"; kind: "locked"; offer: number | null; until?: string }
+  // confirmed: sms/email = delivered before the response; pending = still sending; failed = channel refused
+  | { from: "bot"; kind: "locked"; offer: number | null; until?: string; confirmed?: "sms" | "email" | "pending" | "failed" }
   | { from: "bot"; kind: "msgr" };
 
 // FB Page handle for the "keep this chat on Messenger" affordance (m.me deep
@@ -127,6 +174,11 @@ function persistentSessionId(src: string): string {
   return sid;
 }
 
+// A real photo of the owner for the proof row + his chat messages. Gated on
+// NEXT_PUBLIC_OWNER_PHOTO (e.g. "/owner.jpg" once public/owner.jpg exists):
+// nothing renders until a real photo is in — no stock face, no fake human.
+const OWNER_PHOTO = process.env.NEXT_PUBLIC_OWNER_PHOTO || "";
+
 export default function GoClient({ rows, src, reviews, variant = "std" }: { rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot" }) {
   const lot = variant === "lot";
   // Value anchor for the first paint — the page promises "real number in 30
@@ -153,7 +205,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // Guided in-chat funnel (Messenger-style quick selects) — deterministic,
   // engine-priced, zero AI calls. gRow/gSpec track the device being walked.
   const [gRow, setGRow] = useState<BoardRow | null>(null);
-  const [gSpec, setGSpec] = useState<{ storage?: string; condition?: string; carrier?: string }>({});
+  const [gSpec, setGSpec] = useState<{ storage?: string; condition?: string; carrier?: string; connectivity?: string; disc?: string; processor?: string; memory?: string; extras?: string }>({});
   const [gBusy, setGBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -164,6 +216,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // Settable: the restore effect swaps in a server-verified ?sid= session
   // from the owner's SMS deep-link.
   const [sessionId, setSessionId] = useState(() => persistentSessionId(src));
+  // Effects with [] deps (the comeback nudge) read this, not the state, so a
+  // breadcrumb written after an SMS deep-link adoption lands in the adopted
+  // thread instead of the abandoned local one.
+  const sessionIdRef = useRef(sessionId);
+  useEffect(() => { sessionIdRef.current = sessionId; }, [sessionId]);
   const threadRef = useRef<HTMLDivElement>(null);
   // What the seller just locked — the handoff chips POST it to /api/delivery
   // after the lock form (and its contact) is gone.
@@ -289,11 +346,22 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           const row = rows.find((x) => x.id === pq.model);
           if (row && typeof pq.offer === "number") {
             setGRow(row);
-            setGSpec({ storage: String(pq.storage || ""), condition: String(pq.condition || ""), carrier: String(pq.carrier || "") });
+            // QSPEC's 4th field is the category's secondary answer: carrier
+            // for phones, connectivity for iPads, disc for consoles.
+            const sec = String(pq.carrier || "");
+            const [mp, mm, me] = sec.split("+");
+            setGSpec({
+              storage: String(pq.storage || ""),
+              condition: String(pq.condition || ""),
+              ...(row.cat === "phone" ? { carrier: sec }
+                : row.cat === "ipad" ? { connectivity: sec }
+                : row.cat === "macbook" ? { processor: mp || "", memory: mm || "", extras: me || "ok" }
+                : { disc: sec }),
+            });
             setMsgs((cur) => [
               ...cur,
               { from: "bot", text: `welcome back — your number on the ${row.label} is still good. lock it in below and we’ll text it to you.` },
-              { from: "bot", kind: "quote", label: `${row.label} ${STORAGE_LABELS[String(pq.storage)] || ""}`, offer: pq.offer },
+              { from: "bot", kind: "quote", label: quoteLabel(row, String(pq.storage || "")), offer: pq.offer },
               { from: "bot", kind: "lockform", manual: false },
             ]);
           }
@@ -311,7 +379,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     void fetch("/api/go/chat-sync", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ session: sessionId, text }),
+      body: JSON.stringify({ session: sessionIdRef.current, text }),
     }).catch(() => {});
   }
 
@@ -422,6 +490,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       options: [
         { key: "ip", label: "another iPhone" },
         { key: "gs", label: "a Samsung" },
+        { key: "ipad", label: "an iPad" },
+        { key: "macbook", label: "a MacBook" },
+        { key: "console", label: "a console" },
         { key: "other", label: "something else" },
         { key: "no", label: "that’s it for now" },
       ],
@@ -432,6 +503,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (gBusy) return;
     interactedRef.current = true;
     setChatOpen(true);
+    // Funnel breadcrumb: tile taps never touched the server, so the funnel
+    // card couldn't see where sellers stalled between "tapped" and "quoted".
+    logNote(`tapped ${cat.label}`);
     // Sonny is live: the deterministic flow must not quote a second number
     // over his negotiation. Route the tap's intent through send() — it's
     // stored for the console and the bot stays silent.
@@ -443,7 +517,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       pushMsgs(
         { from: "user", text: cat.label },
         { from: "bot", text: "solid — which one is it? older models work too, just type the model." },
-        { from: "bot", kind: "models", prefix: cat.deterministic },
+        { from: "bot", kind: "models", group: cat.deterministic },
       );
     } else {
       // AI runs the intake for everything off the quick path
@@ -455,6 +529,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (gBusy) return;
     interactedRef.current = true;
     setChatOpen(true);
+    logNote(`picked model ${r.label}`);
     if (takeoverRef.current) {
       void send(r.label);
       return;
@@ -464,12 +539,42 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     pixelTrack("ViewContent", { content_name: r.label, content_category: "chat" });
     pushMsgs(
       { from: "user", text: r.label },
-      { from: "bot", text: `good one — up to $${r.upTo} depending on specs. what storage is it?` },
-      { from: "bot", kind: "chips", q: "", dim: "storage", options: r.storages.map((x) => ({ key: x, label: STORAGE_LABELS[x] || x })) },
+      { from: "bot", text: `good one — up to $${r.upTo.toLocaleString("en-US")} depending on specs.` },
+      stepChips(r, r.steps[0]),
     );
   }
 
-  async function chipTap(dim: "storage" | "condition" | "carrier" | "another" | "handoff", key: string, label: string) {
+  // The chip question for one step of a model's flow. Every category walks
+  // the same loop: answer → next step → … → engine quote.
+  function stepChips(r: BoardRow, step: GoStep): Msg {
+    switch (step) {
+      case "storage":
+        return {
+          from: "bot", kind: "chips", dim: "storage",
+          q: r.cat === "console" ? "which edition?" : "what storage is it?",
+          options: r.options?.storage ?? r.storages.map((x) => ({ key: x, label: storageLabel(r, x) || x })),
+        };
+      case "processor":
+        return { from: "bot", kind: "chips", q: "which chip is in it? (apple menu → about this mac)", dim: "processor", options: r.options?.processor ?? [] };
+      case "memory":
+        return { from: "bot", kind: "chips", q: "how much memory?", dim: "memory", options: r.options?.memory ?? [] };
+      case "extras":
+        return { from: "bot", kind: "chips", q: "anything off with it?", dim: "extras", options: MAC_EXTRAS };
+      case "condition":
+        return { from: "bot", kind: "chips", q: "what kind of shape is it in?", dim: "condition", options: r.conditions === 4 ? CONDITIONS4 : CONDITIONS };
+      case "carrier":
+        // Financed/carrier-locked sellers arrive believing they can't sell
+        // (Swappa refuses them) — say the opposite here, at the exact chip
+        // that raises the doubt. Same fact the chat brain already states.
+        return { from: "bot", kind: "chips", q: "locked to a carrier? still making payments is fine too — we buy those.", dim: "carrier", options: CARRIERS };
+      case "connectivity":
+        return { from: "bot", kind: "chips", q: "wi-fi only, or cellular too?", dim: "connectivity", options: CONNECTIVITY };
+      case "disc":
+        return { from: "bot", kind: "chips", q: "disc drive, or digital edition?", dim: "disc", options: DISC_OPTIONS };
+    }
+  }
+
+  async function chipTap(dim: GoStep | "another" | "handoff", key: string, label: string) {
     if (gBusy) return;
     interactedRef.current = true;
     if (takeoverRef.current) {
@@ -488,11 +593,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       }
       setGRow(null);
       setGSpec({});
-      if (key === "ip" || key === "gs") {
+      if (key === "ip" || key === "gs" || key === "ipad" || key === "console" || key === "macbook") {
         pushMsgs(
           { from: "user", text: label },
           { from: "bot", text: "nice — which one is it?" },
-          { from: "bot", kind: "models", prefix: key },
+          { from: "bot", kind: "models", group: key },
         );
       } else {
         pushMsgs({ from: "user", text: label });
@@ -539,26 +644,24 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (!gRow) return;
     const spec = { ...gSpec, [dim]: key };
     setGSpec(spec);
-    if (dim === "storage") {
-      pushMsgs(
-        { from: "user", text: label },
-        { from: "bot", kind: "chips", q: "what kind of shape is it in?", dim: "condition", options: CONDITIONS },
-      );
+    // Walk the model's own step list; the last answer triggers the quote.
+    const idx = gRow.steps.indexOf(dim as GoStep);
+    let next = idx >= 0 ? gRow.steps[idx + 1] : undefined;
+    // A sealed MacBook has no battery/charger question (the homepage skips
+    // it too) — answer it "ok" and move on.
+    if (next === "extras" && spec.condition === "sealed") {
+      spec.extras = "ok";
+      setGSpec(spec);
+      next = gRow.steps[idx + 2];
+    }
+    if (next) {
+      pushMsgs({ from: "user", text: label }, stepChips(gRow, next));
       return;
     }
-    if (dim === "condition") {
-      pushMsgs(
-        { from: "user", text: label },
-        // Financed/carrier-locked sellers arrive believing they can't sell
-        // (Swappa refuses them) — say the opposite here, at the exact chip
-        // that raises the doubt. Same fact the chat brain already states.
-        { from: "bot", kind: "chips", q: "locked to a carrier? still making payments is fine too — we buy those.", dim: "carrier", options: CARRIERS },
-      );
-      return;
-    }
-    // carrier answered → quote once with the full spec
+    // last step answered → quote once with the full spec
     setGBusy(true);
     pushMsgs({ from: "user", text: label });
+    const storageKey = spec.storage ?? gRow.storages[0] ?? gRow.bestStorage;
     try {
       const res = await fetch("/api/go/quote", {
         method: "POST",
@@ -567,7 +670,17 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         // breadcrumbs SERVER-SIDE with the engine result in hand (they feed
         // the chat brain's funnel context + restore-time rehydration, so
         // they must not be client-authored).
-        body: JSON.stringify({ model: gRow.id, storage: spec.storage, condition: spec.condition, carrier: key, sessionId }),
+        body: JSON.stringify({
+          model: gRow.id,
+          storage: storageKey,
+          condition: spec.condition,
+          carrier: spec.carrier,
+          opt: spec.connectivity ?? spec.disc,
+          processor: spec.processor,
+          memory: spec.memory,
+          extras: spec.extras,
+          sessionId,
+        }),
       });
       const d = await res.json();
       if (d?.ok && typeof d.offer === "number") {
@@ -580,22 +693,26 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           {
             from: "bot",
             kind: "quote",
-            label: `${gRow.label} ${STORAGE_LABELS[spec.storage || ""] || ""}`,
+            label: quoteLabel(gRow, storageKey),
             offer: d.offer,
-            ...(key === "unknown"
-              ? { note: "priced as carrier-locked since you’re not sure — it only goes up at inspection if it turns out unlocked." }
+            ...(dim === "carrier" && key === "unknown"
+              ? { note: "priced as carrier-locked. unlocked, at&t or t-mobile: this holds or goes up at inspection. prepaid carriers (cricket, metro, boost) come in lower. tip: settings → general → about → carrier lock." }
               : {}),
           },
           { from: "bot", kind: "lockform", manual: false },
         );
-      } else {
+      } else if (d?.manualReview) {
         pushMsgs(
           { from: "bot", text: "this one we price by hand — drop your number and we\u2019ll text you a real offer." },
           { from: "bot", kind: "lockform", manual: true },
         );
+      } else {
+        // A 429 / 5xx / engine hiccup is NOT "we price this one by hand" —
+        // re-ask the last step so the instant close stays reachable.
+        pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap that again for me." }, stepChips(gRow, dim as GoStep));
       }
     } catch {
-      pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap the carrier again for me." });
+      pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap that again for me." }, stepChips(gRow, dim as GoStep));
     }
     setGBusy(false);
   }
@@ -626,9 +743,15 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: gRow.id,
-          storage: gSpec.storage ?? gRow.bestStorage,
+          storage: gSpec.storage ?? gRow.storages[0] ?? gRow.bestStorage,
           condition: gSpec.condition ?? "good",
-          carrier: gSpec.carrier ?? "unlocked",
+          carrier: gSpec.carrier ?? (gRow.cat === "phone" ? "unlocked" : undefined),
+          // `opt` only for the categories that have one — a phone body with
+          // opt:"na" was rejected as "bad spec" (review 2026-09-11).
+          opt: gRow.cat === "ipad" ? (gSpec.connectivity ?? "wifi") : gRow.cat === "console" ? (gSpec.disc ?? "na") : undefined,
+          processor: gSpec.processor,
+          memory: gSpec.memory,
+          extras: gSpec.extras ?? "ok",
           name: "",
           contact: c,
           attest: true,
@@ -644,14 +767,20 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       setGBusy(false);
       if (d?.ok) {
         const offer: number | null = typeof d.offer === "number" ? d.offer : null;
-        lastLockRef.current = { model: `${gRow.label} ${STORAGE_LABELS[gSpec.storage || ""] || ""}`.trim(), contact: c, offer };
+        lastLockRef.current = { model: quoteLabel(gRow, gSpec.storage ?? gRow.storages[0]), contact: c, offer };
         pixelTrack("Lead", { content_name: gRow.label, value: offer ?? 0, currency: "USD" }, lockEventId);
         // (the LOCKED breadcrumb + the confirmation text are server-side)
         // Peak trust: they just saw a real number and handed over a way to
         // reach them. Ask how they want to get paid HERE, then the second
         // device (anotherChips, after the handoff choice).
         pushMsgs(
-          { from: "bot", kind: "locked", offer: offer != null && !manualFlavor ? offer : null, until: typeof d.lockUntil === "string" ? d.lockUntil : undefined },
+          {
+            from: "bot",
+            kind: "locked",
+            offer: offer != null && !manualFlavor ? offer : null,
+            until: typeof d.lockUntil === "string" ? d.lockUntil : undefined,
+            confirmed: d.confirmed === "sms" || d.confirmed === "email" || d.confirmed === "failed" ? d.confirmed : "pending",
+          },
           {
             from: "bot",
             kind: "chips",
@@ -670,7 +799,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         const live: number = d.offer;
         logNote(`price moved at lock: $${quotedOffer ?? "?"} → $${live}`);
         setMsgs((cur) => cur.map((m) => ("kind" in m && m.kind === "quote" && !m.done ? { ...m, offer: live } : m)));
-        return `the live number is $${live} — tap again to lock that`;
+        return `the live number is $${live.toLocaleString("en-US")} — tap again to lock that`;
       }
       return d?.error || "that didn\u2019t go through — try again";
     } catch {
@@ -956,7 +1085,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   ? "tap to keep the conversation going"
                   : lot
                     ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too."
-                    : "tap what you got — real number in 30 seconds. cracked or still on payments, we still buy it."}
+                    : "cracked, financed or carrier-locked — we still buy it. pick yours and your number’s on the next screen."}
               </div>
             </div>
           </div>
@@ -980,11 +1109,53 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </div>
       </section>
 
-      {/* trust line */}
-      <p className="text-[13px] text-white/60 mt-3">
-        the number we quote is the number we pay if it matches what you told us · same-day cash in the austin area · free shipping label anywhere ·{" "}
-        <a href="/reviews" className="underline text-white/60">reviews from paid sellers</a>
-      </p>
+      {/* proof row — the cold click's "is this legit?" answered right under
+          the tiles: a real rating from paid sellers (tap to read a few), how
+          you get paid, and where. The old trust sentence about the quote
+          being what we pay now lives in "how this works" step 1. */}
+      <div className="mt-3 flex flex-col gap-1.5 text-[13px] text-white/70">
+        {reviews.count >= 5 && reviews.top.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setShowReviews((v) => !v)}
+            aria-expanded={showReviews}
+            className="text-left text-[14px] text-white/85 py-0.5"
+          >
+            <span className="text-[#00c853] font-semibold">{reviews.avg}★</span> from {reviews.count} sellers we&rsquo;ve paid{showReviews ? "" : " — read a few →"}
+          </button>
+        )}
+        <p>paid in <span className="text-white/90">cash, Zelle or Cash App</span> · same-day in the austin area · free shipping label anywhere</p>
+        {OWNER_PHOTO && (
+          <p className="flex items-center gap-2 mt-0.5">
+            <img src={OWNER_PHOTO} alt="Sonny, Top Cash Cellular" width={28} height={28} className="w-[28px] h-[28px] rounded-full object-cover border border-[#00c853]/60 shrink-0" />
+            <span>sonny · austin, tx — the person who texts you back and pays you</span>
+          </p>
+        )}
+      </div>
+
+      {/* real verified reviews — collapsed to one line above; the cards only
+          render if the visitor asks for them (Sonny 2026-08-19: "don't force
+          the review on people, just have it there if they want") */}
+      {showReviews && reviews.count >= 5 && reviews.top.length > 0 && (
+        <section className="mt-3" aria-label="reviews from verified sellers">
+          <div className="flex flex-col gap-2">
+            {reviews.top.map((r, i) => (
+              <figure key={i} className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
+                <blockquote className="text-[14px] text-white/85">&ldquo;{r.body}&rdquo;</blockquote>
+                <figcaption className="text-[13px] text-white/55 mt-1">
+                  {r.name}
+                  {r.device ? ` · sold a ${r.device}` : ""}
+                  {r.city ? ` · ${r.city}` : ""}
+                  <span className="text-[#00c853]"> · ✓ verified seller</span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <p className="text-[13px] mt-2">
+            <a href="/reviews" className="text-white/60 underline">all {reviews.count} reviews →</a>
+          </p>
+        </section>
+      )}
 
       {/* how it works — offer → meetup → cash, three beats
           (Sonny 2026-08-19: "way too much text — it should be offer meetup cash") */}
@@ -993,7 +1164,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         <ol className="mt-3 flex flex-col gap-2 text-[14px] text-white/75">
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">1</span>
-            <span><b className="text-white font-semibold">offer</b> — tap what you got, get your number. locked 14 days.</span>
+            <span><b className="text-white font-semibold">offer</b> — tap what you got, get your number. locked 14 days, and if the phone matches what you told us, that&rsquo;s what we pay.</span>
           </li>
           <li className="flex gap-3">
             <span className="text-[#00c853] font-bold shrink-0">2</span>
@@ -1007,44 +1178,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           </li>
         </ol>
       </section>
-
-      {/* real verified reviews — collapsed to one line; the cards only
-          render if the visitor asks for them (Sonny 2026-08-19: "don't
-          force the review on people, just have it there if they want") */}
-      {reviews.count >= 5 && reviews.top.length > 0 && (
-        <section className="mt-6" aria-label="reviews from verified sellers">
-          {!showReviews ? (
-            <button
-              type="button"
-              onClick={() => setShowReviews(true)}
-              aria-expanded={false}
-              className="text-[14px] text-white/65 py-2"
-            >
-              <span className="text-[#00c853] font-semibold">{reviews.avg}★</span> from {reviews.count} people we&rsquo;ve paid — see what they say →
-            </button>
-          ) : (
-            <div>
-              <h2 className="text-[17px] font-bold">{reviews.avg}★ from people we&rsquo;ve paid</h2>
-              <div className="mt-3 flex flex-col gap-2">
-                {reviews.top.map((r, i) => (
-                  <figure key={i} className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3">
-                    <blockquote className="text-[14px] text-white/85">&ldquo;{r.body}&rdquo;</blockquote>
-                    <figcaption className="text-[13px] text-white/55 mt-1">
-                      {r.name}
-                      {r.device ? ` · sold a ${r.device}` : ""}
-                      {r.city ? ` · ${r.city}` : ""}
-                      <span className="text-[#00c853]"> · ✓ verified seller</span>
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-              <p className="text-[13px] mt-2">
-                <a href="/reviews" className="text-white/60 underline">all {reviews.count} reviews →</a>
-              </p>
-            </div>
-          )}
-        </section>
-      )}
 
 
 
@@ -1125,7 +1258,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                   // the seller must always know when a human took over.
                   return (
                     <div key={i} className="go-msg flex items-end gap-2">
-                      <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
+                      <img src={OWNER_PHOTO || "/icon-192.png"} alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
                       <div className="max-w-[85%]">
                         <div className="text-[12px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
                         <div className={`rounded-2xl rounded-bl-md ${pad} text-[15px] bg-[#0f2417] border border-[#00c853]/50`}>
@@ -1165,8 +1298,18 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               if (m.kind === "models") {
                 return (
                   <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <DeviceCarousel
-                      rows={rows.filter((r) => r.id.startsWith(m.prefix))}
+                    <ModelPicker
+                      rows={rowsFor(rows, m.group)}
+                      line={m.line}
+                      onLine={(key, label) => {
+                        if (gBusy) return;
+                        interactedRef.current = true;
+                        logNote(`picked line ${label}`);
+                        pushMsgs(
+                          { from: "user", text: label },
+                          { from: "bot", kind: "models", group: m.group, line: key },
+                        );
+                      }}
                       onPick={deviceTap}
                       onOther={() => {
                         pushMsgs(
@@ -1202,7 +1345,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
                       <div className="text-[14px] text-white/60">{m.label}</div>
-                      <div className="text-[32px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer}</div>
+                      <div className="text-[32px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer.toLocaleString("en-US")}</div>
                       {m.note && <div className="text-[13px] text-[#00c853]/90 mt-1">{m.note}</div>}
                       <div className="text-[13px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
                     </div>
@@ -1242,12 +1385,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                     <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                     <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/40">
                       <div className="text-[16px] font-semibold text-[#00c853]">
-                        locked in{m.offer != null ? ` — $${m.offer}` : ""}.
+                        locked in{m.offer != null ? ` — $${m.offer.toLocaleString("en-US")}` : ""}.
                         {m.until && (
-                          <span className="text-white/60 font-normal"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric" })}.</span>
+                          <span className="text-white/60 font-normal"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}.</span>
                         )}
                       </div>
-                      <div className="text-[14px] text-white/70 mt-1">we just sent you the details. {isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                      <div className="text-[14px] text-white/70 mt-1">{m.confirmed === "sms" ? "we just texted you the details. " : m.confirmed === "email" ? "we just emailed you the details. " : m.confirmed === "pending" ? "we\u2019ll text you the details shortly. " : ""}{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
                     </div>
                   </div>
                 );
@@ -1383,40 +1526,77 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   );
 }
 
-function DeviceCarousel({ rows, onPick, onOther, busy }: { rows: BoardRow[]; onPick: (r: BoardRow) => void; onOther?: () => void; busy: boolean }) {
+// Which line a board row belongs to — the server names it ("iPhone 14",
+// "Galaxy S24", "iPad Pro", "PlayStation"), so the picker needs no parsing.
+function lineOf(r: BoardRow): { key: string; label: string } {
+  return { key: r.line, label: r.line };
+}
+
+// Two-stage model picker: line chips ("iPhone 14"), then that line's variants
+// as a grid with pictures and ceilings. Replaces the 28-card horizontal
+// carousel — a 13 seller swiped past ten cards, and the lazy images showed
+// as grey boxes on LTE. Any model is now two taps, no swiping, and the few
+// variant images load eagerly because there are only ever 2-6 of them.
+function ModelPicker({ rows, line, onLine, onPick, onOther, busy }: {
+  rows: BoardRow[];
+  line?: string;
+  onLine: (key: string, label: string) => void;
+  onPick: (r: BoardRow) => void;
+  onOther: () => void;
+  busy: boolean;
+}) {
+  const lines: { key: string; label: string }[] = [];
+  for (const r of rows) {
+    const l = lineOf(r);
+    if (!lines.some((x) => x.key === l.key)) lines.push(l);
+  }
+  const variants = line ? rows.filter((r) => lineOf(r).key === line) : [];
+  const chip = "text-[14px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform disabled:opacity-50";
+  if (!line) {
+    return (
+      <div>
+        <div className="text-[14px] text-white/60 mb-2">which one?</div>
+        <div className="flex flex-wrap gap-2">
+          {lines.map((l) => (
+            <button key={l.key} type="button" disabled={busy} onClick={() => onLine(l.key, l.label)} className={chip}>
+              {l.label}
+            </button>
+          ))}
+          <button type="button" disabled={busy} onClick={onOther} className={chip + " text-white/60"}>
+            older or don&rsquo;t see it
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
-      {rows.map((r) => (
+    <div className="grid grid-cols-2 gap-2">
+      {variants.map((r) => (
         <button
           key={r.id}
           type="button"
           disabled={busy}
           onClick={() => onPick(r)}
-          className="shrink-0 w-[118px] rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform"
+          className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform disabled:opacity-50"
         >
           <div className="rounded-xl bg-white p-1.5 flex items-center justify-center" style={{ height: 86 }}>
-            {/* lazy + async: the carousel renders ~28 cards for a line but
-                shows 3 — eager loading fired ~1.5MB the instant a seller
-                tapped iPhone, stalling the cards they can actually see on
-                LTE inside the Facebook in-app browser. */}
-            <img src={r.img} alt="" loading="lazy" decoding="async" width={96} height={96} className="max-h-full max-w-full object-contain" style={{ borderRadius: 8 }} />
+            <img src={r.img} alt="" decoding="async" width={96} height={96} className="max-h-full max-w-full object-contain" style={{ borderRadius: 8 }} />
           </div>
           <div className="text-[13px] font-semibold mt-1.5 leading-tight text-white">{r.label}</div>
+          <div className="text-[12px] text-[#00c853] mt-0.5" style={{ fontVariantNumeric: "tabular-nums" }}>up to ${r.upTo.toLocaleString("en-US")}</div>
         </button>
       ))}
-      {onOther && (
-        <button
-          type="button"
-          disabled={busy}
-          onClick={onOther}
-          className="shrink-0 w-[118px] rounded-2xl border border-[#00c853]/35 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform"
-        >
-          <div className="rounded-xl border border-dashed border-white/25 flex items-center justify-center" style={{ height: 86 }}>
-            <span className="text-[27px] font-bold text-[#00c853]">?</span>
-          </div>
-          <div className="text-[13px] font-semibold mt-1.5 leading-tight text-white">don&rsquo;t see yours? tell us</div>
-        </button>
-      )}
+      <button
+        type="button"
+        disabled={busy}
+        onClick={onOther}
+        className="rounded-2xl border border-[#00c853]/35 bg-white/[0.06] p-2 text-left active:scale-95 transition-transform disabled:opacity-50"
+      >
+        <div className="rounded-xl border border-dashed border-white/25 flex items-center justify-center" style={{ height: 86 }}>
+          <span className="text-[27px] font-bold text-[#00c853]">?</span>
+        </div>
+        <div className="text-[13px] font-semibold mt-1.5 leading-tight text-white">don&rsquo;t see yours? tell us</div>
+      </button>
     </div>
   );
 }
@@ -1444,7 +1624,6 @@ function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boo
         value={c}
         onChange={(e) => setC(e.target.value)}
         autoComplete="tel"
-        inputMode="tel"
         enterKeyHint="done"
         disabled={disabled}
         aria-label="your phone number or email"

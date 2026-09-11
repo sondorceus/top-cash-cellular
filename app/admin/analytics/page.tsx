@@ -84,7 +84,7 @@ export default function AnalyticsPage() {
 
   // /go ad funnel — read from the chat store, per ad tag. Separate fetch
   // (a bounded blob walk) so a slow store never delays the lead numbers.
-  type GoRow = { sessions: number; quoted: number; contact: number; locked: number; handoff: number; nudged: number; owner: number; value: number };
+  type GoRow = { sessions: number; tapped: number; picked: number; quoted: number; contact: number; locked: number; handoff: number; nudged: number; owner: number; value: number };
   type GoFunnel = {
     days: number;
     totals: GoRow & { quotedNoContact: number; quotedNoContactValue: number; lockRate: number };
@@ -233,9 +233,10 @@ export default function AnalyticsPage() {
           {!go && !goError && <p className="text-[#666] text-sm">Loading…</p>}
           {go && (
             <>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4">
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-2 mb-4">
                 {([
                   ["sessions", go.totals.sessions, "engaged the page"],
+                  ["picked a model", go.totals.picked, "got past the picker"],
                   ["quoted", go.totals.quoted, "saw a real number"],
                   ["contact", go.totals.contact, "left a phone/email"],
                   ["locked", go.totals.locked, `${go.totals.lockRate}% of quoted · $${go.totals.value.toLocaleString()}`],
@@ -258,14 +259,14 @@ export default function AnalyticsPage() {
                 <table className="w-full text-[12px]">
                   <thead>
                     <tr className="text-[#888] text-left">
-                      <th className="py-1 pr-3">src</th><th className="py-1 pr-3">sessions</th><th className="py-1 pr-3">quoted</th><th className="py-1 pr-3">contact</th><th className="py-1 pr-3">locked</th><th className="py-1 pr-3">meet/ship</th><th className="py-1">locked $</th>
+                      <th className="py-1 pr-3">src</th><th className="py-1 pr-3">sessions</th><th className="py-1 pr-3">picked</th><th className="py-1 pr-3">quoted</th><th className="py-1 pr-3">contact</th><th className="py-1 pr-3">locked</th><th className="py-1 pr-3">meet/ship</th><th className="py-1">locked $</th>
                     </tr>
                   </thead>
                   <tbody>
                     {Object.entries(go.bySrc).sort((a, b) => b[1].sessions - a[1].sessions).map(([src, r]) => (
                       <tr key={src} className="border-t border-white/5">
                         <td className="py-1 pr-3 font-mono text-white">{src}</td>
-                        <td className="py-1 pr-3">{r.sessions}</td><td className="py-1 pr-3">{r.quoted}</td><td className="py-1 pr-3">{r.contact}</td>
+                        <td className="py-1 pr-3">{r.sessions}</td><td className="py-1 pr-3">{r.picked}</td><td className="py-1 pr-3">{r.quoted}</td><td className="py-1 pr-3">{r.contact}</td>
                         <td className="py-1 pr-3 font-bold text-[#00c853]">{r.locked}</td><td className="py-1 pr-3">{r.handoff}</td><td className="py-1">${r.value.toLocaleString()}</td>
                       </tr>
                     ))}

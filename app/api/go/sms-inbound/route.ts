@@ -20,6 +20,7 @@
 // Auth: x-relay-token vs SMS_RELAY_TOKEN — the SAME shared secret that guards
 // the outbound relay, already set on both Vercel projects. Unset = fail closed.
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { appendChatMsg, findSessionByPhone, readChat } from "../../../lib/gochat-store";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
@@ -36,7 +37,7 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const DUPE_WINDOW_MS = 5 * 60_000;
 
 const MEET_RE = /^\s*(meet|meetup|local|austin)\b/i;
-const SHIP_RE = /^\s*(ship|label|mail)\b/i;
+const SHIP_RE = /^\s*(ship|shipping|label|mail)\b/i;
 
 function clean(s: string, max = 200): string {
   return s.replace(/[\[\]\n\r\t]/g, " ").slice(0, max).trim();
@@ -114,6 +115,13 @@ export async function POST(req: NextRequest) {
     // route wrote: LOCKED: <spec> $<offer> — <contact>, plus CONTACT:.
     const state = await readChat(sid, 0);
     const notes = state.msgs.filter((m) => m.role === "note").map((m) => m.text);
+    // One choice per thread. A later "meet at 5 at the HEB?" in a live
+    // negotiation must not re-post a delivery option, re-alert Sonny, or
+    // auto-text over him.
+    if (notes.some((t) => t.startsWith("HANDOFF-CHOICE:"))) {
+      return NextResponse.json({ ok: true, matched: true, sid, handoff: "already-chosen" });
+    }
+    const ownerActive = state.lastOwnerTs > 0 && Date.now() - state.lastOwnerTs < 24 * 3600_000;
     const locked = [...notes].reverse().find((t) => t.startsWith("LOCKED: ")) || "";
     const specAndOffer = locked.slice("LOCKED: ".length).split(" — ")[0] || "";
     const offer = specAndOffer.match(/\$(\d+)/)?.[1] || "";
@@ -132,10 +140,12 @@ export async function POST(req: NextRequest) {
     ].filter(Boolean) as string[];
     const posted = await postMc(lines.join("\n"), ["lead", "delivery", method, `sess-${sid}`], "urgent");
     await appendChatMsg(sid, "note", `HANDOFF-CHOICE: ${meet ? "local meetup" : "ship (free label)"} — replied by text${posted ? "" : " (MC POST FAILED)"}`);
-    void notifyOwnerSms(
+    after(() => notifyOwnerSms(
       `${meet ? "📍" : "📦"} GO seller chose ${meet ? "MEETUP" : "SHIP"} — ${device}${offer ? ` $${offer}` : ""} · ${from}\nhttps://topcashcellular.com/admin/chats?session=${sid}`,
-    );
-    if (!notesHaveOptOut(notes)) {
+    ));
+    // The ack is the bot's — never sent into a thread Sonny is actively
+    // texting in (he answers himself), never to an opted-out number.
+    if (!notesHaveOptOut(notes) && !ownerActive) {
       const ack = meet
         ? "Top Cash Cellular: got it — we'll text you shortly to set up a time and a public spot in the Austin area."
         : "Top Cash Cellular: got it — we'll text you shortly for the address your free FedEx label should go to.";

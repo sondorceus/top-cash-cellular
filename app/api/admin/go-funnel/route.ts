@@ -39,6 +39,8 @@ type Session = {
   bot: number;
   owner: number;
   notes: string[]; // note blob urls, newest first
+  tapped: boolean; // tapped a category tile
+  picked: boolean; // picked a model in the guided flow
   quoted: boolean;
   contact: boolean;
   locked: boolean;
@@ -90,7 +92,7 @@ export async function GET(req: NextRequest) {
         const ts = Number(tsRaw);
         const s = by.get(sid) || {
           sid, src: srcOf(sid), first: ts, last: ts, user: 0, bot: 0, owner: 0, notes: [],
-          quoted: false, contact: false, locked: false, handoff: false, nudged: false, optedOut: false, manual: false, offer: null, device: "",
+          tapped: false, picked: false, quoted: false, contact: false, locked: false, handoff: false, nudged: false, optedOut: false, manual: false, offer: null, device: "",
         };
         s.first = Math.min(s.first, ts);
         s.last = Math.max(s.last, ts);
@@ -140,15 +142,19 @@ export async function GET(req: NextRequest) {
       else if (t.startsWith("HANDOFF")) { if (!s.device) s.device = t.slice(0, 60); }
       else if (/nudged/.test(t)) s.nudged = true;
       else if (t.startsWith("SMS-STOP")) s.optedOut = true;
+      else if (t.startsWith("tapped ")) s.tapped = true;
+      else if (t.startsWith("picked model")) s.picked = true;
     }
     s.notes = []; // don't ship urls to the client
   }
 
   // 3. Roll up.
-  type Row = { sessions: number; quoted: number; contact: number; locked: number; handoff: number; nudged: number; owner: number; value: number };
-  const blank = (): Row => ({ sessions: 0, quoted: 0, contact: 0, locked: 0, handoff: 0, nudged: 0, owner: 0, value: 0 });
+  type Row = { sessions: number; tapped: number; picked: number; quoted: number; contact: number; locked: number; handoff: number; nudged: number; owner: number; value: number };
+  const blank = (): Row => ({ sessions: 0, tapped: 0, picked: 0, quoted: 0, contact: 0, locked: 0, handoff: 0, nudged: 0, owner: 0, value: 0 });
   const add = (r: Row, s: Session) => {
     r.sessions++;
+    if (s.tapped) r.tapped++;
+    if (s.picked || s.quoted) r.picked++; // a quote implies a pick (older sessions predate the breadcrumb)
     if (s.quoted) r.quoted++;
     if (s.contact) r.contact++;
     if (s.locked) { r.locked++; r.value += s.offer || 0; }
@@ -176,7 +182,7 @@ export async function GET(req: NextRequest) {
     byDay: Object.entries(byDay).sort(([a], [b]) => (a < b ? 1 : -1)).map(([day, r]) => ({ day, ...r })),
     sessions: sessions.slice(0, 100).map((s) => ({
       sid: s.sid, src: s.src, first: new Date(s.first).toISOString(), last: new Date(s.last).toISOString(),
-      user: s.user, owner: s.owner, quoted: s.quoted, contact: s.contact, locked: s.locked, manual: s.manual,
+      user: s.user, owner: s.owner, tapped: s.tapped, picked: s.picked, quoted: s.quoted, contact: s.contact, locked: s.locked, manual: s.manual,
       handoff: s.handoff, nudged: s.nudged, optedOut: s.optedOut, offer: s.offer, device: s.device,
     })),
     truncated: budget <= 0,

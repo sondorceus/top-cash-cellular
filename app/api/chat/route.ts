@@ -3,7 +3,7 @@ import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
 import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk } from "../../lib/sell-tools";
-import { appendChatMsg, readChat, takeoverStale, validSession } from "../../lib/gochat-store";
+import { appendChatMsg, readChat, takeoverStale, validSession, rememberPhoneSession } from "../../lib/gochat-store";
 import { sendCapiLead } from "../../lib/meta-capi";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -233,7 +233,9 @@ export async function POST(req: NextRequest) {
   const storeNotes = (live?.msgs || []).filter((m) => m.role === "note").map((m) => m.text);
   const storeContactNote = storeNotes.some((t) => t.startsWith("CONTACT: "));
   const funnelNotes = storeNotes
-    .filter((t) => /^(quote shown:|LOCKED:|seller left)/.test(t))
+    // Server-authored notes only. "seller left…" is written by the client
+    // (chat-sync POST) — a forged one could put words in the model's mouth.
+    .filter((t) => /^(quote shown:|LOCKED:)/.test(t))
     .slice(-6);
 
   // Read contact + a rough device summary from the WHOLE conversation, not
@@ -272,6 +274,7 @@ export async function POST(req: NextRequest) {
   // AWAITED (not after()): the very next turn's dedup reads this note.
   if (contactJustArrived && contact && validSession(sessionId)) {
     await appendChatMsg(sessionId, "note", `CONTACT: ${contact}`);
+    void rememberPhoneSession(contact, sessionId);
   }
   // A DIFFERENT number typed later must still update the note (the console's
   // "text seller" and the SMS deep-link read the newest one) — without the
@@ -281,7 +284,7 @@ export async function POST(req: NextRequest) {
     const storeContactVal = [...storeNotes].reverse().find((t) => t.startsWith("CONTACT: "))?.slice("CONTACT: ".length).trim() || "";
     if (nowContact && storeContactVal && nowContact.toLowerCase() !== storeContactVal.toLowerCase()
       && nowContact.replace(/\D/g, "") !== storeContactVal.replace(/\D/g, "")) {
-      after(() => { void appendChatMsg(sessionId, "note", `CONTACT: ${nowContact}`); });
+      after(() => { void appendChatMsg(sessionId, "note", `CONTACT: ${nowContact}`); void rememberPhoneSession(nowContact, sessionId); });
     }
   }
   // Server-side twin of the client's chat-lead pixel (same chatlead-<sid>

@@ -194,8 +194,9 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
     };
   }
   if (lead.isGo) {
-    // /go seller: no handoff was ever asked on the page. The reminder IS the
-    // handoff ask — MEET/SHIP by text, or the thread itself.
+    // /go seller who hasn't picked meet/ship yet (the chips after the lock
+    // and the MEET/SHIP text reply both land in handoffBySession above, and
+    // take the local/ship branches). The reminder IS the handoff ask.
     const link = goLink(lead.session);
     const until = lead.lockUntil ? ` until ${dateLabel(lead.lockUntil)}` : "";
     return {
@@ -245,7 +246,7 @@ function templateChat(device: string, session: string) {
   const link = goLink(session);
   const dev = device || "your device";
   return {
-    smsBody: `Top Cash: still want to sell the ${dev}? your number holds 14 days — pick it back up here and we'll get you paid: ${link} Reply STOP to opt out.`,
+    smsBody: `Top Cash: still want to sell the ${dev}? any number we gave you holds 14 days — pick it back up here and we'll get you paid: ${link} Reply STOP to opt out.`,
     emailSubject: `Still want to sell your ${dev}?`,
     emailHtml: wrapEmail({
       title: `Still want to sell your ${dev}?`,
@@ -322,8 +323,17 @@ export async function GET(req: NextRequest) {
   // Contacts that DID lock (any [NEW BUYBACK LEAD] in the window) — a chat
   // lead whose number later locked needs no "still want to sell" nudge.
   const lockedContacts = new Set<string>();
+  // /go sellers who already picked meet/ship (chips or a MEET/SHIP text) —
+  // the [DELIVERY OPTION] comm carries their Session: line. Their reminder
+  // uses the local/ship template, never "reply MEET or SHIP" again.
+  const handoffBySession = new Map<string, "ship" | "local">();
   for (const m of messages) {
     if (!m.body) continue;
+    const dm = m.body.match(/^\[DELIVERY OPTION\]\s*(LOCAL|SHIPPING)/i);
+    if (dm) {
+      const sess = parseField(m.body, "Session");
+      if (sess) handoffBySession.set(sess, /^local$/i.test(dm[1]) ? "local" : "ship");
+    }
     const sm = m.body.match(/\[STATUS:\s*(\w+)\]/i);
     const lm = m.body.match(/\[LEAD:\s*([\w-]+)\]/i);
     if (sm && lm) {
@@ -399,6 +409,7 @@ export async function GET(req: NextRequest) {
         ? "local"
         : undefined;
     const source = parseField(m.body, "Source") || "";
+    const session = parseField(m.body, "Session");
     const lead: LeadShape = {
       id: m.id,
       body: m.body,
@@ -409,8 +420,8 @@ export async function GET(req: NextRequest) {
       device: deviceLine.split(" — ")[0],
       model: deviceLine.split(" — ")[1],
       quote: parseField(m.body, "Quote"),
-      handoffMethod,
-      session: parseField(m.body, "Session"),
+      handoffMethod: handoffMethod ?? (session ? handoffBySession.get(session) : undefined),
+      session,
       lockUntil: parseField(m.body, "Lock-Until"),
       isGo: /source=go\b/i.test(source),
     };
@@ -447,6 +458,20 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // /go leads Sonny is already texting with (an owner message in the thread)
+  // get no automated nudge from the same number. Bounded blob reads.
+  const ownerWorked = new Set<string>();
+  {
+    const goSessions = [...new Set([...quoteCandidates, ...expiryCandidates].filter((l) => l.isGo && l.session).map((l) => l.session as string))].slice(0, MAX_CHAT_CHECKS);
+    for (const sid of goSessions) {
+      if (!validGoSession(sid)) continue;
+      const state = await readChat(sid, 0);
+      if (state.lastOwnerTs > 0) ownerWorked.add(sid);
+    }
+  }
+  const quoteReady = quoteCandidates.filter((l) => !(l.session && ownerWorked.has(l.session)));
+  const expiryReady = expiryCandidates.filter((l) => !(l.session && ownerWorked.has(l.session)));
+
   // Chat candidates: skip threads Sonny already worked (an owner message),
   // threads that locked after the chat lead posted, and threads where the
   // seller already picked a handoff by text. Bounded per run.
@@ -463,8 +488,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       ok: true,
       dryRun: true,
-      quote: quoteCandidates.map((l) => ({ id: l.id, go: !!l.isGo, channel: l.phone ? "sms" : "email", session: l.session || null })),
-      expiry: expiryCandidates.map((l) => ({ id: l.id, lockUntil: l.lockUntil, channel: l.phone ? "sms" : "email" })),
+      quote: quoteReady.map((l) => ({ id: l.id, go: !!l.isGo, channel: l.phone ? "sms" : "email", session: l.session || null, handoff: l.handoffMethod || null })),
+      expiry: expiryReady.map((l) => ({ id: l.id, lockUntil: l.lockUntil, channel: l.phone ? "sms" : "email" })),
+      skippedOwnerWorked: ownerWorked.size,
       chat: chatReady.map((c) => ({ id: c.id, session: c.session, device: c.device, channel: c.contact.includes("@") ? "email" : "sms" })),
       review: reviewCandidates.map((r) => ({ id: r.lead.id })),
       skippedChatChecks: Math.max(0, chatCandidates.length - MAX_CHAT_CHECKS),
@@ -478,7 +504,7 @@ export async function GET(req: NextRequest) {
   const errors: string[] = [];
 
   // Fire quote reminders.
-  for (const lead of quoteCandidates) {
+  for (const lead of quoteReady) {
     try {
       const handoffKind: "ship" | "local" | "none" = lead.handoffMethod || "none";
       const tmpl = templateQuoteReminder(lead, handoffKind);
@@ -501,7 +527,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Fire expiry notes.
-  for (const lead of expiryCandidates) {
+  for (const lead of expiryReady) {
     try {
       const tmpl = templateExpiry(lead);
       const tasks: Promise<boolean>[] = [];
@@ -593,10 +619,11 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json({
     ok: true,
-    quoteCandidates: quoteCandidates.length,
+    quoteCandidates: quoteReady.length,
     quoteSent,
-    expiryCandidates: expiryCandidates.length,
+    expiryCandidates: expiryReady.length,
     expirySent,
+    skippedOwnerWorked: ownerWorked.size,
     chatCandidates: chatReady.length,
     chatSent,
     reviewCandidates: reviewCandidates.length,

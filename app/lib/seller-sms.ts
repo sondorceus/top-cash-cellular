@@ -15,9 +15,12 @@ import { phoneKey } from "./gochat-store";
 
 const RELAY_URL = "https://itsofficialnotarys.com/api/sms/relay";
 
-/** +1XXXXXXXXXX for a US number in any common shape, else null. */
+/** +1XXXXXXXXXX for a US number in any common shape, else null. Accepts a
+ *  contact field that merely CONTAINS a number ("call me at 512-555-1212
+ *  after 5") — the lock route's phone check is unanchored, so it does. */
 export function toE164(v: string): string | null {
-  const d = String(v || "").replace(/\D/g, "");
+  const m = String(v || "").match(/(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
+  const d = (m ? m[0] : "").replace(/\D/g, "");
   if (d.length === 10) return `+1${d}`;
   if (d.length === 11 && d.startsWith("1")) return `+${d}`;
   return null;
@@ -49,7 +52,9 @@ export function looksLikePhone(contact: string): boolean {
 // takeover console and the lock route see it without a network hop) and an
 // MC marker keyed on the 10-digit number (so the crons, which already load
 // the comms window, can skip the number across sessions).
-export const STOP_RE = /^\s*(stop|stopall|unsubscribe|cancel|end|quit)\b/i;
+// The WHOLE message must be the keyword — "cancel that, I'll meet instead"
+// and "end of day works" are conversation, not opt-outs.
+export const STOP_RE = /^\s*(stop|stopall|unsubscribe|cancel|end|quit)\s*[.!]*\s*$/i;
 export const SMS_STOP_NOTE = "SMS-STOP";
 
 export function smsOptOutMarker(phone: string): string {

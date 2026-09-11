@@ -19,9 +19,9 @@
 //     an email contact gets the same by email. STOP is honored.
 //   • Session: / Lock-Until: lines in the lead body so the crons can find
 //     the thread and count down the 14-day lock.
-//   • carrier "unknown" ("not sure" chip) prices at the AT&T tier and says so
-//     in the lead — Sonny's default from the audit; a seller who tapped
-//     "other" when they meant "unlocked" was quoted $204 on a $433 phone.
+//   • Spec resolution lives in app/go/spec.ts, shared with /api/go/quote —
+//     phones, iPads and consoles, one contract, so the two routes can never
+//     disagree on a number.
 //
 // Why not POST /api/lead internally: that route hard-requires a name and
 // rejects phone-bearing leads without an SMS-marketing opt-in (its TCPA
@@ -37,43 +37,22 @@
 //     and NO "--- Handoff:" block — the handoff block below is REQUIRED,
 //     not decoration.
 import { NextRequest, NextResponse } from "next/server";
-import { quoteDevice } from "../../../lib/quote";
-import { cachedOverrides } from "../../../lib/overrides-cache";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
-import { appendChatMsg, readChat, validSession, validGoSession } from "../../../lib/gochat-store";
+import { appendChatMsg, readChat, validSession, validGoSession, rememberPhoneSession } from "../../../lib/gochat-store";
 import { sendCapiLead } from "../../../lib/meta-capi";
 import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
 import { sidToken } from "../../../lib/go-sid-token";
 import { mailShell, esc, MAIL } from "../../../lib/email-shell";
 import { after } from "next/server";
-import { BOARD_MODELS } from "../../../go/board";
-import { PRICE_TABLE } from "../../../data/prices";
+import { resolveGoSpec, goQuote, type GoSpec } from "../../../go/spec";
+import { MANUAL_REVIEW_DEVICES } from "../../../data/prices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
-const CONDITIONS = new Set(["sealed", "mint", "good", "fair", "broken"]);
-const CARRIERS = new Set(["unlocked", "att", "tmobile", "verizon", "other", "unknown"]);
 // The published promise: every quoted number holds 14 days.
 const LOCK_DAYS = 14;
-
-// Display strings for the lead body. The admin margin recompute feeds the
-// Condition string through resellMultiplierForCondition()'s substring
-// match, so "Fair (some wear)" MUST contain "fair" and the broken tier
-// "crack"/"broken" — a bare "some wear" would silently price at the 1.0
-// mint tier.
-const CONDITION_DISPLAY: Record<string, string> = {
-  sealed: "Sealed in box", mint: "Like new", good: "Good",
-  fair: "Fair (some wear)", broken: "Cracked / broken",
-};
-const CARRIER_DISPLAY: Record<string, string> = {
-  unlocked: "Unlocked", att: "AT&T", tmobile: "T-Mobile", verizon: "Verizon", other: "Other",
-  unknown: "Not sure (priced as carrier-locked)",
-};
-const STORAGE_DISPLAY: Record<string, string> = {
-  "64": "64GB", "128": "128GB", "256": "256GB", "512": "512GB", "1tb": "1TB", "2tb": "2TB",
-};
 
 // Same scrub as /api/lead's cleanField: brackets (the admin parser keys on
 // [STATUS:]/[LEAD:] markers anywhere in a comm body) AND newlines/tabs —
@@ -94,13 +73,13 @@ function lockDateLabel(iso: string): string {
 // The seller-facing confirmation. One text or one email, about THIS quote
 // only — the number they typed into "your number — we text you the quote".
 async function sendConfirmation(opts: {
-  contact: string; isEmail: boolean; label: string; storage: string; offer: number | null;
+  contact: string; isEmail: boolean; spec: GoSpec; offer: number | null;
   lockUntil: string; sessionId: string;
 }): Promise<{ sent: boolean; channel: "sms" | "email" | "none"; reason?: string }> {
-  const { contact, isEmail, label, storage, offer, lockUntil, sessionId } = opts;
+  const { contact, isEmail, spec, offer, lockUntil, sessionId } = opts;
   const tok = validGoSession(sessionId) ? sidToken(sessionId) : "";
   const link = `https://topcashcellular.com/go${tok ? `?sid=${sessionId}&k=${tok}` : ""}`;
-  const dev = `${label} ${STORAGE_DISPLAY[storage] || storage}`;
+  const dev = spec.storage === "base" && !spec.entry.storageLabels ? spec.entry.label : `${spec.entry.label} ${spec.display.storage}`;
   const until = lockDateLabel(lockUntil);
   if (!isEmail) {
     if (!looksLikePhone(contact)) return { sent: false, channel: "none", reason: "not a phone" };
@@ -165,11 +144,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
 
-  const model = String(body.model || "");
-  const entry = BOARD_MODELS.find((m) => m.id === model);
-  const storage = String(body.storage || "");
-  const condition = String(body.condition || "");
-  const carrier = String(body.carrier || "");
   const name = sanitize(String(body.name || "")).slice(0, 80);
   const contact = sanitize(String(body.contact || "")).slice(0, 120);
   const attest = body.attest === true;
@@ -180,9 +154,14 @@ export async function POST(req: NextRequest) {
   // it); when present the engine must agree or no lead is written.
   const quotedOffer = typeof body.quotedOffer === "number" && Number.isFinite(body.quotedOffer) ? Math.round(body.quotedOffer) : null;
 
-  if (!entry || !Object.hasOwn(PRICE_TABLE[model] || {}, storage) || !CONDITIONS.has(condition) || !CARRIERS.has(carrier)) {
+  const resolved = resolveGoSpec({
+    model: body.model, storage: body.storage, condition: body.condition, carrier: body.carrier, opt: body.opt,
+    processor: body.processor, memory: body.memory, extras: body.extras,
+  });
+  if (!resolved.ok) {
     return NextResponse.json({ ok: false, error: "bad spec" }, { status: 400 });
   }
+  const spec = resolved.spec;
   if (!EMAIL_RE.test(contact) && !PHONE_RE.test(contact)) {
     return NextResponse.json({ ok: false, error: "we need a real phone or email to reach you" }, { status: 400 });
   }
@@ -198,25 +177,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "too many tries — give it a minute" }, { status: 429 });
   }
 
-  // Engine is the only price authority — quote fresh at lock time.
-  // "unknown" = the seller isn't sure about the carrier: priced at the AT&T
-  // tier (the middle of the locked gaps) and labeled as such in the lead, so
-  // the number goes UP at inspection if it turns out unlocked, never down.
-  const engineCarrier = carrier === "unknown" ? "att" : carrier;
-  const r = await quoteDevice(
-    {
-      modelId: model,
-      modelLabel: entry.label,
-      storage,
-      condition,
-      carrier: engineCarrier,
-      // "locked to a carrier" answered "verizon" = a Verizon-locked phone.
-      carrierLocked: carrier === "verizon",
-      isPhone: true,
-    },
-    await cachedOverrides(),
-  ).catch(() => null);
-  const offer = r && r.offer != null && !r.manualReview ? r.offer : null;
+  // Engine is the only price authority — quote fresh at lock time, through
+  // the same resolver /api/go/quote used to show the number.
+  const offer = await goQuote(spec);
 
   // PRICE-MOVED GUARD: the engine disagrees with the number on the seller's
   // screen (a live price edit mid-session). Answer with the live number and
@@ -227,11 +190,7 @@ export async function POST(req: NextRequest) {
   }
 
   const isEmail = EMAIL_RE.test(contact);
-  const specLine = `${entry.label} ${storage} ${condition} ${carrier}`;
-  // Funnel deviceType slug — analytics buckets devices on the first half
-  // of the "Device: <type> — <model>" line, so GO leads must group with
-  // funnel leads ("iphone"/"android"/"pixel"), never a new category.
-  const deviceType = model.startsWith("ip") ? "iphone" : model.startsWith("px") ? "pixel" : "android";
+  const specLine = spec.specLine;
   const ua = sanitize(req.headers.get("user-agent") || "unknown");
   const visitorId = sanitize(req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
   const safeIp = sanitize(ip).slice(0, 60);
@@ -251,10 +210,11 @@ export async function POST(req: NextRequest) {
     `Name: ${name}`,
     `Phone: ${isEmail ? "" : contact}`,
     isEmail ? `Email: ${contact}` : null,
-    `Device: ${deviceType} — ${entry.label}`,
-    `Storage: ${STORAGE_DISPLAY[storage] || storage}`,
-    `Carrier: ${CARRIER_DISPLAY[carrier] || carrier}`,
-    `Condition: ${CONDITION_DISPLAY[condition] || condition}`,
+    `Device: ${spec.deviceType} — ${spec.entry.label}`,
+    `Storage: ${spec.display.storage}`,
+    spec.display.secondaryKey ? `${spec.display.secondaryKey}: ${spec.display.secondaryValue}` : null,
+    `Condition: ${spec.display.condition}`,
+    spec.display.notes ? `Notes: ${spec.display.notes}` : null,
     offer != null ? `Quote: $${offer}` : `Quote: TBD (custom)`,
     `Payout: TBD`,
     isEmail ? null : `SMS opt-in: no`,
@@ -266,7 +226,13 @@ export async function POST(req: NextRequest) {
     `Lock-Until: ${lockUntil}`,
     `[ATTEST: yes] Customer affirmed 18+ & legal ownership at submit (IP ${safeIp})`,
     `--- Handoff: TBD (seller picks) ---`,
-    `Action: 14-day price lock from /go — seller was texted MEET/SHIP; reach out to arrange an Austin-area meetup or send a free FedEx label, seller's pick.`,
+    `Action: 14-day price lock from /go — the seller gets a confirmation text/email with MEET/SHIP (delivery status in the session notes); reach out to arrange an Austin-area meetup or send a free FedEx label, seller's pick.`,
+    // Same flag /api/lead attaches for MANUAL_REVIEW_DEVICES (high-value
+    // MacBooks etc.): the number is shown, the lead is marked for a human
+    // check before payout.
+    ...(MANUAL_REVIEW_DEVICES.has(spec.entry.id)
+      ? ["⚠️ MANUAL REVIEW REQUIRED — high-value device", "Verify: condition matches description, check IMEI/serial, confirm config (chip/RAM/storage)"]
+      : []),
   ].filter(Boolean).join("\n");
 
   // AWAITED delivery — a lead that vanishes after "locked in." is worse
@@ -310,17 +276,37 @@ export async function POST(req: NextRequest) {
   // lock happened. Notes are internal-only — never sent to the seller
   // client — and written HERE (server-side, engine result in hand) so the
   // LOCKED breadcrumb can't be client-forged.
+  // AWAITED (one blob round-trip): these notes are what the console, the
+  // inbound-SMS matcher (phone pointer), the reminders cron and the funnel
+  // card read. A fire-and-forget put can be cut off when the function exits
+  // right after the response.
   if (validSession(sessionId)) {
-    void appendChatMsg(sessionId, "note", `CONTACT: ${contact}`);
-    void appendChatMsg(sessionId, "note", `LOCKED: ${specLine}${offer != null ? ` $${offer}` : " (manual)"} — ${contact.slice(0, 60)}`);
+    await Promise.all([
+      appendChatMsg(sessionId, "note", `CONTACT: ${contact}`),
+      appendChatMsg(sessionId, "note", `LOCKED: ${specLine}${offer != null ? ` $${offer}` : " (manual)"} — ${contact.slice(0, 60)}`),
+      rememberPhoneSession(contact, sessionId),
+    ]);
   }
 
+  // The seller's confirmation — the text the page promised. Raced against a
+  // short budget so the locked card can say "we just texted you" only when
+  // that is TRUE (the relay has been down for days at a time); the send
+  // itself always runs to completion inside after().
+  const confirmation = sendConfirmation({ contact, isEmail, spec, offer, lockUntil, sessionId });
+  const early = await Promise.race<{ sent: boolean; channel: string } | null>([
+    confirmation,
+    new Promise<null>((r) => setTimeout(() => r(null), 2500)),
+  ]);
+  // sms/email = delivered before the response; pending = still in flight;
+  // failed = the channel refused (relay down, opted out) — the card must not
+  // promise a text in that case.
+  const confirmed: "sms" | "email" | "pending" | "failed" =
+    early == null ? "pending" : early.sent ? (early.channel === "email" ? "email" : "sms") : "failed";
+
   after(async () => {
-    // The seller's confirmation — the text the page promised. After the
-    // response so a slow relay never delays "locked in.".
-    const c = await sendConfirmation({ contact, isEmail, label: entry.label, storage, offer, lockUntil, sessionId });
+    const c = await confirmation;
     if (validSession(sessionId)) {
-      void appendChatMsg(
+      await appendChatMsg(
         sessionId,
         "note",
         c.sent
@@ -335,7 +321,7 @@ export async function POST(req: NextRequest) {
     // POST also attempted the pixel, so a server copy WITHOUT the shared id
     // (stale pre-deploy bundle) would double-count, not backfill.
     if (!eventId) return;
-    void sendCapiLead({
+    await sendCapiLead({
       eventId,
       sourceUrl: `https://topcashcellular.com/go${src ? `?src=${src}` : ""}`,
       ip: clientIp(req),
@@ -348,5 +334,5 @@ export async function POST(req: NextRequest) {
     });
   });
 
-  return NextResponse.json({ ok: true, offer, lockUntil });
+  return NextResponse.json({ ok: true, offer, lockUntil, confirmed });
 }

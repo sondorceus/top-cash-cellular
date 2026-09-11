@@ -218,6 +218,46 @@ export function phoneKey(v: unknown): string {
 
 const CONTACT_PREFIX = "CONTACT: ";
 
+// Phone → session POINTER, written whenever a contact lands (lock, chat).
+// One tiny blob per (number, time) under gochat-phone/<key>/<ts>-<sid>.json:
+// unique paths (no CDN-stale overwrites) and the sid rides in the pathname,
+// so a lookup is ONE list() with zero fetches. The scan below stayed as the
+// fallback, but it only covers the 20 most recent sessions — a seller who
+// replies MEET to the day-13 expiry text was outside it (every tile tap
+// mints a session now), so their reply silently matched nothing.
+export async function rememberPhoneSession(contact: string, sid: string): Promise<void> {
+  const key = phoneKey(contact);
+  if (!key || !validSession(sid)) return;
+  await put(`gochat-phone/${key}/${Date.now()}-${sid}.json`, "{}", {
+    access: "public", contentType: "application/json", addRandomSuffix: false,
+  }).catch(() => { /* the scan fallback still works */ });
+}
+
+async function pointerSession(phone: string): Promise<string | null> {
+  const key = phoneKey(phone);
+  if (!key) return null;
+  try {
+    const { blobs } = await list({ prefix: `gochat-phone/${key}/`, limit: 100 });
+    // Sessions are pruned at 30 days idle; a pointer older than that would
+    // resurrect a dead thread (and a "meet"-shaped text from an old seller
+    // would post a phantom delivery option). Ignore it and let the scan run.
+    const floor = Date.now() - 30 * 24 * 3600_000;
+    let best: { ts: number; sid: string } | null = null;
+    for (const b of blobs) {
+      const m = (b.pathname.split("/").pop() || "").match(/^(\d+)-(.+)\.json$/);
+      if (!m) continue;
+      const ts = Number(m[1]);
+      if (Number.isFinite(ts) && ts >= floor && (!best || ts > best.ts)) best = { ts, sid: m[2] };
+    }
+    if (!best || !validSession(best.sid)) return null;
+    // The thread must still exist (pruned sessions leave their pointer behind).
+    const alive = await list({ prefix: `gochat/${best.sid}/`, limit: 1 });
+    return alive.blobs.length ? best.sid : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Newest CONTACT note for one session, or "" — notes only, capped. */
 async function latestContactFor(sid: string): Promise<string> {
   if (!validSession(sid)) return "";
@@ -252,6 +292,9 @@ export async function findSessionByPhone(
 ): Promise<string | null> {
   const want = phoneKey(phone);
   if (!want) return null;
+  // Newest pointer first — one list, no fetches, any age.
+  const pointed = await pointerSession(phone);
+  if (pointed) return pointed;
   const cutoff = Date.now() - maxAgeMs;
   const recent = (await listChatSessions()).filter((s) => s.lastTs >= cutoff).slice(0, maxSessions);
   const contacts = await Promise.all(recent.map((s) => latestContactFor(s.sid)));

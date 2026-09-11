@@ -61,7 +61,8 @@ export async function GET(req: NextRequest) {
     if (lastQspec && fresh && (!lastLock || lastQspec.ts > lastLock.ts)) {
       const p = lastQspec.text.slice("QSPEC: ".length).split("|");
       const offer = Number(p[4]);
-      if (p.length === 5 && /^[a-z0-9]{2,16}$/i.test(p[0]) && Number.isFinite(offer) && offer > 0) {
+      // Model ids include underscores and run to 17 chars (mbp16_m5pmax_2026).
+      if (p.length === 5 && /^[a-z0-9_]{2,24}$/i.test(p[0]) && Number.isFinite(offer) && offer > 0) {
         pendingQuote = { model: p[0], storage: p[1], condition: p[2], carrier: p[3], offer };
       }
     }

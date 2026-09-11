@@ -22,6 +22,9 @@ or the /go page itself) — the table moves.
 - 14 quote-viewers left with no contact, including 17 Pro Max sellers at $755 and $585.
   They are now reachable two ways: the page's own follow-ups if they left a number, and
   the retargeting set below if they didn't.
+- The MacBook, iPad and Console tiles produced zero contacts because they dropped into a
+  chat that asked for a phone number before showing a number. All three now quote
+  instantly like phones (the ad copy can say "phones, iPads, MacBooks, consoles" honestly).
 
 ## 1. Primary text (replace the current one)
 
