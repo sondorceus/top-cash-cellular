@@ -13,6 +13,7 @@
 // ("we"), and every dollar figure on screen came from the engine — the
 // client never invents or caches a price.
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import type { BoardRow, GoStep } from "./board";
 import { pixelTrack, fbCookies } from "../components/MetaPixel";
 
@@ -201,6 +202,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [gBusy, setGBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  // "save this chat" bar — a phone field above the composer until a number
+  // lands. The number goes through send() like any message, so the server's
+  // contact detection, lead post, owner alert and pixel all fire as usual.
+  const [saveNum, setSaveNum] = useState("");
   // Photo attach — the flaw a phone-buyback chat can't have: sellers WANT to
   // show the crack. File input is hidden; the camera button triggers it.
   const [uploading, setUploading] = useState(false);
@@ -451,22 +456,46 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // the dominant observed loss: quote-then-silence with the last message
   // never asking for a number.
   const aiNudgedRef = useRef(false);
+  // Any thread the seller typed in qualifies (not just quoted ones): chats
+  // get cut off in the Facebook browser, and a saved number is the
+  // difference between a lead and nothing. Sonny 2026-09-11: "nudge more
+  // for the number in case we get lost at the start of chat".
+  const hasUserMsg = msgs.some((m) => !("kind" in m) && m.from === "user");
   useEffect(() => {
-    if (aiNudgedRef.current || !aiQuoted || contactCaptured || takeover) return;
+    if (aiNudgedRef.current || !(aiQuoted || hasUserMsg) || contactCaptured || takeover) return;
+    if (msgs.some((m) => "kind" in m && m.kind === "lockform" && !m.done)) return; // the lock form is already the ask
     const t = setTimeout(() => {
       setMsgs((cur) => {
         if (aiNudgedRef.current || takeoverRef.current || contactCapturedRef.current) return cur;
         aiNudgedRef.current = true;
-        logNote("idle after AI quote — nudged for number");
-        return [...cur, { from: "bot", text: "that number holds for 14 days — drop your phone number and we’ll text it to you so it’s saved." }];
+        logNote(aiQuotedRef.current ? "idle after AI quote — nudged for number" : "idle in chat — nudged for number");
+        return [
+          ...cur,
+          {
+            from: "bot",
+            text: aiQuotedRef.current
+              ? "that number holds for 14 days — drop your phone number and we’ll text it to you so it’s saved."
+              : "quick one — drop your phone number so this chat is saved if we get cut off. we’ll text you the offer.",
+          },
+        ];
       });
     }, 45000);
     return () => clearTimeout(t);
-  }, [msgs, aiQuoted, contactCaptured, takeover]);
+  }, [msgs, aiQuoted, hasUserMsg, contactCaptured, takeover]);
 
   // Retire interactivity on every previous rich message; append new ones.
   function pushMsgs(...add: Msg[]) {
     setMsgs((m) => [...m.map((x) => ("kind" in x ? { ...x, done: true } : x)), ...add]);
+  }
+
+  // The message button: the keyboard only comes up when the input is focused
+  // INSIDE the tap gesture — a setTimeout focus after the overlay renders is
+  // too late on iOS and in the Facebook webview. flushSync commits the
+  // overlay synchronously so the input exists right now, then we focus it.
+  function openChatWithKeyboard() {
+    interactedRef.current = true;
+    flushSync(() => setChatOpen(true));
+    overlayInputRef.current?.focus();
   }
 
   // "got another one?" — asked after the handoff choice. Every affordance
@@ -1019,9 +1048,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       <h1 className="text-[38px] leading-[1.05] font-extrabold mt-4 tracking-tight">
         {lot ? "we buy phones — singles or the whole lot" : "sell your phone — cash in hand today"}
       </h1>
-      <p className="text-[18px] text-white/75 mt-3">
-        {lot ? "cash the same day. no email, no signup." : "real number in 30 seconds. no email, no signup."}
-      </p>
 
       {lot && (
         <button
@@ -1077,7 +1103,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               Opens the full-screen chat with the composer focused. */}
           <button
             type="button"
-            onClick={() => setChatOpen(true)}
+            onClick={openChatWithKeyboard}
             className="tcc-button-primary mt-4 w-full py-4 rounded-2xl text-[19px] font-bold flex items-center justify-center gap-2 active:scale-[0.99] transition-transform"
             aria-haspopup="dialog"
           >
@@ -1402,6 +1428,35 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               </svg>
               tap to add a photo of your device — helps us price it
             </button>
+          )}
+
+          {/* save-this-chat bar: shown once the seller has said anything and
+              no number is on file; hidden while a lock form (its own number
+              ask) is live, after a lock, and during a takeover. */}
+          {hasUserMsg && !contactCaptured && !takeover && !lastLockRef.current && !msgs.some((m) => "kind" in m && m.kind === "lockform" && !m.done) && (
+            <form
+              className="mx-4 mb-2 flex gap-2 items-center"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const v = saveNum.trim();
+                if (v.replace(/\D/g, "").length < 10 && !v.includes("@")) return;
+                setSaveNum("");
+                void send(v);
+              }}
+            >
+              <input
+                value={saveNum}
+                onChange={(e) => setSaveNum(e.target.value)}
+                placeholder="your number — so we can text you if we get cut off"
+                inputMode="tel"
+                autoComplete="tel"
+                aria-label="your phone number, so we can text you"
+                className="flex-1 min-w-0 px-4 py-[10px] rounded-full bg-white/[0.06] border border-[#00c853]/45 text-[15px] text-white placeholder-white/45 focus:outline-none focus:border-[#00c853]"
+              />
+              <button type="submit" disabled={sending || uploading} className="tcc-button-primary px-4 py-[10px] rounded-full text-[15px] font-bold shrink-0 disabled:opacity-40">
+                save
+              </button>
+            </form>
           )}
 
           <form
