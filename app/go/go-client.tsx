@@ -13,7 +13,6 @@
 // ("we"), and every dollar figure on screen came from the engine — the
 // client never invents or caches a price.
 import { useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import type { BoardRow, GoStep } from "./board";
 import { pixelTrack, fbCookies } from "../components/MetaPixel";
 
@@ -191,8 +190,34 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const overlayInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     document.body.style.overflow = chatOpen ? "hidden" : "";
-    if (chatOpen) setTimeout(() => overlayInputRef.current?.focus(), 60);
     return () => { document.body.style.overflow = ""; };
+  }, [chatOpen]);
+  // iOS / the Facebook webview do NOT shrink the layout viewport when the
+  // keyboard opens — a `fixed inset-0` overlay keeps its full height and its
+  // bottom (the composer) ends up hidden under the keyboard (Sonny's
+  // screenshot, 2026-09-11). Pin the overlay to the VISUAL viewport instead:
+  // height + top follow the keyboard, so the message box stays in view.
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!chatOpen) return;
+    const vv = typeof window !== "undefined" ? window.visualViewport : null;
+    const el = overlayRef.current;
+    if (!vv || !el) return;
+    const apply = () => {
+      el.style.height = `${Math.round(vv.height)}px`;
+      el.style.top = `${Math.round(vv.offsetTop)}px`;
+      // the thread shrank — keep the newest message in view
+      if (nearBottomRef.current) threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight });
+    };
+    apply();
+    vv.addEventListener("resize", apply);
+    vv.addEventListener("scroll", apply);
+    return () => {
+      vv.removeEventListener("resize", apply);
+      vv.removeEventListener("scroll", apply);
+      el.style.height = "";
+      el.style.top = "";
+    };
   }, [chatOpen]);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   // Guided in-chat funnel (Messenger-style quick selects) — deterministic,
@@ -488,14 +513,15 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     setMsgs((m) => [...m.map((x) => ("kind" in x ? { ...x, done: true } : x)), ...add]);
   }
 
-  // The message button: the keyboard only comes up when the input is focused
-  // INSIDE the tap gesture — a setTimeout focus after the overlay renders is
-  // too late on iOS and in the Facebook webview. flushSync commits the
-  // overlay synchronously so the input exists right now, then we focus it.
-  function openChatWithKeyboard() {
+  // The message button just opens the chat. NO programmatic focus anywhere in
+  // the overlay: auto-focusing the composer popped the keyboard but iOS then
+  // shifted the fixed overlay so the message box itself was hidden while the
+  // seller typed (Sonny 2026-09-11: "it just types and doesn't reveal the
+  // message box — fix or remove"). The seller taps the box, like any
+  // messaging app.
+  function openChat() {
     interactedRef.current = true;
-    flushSync(() => setChatOpen(true));
-    overlayInputRef.current?.focus();
+    setChatOpen(true);
   }
 
   // "got another one?" — asked after the handoff choice. Every affordance
@@ -1054,7 +1080,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           type="button"
           onClick={() => {
             document.getElementById("go-composer")?.scrollIntoView({ behavior: "smooth", block: "center" });
-            document.getElementById("go-composer-input")?.focus();
           }}
           className="mt-4 w-full rounded-2xl border border-[#00c853] px-4 py-3 text-left text-[15px] font-semibold text-[#00c853]"
         >
@@ -1103,7 +1128,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               Opens the full-screen chat with the composer focused. */}
           <button
             type="button"
-            onClick={openChatWithKeyboard}
+            onClick={openChat}
             className="tcc-button-primary mt-4 w-full py-4 rounded-2xl text-[19px] font-bold flex items-center justify-center gap-2 active:scale-[0.99] transition-transform"
             aria-haspopup="dialog"
           >
@@ -1172,7 +1197,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
       {/* full-screen immersive chat */}
       {chatOpen && (
-        <div style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
+        <div ref={overlayRef} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
           <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
             <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
             <div className="flex-1 min-w-0">
@@ -1305,7 +1330,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                           { from: "user", text: "i don’t see mine" },
                           { from: "bot", text: "all good — type what you got (model + anything you know) and we’ll get you a number." },
                         );
-                        setTimeout(() => overlayInputRef.current?.focus(), 60);
                       }}
                       busy={gBusy || !!m.done}
                     />
