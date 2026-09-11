@@ -181,14 +181,6 @@ const OWNER_PHOTO = process.env.NEXT_PUBLIC_OWNER_PHOTO || "";
 
 export default function GoClient({ rows, src, reviews, variant = "std" }: { rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot" }) {
   const lot = variant === "lot";
-  // Value anchor for the first paint — the page promises "real number in 30
-  // seconds" and used to show none until the third tap. Three live engine
-  // ceilings, server-rendered (rows come from the server, no Date involved),
-  // so an iPhone-7 seller self-selects out and a 17 Pro Max seller leans in.
-  const anchors = ["ip17pm", "gs25u", "ip14pm"]
-    .map((id) => rows.find((r) => r.id === id))
-    .filter((r): r is BoardRow => !!r)
-    .map((r) => `${r.label.replace(/^iPhone |^Galaxy /, "")} up to $${r.upTo.toLocaleString("en-US")}`);
   // ---- chat state ----
   const [showReviews, setShowReviews] = useState(false);
   // Full-screen chat takeover — opens on engagement (never on load: the
@@ -1021,26 +1013,15 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         <div className="text-[12px] text-white/50">{status}</div>
       </header>
 
-      {/* headline */}
-      <h1 className="text-[30px] leading-[1.1] font-extrabold mt-4">
+      {/* headline — the whole first screen is this line + the tiles.
+          Sonny 2026-09-11: "focus on sell today, large text, not the small
+          extra text" — the ceilings, how-it-works and long-tail lines went. */}
+      <h1 className="text-[38px] leading-[1.05] font-extrabold mt-4 tracking-tight">
         {lot ? "we buy phones — singles or the whole lot" : "sell your phone — cash in hand today"}
       </h1>
-      <p className="text-[15px] text-white/60 mt-2">
-        {lot ? "tell us what you got. cash the same day, no email, no signup." : "tap what you got — real number in 30 seconds. no email, no signup."}
+      <p className="text-[18px] text-white/75 mt-3">
+        {lot ? "cash the same day. no email, no signup." : "real number in 30 seconds. no email, no signup."}
       </p>
-      {/* live engine ceilings, server-rendered — a real number on the first
-          paint (the ad promised one), and a filter: junk-tier sellers self-
-          select out, 17 Pro Max sellers lean in */}
-      {anchors.length >= 2 && (
-        <p className="text-[14px] text-white/80 mt-2" style={{ fontVariantNumeric: "tabular-nums" }}>
-          {anchors.map((a, i) => (
-            <span key={a}>
-              {i > 0 && <span className="text-white/35"> · </span>}
-              <span className="text-[#00c853] font-semibold">{a.split(" up to ")[0]}</span> up to {a.split(" up to ")[1]}
-            </span>
-          ))}
-        </p>
-      )}
 
       {lot && (
         <button
@@ -1066,69 +1047,70 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           @keyframes goOverlayIn { from { opacity: 0; transform: translateY(14px); } }
           .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
         `}</style>
-        <h2 className="text-[17px] font-bold">{lot ? "tell us what you got" : "what are you selling?"}</h2>
+        <h2 className="text-[22px] font-bold">{lot ? "tell us what you got" : "what are you selling?"}</h2>
 
-        <div
-          role="button"
-          tabIndex={0}
-          onClick={() => setChatOpen(true)}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setChatOpen(true); } }}
-          className="mt-3 w-full text-left rounded-3xl border border-white/10 bg-white/[0.03] p-3 active:scale-[0.99] transition-transform cursor-pointer"
-          aria-haspopup="dialog"
-        >
-          <div className="flex items-end gap-2">
-            <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-            <div className="max-w-[85%]">
-              <div className="text-[12px] text-white/40 mb-1 ml-1">top cash <span className="text-[#00c853]">cellular</span></div>
-              <div className="rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
-                {msgs.length > 0
-                  ? "tap to keep the conversation going"
-                  : lot
-                    ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too."
-                    : "cracked, financed or carrier-locked — we still buy it. pick yours and your number’s on the next screen."}
-              </div>
-            </div>
-          </div>
-          {/* one tap = straight into the full-screen picker for that category */}
-          <div className="mt-3 ml-10 grid grid-cols-3 gap-2">
+        <p className="text-[16px] text-white/70 mt-1">
+          {msgs.length > 0
+            ? "your chat is saved — pick up where you left off."
+            : lot
+              ? "trays, shelves, mixed lots, cracked ones too."
+              : "cracked or still on payments? we still buy it."}
+        </p>
+
+        {/* the panel — brighter than the page so it reads as THE thing to do
+            (Sonny 2026-09-11: "the body seems hidden — think marketing").
+            Tiles = one tap into the picker; the green button = type instead. */}
+        <div className="mt-4 rounded-3xl border border-white/15 bg-white/[0.06] p-4">
+          <div className="grid grid-cols-3 gap-2">
             {CATEGORIES.map((c) => (
               <button key={c.key} type="button" disabled={gBusy}
-                onClick={(e) => { e.stopPropagation(); categoryTap(c); }}
-                className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-center active:scale-95 transition-transform">
-                <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 56 }}>
-                  <img src={c.img} alt="" className="max-h-[48px] max-w-[80%] object-contain" />
+                onClick={() => categoryTap(c)}
+                className="rounded-2xl border border-white/15 bg-white/[0.08] p-2 text-center active:scale-95 transition-transform">
+                <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 64 }}>
+                  <img src={c.img} alt="" className="max-h-[54px] max-w-[80%] object-contain" />
                 </span>
-                <span className="block text-[13px] font-semibold mt-1.5 text-white">{c.label}</span>
+                <span className="block text-[14px] font-semibold mt-2 text-white">{c.label}</span>
               </button>
             ))}
           </div>
-          <div className="mt-3 ml-10 flex items-center gap-2 rounded-full bg-white/[0.06] border border-white/15 px-4 py-3">
-            <span className="flex-1 text-[16px] text-white/40">{lot ? "i got 15 phones, need cash today…" : "or just type it — i got 4 phones…"}</span>
-            <span className="tcc-button-primary w-[38px] h-[38px] shrink-0 text-[18px] font-bold flex items-center justify-center" style={{ borderRadius: "50%" }}>↑</span>
-          </div>
+          {/* the message button — big, green, the thing a thumb lands on.
+              Opens the full-screen chat with the composer focused. */}
+          <button
+            type="button"
+            onClick={() => setChatOpen(true)}
+            className="tcc-button-primary mt-4 w-full py-4 rounded-2xl text-[19px] font-bold flex items-center justify-center gap-2 active:scale-[0.99] transition-transform"
+            aria-haspopup="dialog"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.2A8 8 0 1 1 21 12z" />
+            </svg>
+            {msgs.length > 0 ? "continue your chat" : lot ? "message us — tell us what you got" : "message us — get your number"}
+          </button>
+          <p className="text-center text-[14px] text-white/55 mt-2">
+            {lot ? "type it out or snap a pic of the pile — we answer right away." : "or just type it — we answer right away."}
+          </p>
         </div>
       </section>
 
-      {/* proof row — the cold click's "is this legit?" answered right under
-          the tiles: a real rating from paid sellers (tap to read a few), how
-          you get paid, and where. The old trust sentence about the quote
-          being what we pay now lives in "how this works" step 1. */}
-      <div className="mt-3 flex flex-col gap-1.5 text-[13px] text-white/70">
-        {reviews.count >= 5 && reviews.top.length > 0 && (
+      {/* one proof line — the cold click's "is this legit?": a real rating
+          from paid sellers (tap to read a few) and how you get paid. */}
+      <div className="mt-4 text-[16px] text-white/85">
+        {reviews.count >= 5 && reviews.top.length > 0 ? (
           <button
             type="button"
             onClick={() => setShowReviews((v) => !v)}
             aria-expanded={showReviews}
-            className="text-left text-[14px] text-white/85 py-0.5"
+            className="text-left"
           >
-            <span className="text-[#00c853] font-semibold">{reviews.avg}★</span> from {reviews.count} sellers we&rsquo;ve paid{showReviews ? "" : " — read a few →"}
+            <span className="text-[#00c853] font-bold">{reviews.avg}★</span> from {reviews.count} sellers paid in cash, Zelle or Cash App{showReviews ? "" : " →"}
           </button>
+        ) : (
+          <p>paid in cash, Zelle or Cash App — same day.</p>
         )}
-        <p>paid in <span className="text-white/90">cash, Zelle or Cash App</span> · same-day in the austin area · free shipping label anywhere</p>
         {OWNER_PHOTO && (
-          <p className="flex items-center gap-2 mt-0.5">
-            <img src={OWNER_PHOTO} alt="Sonny, Top Cash Cellular" width={28} height={28} className="w-[28px] h-[28px] rounded-full object-cover border border-[#00c853]/60 shrink-0" />
-            <span>sonny · austin, tx — the person who texts you back and pays you</span>
+          <p className="flex items-center gap-2 mt-2">
+            <img src={OWNER_PHOTO} alt="Sonny, Top Cash Cellular" width={32} height={32} className="w-[32px] h-[32px] rounded-full object-cover border border-[#00c853]/60 shrink-0" />
+            <span>sonny · austin, tx</span>
           </p>
         )}
       </div>
@@ -1157,27 +1139,8 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         </section>
       )}
 
-      {/* how it works — offer → meetup → cash, three beats
-          (Sonny 2026-08-19: "way too much text — it should be offer meetup cash") */}
-      <section className="mt-7" aria-label="how it works">
-        <h2 className="text-[17px] font-bold">how this works</h2>
-        <ol className="mt-3 flex flex-col gap-2 text-[14px] text-white/75">
-          <li className="flex gap-3">
-            <span className="text-[#00c853] font-bold shrink-0">1</span>
-            <span><b className="text-white font-semibold">offer</b> — tap what you got, get your number. locked 14 days, and if the phone matches what you told us, that&rsquo;s what we pay.</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-[#00c853] font-bold shrink-0">2</span>
-            <span><b className="text-white font-semibold">meetup</b> — public spot in austin, or free shipping label.</span>
-          </li>
-          <li className="flex gap-3">
-            <span className="text-[#00c853] font-bold shrink-0">3</span>
-            {/* answers the "…if it matches what you told us" caveat the page
-                raises twice and otherwise never resolves */}
-            <span><b className="text-white font-semibold">cash</b> — we check it while you watch, you get paid on the spot. if something&rsquo;s different than you described, we show you what we found and give you the updated number — your call from there.</span>
-          </li>
-        </ol>
-      </section>
+      {/* how-it-works section removed 2026-09-11 (Sonny: no small extra
+          text) — the /how-it-works page in the footer and the chat cover it. */}
 
 
 
@@ -1498,11 +1461,6 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           </form>
         </div>
       )}
-
-      {/* long tail */}
-      <p className="mt-8 text-[14px]">
-        <a href="/" className="text-white/60 underline">everything else — laptops, consoles, watches →</a>
-      </p>
 
       {/* footer — real business, real pages */}
       <footer className="mt-10 pt-4 border-t border-white/10 text-[13px] text-white/50">

@@ -125,7 +125,11 @@ function extractDevice(text: string): string {
 // abuse. History is the recent turn list we replay for context — 12
 // is plenty (~6 exchanges) and matches the widget's UI scroll.
 const MAX_MESSAGE_LEN = 2000;
-const MAX_HISTORY_LEN = 12;
+// 40 turns (was 12): a two-phone seller's first quote fell out of the window
+// by the time the second phone was priced, and the bot asked to re-quote it
+// (live thread go-fb1-l2x81pm9, 2026-09-11). Turns are short; the static
+// prompt is cached, so the extra input cost is small.
+const MAX_HISTORY_LEN = 40;
 
 export async function POST(req: NextRequest) {
   let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown; fbp?: unknown; fbc?: unknown; src?: unknown };
@@ -173,7 +177,7 @@ export async function POST(req: NextRequest) {
   // model's context, and (c) dedupe contact capture beyond the 12-turn
   // client window.
   const live = validSession(sessionId) && rateLimit(`chat-gate:${ip}`, 80, 5 * 60_000).ok
-    ? await readChat(sessionId, 0, 80)
+    ? await readChat(sessionId, 0, 160)
     : null;
   // Expire an abandoned takeover: Sonny idle 2h+ = the bot resumes, instead
   // of a returning seller typing into permanent silence.
@@ -235,8 +239,31 @@ export async function POST(req: NextRequest) {
   const funnelNotes = storeNotes
     // Server-authored notes only. "seller left…" is written by the client
     // (chat-sync POST) — a forged one could put words in the model's mouth.
-    .filter((t) => /^(quote shown:|LOCKED:)/.test(t))
+    // Quotes are handled separately below (quotesOnTable).
+    .filter((t) => /^LOCKED:/.test(t))
     .slice(-6);
+  // QUOTES ON THE TABLE — every engine number this session has produced, from
+  // the chip flow AND from get_quote in earlier chat turns (both are written
+  // as "quote shown: <device> … → $N" notes, server-side). Newest per device
+  // wins, so a re-answered condition replaces the old figure. Fed to the
+  // model every turn with the itemized sum, so "what's my total?" is
+  // answerable no matter how far back the first phone was priced.
+  const QUOTE_TAIL = new Set(["sealed", "mint", "good", "fair", "broken", "unlocked", "att", "tmobile", "verizon", "other", "unknown", "wifi", "cellular", "disc", "digital", "na", "ok", "batt", "chrg", "both"]);
+  const quoteKey = (text: string) => {
+    const t = text.trim().split(/\s+/);
+    while (t.length > 1 && QUOTE_TAIL.has(t[t.length - 1].toLowerCase())) t.pop();
+    return t.join(" ").toLowerCase();
+  };
+  const quoteTable = new Map<string, { line: string; offer: number }>();
+  for (const n of storeNotes) {
+    const qm = n.match(/^quote shown:\s*(.+?)\s*→\s*\$(\d+)/);
+    if (!qm) continue;
+    const offer = Number(qm[2]);
+    if (!Number.isFinite(offer) || offer <= 0) continue;
+    quoteTable.set(quoteKey(qm[1]), { line: `${qm[1].trim()} $${offer}`, offer });
+  }
+  const quotesOnTable = [...quoteTable.values()];
+  const quotesSum = quotesOnTable.reduce((a, q) => a + q.offer, 0);
 
   // Read contact + a rough device summary from the WHOLE conversation, not
   // just this message, so a number typed two turns ago still reaches staff.
@@ -443,7 +470,7 @@ export async function POST(req: NextRequest) {
         // exact same number to anyone who clicks through, so refusing to say
         // it here is theatre — it just makes the chat worse than the page it
         // sits on. Sonny 2026-08-19.
-        "PRICING — you DO give real prices here, but ONLY ones that came back from the get_quote tool. NEVER invent, estimate, round, or 'ballpark' a number, and never quote from memory or from anything in this prompt. If get_quote did not return a number, you do not have a number.",
+        "PRICING — you DO give real prices here, but ONLY ones that came back from the get_quote tool in this conversation (the QUOTES ALREADY GIVEN list, when present, IS earlier get_quote results — use it for recaps and totals). NEVER invent, estimate, round, or 'ballpark' a number, and never quote from memory or from examples in this prompt. If get_quote did not return a number, you do not have a number.",
         "SINGLE DEVICE: once you have model + condition (ask for storage and carrier if the model needs them), call get_quote and tell them the number plainly, with the close in the same message — your own words each time, shaped like: 'your 13 Pro 256 comes out to $430 — want to lock it in? it holds 14 days. drop your number and we'll text it to you either way.' Never a bare yes/no 'want to lock it in?' with no number ask. When they say yes: collect name + phone if you don't have them, call notify_team with the exact spec and engine number, and confirm the concrete next step — cash meetup in the Austin area or a free shipping label, their pick, with the standard follow-up timing.",
         "MULTIPLE DEVICES (2 or more): our team prices lots directly and these are our best sellers to work with. The MOMENT you learn it's more than one device, get their phone number FIRST — before working the full list — something like 'more than one, got it — drop your number so our team can text you the combined offer, then let's run through them.' Then quote each device with get_quote and keep a short running recap as numbers land ('so far: 13 Pro 256 good $430 + S22 cracked $95 — $525 total so far'). The itemized sum is real; anything beyond it is the owner's call — NEVER name a package price or bundle discount, and never close the lot yourself. When the list is done — or the seller slows down, gives partial answers, or goes quiet — call notify_team with whatever you have (itemized list + their number); missing specs are fine, the team fills gaps by text. End concretely: the team will text their combined offer with the standard follow-up timing.",
         "NOT IN THE INSTANT CATALOG (MacBooks, iPads, consoles, watches, older iPhones, anything unusual): these are ALWAYS a manual quote from the team — so get their name and phone number within the first two exchanges ('so the offer actually reaches you'), THEN gather the specs the team needs (chip/model/storage/condition) for the notify_team summary. Never interrogate specs first and ask for contact last, and never guess a number for these — some are deliberately manual-quote.",
@@ -511,6 +538,9 @@ export async function POST(req: NextRequest) {
     // still covers the tools.
     const dynamicSys = [
       isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Get their phone number FIRST if you don't have it, quote each device individually with a running recap, then hand off to our team via notify_team. Do NOT close the lot, do NOT name a package price." : "",
+      quotesOnTable.length
+        ? `QUOTES ALREADY GIVEN IN THIS THREAD (real get_quote results from earlier turns — newest per device; use them, never re-ask for specs already priced): ${quotesOnTable.map((q) => q.line).join("; ")}. Itemized sum: $${quotesSum} across ${quotesOnTable.length} device${quotesOnTable.length === 1 ? "" : "s"}. When the seller asks for a total or a recap, give this itemized sum — it is real; anything beyond it is the owner's call. If they change a device's condition or storage, re-run get_quote for that device.`
+        : "",
       funnelNotes.length ? `FUNNEL STATE (reported by the on-page guided flow): ${funnelNotes.join(" · ")}. Use this for context — but if the seller disputes or negotiates a number, re-verify with get_quote before confirming anything.` : "",
       (contact || storeContactNote) ? "A phone number or email for this seller is ALREADY on file — never ask for it again; the close moves to confirming the next step (meetup or label)." : "",
       `FOLLOW-UP TIMING: it is currently ${isDay ? "business hours — when the team takes over, the only promise you make is 'our team will text you shortly'" : "after hours — when the team takes over, the only promise you make is 'our team will text you first thing in the morning'"}. Never invent a more specific window.`,
@@ -528,6 +558,8 @@ export async function POST(req: NextRequest) {
     let reply = "";
     let quotedAny = false;
     const quotedLines: string[] = [];
+    // Note writes started inside the tool loop; awaited before the response.
+    const pendingNotes: Promise<void>[] = [];
     // Highest engine offer this turn — used as the Lead event's value when a
     // chat lead completes, so the AI path reports real money to Meta instead
     // of a valueless conversion. Engine-sourced; never estimated.
@@ -562,6 +594,13 @@ export async function POST(req: NextRequest) {
             quotedAny = true;
             if (leadValue == null || q.offer > leadValue) leadValue = q.offer;
             quotedLines.push(`${q.device}${tu.input.storage ? ` ${tu.input.storage}` : ""} ${tu.input.condition || ""} — $${q.offer}`);
+            // Persist the number the way the chip flow does, so the NEXT
+            // turn's QUOTES ALREADY GIVEN line carries it — the fix for the
+            // bot forgetting phone #1 while pricing phone #2.
+            if (validSession(sessionId)) {
+              const specText = [q.device, tu.input.storage, tu.input.condition, tu.input.carrier].filter(Boolean).join(" ");
+              pendingNotes.push(appendChatMsg(sessionId, "note", `quote shown: ${specText} → $${q.offer}`));
+            }
           }
           out = q;
         } else if (tu.name === "check_imei") {
@@ -680,6 +719,7 @@ export async function POST(req: NextRequest) {
     // lot seller) produced real leads that the pixel never saw, so the
     // campaign optimized exclusively toward iPhone/Samsung carousel lockers.
     // Fires on the turn a contact FIRST appears, so it's once per session.
+    await Promise.all(pendingNotes).catch(() => {});
     return NextResponse.json({
       reply,
       ...(quotedAny ? { quoted: quotedLines } : {}),
