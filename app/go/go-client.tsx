@@ -460,6 +460,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // seller with a number on screen leaves the tab and returns, plus the
   // standing note at the top of the chat and the save-this-chat bar.
   const hasUserMsg = msgs.some((m) => !("kind" in m) && m.from === "user");
+  // The tiles + starter chips stay until the seller actually starts: a
+  // "leave my number" card, a bare number and the bot's ack to it don't count
+  // (tapping the chip used to make the tiles vanish).
+  const looksLikeContact = (t: string) => /^\S+@\S+$/.test(t.trim()) || (t.replace(/\D/g, "").length >= 10 && t.trim().length <= 24);
+  const threadStarted = msgs.some((m) => ("kind" in m ? m.kind !== "numberform" : m.from === "user" && !looksLikeContact(m.text)));
 
   // Retire interactivity on every previous rich message; append new ones.
   function pushMsgs(...add: Msg[]) {
@@ -1190,7 +1195,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
             </div>
 
             {/* category quick-select — the funnel front door, in-thread */}
-            {msgs.length === 0 && (
+            {!threadStarted && (
               <div className="go-msg ml-10 grid grid-cols-3 gap-2">
                 {CATEGORIES.map((c) => (
                   <button key={c.key} type="button" disabled={gBusy} onClick={() => categoryTap(c)}
@@ -1390,7 +1395,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               </div>
             )}
 
-            {msgs.length === 0 && (
+            {!threadStarted && (
               <div className="flex flex-wrap gap-2 ml-10 items-center">
                 {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
                   <button
