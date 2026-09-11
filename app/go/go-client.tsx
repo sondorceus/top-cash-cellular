@@ -12,7 +12,7 @@
 // seller language (lock in / get paid, never cart-speak), company voice
 // ("we"), and every dollar figure on screen came from the engine — the
 // client never invents or caches a price.
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { BoardRow, GoStep } from "./board";
 import { pixelTrack, fbCookies } from "../components/MetaPixel";
 
@@ -98,6 +98,36 @@ function SellerAvatar() {
       </svg>
     </span>
   );
+}
+
+// Typeahead for the composer: when the seller types a model ("iphone 17",
+// "s24 ultra", "ps5"), the matching board rows show as tap-to-price chips
+// above the message box — tapping one runs the deterministic chip flow
+// (storage → condition → carrier → engine number) instead of the AI. Storage,
+// condition and carrier words are ignored so "iphone 17 pro 256gb cracked"
+// still matches; a lot ("an iphone and a macbook") matches nothing and the
+// bot handles it. Sonny 2026-09-11: "give customers a dropdown when they
+// type iPhone 17… if they keep typing it goes away".
+const TYPE_NOISE = new Set(["i", "have", "a", "an", "got", "my", "the", "to", "sell", "selling", "and", "with", "for", "it", "is", "in", "on", "of", "this", "that", "want", "wanna", "phone", "phones", "one", "cash", "gb", "tb", "apple"]);
+const TYPE_SPEC = /^(\d+(gb|tb)|\d+gig|unlocked|locked|att|at&t|tmobile|t-mobile|verizon|sprint|cricket|metro|boost|sealed|mint|new|good|fair|cracked|broken|damaged|excellent|used|like)$/i;
+function rowSearchKey(r: BoardRow): string[] {
+  const base = r.label.toLowerCase().replace(/["()]/g, " ").split(/\s+/).filter(Boolean);
+  const extra: string[] = [];
+  if (r.label.startsWith("Galaxy")) { extra.push("samsung"); const n = r.label.match(/\bS(\d+)/); if (n) extra.push(n[1]); }
+  if (r.label.startsWith("PlayStation 5")) extra.push("ps5");
+  if (r.label.startsWith("PlayStation 4")) extra.push("ps4");
+  if (r.label.startsWith("Nintendo")) extra.push("switch");
+  if (r.label.startsWith("MacBook")) extra.push("mac");
+  return [...base, ...extra];
+}
+function matchTyped(rows: BoardRow[], draft: string): BoardRow[] {
+  const toks = draft.toLowerCase().replace(/[^a-z0-9+&.\- ]/g, " ").split(/\s+/).filter((t) => t && !TYPE_NOISE.has(t) && !TYPE_SPEC.test(t));
+  if (!toks.length) return [];
+  const out = rows.filter((r) => { const key = rowSearchKey(r); return toks.every((t) => key.some((k) => k.startsWith(t))); });
+  // One bare word ("iphone", "macbook") is too broad to be a pick; a specific
+  // family word ("ps5", "xbox", "switch") that lands on a handful is fine.
+  if (toks.length === 1 && (toks[0].length < 3 || out.length > 6)) return [];
+  return out.length && out.length <= 6 ? out : [];
 }
 
 // Category quick-selects — the FB-funnel pattern: pick what you got, we walk
@@ -229,6 +259,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const [gBusy, setGBusy] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  const typedMatches = useMemo(() => matchTyped(rows, draft), [rows, draft]);
   // Photo attach — the flaw a phone-buyback chat can't have: sellers WANT to
   // show the crack. File input is hidden; the camera button triggers it.
   const [uploading, setUploading] = useState(false);
@@ -1421,6 +1452,22 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               </div>
             )}
           </div>
+
+          {/* tap-to-price suggestions for a typed model */}
+          {typedMatches.length > 0 && !takeover && !gBusy && (
+            <div className="mx-4 mb-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }} aria-label="tap your model to price it">
+              {typedMatches.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => { setDraft(""); deviceTap(r); }}
+                  className="shrink-0 rounded-full border border-[#00c853]/45 bg-white/[0.06] px-3 py-[8px] text-[14px] text-white/90 active:scale-95 transition-transform"
+                >
+                  {r.label} <span className="text-[#00c853] font-semibold">up to ${r.upTo.toLocaleString("en-US")}</span>
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Photo affordance — stays until they've sent one, so the option is
               discoverable even after the greeting scrolls away. Tapping it opens
