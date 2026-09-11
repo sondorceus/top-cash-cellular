@@ -30,7 +30,11 @@ const CONDITIONS: { key: string; label: string }[] = [
   { key: "mint", label: "like new" },
   { key: "good", label: "good" },
   { key: "fair", label: "some wear" },
-  { key: "broken", label: "cracked / broken" },
+  { key: "broken", label: "cracked / damaged \u2014 still turns on" },
+  // Not an engine tier: the engine's broken tier assumes the device powers
+  // on (homepage Broken card: "Device still powers on"). This goes straight
+  // to the hand-quote form.
+  { key: "parts", label: "won\u2019t turn on / parts" },
 ];
 const CARRIERS: { key: string; label: string }[] = [
   { key: "unlocked", label: "unlocked" },
@@ -69,6 +73,37 @@ const MAC_EXTRAS: { key: string; label: string }[] = [
 ];
 // Picker groups: phones split by brand; iPads, consoles and MacBooks by category.
 type Group = "ip" | "gs" | "ipad" | "console" | "macbook";
+// The thread as the seller saw it, as turns the chat brain can read: typed
+// text as-is, chip/tile taps tagged "(tapped on the page)", and the widgets
+// (chip questions, quote card, lock form, locked card) as bot lines — before
+// this the model saw taps as unexplained one-word user turns with no
+// question in between. Consecutive same-role lines fold into one turn;
+// IMG:: photo turns stay separate (the server reads them per turn).
+function historyFor(list: Msg[]): { from: "user" | "bot"; text: string }[] {
+  const out: { from: "user" | "bot"; text: string }[] = [];
+  const push = (from: "user" | "bot", text: string) => {
+    if (!text) return;
+    const last = out[out.length - 1];
+    const img = text.startsWith("IMG::") || (last?.text.startsWith("IMG::") ?? false);
+    if (last && last.from === from && !img) last.text = `${last.text}\n${text}`;
+    else out.push({ from, text });
+  };
+  for (const m of list) {
+    if (!("kind" in m)) {
+      push(m.from === "user" ? "user" : "bot", m.tap ? `(tapped on the page) ${m.text}` : m.text);
+      continue;
+    }
+    switch (m.kind) {
+      case "chips": push("bot", m.q); break;
+      case "quote": push("bot", `(quote card on the page) your ${m.label} comes out to $${m.offer.toLocaleString("en-US")}${m.note ? ` \u2014 ${m.note}` : ""}`); break;
+      case "lockform": push("bot", m.manual ? "(number form on the page \u2014 this one is priced by hand)" : "(lock-it-in number form on the page)"); break;
+      case "locked": push("bot", m.offer != null ? `(locked in on the page at $${m.offer.toLocaleString("en-US")})` : "(locked in on the page \u2014 hand quote, no number yet)"); break;
+      default: break; // models grid, err, numberform, msgr: local-only
+    }
+  }
+  return out;
+}
+
 function rowsFor(rows: BoardRow[], group: Group): BoardRow[] {
   if (group === "ip" || group === "gs") return rows.filter((r) => r.cat === "phone" && r.id.startsWith(group));
   return rows.filter((r) => r.cat === group);
@@ -109,7 +144,36 @@ function SellerAvatar() {
 // bot handles it. Sonny 2026-09-11: "give customers a dropdown when they
 // type iPhone 17… if they keep typing it goes away".
 const TYPE_NOISE = new Set(["i", "have", "a", "an", "got", "my", "the", "to", "sell", "selling", "and", "with", "for", "it", "is", "in", "on", "of", "this", "that", "want", "wanna", "phone", "phones", "one", "cash", "gb", "tb", "apple"]);
-const TYPE_SPEC = /^(\d+(gb|tb)|\d+gig|unlocked|locked|att|at&t|tmobile|t-mobile|verizon|sprint|cricket|metro|boost|sealed|mint|new|good|fair|cracked|broken|damaged|excellent|used|like)$/i;
+const TYPE_SPEC = /^(\d+(gb|tb)|\d+gig|unlocked|locked|att|at&t|tmobile|t-mobile|verizon|sprint|cricket|metro|metropcs|boost|visible|sealed|unopened|brand|box|mint|new|good|fair|cracked|crack|broken|parts|part|damaged|water|dead|shattered|scratched|scuffed|worn|rough|excellent|flawless|perfect|used|like|condition|digital|disc|cellular|lte|5g|wifi|wi-fi|only|edition|storage)$/i;
+function normalizeTyped(draft: string): string {
+  return draft.toLowerCase().replace(/(\d+)\s*(gb|tb)\b/g, "$1$2");
+}
+// Spec words in the typed text pre-fill the chip flow, so "iphone 17 pro
+// cracked 256gb unlocked" + one tap = the number, no questions asked.
+type TypedSpec = { storage?: string; condition?: string; carrier?: string; connectivity?: string; disc?: string };
+function parseTypedSpec(draft: string): TypedSpec {
+  const d = normalizeTyped(draft);
+  const out: TypedSpec = {};
+  const st = d.match(/\b(64|128|256|512|1024)gb\b|\b([12])tb\b/);
+  if (st) out.storage = st[0] === "1024gb" ? "1tb" : st[0].endsWith("tb") ? st[0] : st[0].replace("gb", "");
+  if (/\b(sealed|unopened|new in box|brand new)\b/.test(d)) out.condition = "sealed";
+  else if (/\b(parts|part|dead|water|won'?t (turn|power) on|no power|doesn'?t (turn|power) on)\b/.test(d)) out.condition = "parts";
+  else if (/\b(cracked|crack|broken|damaged|shattered)\b/.test(d)) out.condition = "broken";
+  else if (/\b(mint|like new|excellent|flawless|perfect)\b/.test(d)) out.condition = "mint";
+  else if (/\b(fair|worn|scratched|scuffed|rough|beat up)\b/.test(d)) out.condition = "fair";
+  else if (/\bgood\b/.test(d)) out.condition = "good";
+  if (/\bunlocked\b/.test(d)) out.carrier = "unlocked";
+  else if (/\b(at&t|att)\b/.test(d)) out.carrier = "att";
+  else if (/\b(t-mobile|tmobile|sprint)\b/.test(d)) out.carrier = "tmobile";
+  else if (/\bverizon\b/.test(d)) out.carrier = "verizon";
+  else if (/\b(cricket|metro|metropcs|boost|straight talk|visible)\b/.test(d)) out.carrier = "other";
+  else if (/\blocked\b/.test(d)) out.carrier = "unknown";
+  if (/\b(cellular|lte|5g)\b/.test(d)) out.connectivity = "cellular";
+  else if (/\bwi-?fi\b/.test(d)) out.connectivity = "wifi";
+  if (/\bdigital\b/.test(d)) out.disc = "digital";
+  else if (/\bdisc\b/.test(d)) out.disc = "disc";
+  return out;
+}
 function rowSearchKey(r: BoardRow): string[] {
   const base = r.label.toLowerCase().replace(/["()]/g, " ").split(/\s+/).filter(Boolean);
   const extra: string[] = [];
@@ -121,7 +185,7 @@ function rowSearchKey(r: BoardRow): string[] {
   return [...base, ...extra];
 }
 function matchTyped(rows: BoardRow[], draft: string): BoardRow[] {
-  const toks = draft.toLowerCase().replace(/[^a-z0-9+&.\- ]/g, " ").split(/\s+/).filter((t) => t && !TYPE_NOISE.has(t) && !TYPE_SPEC.test(t));
+  const toks = normalizeTyped(draft).replace(/[^a-z0-9+&.\- ]/g, " ").split(/\s+/).filter((t) => t && !TYPE_NOISE.has(t) && !TYPE_SPEC.test(t));
   if (!toks.length) return [];
   const out = rows.filter((r) => { const key = rowSearchKey(r); return toks.every((t) => key.some((k) => k.startsWith(t))); });
   // One bare word ("iphone", "macbook") is too broad to be a pick; a specific
@@ -149,7 +213,9 @@ const CATEGORIES: { key: string; label: string; img: string; deterministic?: Gro
 ];
 
 type Msg =
-  | { from: "user" | "bot" | "owner"; text: string }
+  // tap: the bubble is a chip/tile choice, not typed text (history tags it
+  // "(tapped on the page)" so the chat brain reads it as a selection).
+  | { from: "user" | "bot" | "owner"; text: string; tap?: true }
   // Local-only error bubble: rendered like a bot message but NEVER included
   // in the history sent to /api/chat (the kind filter drops it) — a client
   // hiccup line must not ride into the model as a real bot turn.
@@ -551,7 +617,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     }
     if (cat.deterministic) {
       pushMsgs(
-        { from: "user", text: cat.label },
+        { from: "user", text: cat.label, tap: true },
         { from: "bot", text: "solid — which one is it? older models work too, just type the model." },
         { from: "bot", kind: "models", group: cat.deterministic },
       );
@@ -561,23 +627,119 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     }
   }
 
-  function deviceTap(r: BoardRow) {
+  function deviceTap(r: BoardRow, prefill?: TypedSpec) {
     if (gBusy) return;
     interactedRef.current = true;
     setChatOpen(true);
-    logNote(`picked model ${r.label}`);
     if (takeoverRef.current) {
       void send(r.label);
       return;
     }
+    // Pre-filled answers (from the typed text) — only steps this row asks
+    // for, only valid keys; consoles have no "like new" tier.
+    const spec: typeof gSpec = {};
+    if (prefill) {
+      if (prefill.storage && r.steps.includes("storage") && r.storages.includes(prefill.storage)) spec.storage = prefill.storage;
+      if (prefill.condition && r.steps.includes("condition")) spec.condition = r.conditions === 4 ? (prefill.condition === "mint" ? "good" : prefill.condition === "parts" ? "broken" : prefill.condition) : prefill.condition;
+      if (prefill.carrier && r.steps.includes("carrier")) spec.carrier = prefill.carrier;
+      if (prefill.connectivity && r.steps.includes("connectivity")) spec.connectivity = prefill.connectivity;
+      if (prefill.disc && r.steps.includes("disc")) spec.disc = prefill.disc;
+    }
     setGRow(r);
-    setGSpec({});
+    setGSpec(spec);
     pixelTrack("ViewContent", { content_name: r.label, content_category: "chat" });
+    const conds = r.conditions === 4 ? CONDITIONS4 : CONDITIONS;
+    const bits = [
+      spec.storage ? storageLabel(r, spec.storage) : "",
+      spec.condition ? conds.find((c) => c.key === spec.condition)?.label ?? "" : "",
+      spec.carrier ? CARRIERS.find((c) => c.key === spec.carrier)?.label ?? "" : "",
+      spec.connectivity ? CONNECTIVITY.find((c) => c.key === spec.connectivity)?.label ?? "" : "",
+      spec.disc ? DISC_OPTIONS.find((c) => c.key === spec.disc)?.label ?? "" : "",
+    ].filter(Boolean);
+    logNote(`picked model ${r.label}${bits.length ? ` (typed: ${bits.join(", ")})` : ""}`);
+    if (spec.condition === "parts") {
+      partsPath([r.label, ...bits].join(" · "));
+      return;
+    }
+    const next = r.steps.find((st) => !spec[st]);
     pushMsgs(
-      { from: "user", text: r.label },
+      { from: "user", text: [r.label, ...bits].join(" · "), tap: true },
       { from: "bot", text: `good one — up to $${r.upTo.toLocaleString("en-US")} depending on specs.` },
-      stepChips(r, r.steps[0]),
+      ...(next ? [stepChips(r, next)] : []),
     );
+    // Everything answered in the typed text → straight to the number.
+    if (!next) void quoteNow(r, spec, r.steps[r.steps.length - 1]);
+  }
+
+  // "won't turn on / parts": the engine prices only devices that power on,
+  // so this never gets an engine number — straight to the hand-quote form.
+  // The lead carries the flag; Sonny prices it from the lead.
+  function partsPath(userLine: string) {
+    logNote("chose condition won\u2019t turn on / parts (hand quote)");
+    pushMsgs(
+      { from: "user", text: userLine, tap: true },
+      { from: "bot", text: `we still buy those \u2014 one that won\u2019t turn on gets priced by hand. drop your number and ${isDay ? "we\u2019ll text you a real offer shortly." : "we\u2019ll text you a real offer first thing in the morning."}` },
+      { from: "bot", kind: "lockform", manual: true },
+    );
+  }
+
+  // The engine call + card, shared by the last chip and a fully pre-filled
+  // tap. A 429 / 5xx / engine hiccup re-asks the last step; only an explicit
+  // manualReview is "we price this one by hand".
+  async function quoteNow(row: BoardRow, spec: typeof gSpec, lastDim: GoStep) {
+    setGBusy(true);
+    const storageKey = spec.storage ?? row.storages[0] ?? row.bestStorage;
+    try {
+      const res = await fetch("/api/go/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // sessionId → the quote route writes the "quote shown"/QSPEC
+        // breadcrumbs SERVER-SIDE with the engine result in hand (they feed
+        // the chat brain's funnel context + restore-time rehydration, so
+        // they must not be client-authored).
+        body: JSON.stringify({
+          model: row.id,
+          storage: storageKey,
+          condition: spec.condition,
+          carrier: spec.carrier,
+          opt: spec.connectivity ?? spec.disc,
+          processor: spec.processor,
+          memory: spec.memory,
+          extras: spec.extras,
+          sessionId,
+        }),
+      });
+      const d = await res.json();
+      if (d?.ok && typeof d.offer === "number") {
+        // Quote + capture in ONE beat — the form rides with the number, no
+        // extra tap. InitiateCheckout marks quote-viewers on the pixel so
+        // non-lockers become a retargeting audience (Lead still fires only
+        // on lock).
+        pixelTrack("InitiateCheckout", { content_name: row.label, value: d.offer, currency: "USD" });
+        pushMsgs(
+          {
+            from: "bot",
+            kind: "quote",
+            label: quoteLabel(row, storageKey),
+            offer: d.offer,
+            ...(spec.carrier === "unknown"
+              ? { note: "priced as carrier-locked. unlocked, at&t or t-mobile: this holds or goes up at inspection. prepaid carriers (cricket, metro, boost) come in lower. tip: settings → general → about → carrier lock." }
+              : {}),
+          },
+          { from: "bot", kind: "lockform", manual: false },
+        );
+      } else if (d?.manualReview) {
+        pushMsgs(
+          { from: "bot", text: "this one we price by hand — drop your number and we\u2019ll text you a real offer." },
+          { from: "bot", kind: "lockform", manual: true },
+        );
+      } else {
+        pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap that again for me." }, stepChips(row, lastDim));
+      }
+    } catch {
+      pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap that again for me." }, stepChips(row, lastDim));
+    }
+    setGBusy(false);
   }
 
   // The chip question for one step of a model's flow. Every category walks
@@ -622,7 +784,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (dim === "another") {
       if (key === "no") {
         pushMsgs(
-          { from: "user", text: label },
+          { from: "user", text: label, tap: true },
           { from: "bot", text: isDay ? "sounds good — we’ll reach out shortly to set it up." : "sounds good — we’ll reach out first thing in the morning to set it up." },
         );
         return;
@@ -631,12 +793,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       setGSpec({});
       if (key === "ip" || key === "gs" || key === "ipad" || key === "console" || key === "macbook") {
         pushMsgs(
-          { from: "user", text: label },
+          { from: "user", text: label, tap: true },
           { from: "bot", text: "nice — which one is it?" },
           { from: "bot", kind: "models", group: key },
         );
       } else {
-        pushMsgs({ from: "user", text: label });
+        pushMsgs({ from: "user", text: label, tap: true });
         void send("i got something else to sell too");
       }
       return;
@@ -647,7 +809,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     // funnel writes; the seller's own MEET/SHIP text reply does the same.
     if (dim === "handoff") {
       const lk = lastLockRef.current;
-      pushMsgs({ from: "user", text: label });
+      pushMsgs({ from: "user", text: label, tap: true });
       if (key === "later" || !lk) {
         pushMsgs({ from: "bot", text: "no problem — we’ll text you and sort it out." }, anotherChips());
         return;
@@ -680,6 +842,13 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (!gRow) return;
     const spec = { ...gSpec, [dim]: key };
     setGSpec(spec);
+    if (dim === "condition" && key === "parts") {
+      partsPath(label);
+      return;
+    }
+    // Breadcrumb per choice: the console shows what they picked, and the
+    // chat brain gets the tap flow if they switch to typing.
+    logNote(`chose ${dim} ${label}`);
     // Walk the model's own step list; the last answer triggers the quote.
     const idx = gRow.steps.indexOf(dim as GoStep);
     let next = idx >= 0 ? gRow.steps[idx + 1] : undefined;
@@ -691,66 +860,12 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       next = gRow.steps[idx + 2];
     }
     if (next) {
-      pushMsgs({ from: "user", text: label }, stepChips(gRow, next));
+      pushMsgs({ from: "user", text: label, tap: true }, stepChips(gRow, next));
       return;
     }
     // last step answered → quote once with the full spec
-    setGBusy(true);
-    pushMsgs({ from: "user", text: label });
-    const storageKey = spec.storage ?? gRow.storages[0] ?? gRow.bestStorage;
-    try {
-      const res = await fetch("/api/go/quote", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        // sessionId → the quote route writes the "quote shown"/QSPEC
-        // breadcrumbs SERVER-SIDE with the engine result in hand (they feed
-        // the chat brain's funnel context + restore-time rehydration, so
-        // they must not be client-authored).
-        body: JSON.stringify({
-          model: gRow.id,
-          storage: storageKey,
-          condition: spec.condition,
-          carrier: spec.carrier,
-          opt: spec.connectivity ?? spec.disc,
-          processor: spec.processor,
-          memory: spec.memory,
-          extras: spec.extras,
-          sessionId,
-        }),
-      });
-      const d = await res.json();
-      if (d?.ok && typeof d.offer === "number") {
-        // Quote + capture in ONE beat — the form rides with the number, no
-        // extra tap. InitiateCheckout marks quote-viewers on the pixel so
-        // non-lockers become a retargeting audience (Lead still fires only
-        // on lock).
-        pixelTrack("InitiateCheckout", { content_name: gRow.label, value: d.offer, currency: "USD" });
-        pushMsgs(
-          {
-            from: "bot",
-            kind: "quote",
-            label: quoteLabel(gRow, storageKey),
-            offer: d.offer,
-            ...(dim === "carrier" && key === "unknown"
-              ? { note: "priced as carrier-locked. unlocked, at&t or t-mobile: this holds or goes up at inspection. prepaid carriers (cricket, metro, boost) come in lower. tip: settings → general → about → carrier lock." }
-              : {}),
-          },
-          { from: "bot", kind: "lockform", manual: false },
-        );
-      } else if (d?.manualReview) {
-        pushMsgs(
-          { from: "bot", text: "this one we price by hand — drop your number and we\u2019ll text you a real offer." },
-          { from: "bot", kind: "lockform", manual: true },
-        );
-      } else {
-        // A 429 / 5xx / engine hiccup is NOT "we price this one by hand" —
-        // re-ask the last step so the instant close stays reachable.
-        pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap that again for me." }, stepChips(gRow, dim as GoStep));
-      }
-    } catch {
-      pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap that again for me." }, stepChips(gRow, dim as GoStep));
-    }
-    setGBusy(false);
+    pushMsgs({ from: "user", text: label, tap: true });
+    await quoteNow(gRow, spec, dim as GoStep);
   }
 
   // One field, one tap. The attestation rides in the button label ("I'm 18+
@@ -780,7 +895,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         body: JSON.stringify({
           model: gRow.id,
           storage: gSpec.storage ?? gRow.storages[0] ?? gRow.bestStorage,
-          condition: gSpec.condition ?? "good",
+          // "parts" isn't an engine tier — send the broken tier for the
+          // resolver plus the flag; the server writes the lead with no
+          // number and the hand-quote condition.
+          condition: gSpec.condition === "parts" ? "broken" : (gSpec.condition ?? "good"),
+          parts: gSpec.condition === "parts",
           carrier: gSpec.carrier ?? (gRow.cat === "phone" ? "unlocked" : undefined),
           // `opt` only for the categories that have one — a phone body with
           // opt:"na" was rejected as "bad spec" (review 2026-09-11).
@@ -852,7 +971,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     if (!t || sending || uploading) return;
     interactedRef.current = true;
     setDraft("");
-    const history = msgs.filter((m): m is { from: "user" | "bot"; text: string } => !("kind" in m)).map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
+    const history = historyFor(msgs);
     setMsgs((m) => [...m, { from: "user", text: t }]);
     setSending(true);
     try {
@@ -956,7 +1075,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     interactedRef.current = true;
     const MAX_BATCH = 6;
     const batch = files.slice(0, MAX_BATCH); // per-pick cap; they can attach again
-    const history = msgs.filter((m): m is { from: "user" | "bot"; text: string } => !("kind" in m)).map((m) => ({ from: m.from === "user" ? "user" : "bot", text: m.text }));
+    const history = historyFor(msgs);
     // A number is ACTIVELY on screen (un-retired guided quote/lock card) — a
     // photo must NOT trigger an AI reply that could name a DIFFERENT number
     // under it (the two-numbers bait-and-switch this page exists to avoid).
@@ -1313,7 +1432,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                         interactedRef.current = true;
                         logNote(`picked line ${label}`);
                         pushMsgs(
-                          { from: "user", text: label },
+                          { from: "user", text: label, tap: true },
                           { from: "bot", kind: "models", group: m.group, line: key },
                         );
                       }}
@@ -1460,7 +1579,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
                 <button
                   key={r.id}
                   type="button"
-                  onClick={() => { setDraft(""); deviceTap(r); }}
+                  onClick={() => { const pre = parseTypedSpec(draft); setDraft(""); deviceTap(r, pre); }}
                   className="shrink-0 rounded-full border border-[#00c853]/45 bg-white/[0.06] px-3 py-[8px] text-[14px] text-white/90 active:scale-95 transition-transform"
                 >
                   {r.label} <span className="text-[#00c853] font-semibold">up to ${r.upTo.toLocaleString("en-US")}</span>

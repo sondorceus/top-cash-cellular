@@ -153,6 +153,12 @@ export async function POST(req: NextRequest) {
   // The number the seller is looking at. Optional (older bundles don't send
   // it); when present the engine must agree or no lead is written.
   const quotedOffer = typeof body.quotedOffer === "number" && Number.isFinite(body.quotedOffer) ? Math.round(body.quotedOffer) : null;
+  // "won't turn on / parts" chip: not an engine tier (the engine's broken
+  // tier assumes the device powers on), so the lead is written with NO
+  // number and a hand-quote condition — never a broken-tier price a dead
+  // phone can't earn. The client sends condition "broken" so the resolver
+  // accepts the spec.
+  const parts = body.parts === true;
 
   const resolved = resolveGoSpec({
     model: body.model, storage: body.storage, condition: body.condition, carrier: body.carrier, opt: body.opt,
@@ -179,7 +185,7 @@ export async function POST(req: NextRequest) {
 
   // Engine is the only price authority — quote fresh at lock time, through
   // the same resolver /api/go/quote used to show the number.
-  const offer = await goQuote(spec);
+  const offer = parts ? null : await goQuote(spec);
 
   // PRICE-MOVED GUARD: the engine disagrees with the number on the seller's
   // screen (a live price edit mid-session). Answer with the live number and
@@ -190,7 +196,8 @@ export async function POST(req: NextRequest) {
   }
 
   const isEmail = EMAIL_RE.test(contact);
-  const specLine = spec.specLine;
+  const PARTS_LABEL = "Won't turn on / parts";
+  const specLine = parts ? spec.specLine.replace(/\bbroken\b/, "won't turn on / parts") : spec.specLine;
   const ua = sanitize(req.headers.get("user-agent") || "unknown");
   const visitorId = sanitize(req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
   const safeIp = sanitize(ip).slice(0, 60);
@@ -213,7 +220,7 @@ export async function POST(req: NextRequest) {
     `Device: ${spec.deviceType} — ${spec.entry.label}`,
     `Storage: ${spec.display.storage}`,
     spec.display.secondaryKey ? `${spec.display.secondaryKey}: ${spec.display.secondaryValue}` : null,
-    `Condition: ${spec.display.condition}`,
+    `Condition: ${parts ? `${PARTS_LABEL} — hand quote (the engine prices only devices that power on)` : spec.display.condition}`,
     spec.display.notes ? `Notes: ${spec.display.notes}` : null,
     offer != null ? `Quote: $${offer}` : `Quote: TBD (custom)`,
     `Payout: TBD`,

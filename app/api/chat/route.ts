@@ -264,6 +264,17 @@ export async function POST(req: NextRequest) {
   }
   const quotesOnTable = [...quoteTable.values()];
   const quotesSum = quotesOnTable.reduce((a, q) => a + q.offer, 0);
+  // GUIDED TAP FLOW — what the seller tapped on the page (category tile,
+  // model, each spec chip, the quote card, the lock), oldest → newest.
+  // Client-written breadcrumbs (chat-sync POST: valid sids only, rate-
+  // limited, reserved prefixes refused) plus the server-written quote/lock
+  // notes. Sonny 2026-09-11: "when people select, the AI should know so it
+  // can help if they have questions or something is wrong." Contact is
+  // stripped off the LOCKED line; the model never needs it.
+  const tapFlow = storeNotes
+    .filter((t) => /^(tapped |picked model |picked line |chose |quote shown:|LOCKED:|price moved at lock)/.test(t))
+    .slice(-14)
+    .map((t) => t.replace(/^(LOCKED:.*?) — .*$/, "$1").slice(0, 100));
 
   // Read contact + a rough device summary from the WHOLE conversation, not
   // just this message, so a number typed two turns ago still reaches staff.
@@ -476,6 +487,7 @@ export async function POST(req: NextRequest) {
         "NOT IN THE INSTANT CATALOG (MacBooks, iPads, consoles, watches, older iPhones, anything unusual): these are ALWAYS a manual quote from the team — so get their name and phone number within the first two exchanges ('so the offer actually reaches you'), THEN gather the specs the team needs (chip/model/storage/condition) for the notify_team summary. Never interrogate specs first and ask for contact last, and never guess a number for these — some are deliberately manual-quote.",
         "WHOLESALE/VENDOR: someone pitching to SELL us a lot, or asking to buy FROM us, goes straight to notify_team with their details. No quote.",
         "CONDITION HONESTY: every quote is what we pay if the device matches what they described, confirmed at inspection. Say that naturally once, when you first give a number — not as a legal disclaimer and not on every message. Never say 'no obligation' or 'no hidden fees'; it reads like a scam.",
+        "WON'T TURN ON / PARTS / LIQUID DAMAGE: the instant engine prices only devices that power on. A device that won't turn on, has water damage, or is 'for parts' is a hand quote — do NOT call get_quote for it and never call it 'broken' to get a number. Say we still buy those and the owner texts a real parts offer, get their number, and call notify_team with the model and exactly what's wrong.",
         "IF THEY HESITATE OR PUSH BACK on a number ('that's low', 'let me think', 'someone else offers more'): step one is ALWAYS their phone number — 'fair enough — drop your number and we'll text you the quote so it's saved; it holds 14 days either way.' Only then educate, one plain fact at a time, in your own words: the number is for the exact condition they described and doesn't drop at inspection unless the device differs; we pay cash the same day, not store credit or a trade-in spread across a new phone contract. Never haggle or move a number (engine prices only), never trash a competitor, never promise the team will beat an offer. If they name a specific competing offer they actually have, call notify_team with the device, their number, and the competing number — the team will take a look and text them.",
 
         "ONE QUESTION PER MESSAGE — HARD RULE for gathering device details: one spec question at a time, never two bundled with 'and', never two question marks. The number-first CLOSE is the one exception — there, one question plus one short imperative ('drop your number and we'll text it to you') is the right shape. Never re-ask anything already answered anywhere in the conversation, including what a photo already shows. Never enumerate storage options ('128/256/512') — just ask 'what storage is it?'; the pricing engine knows the real tiers, and listed options are wrong for some models.",
@@ -551,6 +563,9 @@ export async function POST(req: NextRequest) {
       numberCooldown ? "NUMBER-ASK COOLDOWN: you asked for their phone number in your last message and they didn't give it. Do NOT ask for it in this reply. Answer what they said and advance the device flow — ask the next spec, or call get_quote if you already have model + condition. You may ask again later, once, at a natural close point." : "",
       quotesOnTable.length
         ? `QUOTES ALREADY GIVEN IN THIS THREAD (real get_quote results from earlier turns — newest per device; use them, never re-ask for specs already priced): ${quotesOnTable.map((q) => q.line).join("; ")}. Itemized sum: $${quotesSum} across ${quotesOnTable.length} device${quotesOnTable.length === 1 ? "" : "s"}. When the seller asks for a total or a recap, give this itemized sum — it is real; anything beyond it is the owner's call. If they change a device's condition or storage, re-run get_quote for that device.`
+        : "",
+      tapFlow.length
+        ? `GUIDED TAP FLOW (what the seller tapped on the page, oldest → newest — choices they made, not things they typed): ${tapFlow.join(" → ")}. Use it: never re-ask what they already picked. If the newest entry is a pick with no quote after it, the page is still asking for the rest of the specs — finish them by chat and call get_quote. If they say a pick was wrong, a number looks off, or something on the page isn't working (chips missing, number won't load, can't lock), sort it out in chat: confirm the right spec, call get_quote (that number replaces the old one), and if it's a page problem or you can't resolve it, take their number and call notify_team so the owner steps in.`
         : "",
       funnelNotes.length ? `FUNNEL STATE (reported by the on-page guided flow): ${funnelNotes.join(" · ")}. Use this for context — but if the seller disputes or negotiates a number, re-verify with get_quote before confirming anything.` : "",
       (contact || storeContactNote) ? "A phone number or email for this seller is ALREADY on file — never ask for it again; the close moves to confirming the next step (meetup or label)." : "",
