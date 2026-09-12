@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE } from "../../data/prices";
+import { stripNumberAsk } from "../../lib/chat-cadence";
 import { PHONE_DISPLAY } from "../../lib/constants";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
@@ -633,6 +634,19 @@ export async function POST(req: NextRequest) {
 
       const textParts = response.content.filter((b) => b.type === "text");
       if (textParts.length) reply = textParts.map((b) => (b as { text: string }).text).join(" ").trim();
+      // CADENCE BACKSTOP. The prompt says "never two asks in a row", the
+      // cooldown line says "not in this reply", and the model still asked on
+      // three consecutive turns whenever a fresh quote landed (2026-09-12
+      // test: camera → Face ID → battery, and four in a row on a water-
+      // damaged phone). When the cooldown is active, the ask sentence is
+      // removed server-side; the price and the answer stay.
+      if (numberCooldown) {
+        const stripped = stripNumberAsk(reply);
+        if (stripped && stripped !== reply) {
+          reply = stripped;
+          if (validSession(sessionId)) after(() => { void appendChatMsg(sessionId, "note", "cadence guard: dropped a repeat number ask"); });
+        }
+      }
 
       const toolUses = response.content.filter((b) => b.type === "tool_use") as Array<{
         type: "tool_use"; id: string; name: string; input: Record<string, unknown>;
