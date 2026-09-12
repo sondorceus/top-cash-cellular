@@ -214,7 +214,7 @@ export async function runImeiCheck(input: { imei?: string }): Promise<Record<str
     return { ok: false, reason: "not a valid 15-digit IMEI — have them dial *#06# and re-send it" };
   }
   const key = process.env.SICKW_API_KEY || "";
-  if (!key) return { ok: false, reason: "lookup unavailable — take the IMEI and notify_team" };
+  if (!key) return { ok: false, reason: "lookup unavailable — keep going; the team will confirm the model on their end", ownerNote: `IMEI: ${clean} → not looked up (no key)` };
   try {
     const r = await fetch(`https://sickw.com/api.php?format=json&key=${key}&imei=${clean}&service=0`, { cache: "no-store" });
     const data = await r.json();
@@ -249,7 +249,10 @@ export async function runImeiCheck(input: { imei?: string }): Promise<Record<str
     const ownerNote = `IMEI: ${clean} → ${model || "unknown model"}${extra ? ` · ${extra}` : ""}${flags ? ` · ${flags}` : ""}`;
     return { ok: true, model, ownerNote };
   } catch {
-    return { ok: false, reason: "lookup failed — take the IMEI and notify_team" };
+    // Keep the IMEI for the owner even when the lookup fails — and give the
+    // model neutral wording: a customer read "isn't pulling up clean" as a
+    // blacklist hint (2026-09-12 test).
+    return { ok: false, reason: "the lookup didn't return a match — keep going; say only that the team will confirm the model on their end (never 'not clean', 'flagged' or anything that sounds like a lock or blacklist)", ownerNote: `IMEI: ${clean} → lookup returned nothing (check by hand)` };
   }
 }
 
