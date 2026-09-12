@@ -322,6 +322,28 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // Widget mode: the homepage's legacy "open chat" buttons and any page can
   // open this overlay with `window.dispatchEvent(new CustomEvent("tcc:open-chat"))`.
   const startedOnPageRef = useRef(false);
+  // The button is DRAGGABLE and remembers where it was put (the legacy
+  // homepage bubble did this and Sonny asked for it back, 2026-09-12): a
+  // fixed corner can sit on top of a page's bottom bar on a phone. A press
+  // that moves < 6px is a tap and opens the chat; anything more is a drag.
+  const [fabPos, setFabPos] = useState<{ x: number; y: number } | null>(null);
+  const fabDrag = useRef<{ startX: number; startY: number; origX: number; origY: number; moved: boolean } | null>(null);
+  const fabRef = useRef<HTMLButtonElement>(null);
+  const clampFab = (x: number, y: number) => {
+    const w = fabRef.current?.offsetWidth ?? 160, h = fabRef.current?.offsetHeight ?? 48;
+    return { x: Math.max(6, Math.min(window.innerWidth - w - 6, x)), y: Math.max(6, Math.min(window.innerHeight - h - 6, y)) };
+  };
+  useEffect(() => {
+    if (mode !== "widget") return;
+    try {
+      const saved = JSON.parse(localStorage.getItem("tcc_chat_fab_pos") || "null");
+      if (saved && typeof saved.x === "number" && typeof saved.y === "number") setFabPos(clampFab(saved.x, saved.y));
+    } catch { /* default corner */ }
+    const onResize = () => setFabPos((p) => (p ? clampFab(p.x, p.y) : p));
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
   useEffect(() => {
     if (mode !== "widget") return;
     const onOpen = () => setChatOpen(true);
@@ -1666,11 +1688,38 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       <>
         {!chatOpen && (
           <button
+            ref={fabRef}
             type="button"
-            onClick={openChat}
-            aria-label="Chat with us — get a real number and a text from our team"
-            className="fixed z-40 right-4 flex items-center gap-2 rounded-full bg-[#00c853] text-[#0a0a0a] font-bold text-[15px] pl-4 pr-5 py-3 shadow-[0_6px_24px_rgba(0,0,0,0.45)] active:scale-[0.98] transition"
-            style={{ bottom: "max(16px, env(safe-area-inset-bottom))" }}
+            aria-label="Chat with us — get a real number and a text from our team. Drag to move."
+            className="fixed z-40 flex items-center gap-2 rounded-full bg-[#00c853] text-[#0a0a0a] font-bold text-[15px] pl-4 pr-5 py-3 shadow-[0_6px_24px_rgba(0,0,0,0.45)] select-none"
+            style={fabPos
+              ? { left: fabPos.x, top: fabPos.y, touchAction: "none", cursor: fabDrag.current?.moved ? "grabbing" : "grab" }
+              : { right: 16, bottom: "max(16px, env(safe-area-inset-bottom))", touchAction: "none", cursor: "grab" }}
+            onPointerDown={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              fabDrag.current = { startX: e.clientX, startY: e.clientY, origX: r.left, origY: r.top, moved: false };
+              try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* older webviews */ }
+            }}
+            onPointerMove={(e) => {
+              const d = fabDrag.current;
+              if (!d) return;
+              const dx = e.clientX - d.startX, dy = e.clientY - d.startY;
+              if (!d.moved && Math.abs(dx) + Math.abs(dy) < 6) return;
+              d.moved = true;
+              setFabPos(clampFab(d.origX + dx, d.origY + dy));
+            }}
+            onPointerUp={(e) => {
+              const d = fabDrag.current;
+              fabDrag.current = null;
+              try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ignore */ }
+              if (d?.moved) {
+                const r = e.currentTarget.getBoundingClientRect();
+                try { localStorage.setItem("tcc_chat_fab_pos", JSON.stringify({ x: r.left, y: r.top })); } catch { /* private mode */ }
+                return;
+              }
+              openChat();
+            }}
+            onPointerCancel={() => { fabDrag.current = null; }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" d="M4 5h16v11H8l-4 4V5z" /></svg>
             get my number
