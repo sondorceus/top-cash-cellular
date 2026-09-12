@@ -44,7 +44,7 @@ async function sickw(service: number, imei: string): Promise<Raw> {
   const key = process.env.SICKW_API_KEY || "";
   if (!key) return { status: "nokey", text: "", error: "no SICKW_API_KEY" };
   try {
-    const r = await fetch(`https://sickw.com/api.php?format=json&key=${key}&imei=${imei}&service=${service}`, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
+    const r = await fetch(`https://sickw.com/api.php?format=json&key=${key}&imei=${imei}&service=${service}`, { cache: "no-store", signal: AbortSignal.timeout(45_000) });
     if (!r.ok) return { status: "http", text: "", error: `HTTP ${r.status}` };
     const d = await r.json();
     const balance = d.balance != null ? Number(d.balance) : undefined;
@@ -120,8 +120,17 @@ export async function lookupImei(cleanImei: string): Promise<ImeiLookup> {
       if (st && /lost|stolen|erased/i.test(st)) out.blacklisted = true;
     }
   }
-  const errs = results.filter((r) => r.status === "error" && r.error).map((r) => r.error as string);
-  if (errs.length) { out.error = errs[0]; void alertOwnerOnce(errs[0], out.balance); }
+  // Every sub-call that didn't succeed is named in the note and logged — a
+  // silently dropped Apple call left the owner's own IMEI without its
+  // Find My / SIM-lock flags on the first live run (2026-09-12).
+  const services = isApple ? [61, 92] : isSamsung ? [1, 54] : isGoogle ? [42, 54] : [54];
+  const failed = results.map((r, i) => (r.status === "success" ? null : `${services[i]}:${r.status}${r.error ? ` ${r.error}` : ""}`)).filter((x): x is string => !!x);
+  if (failed.length) {
+    console.error(`[imei-lookup] ${imei} sub-call failures: ${failed.join(" | ")}`);
+    out.error = failed.join("; ");
+    const sickwErr = results.find((r) => r.status === "error" && r.error)?.error;
+    if (sickwErr) void alertOwnerOnce(sickwErr, out.balance);
+  }
   out.cost = Math.round(cost * 1000) / 1000;
   const bits = [
     out.model || "unknown model",
