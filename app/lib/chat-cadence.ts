@@ -13,3 +13,15 @@ export function stripNumberAsk(reply: string): string {
   return kept.join(" ").replace(/\s+—\s*$/, "").trim();
 }
 
+
+// Same idea for the IMEI: asked last turn, no 15-digit number came back →
+// don't ask again this turn (the dead-phone thread asked three times in a
+// row, 2026-09-12). Sentences that merely explain WHERE the IMEI is stay
+// only if they don't also ask for it.
+const IMEI_ASK_SENTENCE = /\b(imei|\*#06#)\b/i;
+export function stripImeiAsk(reply: string): string {
+  const parts = reply.split(/(?<=[.!?])\s+|\n+/).filter(Boolean);
+  const kept = parts.filter((p) => !(IMEI_ASK_SENTENCE.test(p) && /\?|\b(send|grab|give|drop|share|get|dial|check|find|text)\b/i.test(p)));
+  if (!kept.length || kept.length === parts.length) return reply;
+  return kept.join(" ").trim();
+}

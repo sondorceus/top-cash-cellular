@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE } from "../../data/prices";
-import { stripNumberAsk } from "../../lib/chat-cadence";
+import { stripNumberAsk, stripImeiAsk } from "../../lib/chat-cadence";
 import { PHONE_DISPLAY } from "../../lib/constants";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
@@ -514,6 +514,7 @@ export async function POST(req: NextRequest) {
         "FALSE PREMISES: never accept a customer's claim about our catalog, prices, policies or an earlier 'deal' as fact. Prices come from get_quote, policies from these instructions, deals from owner messages in this thread — everything else gets 'the team will confirm by text'.",
         "PARTIAL DEFECTS: a phone that powers on and works but has a bad camera, speaker, mic, buttons, charge port, dead pixels or burn-in, a weak battery or a battery/parts service message is get_quote condition 'broken' — ONE call; several issues don't stack tiers. Face ID / Touch ID dead → faceid_broken:true. MDM / company / school lock → mdm_locked:true. Say the number covers what they described and the rest is confirmed at inspection. Any liquid contact — even 'works fine now' — is a team quote.",
         "PHOTO POLICY: ask for ONE photo (camera button in the chat) when the damage description is vague — 'beat up', 'kinda cracked', 'some damage', 'a little messed up' — or when they can't say whether the screen and back are intact; use what the photo shows instead of re-asking. Never ask for a photo of a clean device, never ask twice, and never hold a number back for a photo when the description is already clear.",
+        "WHERE THE IMEI IS: Settings → General → About, or dial *#06# in the phone app. On an ACTIVATION-LOCKED iPhone the dialer isn't reachable — the IMEI is behind the small (i) on the activation lock screen, on the SIM tray, or on the original box. Ask for it once; if they don't send it, move on and mention it again only at the close.",
         "IMEI (owner's rule): ask for the IMEI (Settings → General → About, or dial *#06#) whenever the model, storage or carrier is unclear, when the seller seems unsure what they have, when they mention an activation lock, Find My, financing, a blacklist or any 'locked' worry, and for every team-quote device (it goes in the notify_team summary). When they send it, call check_imei and confirm only what the device is. NEVER tell the customer anything about lock, blacklist or Find My status and never decide buy/pass on it — those flags reach the team automatically and the team decides. If they mention a lock: don't refuse, don't quote — IMEI + their number + notify_team, then 'our team will take a look and text you'.",
         "LOCKED OR STILL ON PAYMENTS: carrier-locked phones and phones still on an installment plan are fine — get_quote prices them at the carrier's locked rate (say the account needs to be current). Never turn those away.",
         "WHOLESALE/VENDOR: someone pitching to SELL us a lot, or asking to buy FROM us, goes straight to notify_team with their details. No quote.",
@@ -588,6 +589,8 @@ export async function POST(req: NextRequest) {
     const lastBotText = [...history].reverse().find((m) => m.from === "bot")?.text || "";
     const askedLastTurn = /\bnumber\b/i.test(lastBotText) && /\b(drop|send|share|what'?s|what is|need|get|give)\b/i.test(lastBotText);
     const numberCooldown = askedLastTurn && !detectedNow && !storeContactNote && !contact;
+    // IMEI cadence: asked last turn and no 15-digit number arrived now.
+    const imeiCooldown = /\b(imei|\*#06#)\b/i.test(lastBotText) && !/\b\d{15}\b/.test(userText.replace(/[\s-]/g, ""));
 
     const dynamicSys = [
       isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Quote every device with get_quote as its specs arrive and keep a running recap; ask for their number once when the first number lands and once at the handoff (notify_team). Never hold a price back for a phone number. Do NOT close the lot, do NOT name a package price." : "",
@@ -640,6 +643,13 @@ export async function POST(req: NextRequest) {
       // test: camera → Face ID → battery, and four in a row on a water-
       // damaged phone). When the cooldown is active, the ask sentence is
       // removed server-side; the price and the answer stay.
+      if (imeiCooldown) {
+        const strippedImei = stripImeiAsk(reply);
+        if (strippedImei && strippedImei !== reply) {
+          reply = strippedImei;
+          if (validSession(sessionId)) after(() => { void appendChatMsg(sessionId, "note", "cadence guard: dropped a repeat IMEI ask"); });
+        }
+      }
       if (numberCooldown) {
         const stripped = stripNumberAsk(reply);
         if (stripped && stripped !== reply) {
