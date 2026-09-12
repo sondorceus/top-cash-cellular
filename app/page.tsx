@@ -6079,7 +6079,7 @@ export default function Home() {
   // applyGalaxyDrop — a better config must never quote below a worse one.
   const quoteAfterDrop = applyGalaxyDrop(quoteAfterCap, model?.id);
   // THE RULE (IWM × 0.90) lands last — identical call to the server engine.
-  const ruleCeiling = model ? iwmRuleCeiling({ modelId: model.id, storage: storage?.id, condition: condition?.id, carrier: carrier?.id, carrierLocked: carrierLock?.id === "yes", carrierDeduction: totalCarrierDeduction }) : null;
+  const ruleCeiling = model ? iwmRuleCeiling({ modelId: model.id, storage: storage?.id, condition: condition?.id }) : null;
   const quote = ruleCeiling != null ? Math.min(quoteAfterDrop, ruleCeiling) : quoteAfterDrop;
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.

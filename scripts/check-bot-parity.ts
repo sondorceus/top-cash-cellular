@@ -65,7 +65,7 @@ function funnelOffer(id: string, st: string, cond: string, carrier: string, vzLo
   const cap = marginCapFor({ modelId: id, label: LABELS[id], condition: cond, carrier, carrierLocked: vzLocked, storage: st, carrierDeduction: gap });
   const capped = cap != null && raw > cap ? cap : raw;
   const dropped = applyGalaxyDrop(capped, id);
-  const rule = iwmRuleCeiling({ modelId: id, storage: st, condition: cond, carrier, carrierLocked: vzLocked, carrierDeduction: gap });
+  const rule = iwmRuleCeiling({ modelId: id, storage: st, condition: cond });
   const final = rule != null ? Math.min(dropped, rule) : dropped;
   const manual = final < MIN_OFFER || (cap != null && cap < MIN_OFFER);
   return { offer: manual ? null : final, manual };

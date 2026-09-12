@@ -223,9 +223,9 @@ export const DEVICES: Device[] = [
   { slug: "iphone-11", name: "iPhone 11", category: "iPhone", price: 144, year: 2019 },
 
   // ── Samsung Galaxy S Series ──
-  { slug: "galaxy-s26-ultra", name: "Galaxy S26 Ultra", category: "Samsung", price: 692, year: 2026 },
-  { slug: "galaxy-s25-ultra", name: "Galaxy S25 Ultra", category: "Samsung", price: 553, year: 2025 },
-  { slug: "galaxy-s24-ultra", name: "Galaxy S24 Ultra", category: "Samsung", price: 545, year: 2024 },
+  { slug: "galaxy-s26-ultra", name: "Galaxy S26 Ultra", category: "Samsung", price: 510, year: 2026 },
+  { slug: "galaxy-s25-ultra", name: "Galaxy S25 Ultra", category: "Samsung", price: 371, year: 2025 },
+  { slug: "galaxy-s24-ultra", name: "Galaxy S24 Ultra", category: "Samsung", price: 265, year: 2024 },
   { slug: "galaxy-s23-ultra", name: "Galaxy S23 Ultra", category: "Samsung", price: 260, year: 2023 },
   { slug: "galaxy-s22-ultra", name: "Galaxy S22 Ultra", category: "Samsung", price: 280, year: 2022 },
   { slug: "galaxy-s21-ultra", name: "Galaxy S21 Ultra", category: "Samsung", price: 113, year: 2021 },
@@ -238,8 +238,8 @@ export const DEVICES: Device[] = [
   { slug: "galaxy-s22-plus", name: "Galaxy S22+", category: "Samsung", price: 162, year: 2022 },
   { slug: "galaxy-s21-plus", name: "Galaxy S21+", category: "Samsung", price: 118, year: 2021 },
   { slug: "galaxy-s20-plus", name: "Galaxy S20+", category: "Samsung", price: 131, year: 2020 },
-  { slug: "galaxy-s26", name: "Galaxy S26", category: "Samsung", price: 427, year: 2026 },
-  { slug: "galaxy-s25", name: "Galaxy S25", category: "Samsung", price: 310, year: 2025 },
+  { slug: "galaxy-s26", name: "Galaxy S26", category: "Samsung", price: 389, year: 2026 },
+  { slug: "galaxy-s25", name: "Galaxy S25", category: "Samsung", price: 233, year: 2025 },
   { slug: "galaxy-s24", name: "Galaxy S24", category: "Samsung", price: 248, year: 2024 },
   { slug: "galaxy-s23", name: "Galaxy S23", category: "Samsung", price: 180, year: 2023 },
   { slug: "galaxy-s22", name: "Galaxy S22", category: "Samsung", price: 117, year: 2022 },

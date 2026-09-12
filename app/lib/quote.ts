@@ -239,7 +239,7 @@ export async function quoteDevice(
     const postGalaxyRaw = applyGalaxyDrop(cappedQuote, id);
     // THE RULE (IWM × 0.90) lands last — see iwmRuleCeiling. Mirror of the
     // funnel + parity gate by construction.
-    const ruleCeiling = iwmRuleCeiling({ modelId: id, storage, condition: cond, carrier, carrierLocked: spec.carrierLocked, carrierDeduction });
+    const ruleCeiling = iwmRuleCeiling({ modelId: id, storage, condition: cond });
     const postGalaxy = ruleCeiling != null ? Math.min(postGalaxyRaw, ruleCeiling) : postGalaxyRaw;
     // Sealed premium applies ONLY on the mint-fallback path (no sealed cell).
     // Added LAST — guaranteed past the resell margin cap, because an unopened

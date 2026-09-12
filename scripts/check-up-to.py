@@ -61,29 +61,31 @@ IWM_MULT = float(re.search(r"IWM_RULE_MULT\s*=\s*([\d.]+)", _iwm_src).group(1))
 def _st_order(st):
     return int(st[:-2]) * 1024 if st.endswith("tb") else (int(st) if st.isdigit() else 0)
 def iwm_ceiling(mid, st, cond):
+    """mirror of iwmCeiling: per-condition max over tiers <= st that publish that
+    condition (sparse grids fall back to the smallest tier that has it), then
+    monotone up the ladder; None when IWM never lists the condition."""
     grid = IWM.get(mid)
     if not grid: return None
     c = "mint" if cond == "verygood" else cond
     want = _st_order(st) if st else float("inf")
-    best = None
+    def per_cond(cc):
+        best = None
+        for t in sorted(grid, key=_st_order):
+            v = grid[t].get(cc)
+            if v is None: continue
+            if _st_order(t) <= want: best = max(best or 0, v)
+            elif best is None:
+                best = v; break
+        return best
+    own = per_cond(c)
+    if own is None: return None
     ladder = ["broken", "fair", "good", "mint", "sealed"]
-    up_to = ladder[: ladder.index(c) + 1] if c in ladder else [c]
-    for t in sorted(grid, key=_st_order):
-        vals = [grid[t][k] for k in up_to if grid[t].get(k) is not None]
-        if not vals: continue
-        v = max(vals)
-        if _st_order(t) <= want or best is None:
-            best = max(best or 0, jround(v * IWM_MULT))
-        if _st_order(t) > want: break
-    return best
-
-# CONSUMER_COMP_LABELS — Swappa/eBay consumer medians that skew high, so their
-# caps take a modest flat trim (mirror of consumerCompTrim).
-_cc = re.search(r"CONSUMER_COMP_LABELS\s*=\s*new Set\(\[(.*?)\]\)", rs_src, re.S)
-CONSUMER_COMP = {s.replace('\\"', '"') for s in re.findall(r'"((?:[^"\\]|\\.)*)"', _cc.group(1) if _cc else "")}
-
-def consumer_trim(full_cap):
-    return 10 if full_cap < 250 else 15 if full_cap < 450 else 20
+    best = own
+    if c in ladder:
+        for lc in ladder[: ladder.index(c)]:
+            v = per_cond(lc)
+            if v is not None: best = max(best, v)
+    return jround(best * IWM_MULT)
 
 cat_path = REPO / "app" / "data" / "catalog-prices.ts"
 cat_src = cat_path.read_text(encoding="utf-8")
@@ -129,7 +131,7 @@ def rule_ceiling(mid, st, cond):
     """mirror of iwmRuleCeiling (unlocked): IWM × 0.90, sealed 17 Pro Max exempt"""
     if mid == "ip17pm" and cond == "sealed": return None
     c = iwm_ceiling(mid, st, cond)
-    return c if c is not None and c >= 25 else None  # below MIN_OFFER the table stands
+    return max(c, 25) if c is not None else None  # floors at MIN_OFFER, never steps aside
 def cap_of(mid, cond, st=None):
     """Full mirror of marginCapFor() for the UNLOCKED case."""
     cm = COND_MULT.get(cond, 1.0)
@@ -139,15 +141,18 @@ def cap_of(mid, cond, st=None):
         rel = cm / 0.8 if net["good"] else cm
         caps.append(jround(net["unlocked"] * rel * 0.75))
         if net["max"] is not None: caps.append(net["max"])
-    if caps: return min(caps)
-    if mid in IWM: return None  # ruled by rule_ceiling() after the drop, not comp-capped
-    label = SKU.get(mid)
-    resell = resell_of(label)
-    if resell is None: return None
-    cap = jround(jround(resell * cm) * 0.87 * 0.75)
-    if resell_key_of(label) in CONSUMER_COMP:
-        cap = max(0, cap - consumer_trim(jround(resell * 0.87 * 0.75)))
-    return cap
+    # Galaxy keeps the comp guard on top of the IWM rule (owner: bad resale);
+    # other IWM-listed models are ruled by rule_ceiling() after the drop.
+    galaxy = bool(re.match(r"^(gs|gz|gnote)", mid))
+    if net is None and (galaxy or mid not in IWM):
+        label = SKU.get(mid)
+        resell = resell_of(label)
+        if resell is not None:
+            cap = jround(jround(resell * cm) * 0.87 * 0.75)
+            if resell_key_of(label) in CONSUMER_COMP:
+                cap = max(0, cap - consumer_trim(jround(resell * 0.87 * 0.75)))
+            caps.append(cap)
+    return min(caps) if caps else None
 
 def dt_of(mid):
     if mid.startswith("ipad"): return "ipad"

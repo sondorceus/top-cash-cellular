@@ -8,7 +8,7 @@
 // damaged devices; brokenGlass adds extra deductions on broken phones.
 
 import { IWM_PAYOUTS, IWM_RULE_MULT } from "../data/iwm-payouts";
-import { carrierGapForCondition, MIN_OFFER } from "../data/prices";
+import { MIN_OFFER } from "../data/prices";
 
 export const RESELL_ESTIMATES: Record<string, number> = {
   // iPhones — Swappa mid price (actual listings)
@@ -330,22 +330,25 @@ export function marginCapFor(opts: {
     const pin = locked ? net.maxOffer?.locked : net.maxOffer?.unlocked;
     if (pin != null) caps.push(pin);
   }
-  // 2. Resell comp × 0.75 — only for models with no owner exit AND no IWM
-  // grid (Pixels). Models IWM lists are ruled by iwmRuleCeiling() instead,
-  // applied by every caller AFTER the galaxy drop (see quote.ts) — the
-  // stale comps were capping 14 models $85–$240 under the rule (2026-09-11).
-  if (!net && !(opts.modelId && IWM_PAYOUTS[opts.modelId])) {
+  // 2. Resell comp × 0.75 — for models with no owner exit AND no IWM grid
+  // (Pixels), and for GALAXY, which keeps this guard on top of the IWM rule.
+  // Sonny 2026-09-11: "galaxy have bad resell values too … galaxy price is
+  // good lowered" — Atlas barely buys Galaxy, so IWM's payout is not a
+  // price we can match; the comp (plus the −$75 drop) stays binding and the
+  // IWM rule can only cut further, never raise. Apple models are ruled by
+  // iwmRuleCeiling() instead (applied by every caller after the drop) — the
+  // stale comps were capping 14 of them $85–$240 under his own rule.
+  if (!net && (GALAXY_COMP_GUARD.test(opts.modelId ?? "") || !(opts.modelId && IWM_PAYOUTS[opts.modelId]))) {
     const resell = getResellEstimateForModel(opts.modelId ?? null, opts.label ?? null);
-    if (resell == null) return null;
-    const cap = Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
-    // Consumer-median comps run high (see CONSUMER_COMP_LABELS). Trim is keyed
-    // to the model's full-condition cap so it's constant across the ladder.
-    const matched = resellLabelFor(opts.modelId ?? null, opts.label ?? null);
-    if (matched && CONSUMER_COMP_LABELS.has(matched)) {
+    if (resell != null) {
+      const cap = Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
+      // Consumer-median comps run high (see CONSUMER_COMP_LABELS). Trim is
+      // keyed to the model's full-condition cap so it's constant across the
+      // ladder.
+      const matched = resellLabelFor(opts.modelId ?? null, opts.label ?? null);
       const fullCap = Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
-      return Math.max(0, cap - consumerCompTrim(fullCap));
+      caps.push(matched && CONSUMER_COMP_LABELS.has(matched) ? Math.max(0, cap - consumerCompTrim(fullCap)) : cap);
     }
-    return cap;
   }
   return caps.length ? Math.min(...caps) : null;
 }
@@ -363,40 +366,26 @@ export function iwmRuleCeiling(opts: {
   modelId?: string | null;
   storage?: string | null;
   condition?: string | null;
-  carrier?: string | null;
-  carrierLocked?: boolean;
-  // The flat gap the caller took off the cell for THIS condition (admin
-  // overrides included). Condition-dependent gaps (17 Pro / Pro Max / Air,
-  // CARRIER_GAPS_BY_COND) are re-read per condition below.
-  carrierDeduction?: number | null;
 }): number | null {
   if (!opts.modelId) return null;
   const cond = iwmCondKey(opts.condition);
   if (opts.modelId === "ip17pm" && cond === "sealed") return null;
-  // Monotone per carrier: a locked unit's ceiling for condition X is the
-  // best of (rule − gap) over every condition at or below X. Models whose
-  // sealed gap exceeds their used gap (17 Air T-Mobile: −280 sealed vs −200
-  // used) otherwise paid a sealed unit LESS than a like-new one.
-  const own = Math.max(0, opts.carrierDeduction ?? 0);
-  let best: number | null = null;
-  for (const c of IWM_LADDER.slice(0, IWM_LADDER.indexOf(cond) + 1)) {
-    const r = iwmCeiling(opts.modelId, opts.storage, c);
-    if (r == null) continue;
-    const condGap = carrierGapForCondition(opts.modelId, opts.carrier ?? "unlocked", c, !!opts.carrierLocked, opts.storage ?? undefined);
-    if (condGap?.manual) continue;
-    const gap = condGap != null ? condGap.gap : own;
-    best = Math.max(best ?? 0, Math.max(0, r - Math.max(0, gap)));
-  }
-  // IWM pays $3–7 for a cracked iPhone 11/12; a ceiling that low would turn
-  // the owner's deliberate $27–50 cells into manual review (Sonny 2026-09-11:
-  // "for the parts one we can stay … lower by 15-20", not kill). Below the
-  // minimum offer the rule steps aside and the table stands.
-  return best != null && best >= MIN_OFFER ? best : null;
+  const r = iwmCeiling(opts.modelId, opts.storage, cond);
+  // IWM's grid is UNLOCKED, and we have no locked grid from them — our own
+  // carrier gap is a bigger cut than theirs, so subtracting it flattened
+  // hundreds of cheap locked cells onto the floor. The ceiling is the
+  // unlocked one; a locked offer is already below it by our gap.
+  // Floors at MIN_OFFER so a near-zero IWM payout (cracked 11/12: $3–7)
+  // can't force manual review on cells the owner priced on purpose.
+  return r == null ? null : Math.max(r, MIN_OFFER);
 }
+
 function iwmCondKey(condition?: string | null): (typeof IWM_LADDER)[number] {
   const c = (condition || "").toLowerCase();
   return c.includes("seal") ? "sealed" : c.includes("mint") || c.includes("like") || c.includes("excellent") ? "mint" : c.includes("fair") ? "fair" : c.includes("broken") || c.includes("crack") ? "broken" : "good";
 }
+/** Galaxy S / Z / Note — the families whose resale the owner calls bad. */
+const GALAXY_COMP_GUARD = /^(gs|gz|gnote)/;
 const STORAGE_ORDER = (s: string) => (/tb$/.test(s) ? Number(s.replace("tb", "")) * 1024 : Number(s) || 0);
 /**
  * IWM × IWM_RULE_MULT for this model/storage/condition, as a running max over
@@ -411,20 +400,33 @@ export function iwmCeiling(modelId: string, storage?: string | null, condition?:
   const cond = iwmCondKey(condition);
   const tiers = Object.keys(grid).sort((a, b) => STORAGE_ORDER(a) - STORAGE_ORDER(b));
   const want = storage ? STORAGE_ORDER(storage) : Infinity;
-  // IWM's grid occasionally dips a better condition under a worse one at
-  // one storage (14 512: Brand New $285 < Flawless $295) — a ceiling copied
-  // as-is would invert our ladder, so each condition takes the max of the
-  // conditions at or below it.
-  const upTo = IWM_LADDER.slice(0, IWM_LADDER.indexOf(cond) + 1);
-  let best: number | null = null;
-  for (const t of tiers) {
-    const vals = upTo.map((c) => grid[t][c]).filter((v): v is number => v != null);
-    if (!vals.length) continue;
-    const v = Math.max(...vals);
-    if (STORAGE_ORDER(t) <= want || best == null) best = Math.max(best ?? 0, Math.round(v * IWM_RULE_MULT));
-    if (STORAGE_ORDER(t) > want) break;
+  // Per condition: the best payout among the storage tiers at or below the
+  // one asked for that actually PUBLISH that condition. IWM's grid is sparse
+  // (Galaxy S23+ lists only sealed and broken at 128GB), and reading a
+  // missing cell as "the tier below it" priced a mint S23+ at the cracked
+  // number — so a condition with no tier at or below falls back to the
+  // smallest tier that has it, and a condition IWM never lists yields null
+  // (the owner's table stands).
+  const perCond = (c: (typeof IWM_LADDER)[number]): number | null => {
+    let best: number | null = null;
+    for (const t of tiers) {
+      const v = grid[t][c];
+      if (v == null) continue;
+      if (STORAGE_ORDER(t) <= want) best = Math.max(best ?? 0, v);
+      else if (best == null) { best = v; break; }
+    }
+    return best;
+  };
+  const own = perCond(cond);
+  if (own == null) return null;
+  // Monotone up the ladder: a better condition can never be ruled below a
+  // worse one (IWM's own grid dips on some models).
+  let best = own;
+  for (const c of IWM_LADDER.slice(0, IWM_LADDER.indexOf(cond))) {
+    const v = perCond(c);
+    if (v != null) best = Math.max(best, v);
   }
-  return best;
+  return Math.round(best * IWM_RULE_MULT);
 }
 const IWM_LADDER = ["broken", "fair", "good", "mint", "sealed"] as const;
 /**
