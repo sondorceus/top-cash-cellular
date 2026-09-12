@@ -128,7 +128,8 @@ def resell_key_of(label):
 def rule_ceiling(mid, st, cond):
     """mirror of iwmRuleCeiling (unlocked): IWM × 0.90, sealed 17 Pro Max exempt"""
     if mid == "ip17pm" and cond == "sealed": return None
-    return iwm_ceiling(mid, st, cond)
+    c = iwm_ceiling(mid, st, cond)
+    return c if c is not None and c >= 25 else None  # below MIN_OFFER the table stands
 def cap_of(mid, cond, st=None):
     """Full mirror of marginCapFor() for the UNLOCKED case."""
     cm = COND_MULT.get(cond, 1.0)

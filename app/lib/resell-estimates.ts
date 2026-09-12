@@ -8,7 +8,7 @@
 // damaged devices; brokenGlass adds extra deductions on broken phones.
 
 import { IWM_PAYOUTS, IWM_RULE_MULT } from "../data/iwm-payouts";
-import { carrierGapForCondition } from "../data/prices";
+import { carrierGapForCondition, MIN_OFFER } from "../data/prices";
 
 export const RESELL_ESTIMATES: Record<string, number> = {
   // iPhones — Swappa mid price (actual listings)
@@ -387,7 +387,11 @@ export function iwmRuleCeiling(opts: {
     const gap = condGap != null ? condGap.gap : own;
     best = Math.max(best ?? 0, Math.max(0, r - Math.max(0, gap)));
   }
-  return best;
+  // IWM pays $3–7 for a cracked iPhone 11/12; a ceiling that low would turn
+  // the owner's deliberate $27–50 cells into manual review (Sonny 2026-09-11:
+  // "for the parts one we can stay … lower by 15-20", not kill). Below the
+  // minimum offer the rule steps aside and the table stands.
+  return best != null && best >= MIN_OFFER ? best : null;
 }
 function iwmCondKey(condition?: string | null): (typeof IWM_LADDER)[number] {
   const c = (condition || "").toLowerCase();
