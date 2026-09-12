@@ -6,6 +6,7 @@ import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { mailShell, esc } from "../../../lib/email-shell";
 import { GRADE_LABEL } from "../../../lib/shop-grades";
 import { BRAND, EMAIL, LOCATION_DISPLAY } from "../../../lib/constants";
+import { SHOP_ENABLED } from "../../../lib/shop-flag";
 
 // Shop v1 sells by RESERVATION, not checkout. There is no Stripe yet, and no
 // card is ever taken here: the buyer claims a unit, Skywalker confirms and
@@ -36,6 +37,8 @@ function clean(v: unknown, maxLen = 200): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Storefront hidden (see lib/shop-flag) — no public feed, no reservations.
+  if (!SHOP_ENABLED) return NextResponse.json({ error: "not found" }, { status: 404 });
   const ip = clientIp(req);
   const rl = rateLimit(`shop-buy:${ip}`, INQUIRY_LIMIT, INQUIRY_WINDOW_MS);
   if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many requests — give it a minute and try again.");

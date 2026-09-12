@@ -8,6 +8,7 @@ import ShopBrowser from "../../ShopBrowser";
 import StockAlert from "../../StockAlert";
 import { SHOP_CATEGORIES, findCategory, listingInCategory } from "../../categories";
 import { BRAND } from "../../../lib/constants";
+import { SHOP_ENABLED } from "../../../lib/shop-flag";
 
 // Category landing page: /shop/c/iphone, /shop/c/macbook, … Each carries its
 // own SEO title/blurb (these are the pages a "used iphone austin" search
@@ -34,6 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
+  // Storefront is hidden until it's ready — a hard 404, so nothing
+  // half-built is reachable or indexable (see lib/shop-flag).
+  if (!SHOP_ENABLED) notFound();
   const { slug } = await params;
   const cat = findCategory(slug);
   if (!cat) notFound();

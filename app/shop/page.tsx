@@ -7,6 +7,8 @@ import ShopBrowser from "./ShopBrowser";
 import StockAlert from "./StockAlert";
 import { SHOP_CATEGORIES, listingInCategory } from "./categories";
 import { BRAND, LOCATION_DISPLAY, EMAIL } from "../lib/constants";
+import { notFound } from "next/navigation";
+import { SHOP_ENABLED } from "../lib/shop-flag";
 
 // The storefront index: hero → category tiles (live counts) → grid with
 // sort/grade controls → why-us band → sell-us-yours cross-link → mini FAQ.
@@ -15,6 +17,7 @@ import { BRAND, LOCATION_DISPLAY, EMAIL } from "../lib/constants";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
+  robots: SHOP_ENABLED ? undefined : { index: false, follow: false },
   title: `Shop Tested Used Phones & Devices in Austin | ${BRAND}`,
   description:
     "One-of-one used iPhones, Samsung, MacBooks and more — every device personally tested in Austin, TX. Real photos, real battery health, 30-day returns. Local pickup or shipping.",
@@ -42,6 +45,9 @@ const FAQ = [
 ];
 
 export default async function ShopPage() {
+  // Storefront is hidden until it's ready — a hard 404, so nothing
+  // half-built is reachable or indexable (see lib/shop-flag).
+  if (!SHOP_ENABLED) notFound();
   const listings = await readPublicListings();
   listings.sort((a, b) => (a.postedAt < b.postedAt ? 1 : -1));
   const activeListings = listings.filter((l) => l.status !== "sold");

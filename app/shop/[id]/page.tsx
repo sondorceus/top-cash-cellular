@@ -10,6 +10,7 @@ import { categoryForListing } from "../categories";
 import Gallery from "./Gallery";
 import BuyBox from "./BuyBox";
 import { BRAND, LOCATION_DISPLAY, EMAIL } from "../../lib/constants";
+import { SHOP_ENABLED } from "../../lib/shop-flag";
 
 // One physical device, one page. Everything shown — grade, battery, photos —
 // belongs to this exact unit, which is the entire pitch.
@@ -56,6 +57,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ListingPage({ params }: Props) {
+  // Storefront is hidden until it's ready — a hard 404, so nothing
+  // half-built is reachable or indexable (see lib/shop-flag).
+  if (!SHOP_ENABLED) notFound();
   const { id } = await params;
   const all = await readPublicListings();
   const l = all.find((x) => x.id === id) ?? null;

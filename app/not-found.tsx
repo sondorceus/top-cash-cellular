@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteFooter from "./components/SiteFooter";
+import { SHOP_ENABLED } from "./lib/shop-flag";
 
 // Catches every unmatched URL app-wide (Next.js root not-found convention).
 // Before this, customers hitting a dead link got the unstyled default 404.
@@ -21,10 +22,10 @@ export default function NotFound() {
               Get an instant quote
             </Link>
             <Link
-              href="/shop"
+              href={SHOP_ENABLED ? "/shop" : "/how-it-works"}
               className="inline-block border border-white/15 px-6 py-3 rounded-full font-semibold text-white hover:border-[#00c853]/45 transition"
             >
-              Browse the shop
+              {SHOP_ENABLED ? "Browse the shop" : "How it works"}
             </Link>
           </div>
           <p className="text-xs text-[#555] mt-8">

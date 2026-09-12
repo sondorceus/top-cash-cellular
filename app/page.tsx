@@ -3,6 +3,7 @@ import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react
 import { track as vercelTrack } from "@vercel/analytics";
 import { BRAND_ICONS } from "./components/brand-icons";
 import { getResellEstimateForModel, resellMultiplierForCondition, marginCapFor, applyGalaxyDrop, iwmRuleCeiling } from "./lib/resell-estimates";
+import { SHOP_ENABLED } from "./lib/shop-flag";
 import SKU_LABELS from "./data/sku-labels.json";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
@@ -7354,7 +7355,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* SHOP — plain link, no dropdown: the store has its own category nav */}
+            {/* SHOP — plain link, no dropdown: the store has its own category nav.
+                Hidden until the storefront is ready (see lib/shop-flag). */}
+            {SHOP_ENABLED && (
             <a
               href="/shop"
               className="flex items-center gap-2 px-5 py-2.5 rounded-full text-[15px] font-semibold text-white hover:text-[#00c853] hover:bg-white/5 transition cursor-pointer"
@@ -7362,6 +7365,7 @@ export default function Home() {
               Shop
               <span className="text-[9px] font-extrabold uppercase tracking-wider bg-[#00c853] text-[#0a0a0a] rounded-full px-1.5 py-0.5 leading-none">New</span>
             </a>
+            )}
 
             {/* BULK */}
             <div className="group relative" onMouseEnter={() => setMegaMenuOpen("bulk")} onMouseLeave={() => setMegaMenuOpen(null)}>
@@ -7811,7 +7815,9 @@ export default function Home() {
               )}
             </div>
 
-            {/* SHOP — flat link, the store carries its own category nav */}
+            {/* SHOP — flat link, the store carries its own category nav.
+                Hidden until the storefront is ready (see lib/shop-flag). */}
+            {SHOP_ENABLED && (
             <div className="border-b border-white/10">
               <a
                 href="/shop"
@@ -7825,6 +7831,7 @@ export default function Home() {
                 <svg className="w-4 h-4 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
               </a>
             </div>
+            )}
 
             {/* BULK section */}
             <div className="border-b border-white/10">
