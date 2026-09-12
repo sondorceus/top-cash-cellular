@@ -279,26 +279,29 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 0, fair: 0, good: 35, mint: 55, sealed: 162 },
     "512": { broken: 2, fair: 5, good: 45, mint: 65, sealed: 180 },
     "64": { broken: 0, fair: 0, good: 25, mint: 45, sealed: 135 } },
+  // ip11pm / ip12 / ip12p / ip12pm broken cells cut $15–20 (offers $45–68 →
+  // $27–50) — Sonny 2026-09-11 after the price scan ("reduce 11 and lower by
+  // 15-20"): IWM pays $3–7 for a cracked 11/12, these were pure loss.
   ip11pm: {
-    "256": { broken: 15, fair: 38, good: 62, mint: 94, sealed: 220 },
-    "512": { broken: 20, fair: 52, good: 79, mint: 115, sealed: 225 },
+    "256": { broken: 5, fair: 38, good: 62, mint: 94, sealed: 220 },
+    "512": { broken: 5, fair: 52, good: 79, mint: 115, sealed: 225 },
     "64": { broken: 0, fair: 34, good: 57, mint: 88, sealed: 212 } },
   ip12: {
-    "128": { broken: 15, fair: 23, good: 44, mint: 71, sealed: 153 },
-    "256": { broken: 23, fair: 23, good: 44, mint: 71, sealed: 158 },
+    "128": { broken: 1, fair: 23, good: 44, mint: 71, sealed: 153 },
+    "256": { broken: 5, fair: 23, good: 44, mint: 71, sealed: 158 },
     "64": { broken: 0, fair: 23, good: 44, mint: 71, sealed: 144 } },
   ip12mini: {
     "128": { broken: 0, fair: 8, good: 25, mint: 47, sealed: 112 },
     "256": { broken: 1, fair: 12, good: 30, mint: 53, sealed: 117 },
     "64": { broken: 0, fair: 7, good: 7, mint: 47, sealed: 108 } },
   ip12p: {
-    "128": { broken: 20, fair: 58, good: 86, mint: 124, sealed: 207 },
-    "256": { broken: 25, fair: 58, good: 86, mint: 124, sealed: 220 },
-    "512": { broken: 26, fair: 65, good: 95, mint: 124, sealed: 230 } },
+    "128": { broken: 3, fair: 58, good: 86, mint: 124, sealed: 207 },
+    "256": { broken: 8, fair: 58, good: 86, mint: 124, sealed: 220 },
+    "512": { broken: 9, fair: 65, good: 95, mint: 124, sealed: 230 } },
   ip12pm: {
     "128": { broken: 0, fair: 72, good: 104, mint: 146, sealed: 252 },
-    "256": { broken: 40, fair: 86, good: 120, mint: 207, sealed: 288 },
-    "512": { broken: 43, fair: 105, good: 144, mint: 230, sealed: 315 } },
+    "256": { broken: 22, fair: 86, good: 120, mint: 207, sealed: 288 },
+    "512": { broken: 25, fair: 105, good: 144, mint: 230, sealed: 315 } },
   // ip13 recalibrated 2026-07-11 to Sonny's live payouts (he corrected a bot
   // quote to "170 unlocked / 120 locked" for a good one — Damian thread):
   // good 128 + the $25 phone bonus lands exactly on $170 unlocked / $120

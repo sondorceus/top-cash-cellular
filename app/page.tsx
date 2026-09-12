@@ -6058,6 +6058,8 @@ export default function Home() {
     brokenGlass,
     carrier: carrier?.id,
     carrierLocked: carrierLock?.id === "yes",
+    storage: storage?.id,
+    carrierDeduction: totalCarrierDeduction,
   }) : null;
   // Apply cap silently if base quote exceeds it.
   const quoteAfterCap = (marginCap != null && rawQuote > marginCap) ? marginCap : rawQuote;

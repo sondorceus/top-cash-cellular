@@ -228,6 +228,8 @@ export async function quoteDevice(
       brokenGlass: spec.brokenGlass,
       carrier,
       carrierLocked: spec.carrierLocked,
+      storage,
+      carrierDeduction,
     });
     const capped = marginCap != null && rawQuote > marginCap;
     const cappedQuote = capped ? marginCap! : rawQuote;

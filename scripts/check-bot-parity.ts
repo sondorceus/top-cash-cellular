@@ -62,7 +62,7 @@ function funnelOffer(id: string, st: string, cond: string, carrier: string, vzLo
   // skip the eBay haircut), so the funnel model here calls it too. The
   // independently-implemented parts this gate actually guards — cells,
   // carrier gaps, bonuses, galaxy drop, MIN_OFFER — stay duplicated above.
-  const cap = marginCapFor({ modelId: id, label: LABELS[id], condition: cond, carrier, carrierLocked: vzLocked });
+  const cap = marginCapFor({ modelId: id, label: LABELS[id], condition: cond, carrier, carrierLocked: vzLocked, storage: st, carrierDeduction: gap });
   const capped = cap != null && raw > cap ? cap : raw;
   const final = applyGalaxyDrop(capped, id);
   const manual = final < MIN_OFFER || (cap != null && cap < MIN_OFFER);

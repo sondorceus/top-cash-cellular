@@ -42,7 +42,40 @@ RESELL = {k.replace('\\"', '"'): int(v) for k, v in re.findall(r'"((?:[^"\\]|\\.
 # skips the eBay haircut (mirror of marginCapFor). Ceilings are the best
 # config, i.e. UNLOCKED.
 _np = re.search(r"NET_PAYOUTS[^=]*=\s*\{(.*?)\n\};", rs_src, re.S)
-NET_UNLOCKED = {mid: int(u) for mid, u in re.findall(r"(\w+):\s*\{\s*unlocked:\s*(\d+)", _np.group(1) if _np else "")}
+NET = {}
+for mm in re.finditer(r"^\s+(\w+):\s*\{([^\n]*)\},?\s*$", _np.group(1) if _np else "", re.M):
+    body = mm.group(2)
+    u = re.search(r"unlocked:\s*(\d+)", body)
+    if not u: continue
+    mo = re.search(r"maxOffer:\s*\{[^}]*unlocked:\s*(\d+)", body)
+    NET[mm.group(1)] = {"unlocked": int(u.group(1)), "good": 'basis: "good"' in body, "max": int(mo.group(1)) if mo else None}
+NET_UNLOCKED = {k: v["unlocked"] for k, v in NET.items()}
+# RESELL_MODEL_IDS + IWM_PAYOUTS — the IWM rule ceiling (mirror of iwmCeiling:
+# IWM × 0.90, running max over storages ≤ the asked one) applies to models
+# with a NET payout or a resell id mapping.
+_rm = re.search(r"RESELL_MODEL_IDS[^=]*=\s*\{(.*?)\n\};", rs_src, re.S)
+RESELL_IDS = set(re.findall(r"(\w+):\s*\"", _rm.group(1) if _rm else ""))
+_iwm_src = (REPO / "app" / "data" / "iwm-payouts.ts").read_text(encoding="utf-8")
+IWM = json.loads(re.search(r"IWM_PAYOUTS[^=]*=\s*(\{.*\});", _iwm_src, re.S).group(1))
+IWM_MULT = float(re.search(r"IWM_RULE_MULT\s*=\s*([\d.]+)", _iwm_src).group(1))
+def _st_order(st):
+    return int(st[:-2]) * 1024 if st.endswith("tb") else (int(st) if st.isdigit() else 0)
+def iwm_ceiling(mid, st, cond):
+    grid = IWM.get(mid)
+    if not grid: return None
+    c = "mint" if cond == "verygood" else cond
+    want = _st_order(st) if st else float("inf")
+    best = None
+    ladder = ["broken", "fair", "good", "mint", "sealed"]
+    up_to = ladder[: ladder.index(c) + 1] if c in ladder else [c]
+    for t in sorted(grid, key=_st_order):
+        vals = [grid[t][k] for k in up_to if grid[t].get(k) is not None]
+        if not vals: continue
+        v = max(vals)
+        if _st_order(t) <= want or best is None:
+            best = max(best or 0, jround(v * IWM_MULT))
+        if _st_order(t) > want: break
+    return best
 
 # CONSUMER_COMP_LABELS — Swappa/eBay consumer medians that skew high, so their
 # caps take a modest flat trim (mirror of consumerCompTrim).
@@ -92,12 +125,18 @@ def resell_key_of(label):
         if best is None or len(key) > len(best): best = key
     return best
 
-def cap_of(mid, cond):
+def cap_of(mid, cond, st=None):
     """Full mirror of marginCapFor() for the UNLOCKED case."""
     cm = COND_MULT.get(cond, 1.0)
-    net = NET_UNLOCKED.get(mid)
+    caps = []
+    net = NET.get(mid)
     if net is not None:
-        return jround(net * cm * 0.75)
+        rel = cm / 0.8 if net["good"] else cm
+        caps.append(jround(net["unlocked"] * rel * 0.75))
+        if net["max"] is not None: caps.append(net["max"])
+    ceil = iwm_ceiling(mid, st, cond) if (net is not None or mid in RESELL_IDS) else None
+    if ceil is not None: caps.append(ceil)
+    if caps: return min(caps)
     label = SKU.get(mid)
     resell = resell_of(label)
     if resell is None: return None
@@ -129,7 +168,7 @@ def ceiling_of(mid, debug=False):
         for cond, cell in conds.items():
             if cell <= 0: continue
             offer = cell + pop + (acc_amt if cond != "sealed" else 0)
-            cap = cap_of(mid, cond)
+            cap = cap_of(mid, cond, st)
             if cap is not None:
                 offer = min(offer, cap)
             if gd and offer >= 250:

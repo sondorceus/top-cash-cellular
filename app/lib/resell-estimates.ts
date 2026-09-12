@@ -7,6 +7,8 @@
 // common storage tier. Condition multipliers scale them down for
 // damaged devices; brokenGlass adds extra deductions on broken phones.
 
+import { IWM_PAYOUTS, IWM_RULE_MULT } from "../data/iwm-payouts";
+
 export const RESELL_ESTIMATES: Record<string, number> = {
   // iPhones — Swappa mid price (actual listings)
   // iPhone 17 Pro Max intentionally OMITTED (2026-07-05): it's a manually-
@@ -221,12 +223,25 @@ export const EBAY_FEE_MULT = 0.87; // 1 − 0.13 eBay FVF
  * real payout beats a scraped median every time. Every entry must be sourced
  * to the owner + date — never estimate one.
  */
-export const NET_PAYOUTS: Record<string, { unlocked: number; locked: number }> = {
+export type NetPayout = {
+  unlocked: number;
+  locked: number;
+  // "good": the numbers are what he is paid for a GOOD unit (the common
+  // unit); the cap rescales the other conditions off the good multiplier.
+  // Absent = original semantics: full-condition base × condMult.
+  basis?: "good";
+  // Owner-stated ceiling on what we PAY (an offer, not an exit) — applied
+  // to every condition so the ladder can't invert above it.
+  maxOffer?: { unlocked?: number; locked?: number };
+};
+export const NET_PAYOUTS: Record<string, NetPayout> = {
   // Owner 2026-08-20: "we pay 443 but i get paid 470 … update what i get
-  // paid to 470 and 600". The stale $743 Swappa comp implied a $485 ceiling,
-  // which left ~6% margin on a locked mint unit and went negative on the
-  // good/fair locked cells.
-  ip16pm: { unlocked: 600, locked: 470 },
+  // paid to 470 and 600". Owner 2026-09-11 (price scan): "i get paid 670
+  // for 16 pro max unlocked good condition so we are too thin reduce a bit
+  // … new should 600" → good-basis exits (unlocked 670, locked 470), good
+  // unlocked caps at 670 × 0.75 = $502 (a bit under the IWM −10% rule, his
+  // margin), sealed/mint pinned at $600.
+  ip16pm: { unlocked: 670, locked: 470, basis: "good", maxOffer: { unlocked: 600 } },
 };
 
 /**
@@ -295,26 +310,76 @@ export function marginCapFor(opts: {
   brokenGlass?: "front" | "back" | "both" | null;
   carrier?: string | null;
   carrierLocked?: boolean;
+  // Storage key ("128", "1tb"); the IWM ceiling is per storage. Absent =
+  // best config (the "up to" headline).
+  storage?: string | null;
+  // The flat carrier gap the caller already took off the cell, so a locked
+  // unit's IWM ceiling (an unlocked grid) drops by the same amount.
+  carrierDeduction?: number | null;
 }): number | null {
   const condMult = resellMultiplierForCondition(opts.condition ?? undefined, opts.brokenGlass);
+  const locked = isLockedCarrier(opts.carrier, opts.carrierLocked);
+  const caps: number[] = [];
+  // 1. The owner's real exit (NET_PAYOUTS) — beats every comp.
   const net = opts.modelId ? NET_PAYOUTS[opts.modelId] : undefined;
   if (net) {
-    const base = isLockedCarrier(opts.carrier, opts.carrierLocked) ? net.locked : net.unlocked;
-    return Math.round(base * condMult * MARGIN_FLOOR_MULT);
+    const base = locked ? net.locked : net.unlocked;
+    const rel = net.basis === "good" ? condMult / resellMultiplierForCondition("good") : condMult;
+    caps.push(Math.round(base * rel * MARGIN_FLOOR_MULT));
+    const pin = locked ? net.maxOffer?.locked : net.maxOffer?.unlocked;
+    if (pin != null) caps.push(pin);
   }
-  const resell = getResellEstimateForModel(opts.modelId ?? null, opts.label ?? null);
-  if (resell == null) return null;
-  const cap = Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
-  // Consumer-median comps run high (see CONSUMER_COMP_LABELS). Trim is keyed
-  // to the model's full-condition cap so it's constant across the ladder.
-  const matched = resellLabelFor(opts.modelId ?? null, opts.label ?? null);
-  if (matched && CONSUMER_COMP_LABELS.has(matched)) {
-    const fullCap = Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
-    return Math.max(0, cap - consumerCompTrim(fullCap));
+  // 2. The IWM rule (pay ~10% under ItsWorthMore) for models that already had
+  // a market guard — storage-aware, so a 1TB no longer pays like a 128GB.
+  const ceiling = opts.modelId && (net || RESELL_MODEL_IDS[opts.modelId]) ? iwmCeiling(opts.modelId, opts.storage, opts.condition) : null;
+  if (ceiling != null) caps.push(Math.max(0, ceiling - Math.max(0, opts.carrierDeduction ?? 0)));
+  // 3. Resell comp × 0.75 — only when neither of the above applies.
+  if (!net && ceiling == null) {
+    const resell = getResellEstimateForModel(opts.modelId ?? null, opts.label ?? null);
+    if (resell == null) return null;
+    const cap = Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
+    // Consumer-median comps run high (see CONSUMER_COMP_LABELS). Trim is keyed
+    // to the model's full-condition cap so it's constant across the ladder.
+    const matched = resellLabelFor(opts.modelId ?? null, opts.label ?? null);
+    if (matched && CONSUMER_COMP_LABELS.has(matched)) {
+      const fullCap = Math.round(resell * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
+      return Math.max(0, cap - consumerCompTrim(fullCap));
+    }
+    return cap;
   }
-  return cap;
+  return Math.min(...caps);
 }
-
+const STORAGE_ORDER = (s: string) => (/tb$/.test(s) ? Number(s.replace("tb", "")) * 1024 : Number(s) || 0);
+/**
+ * IWM × IWM_RULE_MULT for this model/storage/condition, as a running max over
+ * the storages at or below the one asked for (IWM's grid occasionally dips
+ * on a bigger storage; a ceiling must never pay a bigger config less). A
+ * storage below IWM's smallest tier gets that tier; no storage = the
+ * biggest tier (best config). null when IWM has no grid or no such tier.
+ */
+export function iwmCeiling(modelId: string, storage?: string | null, condition?: string | null): number | null {
+  const grid = IWM_PAYOUTS[modelId];
+  if (!grid) return null;
+  const c = (condition || "").toLowerCase();
+  const cond = c.includes("seal") ? "sealed" : c.includes("mint") || c.includes("like") || c.includes("excellent") ? "mint" : c.includes("fair") ? "fair" : c.includes("broken") || c.includes("crack") ? "broken" : "good";
+  const tiers = Object.keys(grid).sort((a, b) => STORAGE_ORDER(a) - STORAGE_ORDER(b));
+  const want = storage ? STORAGE_ORDER(storage) : Infinity;
+  // IWM's grid occasionally dips a better condition under a worse one at
+  // one storage (14 512: Brand New $285 < Flawless $295) — a ceiling copied
+  // as-is would invert our ladder, so each condition takes the max of the
+  // conditions at or below it.
+  const upTo = IWM_LADDER.slice(0, IWM_LADDER.indexOf(cond) + 1);
+  let best: number | null = null;
+  for (const t of tiers) {
+    const vals = upTo.map((c) => grid[t][c]).filter((v): v is number => v != null);
+    if (!vals.length) continue;
+    const v = Math.max(...vals);
+    if (STORAGE_ORDER(t) <= want || best == null) best = Math.max(best ?? 0, Math.round(v * IWM_RULE_MULT));
+    if (STORAGE_ORDER(t) > want) break;
+  }
+  return best;
+}
+const IWM_LADDER = ["broken", "fair", "good", "mint", "sealed"] as const;
 /**
  * Galaxy S23-and-up blanket price cut. Skywalker 2026-07-05: "Atlas doesn't
  * really buy Galaxy" — so trim the whole S23+ lineup by a flat $75 off the
