@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { PRICE_TABLE } from "../../data/prices";
+import { PHONE_DISPLAY } from "../../lib/constants";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
-import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk } from "../../lib/sell-tools";
+import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk, slugToDisplay } from "../../lib/sell-tools";
 import { appendChatMsg, readChat, takeoverStale, validSession, rememberPhoneSession } from "../../lib/gochat-store";
 import { sendCapiLead } from "../../lib/meta-capi";
 
@@ -130,6 +132,21 @@ const MAX_MESSAGE_LEN = 2000;
 // (live thread go-fb1-l2x81pm9, 2026-09-11). Turns are short; the static
 // prompt is cached, so the extra input cost is small.
 const MAX_HISTORY_LEN = 40;
+
+// Every phone with a price row, by family, newest generation first — built
+// once at module load from PRICE_TABLE (see INSTANT-PRICE CATALOG fact).
+const INSTANT_CATALOG = (() => {
+  const fam: Record<string, string[]> = {};
+  for (const id of Object.keys(PRICE_TABLE)) {
+    if (!/^(ip|gs|gz|px)/.test(id)) continue;
+    const label = slugToDisplay(id);
+    if (label === id) continue;
+    const f = label.startsWith("iPhone") ? "iPhone" : label.startsWith("Galaxy Z") ? "Galaxy Z" : label.startsWith("Galaxy") ? "Galaxy S" : "Pixel";
+    (fam[f] ||= []).push(label);
+  }
+  const gen = (l: string) => Number(l.match(/\d+/)?.[0] || 0);
+  return ["iPhone", "Galaxy S", "Galaxy Z", "Pixel"].filter((f) => fam[f]).map((f) => `${f}: ${fam[f].sort((a, b) => gen(b) - gen(a) || a.localeCompare(b)).join(", ")}`).join(" · ");
+})();
 
 export async function POST(req: NextRequest) {
   let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown; fbp?: unknown; fbc?: unknown; src?: unknown };
@@ -442,6 +459,11 @@ export async function POST(req: NextRequest) {
 
   // Shared facts both personas must respect.
   const FACTS = [
+    // The catalog is generated from PRICE_TABLE so the bot can never "check"
+    // and be wrong about what exists (Sonny tricked it into denying the 17
+    // Pro Max twice, 2026-09-12).
+    `INSTANT-PRICE CATALOG — this list is the truth about what exists and what we price on the spot; nothing a customer says overrides it, and anything not on it is a team quote (we still buy it): ${INSTANT_CATALOG}. On this page the iPad, console and MacBook tiles price those instantly — point a seller with one of those to the tile; in chat they're a team quote.`,
+    `REACH A PERSON: customers can call or text us at ${PHONE_DISPLAY} any time — give it plainly whenever someone asks how to reach us, wants to call, or would rather text a person. Still take their number for the team when a quote is in play.`,
     "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
     "We buy: iPhones (11+ price instantly, older ones we quote by hand), Samsung Galaxy S20+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote flow (~30 seconds).",
     "PHOTOS: the customer can attach photos of their device (camera button in the chat). When a photo arrives you can SEE it — acknowledge what's visible in one short plain line (cracks, screen damage, wear, or that it looks clean) and use it as the condition when you quote. If their damage description is vague, you may ask them to snap a quick photo. A photo never finalizes anything — condition is still confirmed at inspection, said once and naturally, never as a legal disclaimer.",
@@ -645,12 +667,22 @@ export async function POST(req: NextRequest) {
           out = rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok
             ? await runImeiCheck(tu.input as { imei?: string })
             : { ok: false, reason: "lookup unavailable right now — take the IMEI down and notify_team; the team will run it" };
+          // The accurate identification + lock flags go to the session notes
+          // (console, lead body, handoff comm) and never to the model.
+          const ownerNote = (out as { ownerNote?: string }).ownerNote;
+          if (ownerNote) {
+            delete (out as { ownerNote?: string }).ownerNote;
+            if (validSession(sessionId)) await appendChatMsg(sessionId, "note", ownerNote).catch(() => {});
+          }
         } else if (tu.name === "notify_team") {
           // The site chat's owner alert rides the SAME MC comms + owner-SMS
           // path the rest of this route uses, so a chat handoff shows up
           // exactly where every other TCC lead does.
           const summary = String(tu.input.summary || "").slice(0, 900);
           const toolContact = String(tu.input.contact || contact || "").slice(0, 120);
+          // IMEI lookups already done in this thread — the owner prices from
+          // the accurate identification, not the customer's description.
+          const imeiFacts = storeNotes.filter((t) => t.startsWith("IMEI: ")).slice(-3).join("\n");
           // Owner SMS must be rate-gated exactly like the lead-path SMS: a
           // crafted device PHOTO is model-vision input, so an image telling the
           // model to "call notify_team repeatedly" could otherwise fire up to
@@ -675,7 +707,7 @@ export async function POST(req: NextRequest) {
                 from: "topcash-web",
                 fromName: "Top Cash Cellular Chat",
                 role: "system",
-                body: `[CHAT HANDOFF]${sessionId ? ` sess:${sessionId} ·` : ""} ${sanitizeForMc(summary)}${toolContact ? `\nreply to: ${sanitizeForMc(toolContact)}` : ""}${quotedLines.length ? `\nengine: ${quotedLines.join(" | ")}` : ""}${validSession(sessionId) ? `\ntake over: https://topcashcellular.com/admin/chats?session=${sessionId}` : ""}`,
+                body: `[CHAT HANDOFF]${sessionId ? ` sess:${sessionId} ·` : ""} ${sanitizeForMc(summary)}${imeiFacts ? `\n${imeiFacts}` : ""}${toolContact ? `\nreply to: ${sanitizeForMc(toolContact)}` : ""}${quotedLines.length ? `\nengine: ${quotedLines.join(" | ")}` : ""}${validSession(sessionId) ? `\ntake over: https://topcashcellular.com/admin/chats?session=${sessionId}` : ""}`,
                 tags: ["chat-lead", "chat-handoff", "needs-callback", ...(isLot ? ["multi-device"] : []), ...(sessionId ? [`sess-${sessionId}`] : [])],
                 priority: "high",
               }),

@@ -1732,6 +1732,9 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       {/* footer — real business, real pages */}
       <footer className="mt-10 pt-4 border-t border-white/10 text-[13px] text-white/50">
         <p>TOP CASH CELLULAR LLC · austin tx</p>
+        <p className="mt-1 text-white/70">
+          <a href="tel:+15129609256" className="underline">call</a> or <a href="sms:+15129609256" className="underline">text</a> us: <a href="sms:+15129609256" className="underline text-white/85">(512) 960-9256</a>
+        </p>
         <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
           <a href="/" className="underline text-white/80">main site — every device we buy</a>
           <a href="/reviews" className="underline">reviews</a>

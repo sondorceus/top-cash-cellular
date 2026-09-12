@@ -237,8 +237,17 @@ export async function runImeiCheck(input: { imei?: string }): Promise<Record<str
         after(() => notifyOwnerSms(`⚠️ TCC IMEI flag: ${model || "unknown model"} (${clean}) — ${flags}. Bot is quoting normally; your call.`));
       }
     }
-    // The model only learns WHAT the device is.
-    return { ok: true, model };
+    // The model only learns WHAT the device is. Everything else — the
+    // accurate identification whatever the customer claimed, plus the lock
+    // flags — is for the owner (Sonny 2026-09-12: "if the customer's info is
+    // wrong we have the accurate one anyway for our use"): the route stores
+    // ownerNote as a session note and strips it before the model sees this.
+    const extra = [
+      get("Capacity") || get("Storage"), get("Color") || get("Colour"), get("Carrier") || get("Network"), get("Sim-Lock") || get("SIM Lock") || get("Sim Lock Status"),
+    ].filter(Boolean).join(" · ");
+    const flags = [blacklisted ? "⚠️ BLACKLISTED" : "", findMyOn ? "⚠️ Find My ON" : ""].filter(Boolean).join(" ");
+    const ownerNote = `IMEI: ${clean} → ${model || "unknown model"}${extra ? ` · ${extra}` : ""}${flags ? ` · ${flags}` : ""}`;
+    return { ok: true, model, ownerNote };
   } catch {
     return { ok: false, reason: "lookup failed — take the IMEI and notify_team" };
   }

@@ -15,6 +15,12 @@ export const BRAND = "Top Cash Cellular";
 // support@topcashcellular.com (Skywalker 2026-05-29 — consolidated off the
 // old topcashcells.com mailbox). topcashcellular.com is the domain verified
 // for sending (Resend DKIM + SES SPF), so replies/mailto are all one domain.
+// Owner's line — customers may call or text it (Sonny 2026-09-12: "put our
+// contact info so if customers wanna call or text me").
+export const PHONE = "5129609256";
+export const PHONE_DISPLAY = "(512) 960-9256";
+export const PHONE_HREF = "tel:+15129609256";
+export const SMS_HREF = "sms:+15129609256";
 export const EMAIL = "support@topcashcellular.com";
 export const EMAIL_HREF = `mailto:${EMAIL}`;
 export const SUPPORT_DOMAIN = "topcashcellular.com";

@@ -203,6 +203,12 @@ export async function POST(req: NextRequest) {
   const safeIp = sanitize(ip).slice(0, 60);
   const lockUntil = new Date(Date.now() + LOCK_DAYS * 24 * 3600_000).toISOString();
   const hasGoSession = validGoSession(sessionId);
+  // IMEI lookups the chat already ran for this thread — the accurate
+  // identification rides on the lead whatever the chips said.
+  let imeiFacts: string[] = [];
+  if (validSession(sessionId)) {
+    try { imeiFacts = (await readChat(sessionId, 0)).msgs.filter((m) => m.role === "note" && m.text.startsWith("IMEI: ")).map((m) => m.text).slice(-3); } catch { /* no notes */ }
+  }
 
   // Standard single-device lead body — field-for-field the /api/lead
   // shape. Quote: TBD (custom) is the funnel's own no-engine-price
@@ -222,6 +228,7 @@ export async function POST(req: NextRequest) {
     spec.display.secondaryKey ? `${spec.display.secondaryKey}: ${spec.display.secondaryValue}` : null,
     `Condition: ${parts ? `${PARTS_LABEL} — hand quote (the engine prices only devices that power on)` : spec.display.condition}`,
     spec.display.notes ? `Notes: ${spec.display.notes}` : null,
+    ...imeiFacts,
     offer != null ? `Quote: $${offer}` : `Quote: TBD (custom)`,
     `Payout: TBD`,
     isEmail ? null : `SMS opt-in: no`,
