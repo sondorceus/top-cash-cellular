@@ -595,10 +595,16 @@ export async function POST(req: NextRequest) {
     const numberCooldown = askedLastTurn && !detectedNow && !storeContactNote && !contact;
     // IMEI cadence: asked last turn and no 15-digit number arrived now.
     let imeiCheckedThisTurn = false;
+    // A valid IMEI in THIS message — told to the model outright (it miscounted
+    // a 15-digit string as "longer" and asked for it again, 2026-09-12) and
+    // used by the server-side guarantee below.
+    const droppedImei = message.replace(/[\s-]/g, "").match(/(?<!\d)(\d{15})(?!\d)/)?.[1];
+    const imeiPresent = !!droppedImei && luhnValid(droppedImei);
     const imeiCooldown = /\b(imei|\*#06#)\b/i.test(lastBotText) && !/\b\d{15}\b/.test(userText.replace(/[\s-]/g, ""));
 
     const dynamicSys = [
       isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Quote every device with get_quote as its specs arrive and keep a running recap; ask for their number once when the first number lands and once at the handoff (notify_team). Never hold a price back for a phone number. Do NOT close the lot, do NOT name a package price." : "",
+      imeiPresent ? `IMEI PRESENT: this message contains a valid 15-digit IMEI (${droppedImei}). Call check_imei with it now. Do not say it looks wrong, too long or too short, and do not ask them to re-send it.` : "",
       numberCooldown ? "NUMBER-ASK COOLDOWN — OVERRIDES EVERYTHING: you asked for their phone number in your last message and they didn't give it. Do NOT ask for a number, name or contact in this reply, in any wording. Answer what they said and advance the device flow — the next spec, the IMEI (*#06#), or get_quote if you already have model + condition; on a team-quote device say the request is saved in this chat and ask what exactly is wrong or for the IMEI. You may ask again later, once, at a natural close point." : "",
       quotesOnTable.length
         ? `QUOTES ALREADY GIVEN IN THIS THREAD (real get_quote results from earlier turns — newest per device; use them, never re-ask for specs already priced): ${quotesOnTable.map((q) => q.line).join("; ")}. Itemized sum: $${quotesSum} across ${quotesOnTable.length} device${quotesOnTable.length === 1 ? "" : "s"}. When the seller asks for a total or a recap, give this itemized sum — it is real; anything beyond it is the owner's call. If they change a device's condition or storage, re-run get_quote for that device — and when a later quote is a CORRECTION of an earlier one (same phone, fixed storage/condition/carrier), only the newest number counts: never add a corrected quote to the one it replaced, even if the sum above still includes both.`
@@ -646,8 +652,7 @@ export async function POST(req: NextRequest) {
       // in this message and the model never called check_imei, run the
       // lookup anyway and keep the accurate identification for the owner.
       // The model's reply is unchanged — this is for the team's record.
-      const droppedImei = message.replace(/[\s-]/g, "").match(/(?<!\d)(\d{15})(?!\d)/)?.[1];
-      if (droppedImei && !imeiCheckedThisTurn && luhnValid(droppedImei) && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
+      if (droppedImei && imeiPresent && !imeiCheckedThisTurn && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
         if (rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok) {
           after(async () => {
             const r = await runImeiCheck({ imei: droppedImei }).catch(() => null);
