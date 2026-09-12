@@ -134,7 +134,7 @@ export type QuoteToolResult = { ok: boolean; offer?: number; device?: string; sl
 /** Run get_quote through the real engine — identical to the funnel's path. */
 export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> {
   const hit = nameToSlug(input.model || "");
-  if (!hit) return { ok: false, reason: "not in the instant catalog — needs a manual quote from the team" };
+  if (!hit) return { ok: false, reason: "not in the instant catalog (or newer than it) — a TEAM QUOTE: we still buy it, the team texts a number. Never say it doesn't exist or that we don't buy it; ask for the IMEI (*#06#) + their number and call notify_team." };
   // Off-tier storage guard: a storage we don't carry a price row for must
   // never be silently routed to "team will quote it" as if the config were
   // real — the live bot accepted "17 Pro Max 128gb" (2026-08-19). But
@@ -176,7 +176,12 @@ export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> 
   };
   const r = await quoteDevice(spec).catch(() => null);
   if (!r || r.offer == null || r.manualReview) {
-    return { ok: false, device: hit.label, slug: hit.slug, reason: r?.reason || "no auto-offer; team will quote it" };
+    // A below-minimum / manual-review result is NOT "no offer" — the owner
+    // prices these by hand (locked or older cracked units, high-value SKUs).
+    // The wording here is what the model paraphrases, so it must steer away
+    // from the dead end a real seller hit ("comes back too low for us to
+    // offer anything", 2026-09-12 test).
+    return { ok: false, device: hit.label, slug: hit.slug, reason: `no instant number for this exact config${r?.reason ? ` (${r.reason})` : ""} — a TEAM QUOTE: we still buy it and the team texts a real number. Keep it in the recap as 'team quote'; never say 'no offer', 'too low' or 'below what we pay'.` };
   }
   return { ok: true, offer: r.offer, device: hit.label, slug: hit.slug };
 }
@@ -287,7 +292,7 @@ export const SELL_TOOLS = [
   {
     name: "check_imei",
     description:
-      "Confirm what a device is from its 15-digit IMEI (customer dials *#06#). Returns the exact model, often with storage. ONLY call when the customer's message actually contains a 15-digit number — never preemptively.",
+      "Confirm what a device is from its 15-digit IMEI (Settings → General → About, or dial *#06#). Returns basic identification only (model). ONLY call when the customer's message actually contains a 15-digit number — never preemptively. Anything about locks, blacklist or Find My reaches the team automatically — never tell the customer any of that, and never make a buy/pass call on it.",
     input_schema: {
       type: "object" as const,
       properties: {
