@@ -282,6 +282,17 @@ function persistentSessionId(src: string): string {
 // nothing renders until a real photo is in — no stock face, no fake human.
 const OWNER_PHOTO = process.env.NEXT_PUBLIC_OWNER_PHOTO || "";
 
+// Overlay + bubble animations. Rendered by BOTH modes — the widget has no
+// <main> wrapper, so without this the bubbles had no styles at all.
+const GO_CSS = `
+          @keyframes goMsgIn { from { opacity: 0; transform: translateY(5px); } }
+          .go-msg { animation: goMsgIn 0.18s ease; }
+          @keyframes goDot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-3px); opacity: 1; } }
+          .go-dot { width: 6px; height: 6px; border-radius: 50%; background: #00c853; display: inline-block; animation: goDot 1.1s ease infinite; }
+          @keyframes goOverlayIn { from { opacity: 0; transform: translateY(14px); } }
+          .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+        `;
+
 export default function GoClient({ rows, src, reviews, variant = "std", mode = "page", initialGroup = null, landed = "" }: {
   rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot";
   // "widget": no first-paint board — a floating button on any site page that
@@ -1245,7 +1256,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     <>
   {/* full-screen immersive chat */}
   {chatOpen && (
-    <div ref={overlayRef} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
+    <div ref={overlayRef} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col text-white" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
         <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
         <div className="flex-1 min-w-0">
@@ -1665,6 +1676,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             get my number
           </button>
         )}
+        <style>{GO_CSS}</style>
         {overlayEl}
       </>
     );
@@ -1703,14 +1715,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       {/* chat entry — tapping anything opens the full-screen takeover.
           The board stays the first paint; immersion starts at engagement. */}
       <section className="mt-7" id="go-composer" aria-label="chat with us">
-        <style>{`
-          @keyframes goMsgIn { from { opacity: 0; transform: translateY(5px); } }
-          .go-msg { animation: goMsgIn 0.18s ease; }
-          @keyframes goDot { 0%, 60%, 100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-3px); opacity: 1; } }
-          .go-dot { width: 6px; height: 6px; border-radius: 50%; background: #00c853; display: inline-block; animation: goDot 1.1s ease infinite; }
-          @keyframes goOverlayIn { from { opacity: 0; transform: translateY(14px); } }
-          .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
-        `}</style>
+        <style>{GO_CSS}</style>
         <h2 className="text-[22px] font-bold">{lot ? "tell us what you got" : "what are you selling?"}</h2>
 
         <p className="text-[16px] text-white/70 mt-1">
