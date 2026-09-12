@@ -211,7 +211,7 @@ export function luhnValid(num: string): boolean {
 export async function runImeiCheck(input: { imei?: string }): Promise<Record<string, unknown>> {
   const clean = String(input.imei || "").replace(/\D/g, "");
   if (clean.length !== 15 || !luhnValid(clean)) {
-    return { ok: false, reason: "not a valid 15-digit IMEI — have them dial *#06# and re-send it" };
+    return { ok: false, reason: "that doesn't check out as an IMEI (likely a typo) — ask them ONCE to re-read it from *#06#; if it still fails, take it down for the team and keep going", ownerNote: clean.length >= 14 ? `IMEI: ${clean} → failed checksum (typo?) — check by hand` : undefined };
   }
   const key = process.env.SICKW_API_KEY || "";
   if (!key) return { ok: false, reason: "lookup unavailable — keep going; the team will confirm the model on their end", ownerNote: `IMEI: ${clean} → not looked up (no key)` };

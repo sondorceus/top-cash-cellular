@@ -5,7 +5,7 @@ import { PHONE_DISPLAY } from "../../lib/constants";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
-import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk, slugToDisplay } from "../../lib/sell-tools";
+import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk, slugToDisplay, luhnValid } from "../../lib/sell-tools";
 import { appendChatMsg, readChat, takeoverStale, validSession, rememberPhoneSession } from "../../lib/gochat-store";
 import { sendCapiLead } from "../../lib/meta-capi";
 
@@ -594,6 +594,7 @@ export async function POST(req: NextRequest) {
     const askedLastTurn = /\bnumber\b/i.test(lastBotText) && /\b(drop|send|share|what'?s|what is|need|get|give)\b/i.test(lastBotText);
     const numberCooldown = askedLastTurn && !detectedNow && !storeContactNote && !contact;
     // IMEI cadence: asked last turn and no 15-digit number arrived now.
+    let imeiCheckedThisTurn = false;
     const imeiCooldown = /\b(imei|\*#06#)\b/i.test(lastBotText) && !/\b\d{15}\b/.test(userText.replace(/[\s-]/g, ""));
 
     const dynamicSys = [
@@ -641,6 +642,22 @@ export async function POST(req: NextRequest) {
 
       const textParts = response.content.filter((b) => b.type === "text");
       if (textParts.length) reply = textParts.map((b) => (b as { text: string }).text).join(" ").trim();
+      // IMEI GUARANTEE (owner's rule): if the seller dropped a 15-digit IMEI
+      // in this message and the model never called check_imei, run the
+      // lookup anyway and keep the accurate identification for the owner.
+      // The model's reply is unchanged — this is for the team's record.
+      const droppedImei = message.replace(/[\s-]/g, "").match(/(?<!\d)(\d{15})(?!\d)/)?.[1];
+      if (droppedImei && !imeiCheckedThisTurn && luhnValid(droppedImei) && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
+        if (rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok) {
+          after(async () => {
+            const r = await runImeiCheck({ imei: droppedImei }).catch(() => null);
+            const note = (r as { ownerNote?: string } | null)?.ownerNote || `IMEI: ${droppedImei} → not looked up — check by hand`;
+            await appendChatMsg(sessionId, "note", note).catch(() => {});
+          });
+        } else {
+          after(() => { void appendChatMsg(sessionId, "note", `IMEI: ${droppedImei} → not looked up (rate limit) — check by hand`); });
+        }
+      }
       // CADENCE BACKSTOP. The prompt says "never two asks in a row", the
       // cooldown line says "not in this reply", and the model still asked on
       // three consecutive turns whenever a fresh quote landed (2026-09-12
@@ -688,13 +705,14 @@ export async function POST(req: NextRequest) {
           }
           out = q;
         } else if (tu.name === "check_imei") {
+          imeiCheckedThisTurn = true;
           // Sickw lookups are PAID (~$0.05 each) and one message can carry
           // many Luhn-valid IMEIs across MAX_TOOL_ROUNDS — bound them like
           // every other costly path. The graceful reason keeps the flow
           // alive: the bot takes the IMEI down and hands off instead.
           out = rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok
             ? await runImeiCheck(tu.input as { imei?: string })
-            : { ok: false, reason: "lookup unavailable right now — take the IMEI down and notify_team; the team will run it" };
+            : { ok: false, reason: "lookup unavailable right now — keep going; say the team will confirm the model on their end (never 'not clean' or 'flagged'), and don't ask for the IMEI again", ownerNote: `IMEI: ${String(tu.input.imei || "").replace(/\D/g, "")} → not looked up (rate limit) — check by hand` };
           // The accurate identification + lock flags go to the session notes
           // (console, lead body, handoff comm) and never to the model.
           const ownerNote = (out as { ownerNote?: string }).ownerNote;
