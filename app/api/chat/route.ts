@@ -601,12 +601,18 @@ export async function POST(req: NextRequest) {
     // used by the server-side guarantee below.
     const droppedImei = message.replace(/[\s-]/g, "").match(/(?<!\d)(\d{15})(?!\d)/)?.[1];
     const imeiPresent = !!droppedImei && luhnValid(droppedImei);
+    // A 15-digit string that FAILS the checksum is still the seller's best
+    // attempt at their IMEI (Sonny's own test: one digit off, and nothing
+    // was recorded while the bot said "it's with the team") — it is kept
+    // for the owner, and the model asks once for a re-read.
+    const imeiTypo = !!droppedImei && !imeiPresent;
     const imeiCooldown = /\b(imei|\*#06#)\b/i.test(lastBotText) && !/\b\d{15}\b/.test(userText.replace(/[\s-]/g, ""));
 
     const dynamicSys = [
       isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Quote every device with get_quote as its specs arrive and keep a running recap; ask for their number once when the first number lands and once at the handoff (notify_team). Never hold a price back for a phone number. Do NOT close the lot, do NOT name a package price." : "",
       imeiPresent ? `IMEI PRESENT: this message contains a valid 15-digit IMEI (${droppedImei}). Call check_imei with it now. Do not say it looks wrong, too long or too short, and do not ask them to re-send it.` : "",
-      !imeiPresent && imeiOnFile ? `IMEI ALREADY ON FILE for this seller (${imeiOnFile}) — it is recorded for the team. Never ask for it again; continue with condition, storage, or the quote.` : "",
+      imeiTypo ? `IMEI LOOKS MISTYPED: this message has a 15-digit number (${droppedImei}) that fails the IMEI checksum — one digit is probably off. It is recorded for the team. Ask ONCE, plainly, for a re-read from Settings → General → About or *#06#; never call it 'not clean' or 'flagged'.` : "",
+      !imeiPresent && !imeiTypo && imeiOnFile ? `IMEI ALREADY ON FILE for this seller (${imeiOnFile}) — it is recorded for the team. Never ask for it again. If they ask you to check or confirm it, call check_imei with this exact IMEI and tell them the model it comes back as (nothing about locks). Otherwise continue with condition, storage, or the quote.` : "",
       numberCooldown ? "NUMBER-ASK COOLDOWN — OVERRIDES EVERYTHING: you asked for their phone number in your last message and they didn't give it. Do NOT ask for a number, name or contact in this reply, in any wording. Answer what they said and advance the device flow — the next spec, the IMEI (*#06#), or get_quote if you already have model + condition; on a team-quote device say the request is saved in this chat and ask what exactly is wrong or for the IMEI. You may ask again later, once, at a natural close point." : "",
       quotesOnTable.length
         ? `QUOTES ALREADY GIVEN IN THIS THREAD (real get_quote results from earlier turns — newest per device; use them, never re-ask for specs already priced): ${quotesOnTable.map((q) => q.line).join("; ")}. Itemized sum: $${quotesSum} across ${quotesOnTable.length} device${quotesOnTable.length === 1 ? "" : "s"}. When the seller asks for a total or a recap, give this itemized sum — it is real; anything beyond it is the owner's call. If they change a device's condition or storage, re-run get_quote for that device — and when a later quote is a CORRECTION of an earlier one (same phone, fixed storage/condition/carrier), only the newest number counts: never add a corrected quote to the one it replaced, even if the sum above still includes both.`
@@ -654,6 +660,9 @@ export async function POST(req: NextRequest) {
       // in this message and the model never called check_imei, run the
       // lookup anyway and keep the accurate identification for the owner.
       // The model's reply is unchanged — this is for the team's record.
+      if (droppedImei && imeiTypo && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
+        after(() => { void appendChatMsg(sessionId, "note", `IMEI: ${droppedImei} → fails checksum (typo?) — check by hand`); });
+      }
       if (droppedImei && imeiPresent && !imeiCheckedThisTurn && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
         if (rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok) {
           after(async () => {
