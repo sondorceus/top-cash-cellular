@@ -67,6 +67,23 @@ const field = (text: string, ...labels: string[]): string | undefined => {
 };
 const titleCase = (s: string) => s.toLowerCase().replace(/\b(iphone|ipad|ipod|imac)\b/g, (w) => ({ iphone: "iPhone", ipad: "iPad", ipod: "iPod", imac: "iMac" }[w] as string)).replace(/\b([a-z])(\w*)/g, (m, a, b) => /^(i(phone|pad|pod|mac))$/i.test(m) ? m : a.toUpperCase() + b);
 
+/** Pure parse of Sickw's "Label: value<br>Label: value" text — exported for tests. */
+export function parseSickwFields(text: string): { model?: string; capacity?: string; carrier?: string; simLock?: string; fmiRaw?: string; blacklistRaw?: string; fmiOn: boolean; blacklisted: boolean } {
+  const desc = field(text, "Model Description", "Model Name", "Model");
+  const model = desc ? (/^[A-Z0-9 ,()-]+$/.test(desc) ? titleCase(desc.split(",")[0]) : desc) : undefined;
+  const capacity = field(text, "Capacity", "Storage") || text.match(/\b(\d{2,4}\s?GB|\d\s?TB)\b/i)?.[1];
+  const carrier = field(text, "Locked Carrier", "Carrier", "Network", "Original Carrier");
+  const simLock = field(text, "Sim-Lock Status", "SIM Lock", "Sim Lock", "Simlock", "Lock Status");
+  const fmiLock = field(text, "iCloud Lock", "Find My iPhone", "FMI Status", "Find My");
+  const fmiRaw = fmiLock || field(text, "iCloud Status");
+  const blacklistRaw = field(text, "Blacklist Status", "Blacklist", "GSMA Blacklist");
+  const fmiOn = !!fmiLock && /\bon\b|locked|active/i.test(fmiLock);
+  let blacklisted = !!blacklistRaw && /black|reported|stolen|lost/i.test(blacklistRaw) && !/clean/i.test(blacklistRaw);
+  const st = field(text, "iCloud Status");
+  if (!blacklisted && st && /lost|stolen|erased/i.test(st)) blacklisted = true;
+  return { model, capacity, carrier, simLock, fmiRaw, blacklistRaw, fmiOn, blacklisted };
+}
+
 let alerted = false;
 async function alertOwnerOnce(error: string, balance?: number) {
   // One text per 6h, process-local flag on top — a Low Balance day must not
@@ -107,21 +124,10 @@ export async function lookupImei(cleanImei: string): Promise<ImeiLookup> {
   console.log(`[imei-lookup] ${imei} brand=${brand} ` + results.map((r, i) => `${(isApple ? [61, 92] : isSamsung ? [1, 54] : isGoogle ? [42, 54] : [54])[i]}=${r.status}:${JSON.stringify(r.text).slice(0, 160)}`).join(" | "));
   if (text) {
     const nice = isApple ? field(results[1]?.text || "", "Model Description") : undefined;
-    const desc = field(text, "Model Description", "Model Name", "Model");
+    const f = parseSickwFields(text);
     if (nice) out.model = nice;
-    else if (desc && (!out.model || desc.length > out.model.length)) out.model = /^[A-Z0-9 ,]+$/.test(desc) ? titleCase(desc.split(",")[0]) : desc;
-    out.capacity = field(text, "Capacity", "Storage") || (text.match(/\b(\d{2,4}\s?GB|\d\s?TB)\b/i)?.[1]);
-    out.carrier = field(text, "Locked Carrier", "Carrier", "Network", "Original Carrier");
-    out.simLock = field(text, "Sim-Lock Status", "SIM Lock", "Sim Lock", "Simlock", "Lock Status");
-    out.fmiRaw = field(text, "iCloud Lock", "Find My iPhone", "FMI Status", "iCloud Status", "Find My");
-    out.blacklistRaw = field(text, "Blacklist Status", "Blacklist", "GSMA Blacklist");
-    const fmiLock = field(text, "iCloud Lock", "Find My iPhone", "FMI Status", "Find My");
-    out.fmiOn = !!fmiLock && /\bon\b|locked|active/i.test(fmiLock);
-    out.blacklisted = !!out.blacklistRaw && /black|reported|stolen|lost/i.test(out.blacklistRaw) && !/clean/i.test(out.blacklistRaw);
-    if (!out.blacklisted) {
-      const st = field(text, "iCloud Status");
-      if (st && /lost|stolen|erased/i.test(st)) out.blacklisted = true;
-    }
+    else if (f.model && (!out.model || f.model.length > out.model.length)) out.model = f.model;
+    Object.assign(out, { capacity: f.capacity, carrier: f.carrier, simLock: f.simLock, fmiRaw: f.fmiRaw, blacklistRaw: f.blacklistRaw, fmiOn: f.fmiOn, blacklisted: f.blacklisted });
   }
   // Every sub-call that didn't succeed is named in the note and logged — a
   // silently dropped Apple call left the owner's own IMEI without its
