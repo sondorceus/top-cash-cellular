@@ -2,7 +2,7 @@
 import { useState, useEffect, useLayoutEffect, useCallback, useRef } from "react";
 import { track as vercelTrack } from "@vercel/analytics";
 import { BRAND_ICONS } from "./components/brand-icons";
-import { getResellEstimateForModel, resellMultiplierForCondition, marginCapFor, applyGalaxyDrop } from "./lib/resell-estimates";
+import { getResellEstimateForModel, resellMultiplierForCondition, marginCapFor, applyGalaxyDrop, iwmRuleCeiling } from "./lib/resell-estimates";
 import SKU_LABELS from "./data/sku-labels.json";
 import { listSlots, bookSlot, type Slot } from "./lib/slots-store";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "./lib/payout-verify";
@@ -2775,7 +2775,9 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   if (cap != null) {
     val = Math.min(val, cap);
   }
-  return applyGalaxyDrop(val, m.id);
+  const dropped = applyGalaxyDrop(val, m.id);
+  const rule = iwmRuleCeiling({ modelId: m.id, condition: "sealed" });
+  return rule != null ? Math.min(dropped, rule) : dropped;
 };
 
 const PAYOUTS = [
@@ -6075,7 +6077,10 @@ export default function Home() {
   // Galaxy S23+ blanket −$75 (Atlas doesn't really buy Galaxy). Applied after
   // the cap so it lands on the live offer. Monotone floor 2026-07-13: see
   // applyGalaxyDrop — a better config must never quote below a worse one.
-  const quote = applyGalaxyDrop(quoteAfterCap, model?.id);
+  const quoteAfterDrop = applyGalaxyDrop(quoteAfterCap, model?.id);
+  // THE RULE (IWM × 0.90) lands last — identical call to the server engine.
+  const ruleCeiling = model ? iwmRuleCeiling({ modelId: model.id, storage: storage?.id, condition: condition?.id, carrier: carrier?.id, carrierLocked: carrierLock?.id === "yes", carrierDeduction: totalCarrierDeduction }) : null;
+  const quote = ruleCeiling != null ? Math.min(quoteAfterDrop, ruleCeiling) : quoteAfterDrop;
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.

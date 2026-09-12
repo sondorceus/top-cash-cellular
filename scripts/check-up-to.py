@@ -125,6 +125,10 @@ def resell_key_of(label):
         if best is None or len(key) > len(best): best = key
     return best
 
+def rule_ceiling(mid, st, cond):
+    """mirror of iwmRuleCeiling (unlocked): IWM × 0.90, sealed 17 Pro Max exempt"""
+    if mid == "ip17pm" and cond == "sealed": return None
+    return iwm_ceiling(mid, st, cond)
 def cap_of(mid, cond, st=None):
     """Full mirror of marginCapFor() for the UNLOCKED case."""
     cm = COND_MULT.get(cond, 1.0)
@@ -134,9 +138,8 @@ def cap_of(mid, cond, st=None):
         rel = cm / 0.8 if net["good"] else cm
         caps.append(jround(net["unlocked"] * rel * 0.75))
         if net["max"] is not None: caps.append(net["max"])
-    ceil = iwm_ceiling(mid, st, cond) if (net is not None or mid in RESELL_IDS) else None
-    if ceil is not None: caps.append(ceil)
     if caps: return min(caps)
+    if mid in IWM: return None  # ruled by rule_ceiling() after the drop, not comp-capped
     label = SKU.get(mid)
     resell = resell_of(label)
     if resell is None: return None
@@ -173,6 +176,8 @@ def ceiling_of(mid, debug=False):
                 offer = min(offer, cap)
             if gd and offer >= 250:
                 offer = max(offer - gd, 249)  # applyGalaxyDrop monotone floor
+            rule = rule_ceiling(mid, st, cond)
+            if rule is not None: offer = min(offer, rule)
             if debug: print(f"    {mid} {st}/{cond}: cell {cell} -> offer {offer}")
             best = max(best, offer)
     return best or None
@@ -185,6 +190,8 @@ def runtime_card(stored, mid):
         val = min(val, cap)
     gd = galaxy_drop(mid)
     if gd and val >= 250: val = max(val - gd, 249)  # applyGalaxyDrop monotone floor
+    rule = rule_ceiling(mid, None, "sealed")
+    if rule is not None: val = min(val, rule)
     return val
 
 def stored_for(mid, ceiling):

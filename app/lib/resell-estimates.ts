@@ -8,6 +8,7 @@
 // damaged devices; brokenGlass adds extra deductions on broken phones.
 
 import { IWM_PAYOUTS, IWM_RULE_MULT } from "../data/iwm-payouts";
+import { carrierGapForCondition } from "../data/prices";
 
 export const RESELL_ESTIMATES: Record<string, number> = {
   // iPhones — Swappa mid price (actual listings)
@@ -329,12 +330,11 @@ export function marginCapFor(opts: {
     const pin = locked ? net.maxOffer?.locked : net.maxOffer?.unlocked;
     if (pin != null) caps.push(pin);
   }
-  // 2. The IWM rule (pay ~10% under ItsWorthMore) for models that already had
-  // a market guard — storage-aware, so a 1TB no longer pays like a 128GB.
-  const ceiling = opts.modelId && (net || RESELL_MODEL_IDS[opts.modelId]) ? iwmCeiling(opts.modelId, opts.storage, opts.condition) : null;
-  if (ceiling != null) caps.push(Math.max(0, ceiling - Math.max(0, opts.carrierDeduction ?? 0)));
-  // 3. Resell comp × 0.75 — only when neither of the above applies.
-  if (!net && ceiling == null) {
+  // 2. Resell comp × 0.75 — only for models with no owner exit AND no IWM
+  // grid (Pixels). Models IWM lists are ruled by iwmRuleCeiling() instead,
+  // applied by every caller AFTER the galaxy drop (see quote.ts) — the
+  // stale comps were capping 14 models $85–$240 under the rule (2026-09-11).
+  if (!net && !(opts.modelId && IWM_PAYOUTS[opts.modelId])) {
     const resell = getResellEstimateForModel(opts.modelId ?? null, opts.label ?? null);
     if (resell == null) return null;
     const cap = Math.round(Math.round(resell * condMult) * EBAY_FEE_MULT * MARGIN_FLOOR_MULT);
@@ -347,7 +347,51 @@ export function marginCapFor(opts: {
     }
     return cap;
   }
-  return Math.min(...caps);
+  return caps.length ? Math.min(...caps) : null;
+}
+/**
+ * THE RULE — Sonny pays ~10% under ItsWorthMore. The final ceiling on every
+ * model IWM lists (app/data/iwm-payouts.ts), per storage and condition,
+ * minus the carrier gap the caller already took off the cell for a locked
+ * unit. Every surface applies it LAST — after the margin cap and after the
+ * Galaxy −$75 — so a ruled model lands exactly on the rule, never under it
+ * by the drop. Exempt: the owner's own sealed 17 Pro Max cells (July 2026
+ * buyer-sheet pricing, "sealed = buyer sheet − 80"), which run above IWM on
+ * purpose — flagged in the price scan, his call.
+ */
+export function iwmRuleCeiling(opts: {
+  modelId?: string | null;
+  storage?: string | null;
+  condition?: string | null;
+  carrier?: string | null;
+  carrierLocked?: boolean;
+  // The flat gap the caller took off the cell for THIS condition (admin
+  // overrides included). Condition-dependent gaps (17 Pro / Pro Max / Air,
+  // CARRIER_GAPS_BY_COND) are re-read per condition below.
+  carrierDeduction?: number | null;
+}): number | null {
+  if (!opts.modelId) return null;
+  const cond = iwmCondKey(opts.condition);
+  if (opts.modelId === "ip17pm" && cond === "sealed") return null;
+  // Monotone per carrier: a locked unit's ceiling for condition X is the
+  // best of (rule − gap) over every condition at or below X. Models whose
+  // sealed gap exceeds their used gap (17 Air T-Mobile: −280 sealed vs −200
+  // used) otherwise paid a sealed unit LESS than a like-new one.
+  const own = Math.max(0, opts.carrierDeduction ?? 0);
+  let best: number | null = null;
+  for (const c of IWM_LADDER.slice(0, IWM_LADDER.indexOf(cond) + 1)) {
+    const r = iwmCeiling(opts.modelId, opts.storage, c);
+    if (r == null) continue;
+    const condGap = carrierGapForCondition(opts.modelId, opts.carrier ?? "unlocked", c, !!opts.carrierLocked, opts.storage ?? undefined);
+    if (condGap?.manual) continue;
+    const gap = condGap != null ? condGap.gap : own;
+    best = Math.max(best ?? 0, Math.max(0, r - Math.max(0, gap)));
+  }
+  return best;
+}
+function iwmCondKey(condition?: string | null): (typeof IWM_LADDER)[number] {
+  const c = (condition || "").toLowerCase();
+  return c.includes("seal") ? "sealed" : c.includes("mint") || c.includes("like") || c.includes("excellent") ? "mint" : c.includes("fair") ? "fair" : c.includes("broken") || c.includes("crack") ? "broken" : "good";
 }
 const STORAGE_ORDER = (s: string) => (/tb$/.test(s) ? Number(s.replace("tb", "")) * 1024 : Number(s) || 0);
 /**
@@ -360,8 +404,7 @@ const STORAGE_ORDER = (s: string) => (/tb$/.test(s) ? Number(s.replace("tb", "")
 export function iwmCeiling(modelId: string, storage?: string | null, condition?: string | null): number | null {
   const grid = IWM_PAYOUTS[modelId];
   if (!grid) return null;
-  const c = (condition || "").toLowerCase();
-  const cond = c.includes("seal") ? "sealed" : c.includes("mint") || c.includes("like") || c.includes("excellent") ? "mint" : c.includes("fair") ? "fair" : c.includes("broken") || c.includes("crack") ? "broken" : "good";
+  const cond = iwmCondKey(condition);
   const tiers = Object.keys(grid).sort((a, b) => STORAGE_ORDER(a) - STORAGE_ORDER(b));
   const want = storage ? STORAGE_ORDER(storage) : Infinity;
   // IWM's grid occasionally dips a better condition under a worse one at

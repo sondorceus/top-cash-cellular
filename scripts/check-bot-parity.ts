@@ -20,7 +20,7 @@
 
 import { readFileSync } from "fs";
 import { PRICE_TABLE, MIN_OFFER, carrierGapForCondition, CARRIER_DEDUCTIONS, MANUAL_REVIEW_DEVICES } from "../app/data/prices";
-import { marginCapFor, applyGalaxyDrop } from "../app/lib/resell-estimates";
+import { marginCapFor, applyGalaxyDrop, iwmRuleCeiling } from "../app/lib/resell-estimates";
 import { quoteDevice, type PriceOverrides } from "../app/lib/quote";
 
 const EMPTY: PriceOverrides = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
@@ -64,7 +64,9 @@ function funnelOffer(id: string, st: string, cond: string, carrier: string, vzLo
   // carrier gaps, bonuses, galaxy drop, MIN_OFFER — stay duplicated above.
   const cap = marginCapFor({ modelId: id, label: LABELS[id], condition: cond, carrier, carrierLocked: vzLocked, storage: st, carrierDeduction: gap });
   const capped = cap != null && raw > cap ? cap : raw;
-  const final = applyGalaxyDrop(capped, id);
+  const dropped = applyGalaxyDrop(capped, id);
+  const rule = iwmRuleCeiling({ modelId: id, storage: st, condition: cond, carrier, carrierLocked: vzLocked, carrierDeduction: gap });
+  const final = rule != null ? Math.min(dropped, rule) : dropped;
   const manual = final < MIN_OFFER || (cap != null && cap < MIN_OFFER);
   return { offer: manual ? null : final, manual };
 }

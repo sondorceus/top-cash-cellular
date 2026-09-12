@@ -2,13 +2,344 @@
 // scripts/iwm-head-scrape.py. Sonny's standing rule is to pay ~10% under
 // IWM (IWM_RULE_MULT); marginCapFor turns these into a storage-aware
 // ceiling for every model that already had a market guard (a resell comp
-// or a NET payout). Refresh: re-scrape, regenerate, bump IWM_SCRAPED.
+// or a NET payout). A "-" storage key = IWM asks no storage question for
+// that model (one config); it applies to every storage. Refresh: re-scrape,
+// regenerate, bump IWM_SCRAPED.
 // Sonny 2026-09-11 (price scan): "fix all other" — the stale resell comps
 // were capping 14 models $85–$240 under this rule.
 export const IWM_SCRAPED = "2026-09-11";
 export const IWM_RULE_MULT = 0.90;
 export type IwmCond = "sealed" | "mint" | "good" | "fair" | "broken";
 export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, number>>>> = {
+ "gnote10": {
+  "-": {
+   "sealed": 110,
+   "mint": 80,
+   "good": 70,
+   "fair": 45,
+   "broken": 10
+  }
+ },
+ "gnote10p": {
+  "256": {
+   "sealed": 150,
+   "mint": 130,
+   "good": 110,
+   "fair": 50,
+   "broken": 42
+  },
+  "512": {
+   "sealed": 176,
+   "mint": 140,
+   "good": 120,
+   "fair": 60,
+   "broken": 52
+  }
+ },
+ "gnote10p5g": {
+  "256": {
+   "sealed": 150,
+   "mint": 130,
+   "good": 110,
+   "fair": 50,
+   "broken": 40
+  },
+  "512": {
+   "sealed": 176,
+   "mint": 145,
+   "good": 125,
+   "fair": 65,
+   "broken": 55
+  }
+ },
+ "gnote20": {
+  "128": {
+   "sealed": 130,
+   "mint": 100,
+   "good": 90,
+   "fair": 75,
+   "broken": 0
+  },
+  "256": {
+   "sealed": 145,
+   "mint": 110,
+   "good": 100,
+   "fair": 85,
+   "broken": 5
+  }
+ },
+ "gnote9": {
+  "128": {
+   "sealed": 105,
+   "mint": 75,
+   "good": 60,
+   "fair": 30,
+   "broken": 10
+  },
+  "512": {
+   "sealed": 126,
+   "mint": 85,
+   "good": 70,
+   "fair": 40,
+   "broken": 20
+  }
+ },
+ "gs20": {
+  "-": {
+   "sealed": 100,
+   "mint": 75,
+   "good": 65,
+   "fair": 50,
+   "broken": 15
+  }
+ },
+ "gs20fe": {
+  "128": {
+   "sealed": 70,
+   "mint": 45,
+   "good": 35,
+   "fair": 20,
+   "broken": 15
+  },
+  "256": {
+   "sealed": 90,
+   "mint": 55,
+   "good": 45,
+   "fair": 30,
+   "broken": 25
+  }
+ },
+ "gs20p": {
+  "128": {
+   "sealed": 115,
+   "mint": 85,
+   "good": 75,
+   "fair": 40,
+   "broken": 15
+  },
+  "512": {
+   "sealed": 145,
+   "mint": 110,
+   "good": 100,
+   "fair": 65,
+   "broken": 17
+  }
+ },
+ "gs20u": {
+  "128": {
+   "sealed": 165,
+   "mint": 135,
+   "good": 115,
+   "fair": 75,
+   "broken": 15
+  },
+  "256": {
+   "sealed": 175,
+   "mint": 145,
+   "good": 125,
+   "fair": 85,
+   "broken": 20
+  },
+  "512": {
+   "sealed": 185,
+   "mint": 155,
+   "good": 135,
+   "fair": 95,
+   "broken": 25
+  }
+ },
+ "gs21": {
+  "128": {
+   "sealed": 75,
+   "mint": 45,
+   "good": 30,
+   "fair": 20,
+   "broken": 10
+  },
+  "256": {
+   "sealed": 95,
+   "mint": 55,
+   "good": 40,
+   "fair": 30,
+   "broken": 10
+  }
+ },
+ "gs21fe": {
+  "128": {
+   "sealed": 60,
+   "mint": 40,
+   "good": 30,
+   "fair": 25,
+   "broken": 10
+  },
+  "256": {
+   "sealed": 80,
+   "mint": 50,
+   "good": 40,
+   "fair": 35,
+   "broken": 15
+  }
+ },
+ "gs21p": {
+  "128": {
+   "sealed": 100,
+   "mint": 70,
+   "good": 60,
+   "fair": 40,
+   "broken": 15
+  },
+  "256": {
+   "sealed": 131,
+   "mint": 80,
+   "good": 70,
+   "fair": 50,
+   "broken": 16
+  }
+ },
+ "gs21u": {
+  "128": {
+   "sealed": 110,
+   "mint": 90,
+   "good": 80,
+   "fair": 60,
+   "broken": 25
+  },
+  "256": {
+   "sealed": 120,
+   "mint": 100,
+   "good": 90,
+   "fair": 70,
+   "broken": 27
+  },
+  "512": {
+   "sealed": 125,
+   "mint": 105,
+   "good": 95,
+   "fair": 75,
+   "broken": 28
+  }
+ },
+ "gs22": {
+  "128": {
+   "sealed": 110,
+   "mint": 90,
+   "good": 75,
+   "fair": 40,
+   "broken": 20
+  },
+  "256": {
+   "sealed": 130,
+   "mint": 100,
+   "good": 85,
+   "fair": 50,
+   "broken": 25
+  }
+ },
+ "gs22p": {
+  "128": {
+   "sealed": 155,
+   "mint": 125,
+   "good": 110,
+   "fair": 70,
+   "broken": 25
+  },
+  "256": {
+   "sealed": 180,
+   "mint": 135,
+   "good": 120,
+   "fair": 80,
+   "broken": 30
+  }
+ },
+ "gs22u": {
+  "128": {
+   "sealed": 180,
+   "mint": 140,
+   "good": 120,
+   "fair": 85,
+   "broken": 30
+  },
+  "256": {
+   "sealed": 227,
+   "mint": 155,
+   "good": 135,
+   "fair": 100,
+   "broken": 30
+  },
+  "512": {
+   "sealed": 269,
+   "mint": 160,
+   "good": 140,
+   "fair": 105,
+   "broken": 30
+  },
+  "1tb": {
+   "sealed": 311,
+   "mint": 165,
+   "good": 145,
+   "fair": 110,
+   "broken": 30
+  }
+ },
+ "gs23": {
+  "128": {
+   "sealed": 150,
+   "mint": 120,
+   "good": 100,
+   "fair": 70,
+   "broken": 25
+  },
+  "256": {
+   "sealed": 185,
+   "mint": 140,
+   "good": 120,
+   "fair": 90,
+   "broken": 26
+  },
+  "512": {
+   "sealed": 200,
+   "mint": 145,
+   "good": 125,
+   "fair": 95,
+   "broken": 26
+  }
+ },
+ "gs23fe": {
+  "128": {
+   "sealed": 100,
+   "mint": 90,
+   "good": 70,
+   "fair": 35,
+   "broken": 15
+  },
+  "256": {
+   "sealed": 120,
+   "mint": 100,
+   "good": 80,
+   "fair": 45,
+   "broken": 17
+  }
+ },
+ "gs23p": {
+  "128": {
+   "sealed": 190,
+   "broken": 50
+  },
+  "256": {
+   "sealed": 220,
+   "mint": 160,
+   "good": 140,
+   "fair": 100,
+   "broken": 55
+  },
+  "512": {
+   "sealed": 240,
+   "mint": 170,
+   "good": 150,
+   "fair": 110,
+   "broken": 57
+  }
+ },
  "gs23u": {
   "256": {
    "sealed": 295,
@@ -260,6 +591,263 @@ export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, 
    "good": 655,
    "fair": 555,
    "broken": 160
+  }
+ },
+ "gzflip3": {
+  "128": {
+   "sealed": 60,
+   "mint": 40,
+   "good": 30,
+   "fair": 15,
+   "broken": 10
+  },
+  "256": {
+   "sealed": 75,
+   "mint": 50,
+   "good": 40,
+   "fair": 25,
+   "broken": 15
+  }
+ },
+ "gzflip4": {
+  "128": {
+   "sealed": 55,
+   "mint": 40,
+   "good": 30,
+   "fair": 10,
+   "broken": 15
+  },
+  "256": {
+   "sealed": 60,
+   "mint": 45,
+   "good": 35,
+   "fair": 15,
+   "broken": 16
+  },
+  "512": {
+   "sealed": 65,
+   "mint": 45,
+   "good": 35,
+   "fair": 15,
+   "broken": 17
+  }
+ },
+ "gzflip5": {
+  "256": {
+   "sealed": 225,
+   "mint": 195,
+   "good": 165,
+   "fair": 115,
+   "broken": 30
+  },
+  "512": {
+   "sealed": 275,
+   "mint": 210,
+   "good": 180,
+   "fair": 130,
+   "broken": 35
+  }
+ },
+ "gzflip6": {
+  "256": {
+   "sealed": 290,
+   "mint": 265,
+   "good": 225,
+   "fair": 175,
+   "broken": 0
+  },
+  "512": {
+   "sealed": 340,
+   "mint": 285,
+   "good": 245,
+   "fair": 195,
+   "broken": 10
+  }
+ },
+ "gzflip7": {
+  "256": {
+   "sealed": 470,
+   "mint": 430,
+   "good": 390,
+   "fair": 325,
+   "broken": 50
+  },
+  "512": {
+   "sealed": 520,
+   "mint": 445,
+   "good": 405,
+   "fair": 340,
+   "broken": 65
+  }
+ },
+ "gzfold3": {
+  "256": {
+   "sealed": 170,
+   "mint": 140,
+   "good": 120,
+   "fair": 80,
+   "broken": 20
+  },
+  "512": {
+   "sealed": 200,
+   "mint": 155,
+   "good": 135,
+   "fair": 95,
+   "broken": 25
+  }
+ },
+ "gzfold4": {
+  "256": {
+   "sealed": 240,
+   "mint": 210,
+   "good": 175,
+   "fair": 125,
+   "broken": 25
+  },
+  "512": {
+   "sealed": 270,
+   "mint": 230,
+   "good": 195,
+   "fair": 145,
+   "broken": 28
+  },
+  "1tb": {
+   "sealed": 300,
+   "mint": 245,
+   "good": 210,
+   "fair": 160,
+   "broken": 30
+  }
+ },
+ "gzfold5": {
+  "256": {
+   "sealed": 345,
+   "mint": 315,
+   "good": 285,
+   "fair": 235,
+   "broken": 50
+  },
+  "512": {
+   "sealed": 375,
+   "mint": 335,
+   "good": 305,
+   "fair": 255,
+   "broken": 53
+  },
+  "1tb": {
+   "sealed": 405,
+   "mint": 355,
+   "good": 325,
+   "fair": 275,
+   "broken": 55
+  }
+ },
+ "gzfold6": {
+  "256": {
+   "sealed": 550,
+   "mint": 500,
+   "good": 440,
+   "fair": 340,
+   "broken": 100
+  },
+  "512": {
+   "sealed": 580,
+   "mint": 540,
+   "good": 480,
+   "fair": 380,
+   "broken": 105
+  },
+  "1tb": {
+   "sealed": 610,
+   "mint": 570,
+   "good": 510,
+   "fair": 410,
+   "broken": 110
+  }
+ },
+ "gzfold7": {
+  "256": {
+   "sealed": 790,
+   "mint": 750,
+   "good": 700,
+   "fair": 600,
+   "broken": 150
+  },
+  "512": {
+   "sealed": 820,
+   "mint": 790,
+   "good": 740,
+   "fair": 640,
+   "broken": 155
+  },
+  "1tb": {
+   "sealed": 850,
+   "mint": 820,
+   "good": 770,
+   "fair": 670,
+   "broken": 160
+  }
+ },
+ "gztrifold": {
+  "512": {
+   "sealed": 2300,
+   "mint": 2000,
+   "good": 1500,
+   "fair": 1000,
+   "broken": 200
+  },
+  "1tb": {
+   "sealed": 2375,
+   "mint": 2050,
+   "good": 1550,
+   "fair": 1050,
+   "broken": 210
+  }
+ },
+ "ip11": {
+  "64": {
+   "sealed": 130,
+   "mint": 80,
+   "good": 65,
+   "fair": 45,
+   "broken": 20
+  },
+  "128": {
+   "sealed": 145,
+   "mint": 115,
+   "good": 100,
+   "fair": 80,
+   "broken": 21
+  },
+  "256": {
+   "sealed": 160,
+   "mint": 130,
+   "good": 115,
+   "fair": 95,
+   "broken": 22
+  }
+ },
+ "ip11p": {
+  "64": {
+   "sealed": 120,
+   "mint": 100,
+   "good": 85,
+   "fair": 55,
+   "broken": 25
+  },
+  "256": {
+   "sealed": 150,
+   "mint": 130,
+   "good": 115,
+   "fair": 85,
+   "broken": 27
+  },
+  "512": {
+   "sealed": 170,
+   "mint": 155,
+   "good": 140,
+   "fair": 110,
+   "broken": 30
   }
  },
  "ip11pm": {

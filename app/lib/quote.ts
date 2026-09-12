@@ -28,6 +28,7 @@ import {
   getResellEstimateForModel,
   resellMultiplierForCondition,
   marginCapFor,
+  iwmRuleCeiling,
   applyGalaxyDrop,
 } from "./resell-estimates";
 import { deductionAmount } from "../data/deductions";
@@ -235,7 +236,11 @@ export async function quoteDevice(
     const cappedQuote = capped ? marginCap! : rawQuote;
     // Galaxy S23+ blanket −$75 (mirror of the funnel). Monotone floor
     // 2026-07-13: see applyGalaxyDrop in resell-estimates.
-    const postGalaxy = applyGalaxyDrop(cappedQuote, id);
+    const postGalaxyRaw = applyGalaxyDrop(cappedQuote, id);
+    // THE RULE (IWM × 0.90) lands last — see iwmRuleCeiling. Mirror of the
+    // funnel + parity gate by construction.
+    const ruleCeiling = iwmRuleCeiling({ modelId: id, storage, condition: cond, carrier, carrierLocked: spec.carrierLocked, carrierDeduction });
+    const postGalaxy = ruleCeiling != null ? Math.min(postGalaxyRaw, ruleCeiling) : postGalaxyRaw;
     // Sealed premium applies ONLY on the mint-fallback path (no sealed cell).
     // Added LAST — guaranteed past the resell margin cap, because an unopened
     // unit genuinely resells above the mint comp the cap is built on. Only on

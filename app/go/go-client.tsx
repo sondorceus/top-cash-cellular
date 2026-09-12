@@ -1174,9 +1174,11 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     <main className="min-h-screen bg-[#0a0a0a] text-white px-4 pb-16 pt-3" style={{ maxWidth: 560, margin: "0 auto" }}>
       {/* header */}
       <header className="flex items-center justify-between py-2" aria-label="Top Cash Cellular">
-        <div className="text-[16px] font-semibold tracking-tight">
+        {/* Sonny 2026-09-11: "customers don't have a way to go to the main
+            site — the logo doesn't take them back, nothing does." */}
+        <a href="/" className="text-[16px] font-semibold tracking-tight" aria-label="Top Cash Cellular home">
           top cash <span className="text-[#00c853]">cellular</span>
-        </div>
+        </a>
         <div className="text-[12px] text-white/50">{status}</div>
       </header>
 
@@ -1668,6 +1670,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       <footer className="mt-10 pt-4 border-t border-white/10 text-[13px] text-white/50">
         <p>TOP CASH CELLULAR LLC · austin tx</p>
         <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+          <a href="/" className="underline text-white/80">main site — every device we buy</a>
           <a href="/reviews" className="underline">reviews</a>
           <a href="/how-it-works" className="underline">how it works</a>
           <a href="/faq" className="underline">faq</a>
