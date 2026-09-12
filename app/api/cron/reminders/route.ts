@@ -359,7 +359,9 @@ export async function GET(req: NextRequest) {
     }
     const rum = m.body.match(/\[REVIEW-USED:\s*[\w]+\]\s+leadId=([\w-]+)/i);
     if (rum) reviewUsedLeads.add(rum[1]);
-    if (/\[NEW BUYBACK LEAD/i.test(m.body)) {
+    // A chat contact's comm now carries a [NEW BUYBACK LEAD] block too (so it
+    // lists as a lead) — that is not a lock; the chat path handles it.
+    if (/\[NEW BUYBACK LEAD/i.test(m.body) && !/^\[CHAT LEAD ✅\]/.test(m.body)) {
       const p = phoneKey(parseField(m.body, "Phone") || "");
       const e = (parseField(m.body, "Email") || "").toLowerCase();
       if (p) lockedContacts.add(p);

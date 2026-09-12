@@ -108,7 +108,8 @@ export async function GET(req: NextRequest) {
     if (!m.body || !m.timestamp || !m.id) continue;
     const ts = new Date(m.timestamp).getTime();
     if (isNaN(ts)) continue;
-    const isNewLead = /\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body);
+    // Chat contacts carry a lead block now; they are counted on the chat line.
+    const isNewLead = /\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body) && !/^\[CHAT LEAD ✅\]/.test(m.body);
     const statusMatch = m.body.match(/\[STATUS:\s*(\w+)\][^\n]*\[LEAD:\s*([^\]]+)\]/i);
     if (isNewLead) {
       const email = (parseField(m.body, "Email") || "").toLowerCase();

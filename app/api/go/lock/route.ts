@@ -46,6 +46,7 @@ import { sidToken } from "../../../lib/go-sid-token";
 import { mailShell, esc, MAIL } from "../../../lib/email-shell";
 import { after } from "next/server";
 import { resolveGoSpec, goQuote, type GoSpec } from "../../../go/spec";
+import { leadSourceLine } from "../../../lib/lead-source";
 import { MANUAL_REVIEW_DEVICES } from "../../../data/prices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -147,7 +148,8 @@ export async function POST(req: NextRequest) {
   const name = sanitize(String(body.name || "")).slice(0, 80);
   const contact = sanitize(String(body.contact || "")).slice(0, 120);
   const attest = body.attest === true;
-  const src = String(body.src || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 8);
+  const src = String(body.src || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 10);
+  const landedPath = String(body.landed || "").replace(/[^a-zA-Z0-9_\-/?=&.]/g, "").slice(0, 80);
   const sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
   const eventId = String(body.eventId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
   // The number the seller is looking at. Optional (older bundles don't send
@@ -232,7 +234,7 @@ export async function POST(req: NextRequest) {
     offer != null ? `Quote: $${offer}` : `Quote: TBD (custom)`,
     `Payout: TBD`,
     isEmail ? null : `SMS opt-in: no`,
-    `Source: source=go${src ? ` · content=${src}` : ""} · landed=/go${src ? `?src=${src}` : ""}`,
+    leadSourceLine("go", src, landedPath || `/go${src ? `?src=${src}` : ""}`),
     `Source-IP: ${safeIp}`,
     `Source-UA: ${ua}`,
     visitorId ? `Visitor-ID: ${visitorId}` : null,

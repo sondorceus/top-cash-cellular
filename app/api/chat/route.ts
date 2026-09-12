@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE } from "../../data/prices";
 import { stripNumberAsk, stripImeiAsk } from "../../lib/chat-cadence";
+import { leadSourceLine } from "../../lib/lead-source";
 import { PHONE_DISPLAY } from "../../lib/constants";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
@@ -176,6 +177,12 @@ export async function POST(req: NextRequest) {
   // Stable per-conversation id from the widget so all of one chat's leads
   // thread together in Mission Control instead of scattering into N comms.
   const sessionId = (typeof payload.sessionId === "string" ? payload.sessionId : "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
+  // Where this chat started: the page mints src (fb1 = Meta ad, gads = Google
+  // Ads click, fb/ig = social click, site = direct) and sends the landing
+  // path — both ride on the lead so Sonny sees "Facebook ad" vs "Google Ads"
+  // vs "Site visit · /sell-macbook-austin" (2026-09-12).
+  const srcTag = (typeof payload.src === "string" ? payload.src : "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 10);
+  const landedPath = (typeof payload.landed === "string" ? payload.landed : "").replace(/[^a-zA-Z0-9_\-/?=&.]/g, "").slice(0, 80);
   // "human" mode = the visitor tapped "Talk to a human", so Theot runs the
   // warm concierge lead-capture flow and the lead is flagged for a real
   // teammate to follow up.
@@ -399,8 +406,32 @@ export async function POST(req: NextRequest) {
   let chatLeadId: string | null = null;
   if (material) {
     const sess = sessionId ? `sess:${sessionId} · ` : "";
+    // A contact makes this a LEAD. The first line keeps the [CHAT LEAD ✅]
+    // shape the crons and the daily digest key on; the [NEW BUYBACK LEAD]
+    // block after it is what the admin lead list and MC parse — so a chat
+    // contact shows up next to every funnel lead, with its source (Sonny
+    // 2026-09-12: "make sure when customers leave a number it shows up like
+    // a lead on MC and tell me where it came from").
+    const contactIsEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+    const leadDevice = deviceSummary || quotesOnTable[0]?.line.replace(/\s*\$\d+$/, "") || "not stated yet";
+    const leadQuote = quotesOnTable.length === 1 ? `$${quotesOnTable[0].offer}` : quotesOnTable.length > 1 ? `${quotesOnTable.map((q) => q.line).join(" + ")} = $${quotesSum} so far` : "TBD (custom)";
+    const leadBlock = [
+      "",
+      "[NEW BUYBACK LEAD]",
+      "Name: ",
+      `Phone: ${contactIsEmail ? "" : sanitizeForMc(contact)}`,
+      contactIsEmail ? `Email: ${sanitizeForMc(contact)}` : null,
+      `Device: chat — ${sanitizeForMc(leadDevice).slice(0, 120)}`,
+      `Quote: ${sanitizeForMc(leadQuote).slice(0, 160)}`,
+      "Payout: TBD",
+      leadSourceLine("chat", srcTag, landedPath || (sessionId.startsWith("go-") ? "/go" : "")),
+      sessionId ? `Session: ${sessionId}` : null,
+      sessionId ? `Chat: https://topcashcellular.com/admin/chats?session=${sessionId}` : null,
+      "--- Handoff: TBD (seller picks) ---",
+      "Action: chat lead — the thread is live in the console; reply there or text back. Quote/lock/label all happen in the chat.",
+    ].filter((l) => l !== null).join("\n");
     const body = contactJustArrived
-      ? `[CHAT LEAD ✅] ${sess}${deviceSummary ? `${deviceSummary} · ` : ""}reply to: ${sanitizeForMc(contact)}\n"${sanitizeForMc(displayMessage)}"`
+      ? `[CHAT LEAD ✅] ${sess}${deviceSummary ? `${deviceSummary} · ` : ""}reply to: ${sanitizeForMc(contact)}\n"${sanitizeForMc(displayMessage)}"${leadBlock}`
       : `${isHumanHandoff ? "[HUMAN HANDOFF] " : ""}[CHAT LEAD] ${sess}Visitor${contact ? ` (reply to: ${sanitizeForMc(contact)})` : ""}: "${sanitizeForMc(displayMessage)}"`;
     try {
       const r = await fetch(`${MC_API}/api/comms`, {
@@ -415,7 +446,7 @@ export async function POST(req: NextRequest) {
             "chat-lead",
             ...(sessionId ? [`sess-${sessionId}`] : []),
             ...(contact ? ["has-contact"] : []),
-            ...(contactJustArrived ? ["lead-complete"] : []),
+            ...(contactJustArrived ? ["lead-complete", "lead", "buyback", `src-${srcTag || "site"}`] : []),
             ...(isHumanHandoff ? ["human-handoff", "needs-callback"] : []),
           ],
           priority: "high",
