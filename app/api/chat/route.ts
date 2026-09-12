@@ -657,7 +657,8 @@ export async function POST(req: NextRequest) {
       if (droppedImei && imeiPresent && !imeiCheckedThisTurn && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
         if (rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok) {
           after(async () => {
-            const r = await runImeiCheck({ imei: droppedImei }).catch(() => null);
+            const r = await runImeiCheck({ imei: droppedImei }).catch((e) => { console.error("[chat] imei guarantee lookup threw:", e instanceof Error ? e.message : String(e)); return null; });
+            if (!(r as { ownerNote?: string } | null)?.ownerNote) console.error("[chat] imei guarantee: no ownerNote from lookup", JSON.stringify(r).slice(0, 200));
             const note = (r as { ownerNote?: string } | null)?.ownerNote || `IMEI: ${droppedImei} → not looked up — check by hand`;
             await appendChatMsg(sessionId, "note", note).catch(() => {});
           });
