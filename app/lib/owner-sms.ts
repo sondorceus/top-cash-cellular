@@ -42,6 +42,28 @@ async function sendEmailAlert(body: string): Promise<boolean> {
   try {
     const url = body.match(/https?:\/\/\S+/)?.[0] || null;
     const isMute = !!url && url.includes("mute=");
+    // ONE-TAP REPLY (Sonny 2026-09-12: "auto reply for the message on emails
+    // so when I click it I can quickly message"): the seller's phone / email
+    // in the alert become Text / Call / Email buttons with a prefilled
+    // opener, and a session link becomes "Open chat". Phone = a real 10-digit
+    // US number, never a run of digits inside an IMEI or tracking number.
+    const phoneM = body.match(/(?<!\d)(?:\+?1[\s.-]?)?\(?([2-9]\d{2})\)?[\s.-]?(\d{3})[\s.-]?(\d{4})(?!\d)/);
+    const sellerPhone = phoneM ? `${phoneM[1]}${phoneM[2]}${phoneM[3]}` : "";
+    const sellerEmail = body.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] || "";
+    const consoleUrl = body.match(/https:\/\/topcashcellular\.com\/admin\/chats\?session=[A-Za-z0-9_-]+/)?.[0] || "";
+    // The device, from the alert's own first line ("GO lock: iPhone 17 Pro 256
+    // good unlocked — $560", "GO seller shipping: …", "TopCash chat: …").
+    const firstLine = body.split("\n")[0];
+    const device = (firstLine.match(/(?:lock|shipping|chat(?: LOT)?|label FAILED for|DELIVERY):\s*(.+?)(?:\s+[—–-]\s+\$?\d|\s+\$\d|$)/)?.[1] || "").replace(/[^\w .+&/-]/g, "").trim().slice(0, 50);
+    const opener = encodeURIComponent(`Hi, this is Top Cash Cellular about ${device ? `your ${device}` : "the device you quoted with us"} — `);
+    const pill = (href: string, label: string) => `<a href="${href}" style="display:inline-block;margin:4px 6px 0 0;padding:9px 14px;border-radius:999px;background:#1a1a1a;border:1px solid #2a2a2a;color:#ffffff;font-size:13px;font-weight:600;text-decoration:none;">${label}</a>`;
+    const actions = [
+      sellerPhone && sellerPhone !== OWNER_PHONE.replace(/\D/g, "").slice(-10) ? pill(`sms:+1${sellerPhone}?&body=${opener}`, "💬 Text the seller") : "",
+      sellerPhone && sellerPhone !== OWNER_PHONE.replace(/\D/g, "").slice(-10) ? pill(`tel:+1${sellerPhone}`, "📞 Call") : "",
+      sellerEmail && !/topcashcellular\.com$/i.test(sellerEmail) ? pill(`mailto:${sellerEmail}?subject=${encodeURIComponent("Your Top Cash Cellular offer")}&body=${opener}`, "✉️ Email the seller") : "",
+      consoleUrl && consoleUrl !== url ? pill(consoleUrl, "Open the chat") : "",
+    ].filter(Boolean).join("");
+    const actionsHtml = actions ? `<div style="text-align:center;margin-top:14px;">${actions}</div>` : "";
     const noUrl = url ? body.replace(url, "") : body;
     // Multi-line alerts render organized: line 1 = subject + title, every
     // other line its own row. The 🤫 link-label line is dropped — the button
@@ -73,9 +95,9 @@ async function sendEmailAlert(body: string): Promise<boolean> {
             : undefined,
         buttonHref: url,
         buttonLabel: url ? (isMute ? "🤫 Take over — mute bot 24h" : "Open link") : undefined,
-        afterButtonHtml: isMute
+        afterButtonHtml: (isMute
           ? `<div style="color:${MAIL.muted};font-size:12px;text-align:center;">One tap mutes the bot for this customer so you can reply from anywhere. The page has a hand-back button.</div>`
-          : undefined,
+          : "") + actionsHtml || undefined,
       }),
       text: body,
     });
