@@ -55,6 +55,12 @@ NET_UNLOCKED = {k: v["unlocked"] for k, v in NET.items()}
 # with a NET payout or a resell id mapping.
 _rm = re.search(r"RESELL_MODEL_IDS[^=]*=\s*\{(.*?)\n\};", rs_src, re.S)
 RESELL_IDS = set(re.findall(r"(\w+):\s*\"", _rm.group(1) if _rm else ""))
+# CONSUMER_COMP_LABELS — Swappa/eBay consumer medians that skew high, so their
+# caps take a modest flat trim (mirror of consumerCompTrim).
+_cc = re.search(r"CONSUMER_COMP_LABELS\s*=\s*new Set\(\[(.*?)\]\)", rs_src, re.S)
+CONSUMER_COMP = {s.replace('\\"', '"') for s in re.findall(r'"((?:[^"\\]|\\.)*)"', _cc.group(1) if _cc else "")}
+def consumer_trim(full_cap):
+    return 10 if full_cap < 250 else 15 if full_cap < 450 else 20
 _iwm_src = (REPO / "app" / "data" / "iwm-payouts.ts").read_text(encoding="utf-8")
 IWM = json.loads(re.search(r"IWM_PAYOUTS[^=]*=\s*(\{.*\});", _iwm_src, re.S).group(1))
 IWM_MULT = float(re.search(r"IWM_RULE_MULT\s*=\s*([\d.]+)", _iwm_src).group(1))
@@ -130,8 +136,11 @@ def resell_key_of(label):
 def rule_ceiling(mid, st, cond):
     """mirror of iwmRuleCeiling (unlocked): IWM × 0.90, sealed 17 Pro Max exempt"""
     if mid == "ip17pm" and cond == "sealed": return None
+    if cond == "broken": return None  # the owner's parts market, not IWM's trade-in desk
     c = iwm_ceiling(mid, st, cond)
-    return max(c, 25) if c is not None else None  # floors at MIN_OFFER, never steps aside
+    if c is None: return None
+    brk = (PT.get(mid, {}).get(st, {}) or {}).get("broken", 0) if st else 0
+    return max(c, 25, brk + 25 if brk > 0 else 0)
 def cap_of(mid, cond, st=None):
     """Full mirror of marginCapFor() for the UNLOCKED case."""
     cm = COND_MULT.get(cond, 1.0)

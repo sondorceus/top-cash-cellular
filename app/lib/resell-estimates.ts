@@ -8,7 +8,7 @@
 // damaged devices; brokenGlass adds extra deductions on broken phones.
 
 import { IWM_PAYOUTS, IWM_RULE_MULT } from "../data/iwm-payouts";
-import { MIN_OFFER } from "../data/prices";
+import { MIN_OFFER, PRICE_TABLE } from "../data/prices";
 
 export const RESELL_ESTIMATES: Record<string, number> = {
   // iPhones — Swappa mid price (actual listings)
@@ -370,6 +370,12 @@ export function iwmRuleCeiling(opts: {
   if (!opts.modelId) return null;
   const cond = iwmCondKey(opts.condition);
   if (opts.modelId === "ip17pm" && cond === "sealed") return null;
+  // BROKEN is the owner's market, not IWM's. IWM is a trade-in desk: they
+  // pay $3–7 for a cracked iPhone 11/12 because they don't part units out.
+  // He does, and he set those cells by hand on 2026-09-11 ("reduce 11 and
+  // lower by 15-20"). Ruling them against IWM cut them to the $25 floor,
+  // which is not what he asked for.
+  if (cond === "broken") return null;
   const r = iwmCeiling(opts.modelId, opts.storage, cond);
   // IWM's grid is UNLOCKED, and we have no locked grid from them — our own
   // carrier gap is a bigger cut than theirs, so subtracting it flattened
@@ -377,13 +383,20 @@ export function iwmRuleCeiling(opts: {
   // unlocked one; a locked offer is already below it by our gap.
   // Floors at MIN_OFFER so a near-zero IWM payout (cracked 11/12: $3–7)
   // can't force manual review on cells the owner priced on purpose.
-  return r == null ? null : Math.max(r, MIN_OFFER);
+  if (r == null) return null;
+  // Never rule a working condition below what the owner's own CRACKED cell
+  // pays (his parts market, exempt above) — otherwise a fair old Galaxy gets
+  // ruled to $25 while its cracked sibling sits at $26.
+  const brokenCell = opts.storage ? PRICE_TABLE[opts.modelId]?.[opts.storage]?.broken ?? 0 : 0;
+  return Math.max(r, MIN_OFFER, brokenCell > 0 ? brokenCell + POPULAR_PHONE_BONUS : 0);
 }
 
 function iwmCondKey(condition?: string | null): (typeof IWM_LADDER)[number] {
   const c = (condition || "").toLowerCase();
   return c.includes("seal") ? "sealed" : c.includes("mint") || c.includes("like") || c.includes("excellent") ? "mint" : c.includes("fair") ? "fair" : c.includes("broken") || c.includes("crack") ? "broken" : "good";
 }
+/** The flat popular-device bonus the funnel and engine add to a phone offer. */
+const POPULAR_PHONE_BONUS = 25;
 /** Galaxy S / Z / Note — the families whose resale the owner calls bad. */
 const GALAXY_COMP_GUARD = /^(gs|gz|gnote)/;
 const STORAGE_ORDER = (s: string) => (/tb$/.test(s) ? Number(s.replace("tb", "")) * 1024 : Number(s) || 0);
