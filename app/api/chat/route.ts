@@ -282,6 +282,29 @@ export async function POST(req: NextRequest) {
   }
   const quotesOnTable = [...quoteTable.values()];
   const quotesSum = quotesOnTable.reduce((a, q) => a + q.offer, 0);
+  // KEYWORD LINKS + WIDGETS. Sonny 2026-09-12: "make the bot provide links
+  // when they say key words like 'i wanna ship'". The link goes in the
+  // reply; for a seller who already locked a quote, "ship" also opens the
+  // address form that mints the FedEx label right here (no "we'll text you
+  // for the address" round trip).
+  const msgText = detectText(message);
+  const hasLock = storeNotes.some((t) => t.startsWith("LOCKED:"));
+  const labelNote = [...storeNotes].reverse().find((t) => t.startsWith("LABEL: "))?.match(/tracking=(\S+) url=(https:\/\/\S+)/);
+  const wantsShip = /\b(ship|shipping|mail(ing)?( it)?|send it in|sending it|label|fedex|by post)\b/i.test(msgText);
+  const wantsTrack = /\b(track(ing)?|where('?s| is) (my|the) (phone|package|device|label)|did (it|my phone) (arrive|get there))\b/i.test(msgText);
+  const wantsMeet = /\b(meet ?up|meet you|in person|local(ly)?|cash in hand|same day cash)\b/i.test(msgText);
+  const linkHints: string[] = [];
+  if (wantsShip && !hasLock) linkHints.push("shipping, how it works + free label: https://topcashcellular.com/shipping-returns");
+  if (wantsTrack) linkHints.push("track a shipment: https://topcashcellular.com/track");
+  if (/\b(review|legit|scam|trust(worthy)?|real (company|business))\b/i.test(msgText)) linkHints.push("reviews from paid sellers: https://topcashcellular.com/reviews");
+  if (/\b(grad(e|ing)|condition tier|what counts as|like new|mint means)\b/i.test(msgText)) linkHints.push("grading guide: https://topcashcellular.com/grading-guide");
+  if (/\b(financ|installment|still (owe|paying)|payment plan|not paid off)\b/i.test(msgText)) linkHints.push("financed phones: https://topcashcellular.com/sell-financed-phone");
+  if (/\b(carrier.?lock|sim.?lock|locked to (at&?t|verizon|t-?mobile)|network lock)\b/i.test(msgText)) linkHints.push("carrier-locked iPhones: https://topcashcellular.com/sell-locked-iphone");
+  if (/\b(bulk|wholesale|whole lot|\d{2,}\s*(phones|devices|iphones))\b/i.test(msgText)) linkHints.push("bulk / lots: https://topcashcellular.com/bulk");
+  if (/\b(best price|price match|beat (that|the) (price|offer)|guarantee)\b/i.test(msgText)) linkHints.push("best price guarantee: https://topcashcellular.com/best-price-guarantee");
+  if (/\b(how (does|do) (it|this|you) work|process|what happens (next|after))\b/i.test(msgText)) linkHints.push("how it works: https://topcashcellular.com/how-it-works");
+  // The widget the client should render under this reply.
+  const widget = wantsShip && hasLock ? (labelNote ? "label" : "shipform") : "";
   // GUIDED TAP FLOW — what the seller tapped on the page (category tile,
   // model, each spec chip, the quote card, the lock), oldest → newest.
   // Client-written breadcrumbs (chat-sync POST: valid sids only, rate-
@@ -610,6 +633,10 @@ export async function POST(req: NextRequest) {
 
     const dynamicSys = [
       isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Quote every device with get_quote as its specs arrive and keep a running recap; ask for their number once when the first number lands and once at the handoff (notify_team). Never hold a price back for a phone number. Do NOT close the lot, do NOT name a package price." : "",
+      linkHints.length ? `LINKS FOR THIS MESSAGE — the seller asked about something we have a page for. Put the URL in your reply on its own line, exactly as written, and keep the reply short: ${linkHints.join(" · ")}` : "",
+      widget === "shipform" ? "SHIPPING FORM IS OPENING under your reply: this seller already locked a quote and wants to ship. Tell them to drop their shipping address in the form right below and their free FedEx label prints here in the chat (prepaid, drop at any FedEx location, we text the link too). Do NOT say we'll text them for the address, do NOT ask for the address in the chat, and do NOT send a link for it." : "",
+      widget === "label" ? `LABEL ALREADY ISSUED for this seller (tracking ${labelNote?.[1]}) — the label card is showing under your reply. Say it's their label, they can print it and drop the device at any FedEx location, and we text them when it lands. Do not mint another one.` : "",
+      wantsMeet && hasLock ? "MEETUP: they locked a quote and want to meet — say our team texts them to set a time and a public spot in the Austin area, cash on the spot in about 15 minutes. Never name an address or a store." : "",
       imeiPresent ? `IMEI PRESENT: this message contains a valid 15-digit IMEI (${droppedImei}). Call check_imei with it now. Do not say it looks wrong, too long or too short, and do not ask them to re-send it.` : "",
       imeiTypo ? `IMEI LOOKS MISTYPED: this message has a 15-digit number (${droppedImei}) that fails the IMEI checksum — one digit is probably off. It is recorded for the team. Ask ONCE, plainly, for a re-read from Settings → General → About or *#06#; never call it 'not clean' or 'flagged'.` : "",
       !imeiPresent && !imeiTypo && imeiOnFile ? `IMEI ALREADY ON FILE for this seller (${imeiOnFile}) — it is recorded for the team. Never ask for it again. If they ask you to check or confirm it, call check_imei with this exact IMEI and tell them the model it comes back as (nothing about locks). Otherwise continue with condition, storage, or the quote.` : "",
@@ -876,7 +903,12 @@ export async function POST(req: NextRequest) {
     }
     // Same signal on the fallback path — the lead still reached MC and Sonny's
     // phone, so Meta should still hear about it.
-    return NextResponse.json({ reply, ...(contactJustArrived ? { leadCaptured: true } : {}) });
+    return NextResponse.json({
+      reply,
+      ...(contactJustArrived ? { leadCaptured: true } : {}),
+      ...(widget === "shipform" ? { widget: "shipform" } : {}),
+      ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
+    });
   }
 }
 

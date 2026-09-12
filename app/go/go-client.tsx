@@ -1062,7 +1062,14 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       if (d?.takeover && !d?.reply) setTakeover(true);
       else {
         if (takeoverRef.current) setTakeover(false);
-        setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }]);
+        // The server decides when a typed "i wanna ship" opens the address
+        // form (locked quote, no label yet) or re-shows an issued label —
+        // it is the only side that can read the session's own notes.
+        const extra: Msg[] =
+          d?.widget === "shipform" ? [{ from: "bot", kind: "shipform" }]
+          : d?.widget === "label" && d?.label?.tracking && d?.label?.url ? [{ from: "bot", kind: "label", tracking: String(d.label.tracking), url: String(d.label.url) }]
+          : [];
+        setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }, ...extra]);
       }
     } catch {
       // kind:"err" keeps this local-only bubble OUT of the history sent to
