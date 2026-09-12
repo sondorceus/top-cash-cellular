@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { lookupImei } from "../../../lib/imei-lookup";
 import { clientIp, rateLimit, rateLimitResponse } from "../../../lib/rate-limit";
 
 // Sickw IMEI/serial check.
 // Free TAC validation runs first (Luhn + length); if that passes, we hit
 // Sickw's paid lookup for blacklist + iCloud-lock signals.
-// Sickw API: GET https://sickw.com/api.php?format=json&key=<key>&imei=<imei>&service=<id>
+// Sickw lookups go through lib/imei-lookup (cheap per-brand services, ~$0.14/iPhone;
+// service 0 was $1.80 a check and drained the balance — 2026-09-12).
 // Service 0 = "Apple Basic Info" (cheapest, ~$0.05). Other services give
 // more detail at higher cost. We use 0 because it returns enough for
 // our blacklist+iCloud-lock signal.
@@ -109,31 +111,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const url = `https://sickw.com/api.php?format=json&key=${SICKW_KEY}&imei=${clean}&service=0`;
-    const r = await fetch(url, { cache: "no-store" });
-    if (!r.ok) {
-      return NextResponse.json({ ok: true, stage: "format-only", imei: clean, sickwError: `HTTP ${r.status}` });
+    const lk = await lookupImei(clean);
+    if (!lk.ok) {
+      return NextResponse.json({ ok: true, stage: "format-only", imei: clean, sickwError: lk.error || "lookup failed" });
     }
-    const data = await r.json();
-    // Sickw returns { status: "success" | "rejected", result: "<plaintext>", ... }
-    // The result text contains lines like:
-    //   Model: iPhone 15 Pro Max
-    //   Find My iPhone: ON
-    //   Blacklist Status: CLEAN | BLACKLISTED
-    //   Loaner Device: NO
-    if (data.status !== "success" || !data.result) {
-      return NextResponse.json({ ok: true, stage: "format-only", imei: clean, sickwError: data.result || "lookup failed" });
-    }
-    const text = String(data.result);
-    const get = (label: string) => {
-      const m = text.match(new RegExp(`${label}:\\s*([^\\r\\n<]+)`, "i"));
-      return m ? m[1].trim() : null;
-    };
-    const model = get("Model") || get("Model Description");
-    const fmiRaw = get("Find My iPhone") || get("FMI Status") || get("iCloud Lock") || get("iCloud Status");
-    const blacklistRaw = get("Blacklist Status") || get("Blacklist") || get("GSMA Blacklist");
-    const fmiOn = !!fmiRaw && /on|locked|active/i.test(fmiRaw);
-    const blacklisted = !!blacklistRaw && /black|locked|reported|stolen/i.test(blacklistRaw);
+    const model = lk.model || null;
+    const fmiOn = lk.fmiOn;
+    const blacklisted = lk.blacklisted;
     const warnings: string[] = [];
     if (fmiOn) warnings.push("Find My / iCloud lock is ON — must be turned off before payout.");
     if (blacklisted) warnings.push("Device is blacklisted — typically reported lost or stolen.");

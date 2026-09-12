@@ -16,6 +16,7 @@ import { after } from "next/server";
 import { quoteDevice, normalizeStorage, type QuoteSpec } from "./quote";
 import { PRICE_TABLE } from "../data/prices";
 import { notifyOwnerSms } from "./owner-sms";
+import { lookupImei } from "./imei-lookup";
 import { rateLimit } from "./rate-limit";
 
 const have = (slug: string): boolean => !!PRICE_TABLE[slug];
@@ -213,47 +214,27 @@ export async function runImeiCheck(input: { imei?: string }): Promise<Record<str
   if (clean.length !== 15 || !luhnValid(clean)) {
     return { ok: false, reason: "that doesn't check out as an IMEI (likely a typo) — ask them ONCE to re-read it from *#06#; if it still fails, take it down for the team and keep going", ownerNote: clean.length >= 14 ? `IMEI: ${clean} → failed checksum (typo?) — check by hand` : undefined };
   }
-  const key = process.env.SICKW_API_KEY || "";
-  if (!key) return { ok: false, reason: "lookup unavailable — keep going; the team will confirm the model on their end", ownerNote: `IMEI: ${clean} → not looked up (no key)` };
-  try {
-    const r = await fetch(`https://sickw.com/api.php?format=json&key=${key}&imei=${clean}&service=0`, { cache: "no-store" });
-    const data = await r.json();
-    if (data.status !== "success" || !data.result) {
-      return { ok: false, reason: "lookup failed — take the IMEI and notify_team" };
-    }
-    const text = String(data.result);
-    const get = (label: string) => text.match(new RegExp(`${label}:\\s*([^\\r\\n<]+)`, "i"))?.[1]?.trim() || null;
-    const model = get("Model") || get("Model Description");
-    const fmiRaw = get("Find My iPhone") || get("FMI Status") || get("iCloud Lock") || get("iCloud Status");
-    const blacklistRaw = get("Blacklist Status") || get("Blacklist") || get("GSMA Blacklist");
-    const findMyOn = !!fmiRaw && /on|locked|active/i.test(fmiRaw);
-    const blacklisted = !!blacklistRaw && /black|locked|reported|stolen/i.test(blacklistRaw);
-    if (blacklisted || findMyOn) {
-      const flags = [blacklisted ? "BLACKLISTED" : "", findMyOn ? "Find My ON" : ""].filter(Boolean).join(" + ");
-      // Same global SMS backstop as every other owner-text path — a spray of
-      // flagged IMEIs must not be able to bomb the owner's phone (this was
-      // the one ungated notifyOwnerSms on the chat surface).
-      if (rateLimit("chat-sms:global", 20, 10 * 60_000).ok) {
-        after(() => notifyOwnerSms(`⚠️ TCC IMEI flag: ${model || "unknown model"} (${clean}) — ${flags}. Bot is quoting normally; your call.`));
-      }
-    }
-    // The model only learns WHAT the device is. Everything else — the
-    // accurate identification whatever the customer claimed, plus the lock
-    // flags — is for the owner (Sonny 2026-09-12: "if the customer's info is
-    // wrong we have the accurate one anyway for our use"): the route stores
-    // ownerNote as a session note and strips it before the model sees this.
-    const extra = [
-      get("Capacity") || get("Storage"), get("Color") || get("Colour"), get("Carrier") || get("Network"), get("Sim-Lock") || get("SIM Lock") || get("Sim Lock Status"),
-    ].filter(Boolean).join(" · ");
-    const flags = [blacklisted ? "⚠️ BLACKLISTED" : "", findMyOn ? "⚠️ Find My ON" : ""].filter(Boolean).join(" ");
-    const ownerNote = `IMEI: ${clean} → ${model || "unknown model"}${extra ? ` · ${extra}` : ""}${flags ? ` · ${flags}` : ""}`;
-    return { ok: true, model, ownerNote };
-  } catch {
-    // Keep the IMEI for the owner even when the lookup fails — and give the
-    // model neutral wording: a customer read "isn't pulling up clean" as a
-    // blacklist hint (2026-09-12 test).
-    return { ok: false, reason: "the lookup didn't return a match — keep going; say only that the team will confirm the model on their end (never 'not clean', 'flagged' or anything that sounds like a lock or blacklist)", ownerNote: `IMEI: ${clean} → lookup returned nothing (check by hand)` };
+  const r = await lookupImei(clean);
+  if (!r.ok) {
+    // Keep the IMEI for the owner even when Sickw fails (low balance, outage)
+    // — and give the model neutral wording: a customer read "isn't pulling up
+    // clean" as a blacklist hint (2026-09-12 test).
+    return { ok: false, reason: "the lookup couldn't run right now — keep going; say only that the team will confirm the model on their end (never 'not clean', 'flagged' or anything that sounds like a lock or blacklist), and don't ask for the IMEI again", ownerNote: r.ownerNote };
   }
+  if (r.blacklisted || r.fmiOn) {
+    const flags = [r.blacklisted ? "BLACKLISTED" : "", r.fmiOn ? "Find My ON" : ""].filter(Boolean).join(" + ");
+    // Same global SMS backstop as every other owner-text path — a spray of
+    // flagged IMEIs must not be able to bomb the owner's phone.
+    if (rateLimit("chat-sms:global", 20, 10 * 60_000).ok) {
+      after(() => notifyOwnerSms(`⚠️ TCC IMEI flag: ${r.model || "unknown model"} (${clean}) — ${flags}. Bot is quoting normally; your call.`));
+    }
+  }
+  // The model only learns WHAT the device is. Everything else — the accurate
+  // identification whatever the customer claimed, plus the lock flags — is
+  // for the owner (Sonny 2026-09-12: "if the customer's info is wrong we
+  // have the accurate one anyway for our use"): the route stores ownerNote as
+  // a session note and strips it before the model sees this.
+  return { ok: true, model: r.model, ownerNote: r.ownerNote };
 }
 
 /**
