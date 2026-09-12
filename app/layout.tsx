@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import MetaPixel from "./components/MetaPixel";
+import SiteChat from "./components/SiteChat";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { DEVICES } from "./data/sell-catalog";
 import "./globals.css";
@@ -183,6 +184,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full flex flex-col font-[-apple-system,BlinkMacSystemFont,'SF_Pro_Display','Helvetica_Neue',Helvetica,Arial,sans-serif]">
         {children}
+        {/* Site-wide chat: the /go overlay behind a floating button (see components/SiteChat) */}
+        <SiteChat />
         {/* Vercel Analytics — Skywalker 2026-05-19 "ready to go live"
             visitor dashboard. Auto-enables in the Vercel project's
             Analytics tab; pageviews + path metrics for free, no config.

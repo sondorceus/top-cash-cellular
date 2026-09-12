@@ -11435,7 +11435,7 @@ export default function Home() {
                   {isBrokenNonFunctional && (
                     <button
                       type="button"
-                      onClick={() => setChatOpen(true)}
+                      onClick={() => window.dispatchEvent(new CustomEvent("tcc:open-chat"))}
                       className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-[12px] font-semibold text-amber-200 cursor-pointer transition"
                     >
                       <svg className="w-4 h-4 shrink-0 text-amber-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>Get a parts-value quote in chat
@@ -13519,7 +13519,7 @@ export default function Home() {
                         <p className="text-[11px] text-[#bdbdbd] mb-1.5">Still can&apos;t find it?</p>
                         <button
                           type="button"
-                          onClick={() => { setImeiHelpOpen(false); setChatOpen(true); }}
+                          onClick={() => { setImeiHelpOpen(false); window.dispatchEvent(new CustomEvent("tcc:open-chat")); }}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#00c853]/15 hover:bg-[#00c853]/25 border border-[#00c853]/40 text-[12px] font-semibold text-[#00c853] cursor-pointer transition"
                         >
                           <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>Ask us in live chat
@@ -15043,7 +15043,9 @@ export default function Home() {
           the FAB is near the top, above if it's near the bottom; flips
           horizontally on the right edge). */}
       {(() => {
-        const hidden = !!(conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic);
+        // Legacy bottom-right bubble RETIRED 2026-09-12 — the site-wide chat
+        // (components/SiteChat, the /go overlay) replaces it on every page.
+        const hidden = true; // was: !!(conditionHelpId || storageHelpId || connectivityHelpOpen || helpTopic)
         const fabSize = 56;
         const vw = typeof window !== "undefined" ? window.innerWidth : 0;
         const vh = typeof window !== "undefined" ? window.innerHeight : 0;

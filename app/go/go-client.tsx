@@ -282,7 +282,14 @@ function persistentSessionId(src: string): string {
 // nothing renders until a real photo is in — no stock face, no fake human.
 const OWNER_PHOTO = process.env.NEXT_PUBLIC_OWNER_PHOTO || "";
 
-export default function GoClient({ rows, src, reviews, variant = "std" }: { rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot" }) {
+export default function GoClient({ rows, src, reviews, variant = "std", mode = "page", initialGroup = null, landed = "" }: {
+  rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot";
+  // "widget": no first-paint board — a floating button on any site page that
+  // opens the same overlay (Sonny 2026-09-12: "an icon where they can jump in
+  // the chat anytime"). initialGroup = the page's device family, so the
+  // MacBook page opens on MacBooks. landed = the path the session started on.
+  mode?: "page" | "widget"; initialGroup?: Group | null; landed?: string;
+}) {
   const lot = variant === "lot";
   // ---- chat state ----
   const [showReviews, setShowReviews] = useState(false);
@@ -301,6 +308,24 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   // screenshot, 2026-09-11). Pin the overlay to the VISUAL viewport instead:
   // height + top follow the keyboard, so the message box stays in view.
   const overlayRef = useRef<HTMLDivElement>(null);
+  // Widget mode: the homepage's legacy "open chat" buttons and any page can
+  // open this overlay with `window.dispatchEvent(new CustomEvent("tcc:open-chat"))`.
+  const startedOnPageRef = useRef(false);
+  useEffect(() => {
+    if (mode !== "widget") return;
+    const onOpen = () => setChatOpen(true);
+    window.addEventListener("tcc:open-chat", onOpen);
+    return () => window.removeEventListener("tcc:open-chat", onOpen);
+  }, [mode]);
+  useEffect(() => {
+    if (mode !== "widget" || !chatOpen || startedOnPageRef.current || !initialGroup || interactedRef.current) return;
+    if (msgs.some((m) => !("kind" in m) && m.from === "user")) return; // a restored thread wins
+    const cat = CATEGORIES.find((c) => c.deterministic === initialGroup);
+    if (!cat || !rows.length) return;
+    startedOnPageRef.current = true;
+    categoryTap(cat);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, chatOpen, initialGroup, rows.length]);
   useEffect(() => {
     if (!chatOpen) return;
     const vv = typeof window !== "undefined" ? window.visualViewport : null;
@@ -948,6 +973,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           contact: c,
           attest: true,
           src,
+          landed,
           sessionId,
           eventId: lockEventId,
           quotedOffer,
@@ -1020,14 +1046,14 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: t, history, sessionId, src, ...fbCookies() }),
+          body: JSON.stringify({ message: t, history, sessionId, src, landed, ...fbCookies() }),
         });
       } catch {
         await new Promise((r) => setTimeout(r, 900));
         res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: t, history, sessionId, src, ...fbCookies() }),
+          body: JSON.stringify({ message: t, history, sessionId, src, landed, ...fbCookies() }),
         });
       }
       const d = await res.json();
@@ -1182,7 +1208,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: `IMG::${last}`, history: batchHistory, sessionId, src, ...fbCookies() }),
+          body: JSON.stringify({ message: `IMG::${last}`, history: batchHistory, sessionId, src, landed, ...fbCookies() }),
         });
         const dd = await res.json();
         if (Array.isArray(dd?.quoted) && dd.quoted.length) setAiQuoted(true);
@@ -1214,6 +1240,435 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     return "that photo didn’t go through — try again.";
   }
 
+  // The chat overlay is shared by both modes; only the first paint differs.
+  const overlayEl = (
+    <>
+  {/* full-screen immersive chat */}
+  {chatOpen && (
+    <div ref={overlayRef} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
+      <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
+        <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="text-[16px] font-semibold leading-tight">top cash <span className="text-[#00c853]">cellular</span></div>
+          <div className="text-[12px] leading-tight">
+            {takeover
+              ? <span className="text-[#00c853] font-semibold">Sonny is with you — live</span>
+              : <span className="text-white/45">{status || "quotes live 24/7"}</span>}
+          </div>
+        </div>
+        <button type="button" onClick={() => setChatOpen(false)} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[19px] flex items-center justify-center active:scale-95">
+          ✕
+        </button>
+      </header>
+
+      <div
+        ref={threadRef}
+        role="log"
+        aria-live="polite"
+        className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3"
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          nearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+        }}
+      >
+        <div className="go-msg flex items-end gap-2">
+          <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+          <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
+            {lot
+              ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. snap a pic of the pile if it\u2019s easier. we\u2019ll get you real numbers and cash the same day."
+              : "tap what you got — or just type it. one phone or a whole drawer. cracked or still on payments, we still buy it. you can also tap 📷 to send a photo."}
+          </div>
+        </div>
+
+        {/* category quick-select — the funnel front door, in-thread */}
+        {!threadStarted && (
+          <div className="go-msg ml-10 grid grid-cols-3 gap-2">
+            {CATEGORIES.map((c) => (
+              <button key={c.key} type="button" disabled={gBusy} onClick={() => categoryTap(c)}
+                className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-center active:scale-95 transition-transform">
+                <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 62 }}>
+                  <img src={c.img} alt="" className="max-h-[54px] max-w-[80%] object-contain" />
+                </span>
+                <span className="block text-[13px] font-semibold mt-1.5 text-white">{c.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {msgs.map((m, i) => {
+          if (!("kind" in m)) {
+            // IMG::<url> = a photo message. Only render our own optimistic
+            // blob: preview or a validated blob-store URL as an <img> — a
+            // restored/forged IMG:: pointing elsewhere renders as text, not
+            // an external beacon.
+            const raw = m.text.startsWith("IMG::") ? m.text.slice(5) : null;
+            const img = raw && (raw.startsWith("blob:") || /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/gochat-img\//i.test(raw)) ? raw : null;
+            const body = img ? (
+              <span className="relative block">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={img} alt="device photo" className="block max-w-full rounded-xl" style={{ maxHeight: 260 }} />
+                {img.startsWith("blob:") && (
+                  <span className="absolute bottom-1.5 right-2 rounded-full bg-black/55 px-2 py-[2px] text-[11px] text-white/85">sending…</span>
+                )}
+              </span>
+            ) : (
+              m.text
+            );
+            const pad = img ? "p-1.5" : "px-4 py-3";
+            if (m.from === "owner") {
+              // Sonny live — visually distinct from the bot on purpose:
+              // the seller must always know when a human took over.
+              return (
+                <div key={i} className="go-msg flex items-end gap-2">
+                  <img src={OWNER_PHOTO || "/icon-192.png"} alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
+                  <div className="max-w-[85%]">
+                    <div className="text-[12px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
+                    <div className={`rounded-2xl rounded-bl-md ${pad} text-[15px] bg-[#0f2417] border border-[#00c853]/50`}>
+                      {body}
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+            return m.from === "user" ? (
+              <div key={i} className="go-msg flex items-end gap-2 justify-end">
+                <div className={`max-w-[80%] rounded-2xl rounded-br-md ${pad} text-[15px] bg-[#132018] border border-[#00c853]/30`}>
+                  {body}
+                </div>
+                <SellerAvatar />
+              </div>
+            ) : (
+              <div key={i} className="go-msg flex items-end gap-2">
+                <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                <div className={`max-w-[85%] rounded-2xl rounded-bl-md ${pad} text-[15px] bg-white/[0.06] border border-white/10`}>
+                  {body}
+                </div>
+              </div>
+            );
+          }
+          if (m.kind === "err") {
+            // Local-only error bubble — bot-styled, never sent as history.
+            return (
+              <div key={i} className="go-msg flex items-end gap-2">
+                <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10">
+                  {m.text}
+                </div>
+              </div>
+            );
+          }
+          if (m.kind === "models") {
+            return (
+              <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                <ModelPicker
+                  rows={rowsFor(rows, m.group)}
+                  line={m.line}
+                  onLine={(key, label) => {
+                    if (gBusy) return;
+                    interactedRef.current = true;
+                    logNote(`picked line ${label}`);
+                    pushMsgs(
+                      { from: "user", text: label, tap: true },
+                      { from: "bot", kind: "models", group: m.group, line: key },
+                    );
+                  }}
+                  onPick={deviceTap}
+                  onOther={() => {
+                    pushMsgs(
+                      { from: "user", text: "i don’t see mine" },
+                      { from: "bot", text: "all good — type what you got (model + anything you know) and we’ll get you a number." },
+                    );
+                  }}
+                  busy={gBusy || !!m.done}
+                />
+              </div>
+            );
+          }
+          if (m.kind === "numberform") {
+            return (
+              <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                <NumberForm
+                  disabled={!!m.done}
+                  onSave={(v) => {
+                    setMsgs((cur) => cur.map((x) => ("kind" in x && x.kind === "numberform" ? { ...x, done: true } : x)));
+                    void send(v);
+                  }}
+                />
+              </div>
+            );
+          }
+          if (m.kind === "chips") {
+            return (
+              <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                {m.q && <div className="text-[14px] text-white/60 mb-2">{m.q}</div>}
+                <div className="flex flex-wrap gap-2">
+                  {m.options.map((o) => (
+                    <button key={o.key} type="button" disabled={!!m.done || gBusy}
+                      onClick={() => void chipTap(m.dim, o.key, o.label)}
+                      className="text-[14px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform">
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          if (m.kind === "quote") {
+            return (
+              <div key={i} className="go-msg flex items-end gap-2">
+                <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
+                  <div className="text-[14px] text-white/60">{m.label}</div>
+                  <div className="text-[32px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer.toLocaleString("en-US")}</div>
+                  {m.note && <div className="text-[13px] text-[#00c853]/90 mt-1">{m.note}</div>}
+                  <div className="text-[13px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
+                </div>
+              </div>
+            );
+          }
+          if (m.kind === "lockform") {
+            return (
+              <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                <LockForm manual={m.manual} disabled={!!m.done} onLock={(c, n) => guidedLock(c, m.manual, n)} />
+              </div>
+            );
+          }
+          if (m.kind === "shipform") {
+            const lk = lastLockRef.current;
+            return (
+              <div key={i} className={"go-msg ml-10 max-w-[92%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                <ShipForm
+                  sessionId={sessionId}
+                  defaultName={lk?.name || ""}
+                  defaultPhone={lk && !lk.contact.includes("@") ? lk.contact : ""}
+                  disabled={!!m.done}
+                  onDone={shipDone}
+                />
+              </div>
+            );
+          }
+          if (m.kind === "label") {
+            return (
+              <div key={i} className="go-msg ml-10 max-w-[85%]">
+                <div className="rounded-2xl border border-[#00c853]/40 bg-[#00c853]/[0.08] px-4 py-3">
+                  <div className="text-[15px] font-bold text-white">your FedEx label is ready</div>
+                  <div className="text-[13px] text-white/70 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
+                  <a href={m.url} target="_blank" rel="noopener noreferrer" className="tcc-button-primary mt-3 inline-block py-2.5 px-5 text-[15px] font-bold rounded-2xl">open my label</a>
+                  <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the device, drop it at any FedEx location. we text you the moment it lands and pay within 24 hours of inspection. we texted you this link too.</div>
+                </div>
+              </div>
+            );
+          }
+          if (m.kind === "msgr") {
+            return (
+              <div key={i} className="go-msg ml-10 max-w-[85%]">
+                <a
+                  href={`https://m.me/${MSGR_HANDLE}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 active:scale-[0.98] transition-transform"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-[#00c853] shrink-0" aria-hidden>
+                    <path d="M12 2C6.5 2 2 6.14 2 11.25c0 2.9 1.45 5.49 3.72 7.18V22l3.4-1.87c.91.25 1.87.39 2.88.39 5.5 0 10-4.14 10-9.27S17.5 2 12 2zm1.06 12.47-2.55-2.72-4.98 2.72 5.48-5.82 2.61 2.72 4.92-2.72-5.48 5.82z" />
+                  </svg>
+                  <span className="text-[14px] text-white/85 leading-snug">
+                    <span className="font-semibold text-white">keep this chat on Messenger</span>
+                    <span className="block text-white/55 text-[13px]">message us there and your quote follows you</span>
+                  </span>
+                </a>
+              </div>
+            );
+          }
+          if (m.kind === "locked") {
+            return (
+              <div key={i} className="go-msg flex items-end gap-2">
+                <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+                <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/40">
+                  <div className="text-[16px] font-semibold text-[#00c853]">
+                    locked in{m.offer != null ? ` — $${m.offer.toLocaleString("en-US")}` : ""}.
+                    {m.until && (
+                      <span className="text-white/60 font-normal"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}.</span>
+                    )}
+                  </div>
+                  <div className="text-[14px] text-white/70 mt-1">{m.confirmed === "sms" ? "we just texted you the details. " : m.confirmed === "email" ? "we just emailed you the details. " : m.confirmed === "pending" ? "we\u2019ll text you the details shortly. " : ""}{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                </div>
+              </div>
+            );
+          }
+          return null;
+        })}
+
+        {sending && (
+          <div className="go-msg flex items-end gap-2" role="status" aria-label="replying">
+            <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
+            <div className="rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-white/10 flex gap-[5px] items-center">
+              <span className="go-dot" /><span className="go-dot" style={{ animationDelay: "0.15s" }} /><span className="go-dot" style={{ animationDelay: "0.3s" }} />
+            </div>
+          </div>
+        )}
+
+        {!threadStarted && (
+          <div className="flex flex-wrap gap-2 ml-10 items-center">
+            {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => void send(c)}
+                className="text-[14px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform"
+              >
+                {c}
+              </button>
+            ))}
+            {/* the ONE opt-in way to leave a number early — a tiny chip,
+                nothing standing, nothing timed (Sonny 2026-09-11) */}
+            {!contactCaptured && (
+              <button
+                type="button"
+                onClick={() => { logNote("tapped leave my number"); interactedRef.current = true; pushMsgs({ from: "bot", kind: "numberform" }); }}
+                className="text-[13px] text-white/55 border border-white/15 rounded-full px-3 py-[8px] active:scale-95 transition-transform"
+              >
+                leave my number
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* tap-to-price suggestions for a typed model */}
+      {typedMatches.length > 0 && !takeover && !gBusy && (
+        <div className="mx-4 mb-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }} aria-label="tap your model to price it">
+          {typedMatches.map((r) => (
+            <button
+              key={r.id}
+              type="button"
+              onClick={() => { const pre = parseTypedSpec(draft); setDraft(""); deviceTap(r, pre); }}
+              className="shrink-0 rounded-full border border-[#00c853]/45 bg-white/[0.06] px-3 py-[8px] text-[14px] text-white/90 active:scale-95 transition-transform"
+            >
+              {r.label} <span className="text-[#00c853] font-semibold">up to ${r.upTo.toLocaleString("en-US")}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Photo affordance — stays until they've sent one, so the option is
+          discoverable even after the greeting scrolls away. Tapping it opens
+          the picker too. */}
+      {!msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) && (
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          className="mx-4 mb-1 flex items-center justify-center gap-1.5 text-[12px] text-white/50 py-1 active:scale-[0.98] disabled:opacity-40"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
+            <circle cx="12" cy="13" r="3.6" />
+          </svg>
+          tap to add a photo of your device — helps us price it
+        </button>
+      )}
+
+      <form
+        className="flex gap-2 items-center px-4 py-3 border-t border-white/10"
+        style={{ background: "#0e0e0f", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+        onSubmit={(e) => { e.preventDefault(); void send(draft); }}
+      >
+        {/* photo attach — sellers WANT to show the crack; on phones this
+            opens camera-or-gallery. Hidden input, camera button triggers. */}
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            const fs = Array.from(e.target.files || []);
+            e.target.value = "";
+            if (fs.length) void sendPhotos(fs);
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading}
+          aria-label="send a photo of your device"
+          className={`w-[46px] h-[46px] shrink-0 rounded-full bg-white/[0.06] border flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform ${msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) ? "border-white/15 text-white/75" : "border-[#00c853]/45 text-[#00c853]"}`}
+          style={{ borderRadius: "50%" }}
+        >
+          {uploading ? (
+            <span className="go-dot" />
+          ) : (
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
+              <circle cx="12" cy="13" r="3.6" />
+            </svg>
+          )}
+        </button>
+        <input
+          id="go-composer-input"
+          ref={overlayInputRef}
+          className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+          placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          aria-label="tell us what you're selling"
+        />
+        <button
+          type="submit"
+          disabled={sending || uploading || !draft.trim()}
+          style={{ borderRadius: "50%" }}
+          className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[21px] font-bold disabled:opacity-40 flex items-center justify-center"
+          aria-label="send"
+        >
+          ↑
+        </button>
+      </form>
+    </div>
+  )}
+
+  {/* footer — real business, real pages */}
+  <footer className="mt-10 pt-4 border-t border-white/10 text-[13px] text-white/50">
+    <p>TOP CASH CELLULAR LLC · austin tx</p>
+    <p className="mt-1 text-white/70">
+      <a href="tel:+15129609256" className="underline">call</a> or <a href="sms:+15129609256" className="underline">text</a> us: <a href="sms:+15129609256" className="underline text-white/85">(512) 960-9256</a>
+    </p>
+    <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+      <a href="/" className="underline text-white/80">main site — every device we buy</a>
+      <a href="/reviews" className="underline">reviews</a>
+      <a href="/how-it-works" className="underline">how it works</a>
+      <a href="/faq" className="underline">faq</a>
+      <a href="/grading-guide" className="underline">grading guide</a>
+      <a href="/terms" className="underline">terms</a>
+      <a href="/privacy" className="underline">privacy</a>
+    </p>
+  </footer>
+
+  <noscript>
+    <p className="mt-4 text-[14px] text-white/70">
+      this page needs javascript — <a href="/sell-iphone-austin" className="underline">see prices and how it works here</a>.
+    </p>
+  </noscript>
+    </>
+  );
+  if (mode === "widget") {
+    return (
+      <>
+        {!chatOpen && (
+          <button
+            type="button"
+            onClick={openChat}
+            aria-label="Chat with us — get a real number and a text from our team"
+            className="fixed z-40 right-4 flex items-center gap-2 rounded-full bg-[#00c853] text-[#0a0a0a] font-bold text-[15px] pl-4 pr-5 py-3 shadow-[0_6px_24px_rgba(0,0,0,0.45)] active:scale-[0.98] transition"
+            style={{ bottom: "max(16px, env(safe-area-inset-bottom))" }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" d="M4 5h16v11H8l-4 4V5z" /></svg>
+            get my number
+          </button>
+        )}
+        {overlayEl}
+      </>
+    );
+  }
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white px-4 pb-16 pt-3" style={{ maxWidth: 560, margin: "0 auto" }}>
       {/* header */}
@@ -1353,411 +1808,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
 
 
 
-      {/* full-screen immersive chat */}
-      {chatOpen && (
-        <div ref={overlayRef} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
-          <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
-            <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
-            <div className="flex-1 min-w-0">
-              <div className="text-[16px] font-semibold leading-tight">top cash <span className="text-[#00c853]">cellular</span></div>
-              <div className="text-[12px] leading-tight">
-                {takeover
-                  ? <span className="text-[#00c853] font-semibold">Sonny is with you — live</span>
-                  : <span className="text-white/45">{status || "quotes live 24/7"}</span>}
-              </div>
-            </div>
-            <button type="button" onClick={() => setChatOpen(false)} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[19px] flex items-center justify-center active:scale-95">
-              ✕
-            </button>
-          </header>
-
-          <div
-            ref={threadRef}
-            role="log"
-            aria-live="polite"
-            className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3"
-            onScroll={(e) => {
-              const el = e.currentTarget;
-              nearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
-            }}
-          >
-            <div className="go-msg flex items-end gap-2">
-              <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-              <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10 leading-snug">
-                {lot
-                  ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. snap a pic of the pile if it\u2019s easier. we\u2019ll get you real numbers and cash the same day."
-                  : "tap what you got — or just type it. one phone or a whole drawer. cracked or still on payments, we still buy it. you can also tap 📷 to send a photo."}
-              </div>
-            </div>
-
-            {/* category quick-select — the funnel front door, in-thread */}
-            {!threadStarted && (
-              <div className="go-msg ml-10 grid grid-cols-3 gap-2">
-                {CATEGORIES.map((c) => (
-                  <button key={c.key} type="button" disabled={gBusy} onClick={() => categoryTap(c)}
-                    className="rounded-2xl border border-white/10 bg-white/[0.06] p-2 text-center active:scale-95 transition-transform">
-                    <span className="rounded-xl bg-white flex items-center justify-center mx-auto" style={{ height: 62 }}>
-                      <img src={c.img} alt="" className="max-h-[54px] max-w-[80%] object-contain" />
-                    </span>
-                    <span className="block text-[13px] font-semibold mt-1.5 text-white">{c.label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {msgs.map((m, i) => {
-              if (!("kind" in m)) {
-                // IMG::<url> = a photo message. Only render our own optimistic
-                // blob: preview or a validated blob-store URL as an <img> — a
-                // restored/forged IMG:: pointing elsewhere renders as text, not
-                // an external beacon.
-                const raw = m.text.startsWith("IMG::") ? m.text.slice(5) : null;
-                const img = raw && (raw.startsWith("blob:") || /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/gochat-img\//i.test(raw)) ? raw : null;
-                const body = img ? (
-                  <span className="relative block">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img} alt="device photo" className="block max-w-full rounded-xl" style={{ maxHeight: 260 }} />
-                    {img.startsWith("blob:") && (
-                      <span className="absolute bottom-1.5 right-2 rounded-full bg-black/55 px-2 py-[2px] text-[11px] text-white/85">sending…</span>
-                    )}
-                  </span>
-                ) : (
-                  m.text
-                );
-                const pad = img ? "p-1.5" : "px-4 py-3";
-                if (m.from === "owner") {
-                  // Sonny live — visually distinct from the bot on purpose:
-                  // the seller must always know when a human took over.
-                  return (
-                    <div key={i} className="go-msg flex items-end gap-2">
-                      <img src={OWNER_PHOTO || "/icon-192.png"} alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
-                      <div className="max-w-[85%]">
-                        <div className="text-[12px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
-                        <div className={`rounded-2xl rounded-bl-md ${pad} text-[15px] bg-[#0f2417] border border-[#00c853]/50`}>
-                          {body}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-                return m.from === "user" ? (
-                  <div key={i} className="go-msg flex items-end gap-2 justify-end">
-                    <div className={`max-w-[80%] rounded-2xl rounded-br-md ${pad} text-[15px] bg-[#132018] border border-[#00c853]/30`}>
-                      {body}
-                    </div>
-                    <SellerAvatar />
-                  </div>
-                ) : (
-                  <div key={i} className="go-msg flex items-end gap-2">
-                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                    <div className={`max-w-[85%] rounded-2xl rounded-bl-md ${pad} text-[15px] bg-white/[0.06] border border-white/10`}>
-                      {body}
-                    </div>
-                  </div>
-                );
-              }
-              if (m.kind === "err") {
-                // Local-only error bubble — bot-styled, never sent as history.
-                return (
-                  <div key={i} className="go-msg flex items-end gap-2">
-                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10">
-                      {m.text}
-                    </div>
-                  </div>
-                );
-              }
-              if (m.kind === "models") {
-                return (
-                  <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <ModelPicker
-                      rows={rowsFor(rows, m.group)}
-                      line={m.line}
-                      onLine={(key, label) => {
-                        if (gBusy) return;
-                        interactedRef.current = true;
-                        logNote(`picked line ${label}`);
-                        pushMsgs(
-                          { from: "user", text: label, tap: true },
-                          { from: "bot", kind: "models", group: m.group, line: key },
-                        );
-                      }}
-                      onPick={deviceTap}
-                      onOther={() => {
-                        pushMsgs(
-                          { from: "user", text: "i don’t see mine" },
-                          { from: "bot", text: "all good — type what you got (model + anything you know) and we’ll get you a number." },
-                        );
-                      }}
-                      busy={gBusy || !!m.done}
-                    />
-                  </div>
-                );
-              }
-              if (m.kind === "numberform") {
-                return (
-                  <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <NumberForm
-                      disabled={!!m.done}
-                      onSave={(v) => {
-                        setMsgs((cur) => cur.map((x) => ("kind" in x && x.kind === "numberform" ? { ...x, done: true } : x)));
-                        void send(v);
-                      }}
-                    />
-                  </div>
-                );
-              }
-              if (m.kind === "chips") {
-                return (
-                  <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    {m.q && <div className="text-[14px] text-white/60 mb-2">{m.q}</div>}
-                    <div className="flex flex-wrap gap-2">
-                      {m.options.map((o) => (
-                        <button key={o.key} type="button" disabled={!!m.done || gBusy}
-                          onClick={() => void chipTap(m.dim, o.key, o.label)}
-                          className="text-[14px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform">
-                          {o.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
-              if (m.kind === "quote") {
-                return (
-                  <div key={i} className="go-msg flex items-end gap-2">
-                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
-                      <div className="text-[14px] text-white/60">{m.label}</div>
-                      <div className="text-[32px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer.toLocaleString("en-US")}</div>
-                      {m.note && <div className="text-[13px] text-[#00c853]/90 mt-1">{m.note}</div>}
-                      <div className="text-[13px] text-white/60 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
-                    </div>
-                  </div>
-                );
-              }
-              if (m.kind === "lockform") {
-                return (
-                  <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <LockForm manual={m.manual} disabled={!!m.done} onLock={(c, n) => guidedLock(c, m.manual, n)} />
-                  </div>
-                );
-              }
-              if (m.kind === "shipform") {
-                const lk = lastLockRef.current;
-                return (
-                  <div key={i} className={"go-msg ml-10 max-w-[92%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <ShipForm
-                      sessionId={sessionId}
-                      defaultName={lk?.name || ""}
-                      defaultPhone={lk && !lk.contact.includes("@") ? lk.contact : ""}
-                      disabled={!!m.done}
-                      onDone={shipDone}
-                    />
-                  </div>
-                );
-              }
-              if (m.kind === "label") {
-                return (
-                  <div key={i} className="go-msg ml-10 max-w-[85%]">
-                    <div className="rounded-2xl border border-[#00c853]/40 bg-[#00c853]/[0.08] px-4 py-3">
-                      <div className="text-[15px] font-bold text-white">your FedEx label is ready</div>
-                      <div className="text-[13px] text-white/70 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
-                      <a href={m.url} target="_blank" rel="noopener noreferrer" className="tcc-button-primary mt-3 inline-block py-2.5 px-5 text-[15px] font-bold rounded-2xl">open my label</a>
-                      <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the device, drop it at any FedEx location. we text you the moment it lands and pay within 24 hours of inspection. we texted you this link too.</div>
-                    </div>
-                  </div>
-                );
-              }
-              if (m.kind === "msgr") {
-                return (
-                  <div key={i} className="go-msg ml-10 max-w-[85%]">
-                    <a
-                      href={`https://m.me/${MSGR_HANDLE}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2.5 rounded-2xl border border-white/15 bg-white/[0.06] px-4 py-3 active:scale-[0.98] transition-transform"
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-[#00c853] shrink-0" aria-hidden>
-                        <path d="M12 2C6.5 2 2 6.14 2 11.25c0 2.9 1.45 5.49 3.72 7.18V22l3.4-1.87c.91.25 1.87.39 2.88.39 5.5 0 10-4.14 10-9.27S17.5 2 12 2zm1.06 12.47-2.55-2.72-4.98 2.72 5.48-5.82 2.61 2.72 4.92-2.72-5.48 5.82z" />
-                      </svg>
-                      <span className="text-[14px] text-white/85 leading-snug">
-                        <span className="font-semibold text-white">keep this chat on Messenger</span>
-                        <span className="block text-white/55 text-[13px]">message us there and your quote follows you</span>
-                      </span>
-                    </a>
-                  </div>
-                );
-              }
-              if (m.kind === "locked") {
-                return (
-                  <div key={i} className="go-msg flex items-end gap-2">
-                    <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                    <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/40">
-                      <div className="text-[16px] font-semibold text-[#00c853]">
-                        locked in{m.offer != null ? ` — $${m.offer.toLocaleString("en-US")}` : ""}.
-                        {m.until && (
-                          <span className="text-white/60 font-normal"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}.</span>
-                        )}
-                      </div>
-                      <div className="text-[14px] text-white/70 mt-1">{m.confirmed === "sms" ? "we just texted you the details. " : m.confirmed === "email" ? "we just emailed you the details. " : m.confirmed === "pending" ? "we\u2019ll text you the details shortly. " : ""}{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
-                    </div>
-                  </div>
-                );
-              }
-              return null;
-            })}
-
-            {sending && (
-              <div className="go-msg flex items-end gap-2" role="status" aria-label="replying">
-                <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                <div className="rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-white/10 flex gap-[5px] items-center">
-                  <span className="go-dot" /><span className="go-dot" style={{ animationDelay: "0.15s" }} /><span className="go-dot" style={{ animationDelay: "0.3s" }} />
-                </div>
-              </div>
-            )}
-
-            {!threadStarted && (
-              <div className="flex flex-wrap gap-2 ml-10 items-center">
-                {(lot ? ["i got a lot of phones", "some are financed", "i need cash today"] : CHIPS).map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => void send(c)}
-                    className="text-[14px] text-white/85 border border-[#00c853]/35 rounded-full px-4 py-[10px] active:scale-95 transition-transform"
-                  >
-                    {c}
-                  </button>
-                ))}
-                {/* the ONE opt-in way to leave a number early — a tiny chip,
-                    nothing standing, nothing timed (Sonny 2026-09-11) */}
-                {!contactCaptured && (
-                  <button
-                    type="button"
-                    onClick={() => { logNote("tapped leave my number"); interactedRef.current = true; pushMsgs({ from: "bot", kind: "numberform" }); }}
-                    className="text-[13px] text-white/55 border border-white/15 rounded-full px-3 py-[8px] active:scale-95 transition-transform"
-                  >
-                    leave my number
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* tap-to-price suggestions for a typed model */}
-          {typedMatches.length > 0 && !takeover && !gBusy && (
-            <div className="mx-4 mb-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }} aria-label="tap your model to price it">
-              {typedMatches.map((r) => (
-                <button
-                  key={r.id}
-                  type="button"
-                  onClick={() => { const pre = parseTypedSpec(draft); setDraft(""); deviceTap(r, pre); }}
-                  className="shrink-0 rounded-full border border-[#00c853]/45 bg-white/[0.06] px-3 py-[8px] text-[14px] text-white/90 active:scale-95 transition-transform"
-                >
-                  {r.label} <span className="text-[#00c853] font-semibold">up to ${r.upTo.toLocaleString("en-US")}</span>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Photo affordance — stays until they've sent one, so the option is
-              discoverable even after the greeting scrolls away. Tapping it opens
-              the picker too. */}
-          {!msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) && (
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              disabled={uploading}
-              className="mx-4 mb-1 flex items-center justify-center gap-1.5 text-[12px] text-white/50 py-1 active:scale-[0.98] disabled:opacity-40"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
-                <circle cx="12" cy="13" r="3.6" />
-              </svg>
-              tap to add a photo of your device — helps us price it
-            </button>
-          )}
-
-          <form
-            className="flex gap-2 items-center px-4 py-3 border-t border-white/10"
-            style={{ background: "#0e0e0f", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
-            onSubmit={(e) => { e.preventDefault(); void send(draft); }}
-          >
-            {/* photo attach — sellers WANT to show the crack; on phones this
-                opens camera-or-gallery. Hidden input, camera button triggers. */}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={(e) => {
-                const fs = Array.from(e.target.files || []);
-                e.target.value = "";
-                if (fs.length) void sendPhotos(fs);
-              }}
-            />
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              disabled={uploading}
-              aria-label="send a photo of your device"
-              className={`w-[46px] h-[46px] shrink-0 rounded-full bg-white/[0.06] border flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform ${msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) ? "border-white/15 text-white/75" : "border-[#00c853]/45 text-[#00c853]"}`}
-              style={{ borderRadius: "50%" }}
-            >
-              {uploading ? (
-                <span className="go-dot" />
-              ) : (
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                  <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
-                  <circle cx="12" cy="13" r="3.6" />
-                </svg>
-              )}
-            </button>
-            <input
-              id="go-composer-input"
-              ref={overlayInputRef}
-              className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
-              placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              aria-label="tell us what you're selling"
-            />
-            <button
-              type="submit"
-              disabled={sending || uploading || !draft.trim()}
-              style={{ borderRadius: "50%" }}
-              className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[21px] font-bold disabled:opacity-40 flex items-center justify-center"
-              aria-label="send"
-            >
-              ↑
-            </button>
-          </form>
-        </div>
-      )}
-
-      {/* footer — real business, real pages */}
-      <footer className="mt-10 pt-4 border-t border-white/10 text-[13px] text-white/50">
-        <p>TOP CASH CELLULAR LLC · austin tx</p>
-        <p className="mt-1 text-white/70">
-          <a href="tel:+15129609256" className="underline">call</a> or <a href="sms:+15129609256" className="underline">text</a> us: <a href="sms:+15129609256" className="underline text-white/85">(512) 960-9256</a>
-        </p>
-        <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-          <a href="/" className="underline text-white/80">main site — every device we buy</a>
-          <a href="/reviews" className="underline">reviews</a>
-          <a href="/how-it-works" className="underline">how it works</a>
-          <a href="/faq" className="underline">faq</a>
-          <a href="/grading-guide" className="underline">grading guide</a>
-          <a href="/terms" className="underline">terms</a>
-          <a href="/privacy" className="underline">privacy</a>
-        </p>
-      </footer>
-
-      <noscript>
-        <p className="mt-4 text-[14px] text-white/70">
-          this page needs javascript — <a href="/sell-iphone-austin" className="underline">see prices and how it works here</a>.
-        </p>
-      </noscript>
+      {overlayEl}
     </main>
   );
 }
