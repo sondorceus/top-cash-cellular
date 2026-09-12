@@ -892,6 +892,11 @@ export async function POST(req: NextRequest) {
       contactOnFile: !!(contact || storeContactNote),
       ...(quotedAny ? { quoted: quotedLines } : {}),
       ...(contactJustArrived ? { leadCaptured: true, ...(leadValue != null ? { leadValue } : {}) } : {}),
+      // The client renders these under the reply: "ship" from a seller who
+      // already locked opens the address form (the label prints in-chat), or
+      // re-shows the label they were already issued.
+      ...(widget === "shipform" ? { widget: "shipform" } : {}),
+      ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
     });
   } catch {
     const reply = fallbackReply(message, isHumanHandoff, history.length);
