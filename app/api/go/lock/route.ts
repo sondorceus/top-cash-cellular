@@ -245,6 +245,7 @@ export async function POST(req: NextRequest) {
   // AWAITED delivery — a lead that vanishes after "locked in." is worse
   // than a visible failure. ok only if at least one path accepted it.
   let mcOk = false;
+  let leadId: string | null = null;
   try {
     const res = await fetch(`${MC_API}/api/comms`, {
       method: "POST",
@@ -263,6 +264,8 @@ export async function POST(req: NextRequest) {
     });
     mcOk = res.ok;
     if (!res.ok) console.error(`[go/lock] MC post failed: ${res.status}`);
+    // The lead's MC id — the label route attaches [LABEL:] markers to it.
+    else { try { const j = await res.json(); if (typeof j?.message?.id === "string") leadId = j.message.id; } catch { /* no id, label still mints */ } }
   } catch (e) {
     console.error("[go/lock] MC post threw:", e);
   }
@@ -291,6 +294,7 @@ export async function POST(req: NextRequest) {
     await Promise.all([
       appendChatMsg(sessionId, "note", `CONTACT: ${contact}`),
       appendChatMsg(sessionId, "note", `LOCKED: ${specLine}${offer != null ? ` $${offer}` : " (manual)"} — ${contact.slice(0, 60)}`),
+      ...(leadId ? [appendChatMsg(sessionId, "note", `LEAD-ID: ${leadId}`)] : []),
       rememberPhoneSession(contact, sessionId),
     ]);
   }
@@ -341,5 +345,5 @@ export async function POST(req: NextRequest) {
     });
   });
 
-  return NextResponse.json({ ok: true, offer, lockUntil, confirmed });
+  return NextResponse.json({ ok: true, offer, lockUntil, confirmed, ...(leadId ? { leadId } : {}) });
 }

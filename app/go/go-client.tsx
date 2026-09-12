@@ -98,6 +98,8 @@ function historyFor(list: Msg[]): { from: "user" | "bot"; text: string }[] {
       case "quote": push("bot", `(quote card on the page) your ${m.label} comes out to $${m.offer.toLocaleString("en-US")}${m.note ? ` \u2014 ${m.note}` : ""}`); break;
       case "lockform": push("bot", m.manual ? "(number form on the page \u2014 this one is priced by hand)" : "(lock-it-in number form on the page)"); break;
       case "locked": push("bot", m.offer != null ? `(locked in on the page at $${m.offer.toLocaleString("en-US")})` : "(locked in on the page \u2014 hand quote, no number yet)"); break;
+      case "shipform": push("bot", "(shipping address form on the page \u2014 the FedEx label prints when they submit it)"); break;
+      case "label": push("bot", `(FedEx label issued on the page \u2014 tracking ${m.tracking}; they were texted the link)`); break;
       default: break; // models grid, err, numberform, msgr: local-only
     }
   }
@@ -232,6 +234,9 @@ type Msg =
   // until: ISO lock deadline from /api/go/lock — rendered as "holds until <date>"
   // confirmed: sms/email = delivered before the response; pending = still sending; failed = channel refused
   | { from: "bot"; kind: "locked"; offer: number | null; until?: string; confirmed?: "sms" | "email" | "pending" | "failed" }
+  // Shipping handoff: address form → FedEx label minted on the spot.
+  | { from: "bot"; kind: "shipform"; done?: boolean }
+  | { from: "bot"; kind: "label"; tracking: string; url: string }
   | { from: "bot"; kind: "msgr" };
 
 // FB Page handle for the "keep this chat on Messenger" affordance (m.me deep
@@ -341,7 +346,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
   const threadRef = useRef<HTMLDivElement>(null);
   // What the seller just locked — the handoff chips POST it to /api/delivery
   // after the lock form (and its contact) is gone.
-  const lastLockRef = useRef<{ model: string; contact: string; offer: number | null } | null>(null);
+  const lastLockRef = useRef<{ model: string; contact: string; offer: number | null; name: string } | null>(null);
   // Business-hours status. Client-only (Date at render would mismatch the
   // server HTML), and both strings are TRUE at all hours — quotes run 24/7.
   const [status, setStatus] = useState("");
@@ -422,8 +427,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       // anything else is ignored and we restore the local session as usual.
       let sid = sessionId;
       let adoptParam = "";
+      let wantShip = false;
       try {
         const qs = new URLSearchParams(window.location.search);
+        wantShip = qs.get("ship") === "1";
         const urlSid = qs.get("sid") || "";
         const urlK = qs.get("k") || "";
         if (GO_SID_SHAPE.test(urlSid) && urlSid.length <= 32 && /^[a-f0-9]{20}$/i.test(urlK)) {
@@ -486,6 +493,16 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         if (typeof d?.lastTs === "number" && d.lastTs > lastSyncRef.current) lastSyncRef.current = d.lastTs;
         if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
         if (d?.contactOnFile) setContactCaptured(true);
+        // A label already issued → show it again ("where's my label?").
+        // The SMS SHIP reply deep-links with &ship=1 → open the address form.
+        const lb = d?.label;
+        if (lb && typeof lb.tracking === "string" && typeof lb.url === "string") {
+          setChatOpen(true);
+          setMsgs((cur) => [...cur, { from: "bot", text: "welcome back \u2014 here\u2019s your FedEx label again." }, { from: "bot", kind: "label", tracking: lb.tracking, url: lb.url }]);
+        } else if (wantShip && d?.contactOnFile) {
+          setChatOpen(true);
+          setMsgs((cur) => [...cur, { from: "bot", text: "drop your shipping address and your free FedEx label prints right here." }, { from: "bot", kind: "shipform" }]);
+        }
       } catch { /* fresh thread */ }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -814,27 +831,32 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
         pushMsgs({ from: "bot", text: "no problem — we’ll text you and sort it out." }, anotherChips());
         return;
       }
-      const method = key === "meet" ? "local" : "shipping";
+      // Ship: the label prints right here — the address form posts to
+      // /api/go/label, which mints the FedEx label with the same code the
+      // homepage funnel uses and texts/emails it. No "we'll text you for the
+      // address" round trip (Sonny 2026-09-12).
+      if (key === "ship") {
+        pushMsgs(
+          { from: "bot", text: "perfect \u2014 drop your shipping address and your free FedEx label prints right here." },
+          { from: "bot", kind: "shipform" },
+        );
+        return;
+      }
       void fetch("/api/delivery", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          method,
-          name: "",
+          method: "local",
+          name: lk.name,
           ...(lk.contact.includes("@") ? { email: lk.contact } : { phone: lk.contact }),
           model: lk.model,
           quote: lk.offer != null ? String(lk.offer) : "",
-          area: method === "local" ? "Austin area (chosen on /go)" : "",
+          area: "Austin area (chosen on /go)",
           session: sessionId,
         }),
       }).catch(() => {});
       pushMsgs(
-        {
-          from: "bot",
-          text: method === "local"
-            ? "perfect — we’ll text you to set up a time and a public spot in the austin area."
-            : "perfect — we’ll text you for the address and send your free FedEx label.",
-        },
+        { from: "bot", text: "perfect \u2014 we\u2019ll text you to set up a time and a public spot in the austin area." },
         anotherChips(),
       );
       return;
@@ -868,11 +890,23 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
     await quoteNow(gRow, spec, dim as GoStep);
   }
 
+  // Address form result → label card (or an honest fallback). The route
+  // already posted the delivery comm, the notes and the seller's text.
+  function shipDone(r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string }) {
+    setMsgs((cur) => cur.map((m) => ("kind" in m && m.kind === "shipform" && !m.done ? { ...m, done: true } : m)));
+    if (r.ok && r.tracking && r.url) {
+      pixelTrack("Purchase", { content_name: "fedex-label", value: 0, currency: "USD" });
+      pushMsgs({ from: "bot", kind: "label", tracking: r.tracking, url: r.url }, anotherChips());
+    } else {
+      pushMsgs({ from: "bot", text: r.hint || "couldn\u2019t print the label right now \u2014 your quote is saved and we\u2019ll text you the label shortly." }, anotherChips());
+    }
+  }
+
   // One field, one tap. The attestation rides in the button label ("I'm 18+
   // and it's mine to sell") — tapping IS the affirmation, recorded server-side
   // as [ATTEST: yes] exactly as before; the checkbox and the optional name
   // field were two extra taps at the one moment we have their attention.
-  async function guidedLock(gContact: string, manualFlavor: boolean): Promise<string | null> {
+  async function guidedLock(gContact: string, manualFlavor: boolean, gName = ""): Promise<string | null> {
     if (!gRow) return "something went sideways — tap your phone again";
     const c = gContact.trim();
     if (!c) return "we need a number or email to reach you";
@@ -907,7 +941,10 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
           processor: gSpec.processor,
           memory: gSpec.memory,
           extras: gSpec.extras ?? "ok",
-          name: "",
+          // Optional, Sonny 2026-09-12 ("capture name or make optional with
+          // the phone number at the end — a nice touch"); FedEx needs it
+          // for a label, so the ship form pre-fills from here.
+          name: gName.trim().slice(0, 80),
           contact: c,
           attest: true,
           src,
@@ -922,7 +959,7 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
       setGBusy(false);
       if (d?.ok) {
         const offer: number | null = typeof d.offer === "number" ? d.offer : null;
-        lastLockRef.current = { model: quoteLabel(gRow, gSpec.storage ?? gRow.storages[0]), contact: c, offer };
+        lastLockRef.current = { model: quoteLabel(gRow, gSpec.storage ?? gRow.storages[0]), contact: c, offer, name: gName.trim() };
         pixelTrack("Lead", { content_name: gRow.label, value: offer ?? 0, currency: "USD" }, lockEventId);
         // (the LOCKED breadcrumb + the confirmation text are server-side)
         // Peak trust: they just saw a real number and handed over a way to
@@ -1495,7 +1532,33 @@ export default function GoClient({ rows, src, reviews, variant = "std" }: { rows
               if (m.kind === "lockform") {
                 return (
                   <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                    <LockForm manual={m.manual} disabled={!!m.done} onLock={(c) => guidedLock(c, m.manual)} />
+                    <LockForm manual={m.manual} disabled={!!m.done} onLock={(c, n) => guidedLock(c, m.manual, n)} />
+                  </div>
+                );
+              }
+              if (m.kind === "shipform") {
+                const lk = lastLockRef.current;
+                return (
+                  <div key={i} className={"go-msg ml-10 max-w-[92%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+                    <ShipForm
+                      sessionId={sessionId}
+                      defaultName={lk?.name || ""}
+                      defaultPhone={lk && !lk.contact.includes("@") ? lk.contact : ""}
+                      disabled={!!m.done}
+                      onDone={shipDone}
+                    />
+                  </div>
+                );
+              }
+              if (m.kind === "label") {
+                return (
+                  <div key={i} className="go-msg ml-10 max-w-[85%]">
+                    <div className="rounded-2xl border border-[#00c853]/40 bg-[#00c853]/[0.08] px-4 py-3">
+                      <div className="text-[15px] font-bold text-white">your FedEx label is ready</div>
+                      <div className="text-[13px] text-white/70 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
+                      <a href={m.url} target="_blank" rel="noopener noreferrer" className="tcc-button-primary mt-3 inline-block py-2.5 px-5 text-[15px] font-bold rounded-2xl">open my label</a>
+                      <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the device, drop it at any FedEx location. we text you the moment it lands and pay within 24 hours of inspection. we texted you this link too.</div>
+                    </div>
                   </div>
                 );
               }
@@ -1797,15 +1860,69 @@ function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: strin
 // One field + one tap. The 18+/ownership attestation is the button label
 // itself (tapping affirms it — the server still records [ATTEST: yes]), and
 // the line under it is the express consent for the texts about this quote.
-function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boolean; onLock: (c: string) => Promise<string | null> }) {
+// Shipping address → /api/go/label mints the FedEx label on the spot. FedEx
+// prints a name and phone on every label, so both are required here (the
+// name pre-fills from the lock when they gave one).
+function ShipForm({ sessionId, defaultName, defaultPhone, disabled, onDone }: {
+  sessionId: string; defaultName: string; defaultPhone: string; disabled: boolean;
+  onDone: (r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string }) => void;
+}) {
+  const [f, setF] = useState({ name: defaultName, phone: defaultPhone, street: "", unit: "", city: "", state: "", zip: "" });
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement>) => setF((cur) => ({ ...cur, [k]: e.target.value }));
+  const submit = async () => {
+    if (busy || disabled) return;
+    if (f.name.trim().length < 2) return setErr("FedEx prints a name on the label \u2014 add yours");
+    if (f.phone.replace(/\D/g, "").replace(/^1(\d{10})$/, "$1").length !== 10) return setErr("a 10-digit phone number \u2014 FedEx prints it on the label");
+    if (!f.street.trim() || !f.city.trim() || f.state.trim().length !== 2 || !/^\d{5}(-\d{4})?$/.test(f.zip.trim())) return setErr("street, city, 2-letter state and 5-digit ZIP");
+    setBusy(true); setErr("");
+    try {
+      const res = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: sessionId, ...f, state: f.state.trim().toUpperCase() }) });
+      const d = await res.json().catch(() => ({}));
+      if (d?.ok) onDone({ ok: true, tracking: String(d.tracking), url: String(d.url) });
+      else if (d?.kind === "ADDRESS_INVALID") setErr(String(d.hint || "check the address and try again"));
+      else onDone({ ok: false, kind: String(d?.kind || "SERVICE_UNAVAILABLE"), hint: typeof d?.hint === "string" ? d.hint : undefined });
+    } catch {
+      setErr("that didn\u2019t go through \u2014 try again");
+    }
+    setBusy(false);
+  };
+  const cls = "px-4 py-2.5 rounded-xl bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853] min-w-0";
+  return (
+    <form className="flex flex-col gap-2" onSubmit={(e) => { e.preventDefault(); void submit(); }}>
+      <div className="grid grid-cols-2 gap-2">
+        <input className={cls} placeholder="full name" value={f.name} onChange={set("name")} autoComplete="name" disabled={disabled} aria-label="full name" />
+        <input className={cls} placeholder="phone" value={f.phone} onChange={set("phone")} autoComplete="tel" inputMode="tel" disabled={disabled} aria-label="phone number" />
+      </div>
+      <input className={cls} placeholder="street address" value={f.street} onChange={set("street")} autoComplete="street-address" disabled={disabled} aria-label="street address" />
+      <div className="grid grid-cols-[1fr_2fr] gap-2">
+        <input className={cls} placeholder="apt / unit" value={f.unit} onChange={set("unit")} autoComplete="address-line2" disabled={disabled} aria-label="apartment or unit" />
+        <input className={cls} placeholder="city" value={f.city} onChange={set("city")} autoComplete="address-level2" disabled={disabled} aria-label="city" />
+      </div>
+      <div className="grid grid-cols-[1fr_2fr] gap-2">
+        <input className={cls} placeholder="state" maxLength={2} value={f.state} onChange={set("state")} autoComplete="address-level1" disabled={disabled} aria-label="state" />
+        <input className={cls} placeholder="ZIP" value={f.zip} onChange={set("zip")} autoComplete="postal-code" inputMode="numeric" disabled={disabled} aria-label="ZIP code" />
+      </div>
+      {err && <p className="text-[13px] text-red-400" role="alert">{err}</p>}
+      <button type="submit" disabled={disabled || busy} className="tcc-button-primary py-3 text-[16px] font-bold rounded-2xl disabled:opacity-40">
+        {busy ? "printing your label\u2026" : "get my free FedEx label"}
+      </button>
+      <p className="text-[12px] text-white/45 leading-snug">prepaid, drop it at any FedEx location. we text you the label link too.</p>
+    </form>
+  );
+}
+
+function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boolean; onLock: (c: string, name: string) => Promise<string | null> }) {
   const [c, setC] = useState("");
+  const [name, setName] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const submit = async () => {
     if (busy || disabled) return;
     setBusy(true);
     setErr("");
-    const e = await onLock(c);
+    const e = await onLock(c, name);
     if (e) setErr(e);
     setBusy(false);
   };
@@ -1820,6 +1937,16 @@ function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boo
         enterKeyHint="done"
         disabled={disabled}
         aria-label="your phone number or email"
+      />
+      <input
+        className="px-4 py-2.5 rounded-full bg-white/[0.04] border border-white/10 text-[15px] text-white placeholder-white/35 focus:outline-none focus:border-[#00c853]"
+        placeholder="your name (optional)"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        autoComplete="name"
+        enterKeyHint="done"
+        disabled={disabled}
+        aria-label="your name (optional)"
       />
       {err && <p className="text-[13px] text-red-400" role="alert">{err}</p>}
       <button

@@ -20,6 +20,7 @@
 // Auth: x-relay-token vs SMS_RELAY_TOKEN — the SAME shared secret that guards
 // the outbound relay, already set on both Vercel projects. Unset = fail closed.
 import { NextRequest, NextResponse } from "next/server";
+import { sidToken } from "../../../lib/go-sid-token";
 import { after } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { appendChatMsg, findSessionByPhone, readChat } from "../../../lib/gochat-store";
@@ -148,7 +149,7 @@ export async function POST(req: NextRequest) {
     if (!notesHaveOptOut(notes) && !ownerActive) {
       const ack = meet
         ? "Top Cash Cellular: got it — we'll text you shortly to set up a time and a public spot in the Austin area."
-        : "Top Cash Cellular: got it — we'll text you shortly for the address your free FedEx label should go to.";
+        : `Top Cash Cellular: got it — enter your address here and your free FedEx label prints right away: https://topcashcellular.com/go?sid=${sid}&k=${sidToken(sid)}&ship=1`;
       const sent = await sendSellerSms(from, ack);
       await appendChatMsg(sid, "note", sent ? `SMS sent to ${from} (handoff ack)` : `SMS FAILED to ${from} (handoff ack)`);
     }

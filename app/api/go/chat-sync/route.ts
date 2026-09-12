@@ -52,9 +52,14 @@ export async function GET(req: NextRequest) {
   let pendingQuote: { model: string; storage: string; condition: string; carrier: string; offer: number } | null = null;
   // Whether a contact is already on file — a boolean only, never the note.
   let contactOnFile = false;
+  // A label already issued for this thread — the page shows it again on
+  // reload ("where's my label?" is the most common return visit).
+  let label: { tracking: string; url: string } | null = null;
   if (full) {
     const notes = state.msgs.filter((m) => m.role === "note");
     contactOnFile = notes.some((m) => m.text.startsWith("CONTACT: "));
+    const lm = [...notes].reverse().find((m) => m.text.startsWith("LABEL: "))?.text.match(/tracking=(\S+) url=(https:\/\/\S+)/);
+    if (lm) label = { tracking: lm[1], url: lm[2] };
     const lastQspec = [...notes].reverse().find((m) => m.text.startsWith("QSPEC: "));
     const lastLock = [...notes].reverse().find((m) => m.text.startsWith("LOCKED:"));
     // 14-day gate mirrors the published price-lock promise — past it the
@@ -70,7 +75,7 @@ export async function GET(req: NextRequest) {
       }
     }
   }
-  return NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}) });
+  return NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}), ...(label ? { label } : {}) });
 }
 
 export async function POST(req: NextRequest) {
@@ -97,7 +102,9 @@ export async function POST(req: NextRequest) {
   // the bot's mouth (or on the seller's screen as a "still good" quote).
   // SMS-STOP / HANDOFF-CHOICE are read by the reminders cron and the lock
   // route (opt-out, handoff already chosen) — server-written only, like the rest.
-  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|SMS)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
+  // LEAD-ID / LABEL: written by the lock + label routes — a forged LEAD-ID
+  // would let a stranger's label marker land on someone else's lead.
+  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|SMS|LEAD-ID|LABEL)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
   await appendChatMsg(sid, "note", text);
   return NextResponse.json({ ok: true });
 }
