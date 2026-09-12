@@ -656,25 +656,6 @@ export async function POST(req: NextRequest) {
 
       const textParts = response.content.filter((b) => b.type === "text");
       if (textParts.length) reply = textParts.map((b) => (b as { text: string }).text).join(" ").trim();
-      // IMEI GUARANTEE (owner's rule): if the seller dropped a 15-digit IMEI
-      // in this message and the model never called check_imei, run the
-      // lookup anyway and keep the accurate identification for the owner.
-      // The model's reply is unchanged — this is for the team's record.
-      if (droppedImei && imeiTypo && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
-        after(() => { void appendChatMsg(sessionId, "note", `IMEI: ${droppedImei} → fails checksum (typo?) — check by hand`); });
-      }
-      if (droppedImei && imeiPresent && !imeiCheckedThisTurn && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
-        if (rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok) {
-          after(async () => {
-            const r = await runImeiCheck({ imei: droppedImei }).catch((e) => { console.error("[chat] imei guarantee lookup threw:", e instanceof Error ? e.message : String(e)); return null; });
-            if (!(r as { ownerNote?: string } | null)?.ownerNote) console.error("[chat] imei guarantee: no ownerNote from lookup", JSON.stringify(r).slice(0, 200));
-            const note = (r as { ownerNote?: string } | null)?.ownerNote || `IMEI: ${droppedImei} → not looked up — check by hand`;
-            await appendChatMsg(sessionId, "note", note).catch(() => {});
-          });
-        } else {
-          after(() => { void appendChatMsg(sessionId, "note", `IMEI: ${droppedImei} → not looked up (rate limit) — check by hand`); });
-        }
-      }
       // CADENCE BACKSTOP. The prompt says "never two asks in a row", the
       // cooldown line says "not in this reply", and the model still asked on
       // three consecutive turns whenever a fresh quote landed (2026-09-12
@@ -803,6 +784,28 @@ export async function POST(req: NextRequest) {
       }
       messages.push({ role: "user", content: results });
     }
+    // IMEI GUARANTEE (owner's rule) — AFTER the tool loop, so it only fires when
+    // the model never called check_imei (inside the loop it ran on the tool
+    // round too and doubled every paid lookup, 2026-09-12): if the seller dropped a 15-digit IMEI
+    // in this message and the model never called check_imei, run the
+    // lookup anyway and keep the accurate identification for the owner.
+    // The model's reply is unchanged — this is for the team's record.
+    if (droppedImei && imeiTypo && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
+      after(() => { void appendChatMsg(sessionId, "note", `IMEI: ${droppedImei} → fails checksum (typo?) — check by hand`); });
+    }
+    if (droppedImei && imeiPresent && !imeiCheckedThisTurn && validSession(sessionId) && !storeNotes.some((t) => t.startsWith(`IMEI: ${droppedImei}`))) {
+      if (rateLimit(`chat-imei:${ip}`, 4, 10 * 60_000).ok && rateLimit("chat-imei:global", 30, 10 * 60_000).ok) {
+        after(async () => {
+          const r = await runImeiCheck({ imei: droppedImei }).catch((e) => { console.error("[chat] imei guarantee lookup threw:", e instanceof Error ? e.message : String(e)); return null; });
+          if (!(r as { ownerNote?: string } | null)?.ownerNote) console.error("[chat] imei guarantee: no ownerNote from lookup", JSON.stringify(r).slice(0, 200));
+          const note = (r as { ownerNote?: string } | null)?.ownerNote || `IMEI: ${droppedImei} → not looked up — check by hand`;
+          await appendChatMsg(sessionId, "note", note).catch(() => {});
+        });
+      } else {
+        after(() => { void appendChatMsg(sessionId, "note", `IMEI: ${droppedImei} → not looked up (rate limit) — check by hand`); });
+      }
+    }
+
 
     if (!reply) reply = fallbackReply(message, isHumanHandoff, history.length);
 
