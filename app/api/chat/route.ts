@@ -151,7 +151,7 @@ const INSTANT_CATALOG = (() => {
 })();
 
 export async function POST(req: NextRequest) {
-  let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown; fbp?: unknown; fbc?: unknown; src?: unknown };
+  let payload: { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown; fbp?: unknown; fbc?: unknown; src?: unknown; landed?: unknown; };
   try {
     payload = await req.json();
   } catch {
