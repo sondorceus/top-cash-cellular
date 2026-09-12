@@ -150,6 +150,7 @@ type LeadShape = {
   session?: string;
   lockUntil?: string;
   isGo?: boolean;
+  manual?: boolean; // Quote: TBD (custom) — hand quote, no number to remind about
 };
 
 // The seller's own thread when we know it (HMAC-signed so the /go client
@@ -410,6 +411,7 @@ export async function GET(req: NextRequest) {
         : undefined;
     const source = parseField(m.body, "Source") || "";
     const session = parseField(m.body, "Session");
+    const quoteRaw = parseField(m.body, "Quote") || "";
     const lead: LeadShape = {
       id: m.id,
       body: m.body,
@@ -419,7 +421,13 @@ export async function GET(req: NextRequest) {
       email,
       device: deviceLine.split(" — ")[0],
       model: deviceLine.split(" — ")[1],
-      quote: parseField(m.body, "Quote"),
+      // "TBD (custom)" = hand quote (won't-turn-on/parts locks, manual-
+      // review MacBooks): no number, so no "still locked" reminder and no
+      // lock to expire — the seller is waiting on the OWNER's number (the
+      // go_unworked watchdog nudges him). Before this the texts read
+      // "your iPhone 17 Pro offer (TBD (custom)) is still locked".
+      quote: /\d/.test(quoteRaw) ? quoteRaw : undefined,
+      manual: !/\d/.test(quoteRaw),
       handoffMethod: handoffMethod ?? (session ? handoffBySession.get(session) : undefined),
       session,
       lockUntil: parseField(m.body, "Lock-Until"),
@@ -435,7 +443,7 @@ export async function GET(req: NextRequest) {
     // Quote reminder — still in quote_requested, aged 24-48h, not yet
     // reminded. We use submission timestamp (m.timestamp) for age
     // since the lead may never have had a [STATUS:] update.
-    if (statusName === "quote_requested") {
+    if (statusName === "quote_requested" && !lead.manual) {
       const subAge = now - new Date(m.timestamp).getTime();
       if (subAge >= REMIND_AFTER_MS && subAge < REMIND_UNTIL_MS && !remindedByKind.quote.has(m.id)) {
         quoteCandidates.push(lead);

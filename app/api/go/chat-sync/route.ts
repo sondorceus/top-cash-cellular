@@ -75,9 +75,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const ip = clientIp(req);
-  // 30/5min: a multi-device locker writes 2 notes per quote (display + QSPEC)
-  // plus LOCKED + nudge breadcrumbs — 10 was droppable by one honest lot.
-  if (!rateLimit(`chatnote:${ip}`, 30, 5 * 60_000).ok) {
+  // 60/5min: every tile/model/chip choice is a breadcrumb now (~7 per
+  // device, so a fast four-device lot is ~30) plus nudge/lock notes — a
+  // 429 here silently drops the tap flow the chat brain and console read.
+  if (!rateLimit(`chatnote:${ip}`, 60, 5 * 60_000).ok) {
     return NextResponse.json({ ok: false }, { status: 429 });
   }
   let body: { session?: unknown; text?: unknown };
