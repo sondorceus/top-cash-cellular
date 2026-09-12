@@ -102,6 +102,9 @@ export async function lookupImei(cleanImei: string): Promise<ImeiLookup> {
   const results = await Promise.all(calls);
   for (const r of results) { if (r.price) cost += r.price; if (r.balance != null) out.balance = r.balance; }
   const text = results.filter((r) => r.status === "success").map((r) => r.text).join("\n");
+  // Diagnostic (owner-side logs only): the shape of each sub-call, so a
+  // "success" payload the parser can't read is visible.
+  console.log(`[imei-lookup] ${imei} brand=${brand} ` + results.map((r, i) => `${(isApple ? [61, 92] : isSamsung ? [1, 54] : isGoogle ? [42, 54] : [54])[i]}=${r.status}:${JSON.stringify(r.text).slice(0, 160)}`).join(" | "));
   if (text) {
     const nice = isApple ? field(results[1]?.text || "", "Model Description") : undefined;
     const desc = field(text, "Model Description", "Model Name", "Model");
