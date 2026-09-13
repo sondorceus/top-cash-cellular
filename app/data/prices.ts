@@ -447,6 +447,32 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 315, fair: 565, good: 715, mint: 755, sealed: 865 },
     "2tb": { broken: 645, fair: 895, good: 1005, mint: 1085, sealed: 1400 },
     "512": { broken: 445, fair: 695, good: 845, mint: 885, sealed: 1070 } },
+  // iPhone 18 Pro Max / Pro — added 2026-09-13 at Skywalker's anchors: sealed
+  // 256 = $1100 (Pro Max) and $1000 (Pro), each about $100 under retail, the
+  // same thin-margin play as the 17 Pro Max. NO market data exists for these
+  // yet — IWM, eBay, Swappa and price-db all return nothing for an iPhone 18 —
+  // so every other cell is the ip17pm ladder's SHAPE rescaled to those
+  // anchors, not a comp.
+  //
+  // The 17 PRO's shape was deliberately not used as the template even for the
+  // 18 Pro: it is hand-set flat pricing, so its fair sits at 88% of sealed
+  // where the sheet-derived Pro Max's fair is 65%. Copying it produced an 18
+  // Pro priced ABOVE the 18 Pro Max in six cells. (That compression is still
+  // live on ip17p and probably over-pays used — worth its own look.)
+  //
+  // Like ip17pm these stay OUT of RESELL_ESTIMATES, or the margin cap claws
+  // the anchors straight back down. Revisit the moment the buyer sheet lists
+  // an 18: these are a floor, not a comp.
+  ip18pm: {
+    "1tb": { broken: 693, fair: 1011, good: 1151, mint: 1253, sealed: 1590 },
+    "256": { broken: 401, fair: 718, good: 909, mint: 960, sealed: 1100 },
+    "2tb": { broken: 820, fair: 1138, good: 1278, mint: 1380, sealed: 1780 },
+    "512": { broken: 566, fair: 884, good: 1075, mint: 1125, sealed: 1361 } },
+  ip18p: {
+    // No 2TB tier, mirroring the 17 Pro.
+    "1tb": { broken: 630, fair: 919, good: 1046, mint: 1139, sealed: 1445 },
+    "256": { broken: 364, fair: 653, good: 827, mint: 873, sealed: 1000 },
+    "512": { broken: 514, fair: 803, good: 977, mint: 1023, sealed: 1237 } },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
     "128": { broken: 25, fair: 117, good: 162, mint: 189, sealed: 216 },

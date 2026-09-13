@@ -27,6 +27,10 @@ export type Device = {
 // OEM either doesn't accept the device or pays more than us.
 export const OEM_SLUG_TO_MODEL: Record<string, { oem: "apple" | "samsung" | "google"; modelId: string }> = {
   // iPhones — Apple Trade-In
+  // Apple's trade-in JSON has no ip18* values yet, so getOemComparison()
+  // returns "wont-trade" and the page makes no claim — honest by design.
+  "iphone-18-pro-max": { oem: "apple", modelId: "ip18pm" },
+  "iphone-18-pro": { oem: "apple", modelId: "ip18p" },
   "iphone-17-pro-max": { oem: "apple", modelId: "ip17pm" },
   "iphone-17-pro": { oem: "apple", modelId: "ip17p" },
   "iphone-17-air": { oem: "apple", modelId: "ip17air" },
@@ -193,6 +197,9 @@ export function getOemComparison(slug: string, devicePrice: number): OemComparis
 
 export const DEVICES: Device[] = [
   // ── iPhone (synced from main catalog 2026-05-11) ──
+  // Headline "up to" = the top sealed cell in PRICE_TABLE (2TB / 1TB sealed).
+  { slug: "iphone-18-pro-max", name: "iPhone 18 Pro Max", category: "iPhone", price: 1780, year: 2026 },
+  { slug: "iphone-18-pro", name: "iPhone 18 Pro", category: "iPhone", price: 1445, year: 2026 },
   { slug: "iphone-17-pro-max", name: "iPhone 17 Pro Max", category: "iPhone", price: 1425, year: 2025 },
   { slug: "iphone-17-pro", name: "iPhone 17 Pro", category: "iPhone", price: 720, year: 2025 },
   { slug: "iphone-17-air", name: "iPhone 17 Air", category: "iPhone", price: 734, year: 2025 },
