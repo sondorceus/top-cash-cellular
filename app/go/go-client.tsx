@@ -322,6 +322,21 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // Widget mode: the homepage's legacy "open chat" buttons and any page can
   // open this overlay with `window.dispatchEvent(new CustomEvent("tcc:open-chat"))`.
   const startedOnPageRef = useRef(false);
+  // Composer placeholder — rotates through things a seller can actually type
+  // (Sonny 2026-09-12: "remove the 'i got 4 phones' and do something
+  // better"). A model name lights up the tap-to-price chips; the others
+  // show that lots, cracked units and locked phones are welcome.
+  const PLACEHOLDERS = lot
+    ? ["i got 15 phones, need cash today…", "2 iphone 14s and a galaxy s23…", "type the models — we price each one"]
+    : ["type your model — iphone 15 pro…", "galaxy s24 ultra, 256gb, unlocked…", "iphone 13 cracked screen, still works…", "2 phones and an ipad…", "still making payments on it? we buy those…", "macbook air m2, 8gb…"];
+  const [phIdx, setPhIdx] = useState(0);
+  useEffect(() => {
+    if (draft) return; // a typed draft hides the placeholder anyway — don't tick
+    const t = setInterval(() => setPhIdx((i) => (i + 1) % PLACEHOLDERS.length), 3200);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft, lot]);
+  const placeholder = PLACEHOLDERS[phIdx % PLACEHOLDERS.length];
   // The button is DRAGGABLE and remembers where it was put (the legacy
   // homepage bubble did this and Sonny asked for it back, 2026-09-12): a
   // fixed corner can sit on top of a page's bottom bar on a phone. A press
@@ -1641,7 +1656,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           id="go-composer-input"
           ref={overlayInputRef}
           className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
-          placeholder={lot ? "i got 15 phones, need cash today…" : "i got 4 phones for sale…"}
+          placeholder={placeholder}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           aria-label="tell us what you're selling"
