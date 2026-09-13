@@ -421,11 +421,20 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "256": { broken: 65, fair: 145, good: 195, mint: 215, sealed: 374 },
     "512": { broken: 83, fair: 195, good: 225, mint: 265, sealed: 423 } },
   ip17p: {
-    // Custom flat pricing (Skywalker, 2026-06): 17 Pro Max ladder minus $40 (excellent OFFER
-    // $580 = base 555 + $25 bonus); +$55/tier; no carrier penalty. Broken left unchanged.
-    "1tb": { broken: 389, fair: 625, good: 645, mint: 650, sealed: 695 },
-    "256": { broken: 245, fair: 515, good: 535, mint: 540, sealed: 585 },
-    "512": { broken: 353, fair: 570, good: 590, mint: 595, sealed: 640 } },
+    // "17 Pro Max ladder minus $40" — the June 2026 rule, RE-APPLIED against
+    // the CURRENT Pro Max ladder (Skywalker, 2026-09-13: "option one").
+    //
+    // The rule had quietly stopped being true. ip17pm was raised on 2026-07-14
+    // to the higher-bid sheet−$80 ladder and ip17p was never moved with it, so
+    // the stated $40 gap had drifted to $70–$555 and this model sat an average
+    // of $191 a cell below its own documented pricing. The old cells were a
+    // June ladder sitting next to a July one, not a design.
+    //
+    // The old "+$55/tier" spacing is necessarily gone: the tier steps are now
+    // the Pro Max's. PM−40 was the rule chosen; the two cannot both hold.
+    "1tb": { broken: 505, fair: 755, good: 865, mint: 945, sealed: 1210 },
+    "256": { broken: 275, fair: 525, good: 675, mint: 715, sealed: 825 },
+    "512": { broken: 405, fair: 655, good: 805, mint: 845, sealed: 1030 } },
   ip17pm: {
     // HIGHER-BID ladder (Skywalker 2026-07-14): used offers target the
     // wholesale buyer sheet minus a flat $80 ("with the 17 pro max and
