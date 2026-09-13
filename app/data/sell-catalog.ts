@@ -201,7 +201,7 @@ export const DEVICES: Device[] = [
   { slug: "iphone-18-pro-max", name: "iPhone 18 Pro Max", category: "iPhone", price: 1780, year: 2026 },
   { slug: "iphone-18-pro", name: "iPhone 18 Pro", category: "iPhone", price: 1445, year: 2026 },
   { slug: "iphone-17-pro-max", name: "iPhone 17 Pro Max", category: "iPhone", price: 1425, year: 2025 },
-  { slug: "iphone-17-pro", name: "iPhone 17 Pro", category: "iPhone", price: 720, year: 2025 },
+  { slug: "iphone-17-pro", name: "iPhone 17 Pro", category: "iPhone", price: 1210, year: 2025 },
   { slug: "iphone-17-air", name: "iPhone 17 Air", category: "iPhone", price: 734, year: 2025 },
   { slug: "iphone-17", name: "iPhone 17", category: "iPhone", price: 657, year: 2025 },
   { slug: "iphone-17e", name: "iPhone 17E", category: "iPhone", price: 396, year: 2025 },
