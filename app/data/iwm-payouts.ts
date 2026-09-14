@@ -7,7 +7,7 @@
 // regenerate, bump IWM_SCRAPED.
 // Sonny 2026-09-11 (price scan): "fix all other" — the stale resell comps
 // were capping 14 models $85–$240 under this rule.
-export const IWM_SCRAPED = "2026-09-11";
+export const IWM_SCRAPED = "2026-09-14"; // 18 Pro / 18 Pro Max added 2026-09-14; the rest 2026-09-11
 export const IWM_RULE_MULT = 0.90;
 export type IwmCond = "sealed" | "mint" | "good" | "fair" | "broken";
 export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, number>>>> = {
@@ -1481,6 +1481,66 @@ export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, 
    "good": 980,
    "fair": 900,
    "broken": 480
+  }
+ },
+ "ip18p": {
+  "256": {
+   "sealed": 850,
+   "mint": 800,
+   "good": 725,
+   "fair": 640,
+   "broken": 375
+  },
+  "512": {
+   "sealed": 1000,
+   "mint": 900,
+   "good": 825,
+   "fair": 740,
+   "broken": 450
+  },
+  "1tb": {
+   "sealed": 1100,
+   "mint": 950,
+   "good": 875,
+   "fair": 790,
+   "broken": 500
+  },
+  "2tb": {
+   "sealed": 1200,
+   "mint": 1050,
+   "good": 975,
+   "fair": 890,
+   "broken": 575
+  }
+ },
+ "ip18pm": {
+  "256": {
+   "sealed": 925,
+   "mint": 885,
+   "good": 795,
+   "fair": 700,
+   "broken": 400
+  },
+  "512": {
+   "sealed": 1075,
+   "mint": 985,
+   "good": 895,
+   "fair": 800,
+   "broken": 450
+  },
+  "1tb": {
+   "sealed": 1175,
+   "mint": 1085,
+   "good": 995,
+   "fair": 900,
+   "broken": 475
+  },
+  "2tb": {
+   "sealed": 1325,
+   "mint": 1285,
+   "good": 1195,
+   "fair": 1100,
+   "broken": 550
   }
  }
 };

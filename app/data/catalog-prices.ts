@@ -88,7 +88,7 @@ export const CATALOG_PRICE_BY_MODEL_ID: Record<string, number> = {
   ip17: 657,
   ip17air: 734,
   ip17e: 396,
-  ip17p: 720,
+  ip17p: 905,
   ip17pm: 1425,
   ipadair11m2: 430,
   ipadair11m3: 448,
