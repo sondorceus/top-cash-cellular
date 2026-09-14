@@ -348,6 +348,12 @@ function FedExMark({ className = "" }: { className?: string }) {
 const IPHONE_SERIES = [
   // Bases: IWM_lowest_storage × 0.95 / lowest_storage_mult
   // iPhone = 5% below IWM. Everything else = 10% below.
+  // iPhone 18 — TEMPORARY entries (Sonny 2026-09-14): pictures from the
+  // catalog commit, prices at IWM × 0.90 until he sets his own.
+  { id: "18", label: "iPhone 18", image: "/devices/iphone-18-pro-max.png", year: "2026", topPrice: 1193, variants: [
+    { id: "ip18pm", label: "iPhone 18 Pro Max", base: 716, image: "/devices/iphone-18-pro-max.png" },
+    { id: "ip18p", label: "iPhone 18 Pro", base: 653, image: "/devices/iphone-18-pro.png" },
+  ]},
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 860, variants: [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 767, image: "/devices/iphone-17-pro-max-test.png" },   // IWM 256GB=$905
     { id: "ip17p", label: "iPhone 17 Pro", base: 726, image: "/devices/iphone-17-pro-test.png" },
@@ -8683,6 +8689,8 @@ export default function Home() {
                     // and-switch next to the card. id must match a PRICE_TABLE
                     // key; entries that don't resolve are dropped.
                     const devices = [
+                      { name: "iPhone 18 Pro Max", id: "ip18pm", brand: "iphone" as const },
+                      { name: "iPhone 18 Pro", id: "ip18p", brand: "iphone" as const },
                       { name: "iPhone 17 Pro Max", id: "ip17pm", brand: "iphone" as const },
                       { name: "iPhone 16 Pro Max", id: "ip16pm", brand: "iphone" as const },
                       { name: "Galaxy S24 Ultra", id: "gs24u", brand: "android" as const },

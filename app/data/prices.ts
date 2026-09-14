@@ -36,6 +36,8 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // live in CARRIER_GAPS_BY_COND below (Skywalker 2026-07-12: zeroed flat
   // gaps meant a T-Mobile broken 17PM paid the full unlocked $342 while
   // IWM pays $300 locked).
+  ip18pm: { att: 0, tmobile: 0, other: 0 }, // gaps are condition-dependent (below)
+  ip18p:  { att: 0, tmobile: 0, other: 0 },
   ip17pm: { att: 0, tmobile: 0, other: 0 },
   ip17p:  { att: 0, tmobile: 0, other: 0 },
   // ip17air zeroed 2026-07-14 (owner: "we are paying way too low for 17
@@ -181,6 +183,18 @@ export type CondCarrierGaps = {
   sealedLocked: Record<string, number>;
 };
 export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
+  // 18 Pro Max / 18 Pro — TEMPORARY clones of the 17 Pro Max / 17 Pro gaps
+  // (Sonny 2026-09-14: temporary numbers so nothing is missing; he updates).
+  ip18pm: {
+    used: { att: 155, tmobile: 80, other: 500 },
+    broken: { att: 135, tmobile: 50, other: 250 },
+    sealedLocked: { "256": 106, "512": 151, "1tb": 151, "2tb": 106 },
+  },
+  ip18p: {
+    used: { att: 185, tmobile: 50, other: 450 },
+    broken: { att: 85, tmobile: 50, other: 250 },
+    sealedLocked: { "256": 85, "512": 130, "1tb": 175, "2tb": 175 },
+  },
   ip17pm: {
     used: { att: 155, tmobile: 80, other: 500 },
     broken: { att: 135, tmobile: 50, other: 250 },
@@ -473,15 +487,21 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   // the anchors straight back down. Revisit the moment the buyer sheet lists
   // an 18: these are a floor, not a comp.
   ip18pm: {
-    "1tb": { broken: 693, fair: 1011, good: 1151, mint: 1253, sealed: 1590 },
-    "256": { broken: 401, fair: 718, good: 909, mint: 960, sealed: 1100 },
-    "2tb": { broken: 820, fair: 1138, good: 1278, mint: 1380, sealed: 1780 },
-    "512": { broken: 566, fair: 884, good: 1075, mint: 1125, sealed: 1361 } },
+    // TEMPORARY (Sonny 2026-09-14): cells = IWM × 0.90 − 25 (the popular bonus),
+    // i.e. the offer lands exactly on the rule; Sonny replaces these with his
+    // numbers. IWM grid scraped 2026-09-14 (app/data/iwm-payouts.ts).
+    "256": { broken: 335, fair: 605, good: 691, mint: 772, sealed: 808 },
+    "512": { broken: 380, fair: 695, good: 781, mint: 862, sealed: 943 },
+    "1tb": { broken: 403, fair: 785, good: 871, mint: 952, sealed: 1033 },
+    "2tb": { broken: 470, fair: 965, good: 1051, mint: 1132, sealed: 1168 } },
   ip18p: {
-    // No 2TB tier, mirroring the 17 Pro.
-    "1tb": { broken: 630, fair: 919, good: 1046, mint: 1139, sealed: 1445 },
-    "256": { broken: 364, fair: 653, good: 827, mint: 873, sealed: 1000 },
-    "512": { broken: 514, fair: 803, good: 977, mint: 1023, sealed: 1237 } },
+    // TEMPORARY (Sonny 2026-09-14): cells = IWM × 0.90 − 25 (the popular bonus),
+    // i.e. the offer lands exactly on the rule; Sonny replaces these with his
+    // numbers. IWM grid scraped 2026-09-14 (app/data/iwm-payouts.ts).
+    "256": { broken: 313, fair: 551, good: 628, mint: 695, sealed: 740 },
+    "512": { broken: 380, fair: 641, good: 718, mint: 785, sealed: 875 },
+    "1tb": { broken: 425, fair: 686, good: 763, mint: 830, sealed: 965 },
+    "2tb": { broken: 493, fair: 776, good: 853, mint: 920, sealed: 1055 } },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
     "128": { broken: 25, fair: 117, good: 162, mint: 189, sealed: 216 },
