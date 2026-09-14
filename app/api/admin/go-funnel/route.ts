@@ -49,8 +49,7 @@ type Session = {
   optedOut: boolean;
   manual: boolean;
   offer: number | null;
-  device: string;
-};
+  device: string; geo: string; area: string; };
 
 function checkAuth(req: NextRequest): boolean {
   const headerToken = req.headers.get("x-admin-token");
@@ -92,6 +91,7 @@ export async function GET(req: NextRequest) {
         const ts = Number(tsRaw);
         const s = by.get(sid) || {
           sid, src: srcOf(sid), first: ts, last: ts, user: 0, bot: 0, owner: 0, notes: [],
+          geo: "", area: "unknown",
           tapped: false, picked: false, quoted: false, contact: false, locked: false, handoff: false, nudged: false, optedOut: false, manual: false, offer: null, device: "",
         };
         s.first = Math.min(s.first, ts);
@@ -142,6 +142,7 @@ export async function GET(req: NextRequest) {
       else if (t.startsWith("HANDOFF")) { if (!s.device) s.device = t.slice(0, 60); }
       else if (/nudged/.test(t)) s.nudged = true;
       else if (t.startsWith("SMS-STOP")) s.optedOut = true;
+      else if (t.startsWith("GEO: ")) { s.geo = t.slice(5).split(" · ")[0].slice(0, 40); s.area = t.match(/area=(\w+)/)?.[1] || "unknown"; }
       else if (t.startsWith("tapped ")) s.tapped = true;
       else if (t.startsWith("picked model")) s.picked = true;
     }
@@ -164,10 +165,15 @@ export async function GET(req: NextRequest) {
   };
   const totals = blank();
   const bySrc: Record<string, Row> = {};
+  // Where the sessions come from — the ad-targeting check (Sonny 2026-09-14).
+  const byArea: Record<string, Row> = {};
+  const bySrcArea: Record<string, Record<string, number>> = {};
   const byDay: Record<string, Row> = {};
   for (const s of sessions) {
     add(totals, s);
     add((bySrc[s.src] ||= blank()), s);
+    add((byArea[s.area || "unknown"] ||= blank()), s);
+    const sa = (bySrcArea[s.src] ||= {}); sa[s.area || "unknown"] = (sa[s.area || "unknown"] || 0) + 1;
     add((byDay[dayKey(s.first)] ||= blank()), s);
   }
   // Quote-viewers we cannot reach: the retargeting audience, in numbers.
@@ -179,11 +185,13 @@ export async function GET(req: NextRequest) {
     generatedAt: new Date(now).toISOString(),
     totals: { ...totals, quotedNoContact, quotedNoContactValue, lockRate: totals.quoted ? Math.round((totals.locked / totals.quoted) * 100) : 0 },
     bySrc,
+    byArea,
+    bySrcArea,
     byDay: Object.entries(byDay).sort(([a], [b]) => (a < b ? 1 : -1)).map(([day, r]) => ({ day, ...r })),
     sessions: sessions.slice(0, 100).map((s) => ({
       sid: s.sid, src: s.src, first: new Date(s.first).toISOString(), last: new Date(s.last).toISOString(),
       user: s.user, owner: s.owner, tapped: s.tapped, picked: s.picked, quoted: s.quoted, contact: s.contact, locked: s.locked, manual: s.manual,
-      handoff: s.handoff, nudged: s.nudged, optedOut: s.optedOut, offer: s.offer, device: s.device,
+      handoff: s.handoff, nudged: s.nudged, optedOut: s.optedOut, offer: s.offer, device: s.device, geo: s.geo, area: s.area,
     })),
     truncated: budget <= 0,
   });

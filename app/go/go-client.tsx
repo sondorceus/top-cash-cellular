@@ -293,13 +293,15 @@ const GO_CSS = `
           .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
         `;
 
-export default function GoClient({ rows, src, reviews, variant = "std", mode = "page", initialGroup = null, landed = "" }: {
+export default function GoClient({ rows, src, reviews, variant = "std", mode = "page", initialGroup = null, landed = "", visitorArea = "unknown" }: {
   rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot";
   // "widget": no first-paint board — a floating button on any site page that
   // opens the same overlay (Sonny 2026-09-12: "an icon where they can jump in
   // the chat anytime"). initialGroup = the page's device family, so the
   // MacBook page opens on MacBooks. landed = the path the session started on.
   mode?: "page" | "widget"; initialGroup?: Group | null; landed?: string;
+  // From Vercel's edge geo on the /go page: "metro" | "tx" | "us" | "intl" | "unknown".
+  visitorArea?: "metro" | "tx" | "us" | "intl" | "unknown";
 }) {
   const lot = variant === "lot";
   // ---- chat state ----
@@ -1787,7 +1789,9 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             ? "your chat is saved — pick up where you left off."
             : lot
               ? "trays, shelves, mixed lots, cracked ones too."
-              : "cracked or still on payments? we still buy it."}
+              : visitorArea === "us" || visitorArea === "tx"
+                ? "not in austin? free FedEx label \u2014 paid the day it lands."
+                : "cracked or still on payments? we still buy it."}
         </p>
 
         {/* the panel — brighter than the page so it reads as THE thing to do

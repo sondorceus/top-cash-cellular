@@ -47,6 +47,7 @@ import { mailShell, esc, MAIL } from "../../../lib/email-shell";
 import { after } from "next/server";
 import { resolveGoSpec, goQuote, type GoSpec } from "../../../go/spec";
 import { leadSourceLine } from "../../../lib/lead-source";
+import { clientGeo, AREA_WORDS } from "../../../lib/geo";
 import { MANUAL_REVIEW_DEVICES } from "../../../data/prices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -203,6 +204,7 @@ export async function POST(req: NextRequest) {
   const ua = sanitize(req.headers.get("user-agent") || "unknown");
   const visitorId = sanitize(req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
   const safeIp = sanitize(ip).slice(0, 60);
+  const geo = clientGeo(req);
   const lockUntil = new Date(Date.now() + LOCK_DAYS * 24 * 3600_000).toISOString();
   const hasGoSession = validGoSession(sessionId);
   // IMEI lookups the chat already ran for this thread — the accurate
@@ -235,6 +237,7 @@ export async function POST(req: NextRequest) {
     `Payout: TBD`,
     isEmail ? null : `SMS opt-in: no`,
     leadSourceLine("go", src, landedPath || `/go${src ? `?src=${src}` : ""}`),
+    `Location: ${sanitize(geo.label)} (${AREA_WORDS[geo.area]})`,
     `Source-IP: ${safeIp}`,
     `Source-UA: ${ua}`,
     visitorId ? `Visitor-ID: ${visitorId}` : null,
@@ -281,7 +284,7 @@ export async function POST(req: NextRequest) {
   let smsOk = false;
   try {
     smsOk = await notifyOwnerSms(
-      `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}`,
+      `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\n📍 ${geo.label}${geo.area === "metro" ? "" : ` (${AREA_WORDS[geo.area]})`}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}`,
     );
   } catch (e) {
     console.error("[go/lock] owner alert threw:", e);

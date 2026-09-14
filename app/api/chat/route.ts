@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PRICE_TABLE } from "../../data/prices";
 import { stripNumberAsk, stripImeiAsk } from "../../lib/chat-cadence";
 import { leadSourceLine } from "../../lib/lead-source";
+import { clientGeo, AREA_WORDS } from "../../lib/geo";
 import { PHONE_DISPLAY } from "../../lib/constants";
 import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
@@ -181,6 +182,7 @@ export async function POST(req: NextRequest) {
   // Ads click, fb/ig = social click, site = direct) and sends the landing
   // path — both ride on the lead so Sonny sees "Facebook ad" vs "Google Ads"
   // vs "Site visit · /sell-macbook-austin" (2026-09-12).
+  const geo = clientGeo(req);
   const srcTag = (typeof payload.src === "string" ? payload.src : "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 10);
   const landedPath = (typeof payload.landed === "string" ? payload.landed : "").replace(/[^a-zA-Z0-9_\-/?=&.]/g, "").slice(0, 80);
   // "human" mode = the visitor tapped "Talk to a human", so Theot runs the
@@ -261,6 +263,13 @@ export async function POST(req: NextRequest) {
   // when they type "that's low" — and the only cross-window contact record.
   const storeNotes = (live?.msgs || []).filter((m) => m.role === "note").map((m) => m.text);
   const storeContactNote = storeNotes.some((t) => t.startsWith("CONTACT: "));
+  // Where the visitor is. The first turn writes a server-only GEO: note (the
+  // console, the lead and the funnel read it); later turns reuse it, so a
+  // seller who started in Houston stays "Houston" even on a VPN hop.
+  const geoNote = [...storeNotes].reverse().find((t) => t.startsWith("GEO: "));
+  const geoLabel = geoNote ? geoNote.slice(5).split(" · ")[0] : geo.label;
+  const geoArea = (geoNote?.match(/· area=(metro|tx|us|intl|unknown)/)?.[1] as typeof geo.area | undefined) || geo.area;
+  if (!geoNote && validSession(sessionId) && geo.area !== "unknown") after(() => { void appendChatMsg(sessionId, "note", `GEO: ${geo.label} · area=${geo.area}`); });
   const funnelNotes = storeNotes
     // Server-authored notes only. "seller left…" is written by the client
     // (chat-sync POST) — a forged one could put words in the model's mouth.
@@ -425,6 +434,7 @@ export async function POST(req: NextRequest) {
       `Quote: ${sanitizeForMc(leadQuote).slice(0, 160)}`,
       "Payout: TBD",
       leadSourceLine("chat", srcTag, landedPath || (sessionId.startsWith("go-") ? "/go" : "")),
+      `Location: ${sanitizeForMc(geoLabel)} (${AREA_WORDS[geoArea]})`,
       sessionId ? `Session: ${sessionId}` : null,
       sessionId ? `Chat: https://topcashcellular.com/admin/chats?session=${sessionId}` : null,
       "--- Handoff: TBD (seller picks) ---",
@@ -664,6 +674,11 @@ export async function POST(req: NextRequest) {
 
     const dynamicSys = [
       isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Quote every device with get_quote as its specs arrive and keep a running recap; ask for their number once when the first number lands and once at the handoff (notify_team). Never hold a price back for a phone number. Do NOT close the lot, do NOT name a package price." : "",
+      geoArea === "metro" ? `VISITOR LOCATION: ${geoLabel} — in the Austin area. Both routes apply: meet at a public spot in the Austin area for cash on the spot, or the free FedEx label.`
+        : geoArea === "tx" ? `VISITOR LOCATION: ${geoLabel} — in Texas but outside the Austin area. Lead with the free FedEx label (paid the day it lands); a meetup only if THEY offer to drive to Austin. Never suggest we come to them.`
+        : geoArea === "us" ? `VISITOR LOCATION: ${geoLabel} — outside Texas. Their route is the free FedEx label, paid the day it lands; never offer or discuss a meetup. Say it plainly once, early.`
+        : geoArea === "intl" ? `VISITOR LOCATION: ${geoLabel} — outside the US. We only buy inside the US (the free label ships within the US); say so kindly once, don't quote or take a number for shipping from abroad.`
+        : "",
       linkHints.length ? `LINKS FOR THIS MESSAGE — the seller asked about something we have a page for. Put the URL in your reply on its own line, exactly as written, and keep the reply short: ${linkHints.join(" · ")}` : "",
       widget === "shipform" ? "SHIPPING FORM IS OPENING under your reply: this seller already locked a quote and wants to ship. Tell them to drop their shipping address in the form right below and their free FedEx label prints here in the chat (prepaid, drop at any FedEx location, we text the link too). Do NOT say we'll text them for the address, do NOT ask for the address in the chat, and do NOT send a link for it." : "",
       widget === "label" ? `LABEL ALREADY ISSUED for this seller (tracking ${labelNote?.[1]}) — the label card is showing under your reply. Say it's their label, they can print it and drop the device at any FedEx location, and we text them when it lands. Do not mint another one.` : "",

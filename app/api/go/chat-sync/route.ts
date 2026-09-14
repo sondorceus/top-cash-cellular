@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
   // route (opt-out, handoff already chosen) — server-written only, like the rest.
   // LEAD-ID / LABEL: written by the lock + label routes — a forged LEAD-ID
   // would let a stranger's label marker land on someone else's lead.
-  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|SMS|LEAD-ID|LABEL)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
+  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|SMS|LEAD-ID|LABEL|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
   await appendChatMsg(sid, "note", text);
   return NextResponse.json({ ok: true });
 }

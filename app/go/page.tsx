@@ -10,6 +10,8 @@ import type { Metadata } from "next";
 import { computeBoard } from "./board";
 import GoClient from "./go-client";
 import { fetchReviews } from "./reviews";
+import { headers } from "next/headers";
+import { classifyGeo } from "../lib/geo";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +37,11 @@ export default async function GoPage({
   // phones who needs cash, and a jump pill sits above the board. Ads for
   // that audience use /go?v=lot&src=…; message match without a second page.
   const variant = sp.v === "lot" ? "lot" : "std";
+  // Vercel's edge geo headers: an out-of-area visitor gets the shipping
+  // subline instead of "cash in hand today" (Sonny 2026-09-14).
+  const h = await headers();
+  const dec = (v: string | null) => { try { return decodeURIComponent(v || ""); } catch { return v || ""; } };
+  const visitorArea = classifyGeo(dec(h.get("x-vercel-ip-city")), dec(h.get("x-vercel-ip-country-region")).toUpperCase(), dec(h.get("x-vercel-ip-country")).toUpperCase());
   const [rows, reviews] = await Promise.all([computeBoard(), fetchReviews()]);
-  return <GoClient rows={rows} src={src} reviews={reviews} variant={variant} />;
+  return <GoClient rows={rows} src={src} reviews={reviews} variant={variant} visitorArea={visitorArea} />;
 }
