@@ -30,6 +30,11 @@ export const OEM_SLUG_TO_MODEL: Record<string, { oem: "apple" | "samsung" | "goo
   // Apple's trade-in JSON has no ip18* values yet, so getOemComparison()
   // returns "wont-trade" and the page makes no claim — honest by design.
   "iphone-18-pro-max": { oem: "apple", modelId: "ip18pm" },
+  "iphone-duo": { oem: "apple", modelId: "ipduo" },
+  "galaxy-z-fold-8-ultra": { oem: "samsung", modelId: "gzfold8u" },
+  "galaxy-z-fold-8": { oem: "samsung", modelId: "gzfold8" },
+  "galaxy-z-flip-8": { oem: "samsung", modelId: "gzflip8" },
+  "galaxy-z-flip-7-fe": { oem: "samsung", modelId: "gzflip7fe" },
   "iphone-18-pro": { oem: "apple", modelId: "ip18p" },
   "iphone-17-pro-max": { oem: "apple", modelId: "ip17pm" },
   "iphone-17-pro": { oem: "apple", modelId: "ip17p" },
@@ -199,6 +204,11 @@ export const DEVICES: Device[] = [
   // ── iPhone (synced from main catalog 2026-05-11) ──
   // Headline "up to" = the top sealed cell in PRICE_TABLE (2TB / 1TB sealed).
   { slug: "iphone-18-pro-max", name: "iPhone 18 Pro Max", category: "iPhone", price: 1193, year: 2026 },
+  { slug: "iphone-duo", name: "iPhone Duo", category: "iPhone", price: 1755, year: 2026 },
+  { slug: "galaxy-z-fold-8-ultra", name: "Galaxy Z Fold 8 Ultra", category: "Samsung", price: 999, year: 2026 },
+  { slug: "galaxy-z-fold-8", name: "Galaxy Z Fold 8", category: "Samsung", price: 977, year: 2026 },
+  { slug: "galaxy-z-flip-8", name: "Galaxy Z Flip 8", category: "Samsung", price: 536, year: 2026 },
+  { slug: "galaxy-z-flip-7-fe", name: "Galaxy Z Flip 7 FE", category: "Samsung", price: 351, year: 2025 },
   { slug: "iphone-18-pro", name: "iPhone 18 Pro", category: "iPhone", price: 1080, year: 2026 },
   { slug: "iphone-17-pro-max", name: "iPhone 17 Pro Max", category: "iPhone", price: 1425, year: 2025 },
   { slug: "iphone-17-pro", name: "iPhone 17 Pro", category: "iPhone", price: 905, year: 2025 },

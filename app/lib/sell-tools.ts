@@ -24,6 +24,7 @@ const have = (slug: string): boolean => !!PRICE_TABLE[slug];
 /** Slug → clean display name for quote text (we control this, so it's accurate). */
 export function slugToDisplay(slug: string): string {
   let m;
+  if (slug === "ipduo") return "iPhone Duo";
   if ((m = slug.match(/^ip(\d+)(pm|p|plus|mini|e|air)?$/))) {
     const v: Record<string, string> = { pm: " Pro Max", p: " Pro", plus: " Plus", mini: " mini", air: " Air" };
     return m[2] === "e" ? `iPhone ${m[1]}e` : `iPhone ${m[1]}${v[m[2] || ""] || ""}`;
@@ -32,8 +33,8 @@ export function slugToDisplay(slug: string): string {
     const v: Record<string, string> = { u: " Ultra", p: "+", fe: " FE" };
     return `Galaxy S${m[1]}${v[m[2] || ""] || ""}`;
   }
-  if ((m = slug.match(/^gzflip(\d+)$/))) return `Galaxy Z Flip ${m[1]}`;
-  if ((m = slug.match(/^gzfold(\d+)$/))) return `Galaxy Z Fold ${m[1]}`;
+  if ((m = slug.match(/^gzflip(\d+)(fe)?$/))) return `Galaxy Z Flip ${m[1]}${m[2] ? " FE" : ""}`;
+  if ((m = slug.match(/^gzfold(\d+)(u)?$/))) return `Galaxy Z Fold ${m[1]}${m[2] ? " Ultra" : ""}`;
   if ((m = slug.match(/^px(\d+)(pxl|pfold|p|a)?$/))) {
     const v: Record<string, string> = { pxl: " Pro XL", pfold: " Pro Fold", p: " Pro" };
     return m[2] === "a" ? `Pixel ${m[1]}a` : `Pixel ${m[1]}${v[m[2] || ""] || ""}`;
@@ -59,6 +60,8 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
   const fold = /\bfold\b/.test(n);
   const aser = /\d+\s*a\b|\b\d+a\b/.test(n);
 
+  // iPhone Duo (2026 foldable) has no number in its name.
+  if (/i\s*phone\s*duo|\bduo\b/.test(n) && have("ipduo")) return { slug: "ipduo", label: "iPhone Duo" };
   // iPhone
   let m = n.match(/i\s*phone\s*(\d{1,2})/) || (/iphone/.test(n) ? n.match(/\b(\d{1,2})\b/) : null);
   if (m) {
@@ -69,8 +72,10 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
   // Samsung Galaxy
   if (/galaxy|samsung/.test(n)) {
     let g2 = n.match(/z\s*flip\s*(\d+)/);
+    if (g2 && fe && have("gzflip" + g2[1] + "fe")) return { slug: "gzflip" + g2[1] + "fe", label: slugToDisplay("gzflip" + g2[1] + "fe") };
     if (g2 && have("gzflip" + g2[1])) return { slug: "gzflip" + g2[1], label: slugToDisplay("gzflip" + g2[1]) };
     g2 = n.match(/z\s*fold\s*(\d+)/);
+    if (g2 && ultra && have("gzfold" + g2[1] + "u")) return { slug: "gzfold" + g2[1] + "u", label: slugToDisplay("gzfold" + g2[1] + "u") };
     if (g2 && have("gzfold" + g2[1])) return { slug: "gzfold" + g2[1], label: slugToDisplay("gzfold" + g2[1]) };
     g2 = n.match(/s\s*(\d{2})/);
     if (g2) {

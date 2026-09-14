@@ -350,9 +350,10 @@ const IPHONE_SERIES = [
   // iPhone = 5% below IWM. Everything else = 10% below.
   // iPhone 18 — TEMPORARY entries (Sonny 2026-09-14): pictures from the
   // catalog commit, prices at IWM × 0.90 until he sets his own.
-  { id: "18", label: "iPhone 18", image: "/devices/iphone-18-pro-max.png", year: "2026", topPrice: 1193, variants: [
-    { id: "ip18pm", label: "iPhone 18 Pro Max", base: 716, image: "/devices/iphone-18-pro-max.png" },
-    { id: "ip18p", label: "iPhone 18 Pro", base: 653, image: "/devices/iphone-18-pro.png" },
+  { id: "18", label: "iPhone 18", image: "/devices/iphone-17-pro-max-test.png", year: "2026", topPrice: 1193, variants: [
+    { id: "ip18pm", label: "iPhone 18 Pro Max", base: 716, image: "/devices/iphone-17-pro-max-test.png" },
+    { id: "ip18p", label: "iPhone 18 Pro", base: 653, image: "/devices/iphone-17-pro-test.png" },
+    { id: "ipduo", label: "iPhone Duo", base: 1170, image: "/devices/iphone-17-pro-max-test.png" },
   ]},
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 860, variants: [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 767, image: "/devices/iphone-17-pro-max-test.png" },   // IWM 256GB=$905
@@ -433,11 +434,15 @@ const SAMSUNG_SERIES = [
   ]},
   { id: "zseries", label: "Z Series", year: "Z Fold + Z Flip + TriFold", topPrice: 1845, image: "/fold-series.webp", variants: [
     { id: "gztrifold", label: "Galaxy Z TriFold", base: 1317, image: "/devices/gztrifold.webp" }, // IWM $2050
+    { id: "gzfold8u", label: "Galaxy Z Fold 8 Ultra", base: 743, image: "/devices/gzfold7.webp" }, // TEMPORARY IWM×0.9
+    { id: "gzfold8", label: "Galaxy Z Fold 8", base: 720, image: "/devices/gzfold7.webp" },
     { id: "gzfold7", label: "Galaxy Z Fold 7", base: 526, image: "/devices/gzfold7.webp" },       // IWM $820
     { id: "gzfold6", label: "Galaxy Z Fold 6", base: 334, image: "/devices/gzfold6.webp" },       // IWM $520
     { id: "gzfold5", label: "Galaxy Z Fold 5", base: 228, image: "/devices/gzfold5.webp" },       // IWM $355
     { id: "gzfold4", label: "Galaxy Z Fold 4", base: 157, image: "/devices/gzfold4.webp" },       // IWM $245
     { id: "gzfold3", label: "Galaxy Z Fold 3", base: 111, image: "/devices/gzfold3.webp" },       // IWM $155
+    { id: "gzflip8", label: "Galaxy Z Flip 8", base: 396, image: "/devices/gzflip7.webp" }, // TEMPORARY IWM×0.9
+    { id: "gzflip7fe", label: "Galaxy Z Flip 7 FE", base: 266, image: "/devices/gzflip7.webp" },
     { id: "gzflip7", label: "Galaxy Z Flip 7", base: 320, image: "/devices/gzflip7.webp" },       // IWM $445
     { id: "gzflip6", label: "Galaxy Z Flip 6", base: 201, image: "/devices/gzflip6.webp" },       // IWM $280
     { id: "gzflip5", label: "Galaxy Z Flip 5", base: 150, image: "/devices/gzflip5.webp" },       // IWM $210

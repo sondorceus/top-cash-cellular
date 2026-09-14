@@ -680,6 +680,38 @@ export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, 
    "broken": 65
   }
  },
+ "gzflip7fe": {
+  "128": {
+   "sealed": 365,
+   "mint": 325,
+   "good": 280,
+   "fair": 235,
+   "broken": 50
+  },
+  "256": {
+   "sealed": 390,
+   "mint": 340,
+   "good": 295,
+   "fair": 250,
+   "broken": 60
+  }
+ },
+ "gzflip8": {
+  "256": {
+   "sealed": 545,
+   "mint": 500,
+   "good": 440,
+   "fair": 375,
+   "broken": 80
+  },
+  "512": {
+   "sealed": 595,
+   "mint": 515,
+   "good": 455,
+   "fair": 390,
+   "broken": 95
+  }
+ },
  "gzfold3": {
   "256": {
    "sealed": 170,
@@ -785,6 +817,52 @@ export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, 
    "mint": 820,
    "good": 770,
    "fair": 670,
+   "broken": 160
+  }
+ },
+ "gzfold8": {
+  "256": {
+   "sealed": 1025,
+   "mint": 950,
+   "good": 800,
+   "fair": 675,
+   "broken": 150
+  },
+  "512": {
+   "sealed": 1055,
+   "mint": 990,
+   "good": 840,
+   "fair": 715,
+   "broken": 155
+  },
+  "1tb": {
+   "sealed": 1085,
+   "mint": 1020,
+   "good": 870,
+   "fair": 745,
+   "broken": 160
+  }
+ },
+ "gzfold8u": {
+  "256": {
+   "sealed": 1050,
+   "mint": 975,
+   "good": 825,
+   "fair": 700,
+   "broken": 150
+  },
+  "512": {
+   "sealed": 1080,
+   "mint": 1015,
+   "good": 865,
+   "fair": 740,
+   "broken": 155
+  },
+  "1tb": {
+   "sealed": 1110,
+   "mint": 1045,
+   "good": 895,
+   "fair": 770,
    "broken": 160
   }
  },
@@ -1541,6 +1619,36 @@ export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, 
    "good": 1195,
    "fair": 1100,
    "broken": 550
+  }
+ },
+ "ipduo": {
+  "256": {
+   "sealed": 1550,
+   "mint": 1450,
+   "good": 1300,
+   "fair": 1100,
+   "broken": 330
+  },
+  "512": {
+   "sealed": 1700,
+   "mint": 1575,
+   "good": 1425,
+   "fair": 1225,
+   "broken": 405
+  },
+  "1tb": {
+   "sealed": 1800,
+   "mint": 1700,
+   "good": 1550,
+   "fair": 1350,
+   "broken": 455
+  },
+  "2tb": {
+   "sealed": 1950,
+   "mint": 1850,
+   "good": 1700,
+   "fair": 1500,
+   "broken": 530
   }
  }
 };

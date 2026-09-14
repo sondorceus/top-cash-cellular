@@ -36,6 +36,11 @@ export const CARRIER_DEDUCTIONS: Record<string, Record<string, number>> = {
   // live in CARRIER_GAPS_BY_COND below (Skywalker 2026-07-12: zeroed flat
   // gaps meant a T-Mobile broken 17PM paid the full unlocked $342 while
   // IWM pays $300 locked).
+  ipduo:  { att: 0, tmobile: 0, other: 0 }, // condition-dependent (below), TEMPORARY
+  gzfold8u: { att: 80, tmobile: 100, other: 200 }, // TEMPORARY: Z Fold 7 gaps
+  gzfold8:  { att: 80, tmobile: 100, other: 200 },
+  gzflip8:  { att: 50, tmobile: 70, other: 100 },  // TEMPORARY: Z Flip 7 gaps
+  gzflip7fe: { att: 50, tmobile: 70, other: 100 },
   ip18pm: { att: 0, tmobile: 0, other: 0 }, // gaps are condition-dependent (below)
   ip18p:  { att: 0, tmobile: 0, other: 0 },
   ip17pm: { att: 0, tmobile: 0, other: 0 },
@@ -185,6 +190,11 @@ export type CondCarrierGaps = {
 export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
   // 18 Pro Max / 18 Pro — TEMPORARY clones of the 17 Pro Max / 17 Pro gaps
   // (Sonny 2026-09-14: temporary numbers so nothing is missing; he updates).
+  ipduo: {
+    used: { att: 155, tmobile: 80, other: 500 },
+    broken: { att: 135, tmobile: 50, other: 250 },
+    sealedLocked: { "256": 160, "512": 182, "1tb": 160, "2tb": 160 },
+  },
   ip18pm: {
     used: { att: 155, tmobile: 80, other: 500 },
     broken: { att: 135, tmobile: 50, other: 250 },
@@ -486,6 +496,30 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
   // Like ip17pm these stay OUT of RESELL_ESTIMATES, or the margin cap claws
   // the anchors straight back down. Revisit the moment the buyer sheet lists
   // an 18: these are a floor, not a comp.
+  ipduo: {
+    // TEMPORARY (Sonny 2026-09-14): IWM × 0.90 − 25 — replace with Sonny's numbers.
+    "256": { broken: 272, fair: 965, good: 1145, mint: 1280, sealed: 1370 },
+    "512": { broken: 340, fair: 1078, good: 1258, mint: 1393, sealed: 1505 },
+    "1tb": { broken: 385, fair: 1190, good: 1370, mint: 1505, sealed: 1595 },
+    "2tb": { broken: 452, fair: 1325, good: 1505, mint: 1640, sealed: 1730 } },
+  gzfold8u: {
+    // TEMPORARY (Sonny 2026-09-14): IWM × 0.90 − 25 — replace with Sonny's numbers.
+    "256": { broken: 110, fair: 605, good: 718, mint: 853, sealed: 920 },
+    "512": { broken: 115, fair: 641, good: 754, mint: 889, sealed: 947 },
+    "1tb": { broken: 119, fair: 668, good: 781, mint: 916, sealed: 974 } },
+  gzfold8: {
+    // TEMPORARY (Sonny 2026-09-14): IWM × 0.90 − 25 — replace with Sonny's numbers.
+    "256": { broken: 110, fair: 583, good: 695, mint: 830, sealed: 898 },
+    "512": { broken: 115, fair: 619, good: 731, mint: 866, sealed: 925 },
+    "1tb": { broken: 119, fair: 646, good: 758, mint: 893, sealed: 952 } },
+  gzflip8: {
+    // TEMPORARY (Sonny 2026-09-14): IWM × 0.90 − 25 — replace with Sonny's numbers.
+    "256": { broken: 47, fair: 313, good: 371, mint: 425, sealed: 466 },
+    "512": { broken: 61, fair: 326, good: 385, mint: 439, sealed: 511 } },
+  gzflip7fe: {
+    // TEMPORARY (Sonny 2026-09-14): IWM × 0.90 − 25 — replace with Sonny's numbers.
+    "128": { broken: 20, fair: 187, good: 227, mint: 268, sealed: 304 },
+    "256": { broken: 29, fair: 200, good: 241, mint: 281, sealed: 326 } },
   ip18pm: {
     // TEMPORARY (Sonny 2026-09-14): cells = IWM × 0.90 − 25 (the popular bonus),
     // i.e. the offer lands exactly on the rule; Sonny replaces these with his
