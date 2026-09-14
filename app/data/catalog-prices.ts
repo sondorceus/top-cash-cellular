@@ -90,7 +90,7 @@ export const CATALOG_PRICE_BY_MODEL_ID: Record<string, number> = {
   ip17e: 396,
   ip17p: 905,
   ip18pm: 1193, // TEMPORARY — IWM×0.90 best config, Sonny replaces (2026-09-14)
-  ip18p: 990,
+  ip18p: 1080,
   ip17pm: 1425,
   ipadair11m2: 430,
   ipadair11m3: 448,
