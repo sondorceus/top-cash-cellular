@@ -351,9 +351,9 @@ const IPHONE_SERIES = [
   // iPhone 18 — TEMPORARY entries (Sonny 2026-09-14): pictures from the
   // catalog commit, prices at IWM × 0.90 until he sets his own.
   { id: "18", label: "iPhone 18", image: "/devices/iphone-17-pro-max-test.png", year: "2026", topPrice: 1193, variants: [
-    { id: "ip18pm", label: "iPhone 18 Pro Max", base: 716, image: "/devices/iphone-17-pro-max-test.png" },
-    { id: "ip18p", label: "iPhone 18 Pro", base: 653, image: "/devices/iphone-17-pro-test.png" },
-    { id: "ipduo", label: "iPhone Duo", base: 1170, image: "/devices/iphone-17-pro-max-test.png" },
+    { id: "ip18pm", label: "iPhone 18 Pro Max", base: 716, image: "/devices/iphone-18-pro-max.webp" },
+    { id: "ip18p", label: "iPhone 18 Pro", base: 653, image: "/devices/iphone-18-pro.webp" },
+    { id: "ipduo", label: "iPhone Duo", base: 1170, image: "/devices/iphone-duo.webp" },
   ]},
   { id: "17", label: "iPhone 17", image: "/iphone17.png", year: "2025", topPrice: 860, variants: [
     { id: "ip17pm", label: "iPhone 17 Pro Max", base: 767, image: "/devices/iphone-17-pro-max-test.png" },   // IWM 256GB=$905

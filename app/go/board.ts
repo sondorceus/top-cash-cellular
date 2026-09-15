@@ -76,9 +76,9 @@ function console_(id: string, label: string, img: string, line: string, steps: G
 // tail card in the picker and type it — the AI intake prices by hand.
 export const BOARD_MODELS: BoardModel[] = [
   // iPhone — 17 line
-  phone("ip18pm", "iPhone 18 Pro Max", "/devices/iphone-17-pro-max.webp"),
-  phone("ipduo", "iPhone Duo", "/devices/iphone-17-pro-max.webp"),
-  phone("ip18p", "iPhone 18 Pro", "/devices/iphone-17-pro.webp"),
+  phone("ip18pm", "iPhone 18 Pro Max", "/devices/iphone-18-pro-max.webp"),
+  phone("ipduo", "iPhone Duo", "/devices/iphone-duo.webp"),
+  phone("ip18p", "iPhone 18 Pro", "/devices/iphone-18-pro.webp"),
   phone("ip17pm", "iPhone 17 Pro Max", "/devices/iphone-17-pro-max.webp"),
   phone("ip17p", "iPhone 17 Pro", "/devices/iphone-17-pro.webp"),
   phone("ip17air", "iPhone 17 Air", "/devices/iphone-17-air.webp"),
