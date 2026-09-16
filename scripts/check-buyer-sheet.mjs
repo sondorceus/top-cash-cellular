@@ -21,10 +21,29 @@
 // LOWEST color. Update SHEET when a new quotation lands.
 //
 // Requires Node ≥23.6 (imports .ts data modules via native type stripping).
+// `npx tsx scripts/check-buyer-sheet.mjs` works too.
 
-import { PRICE_TABLE, CARRIER_DEDUCTIONS, CARRIER_GAPS_BY_COND } from "../app/data/prices.ts";
-import { RESELL_ESTIMATES, MARGIN_FLOOR_MULT, EBAY_FEE_MULT } from "../app/lib/resell-estimates.ts";
-import { SHEET } from "./buyer-sheet-data.mjs";
+import { registerHooks } from "node:module";
+
+// resell-estimates.ts uses Next-style extensionless imports
+// ("../data/iwm-payouts") that native type stripping can't resolve — since
+// 2026-09-11 this gate died with ERR_MODULE_NOT_FOUND before checking
+// anything. Retry a failed relative, extensionless specifier as `.ts`.
+// The imports below are dynamic so they run after the hook is in place.
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    try {
+      return nextResolve(specifier, context);
+    } catch (err) {
+      if (err?.code !== "ERR_MODULE_NOT_FOUND" || !/^\.{1,2}\//.test(specifier) || /\.[cm]?[jt]sx?$/.test(specifier)) throw err;
+      return nextResolve(`${specifier}.ts`, context);
+    }
+  },
+});
+
+const { PRICE_TABLE, CARRIER_DEDUCTIONS, CARRIER_GAPS_BY_COND } = await import("../app/data/prices.ts");
+const { RESELL_ESTIMATES, MARGIN_FLOOR_MULT, EBAY_FEE_MULT } = await import("../app/lib/resell-estimates.ts");
+const { SHEET } = await import("./buyer-sheet-data.mjs");
 
 const BONUS = 25; // popular-phone bonus
 const CONDS = ["mint", "good", "fair", "broken"];

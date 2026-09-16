@@ -141,14 +141,14 @@ const MAX_HISTORY_LEN = 40;
 const INSTANT_CATALOG = (() => {
   const fam: Record<string, string[]> = {};
   for (const id of Object.keys(PRICE_TABLE)) {
-    if (!/^(ip|gs|gz|px)/.test(id)) continue;
+    if (!/^(ip|gs|gz|gnote|px)/.test(id)) continue;
     const label = slugToDisplay(id);
     if (label === id) continue;
-    const f = label.startsWith("iPhone") ? "iPhone" : label.startsWith("Galaxy Z") ? "Galaxy Z" : label.startsWith("Galaxy") ? "Galaxy S" : "Pixel";
+    const f = label.startsWith("iPhone") ? "iPhone" : label.startsWith("Galaxy Z") ? "Galaxy Z" : label.startsWith("Galaxy Note") ? "Galaxy Note" : label.startsWith("Galaxy") ? "Galaxy S" : "Pixel";
     (fam[f] ||= []).push(label);
   }
   const gen = (l: string) => Number(l.match(/\d+/)?.[0] || 0);
-  return ["iPhone", "Galaxy S", "Galaxy Z", "Pixel"].filter((f) => fam[f]).map((f) => `${f}: ${fam[f].sort((a, b) => gen(b) - gen(a) || a.localeCompare(b)).join(", ")}`).join(" · ");
+  return ["iPhone", "Galaxy S", "Galaxy Z", "Galaxy Note", "Pixel"].filter((f) => fam[f]).map((f) => `${f}: ${fam[f].sort((a, b) => gen(b) - gen(a) || a.localeCompare(b)).join(", ")}`).join(" · ");
 })();
 
 export async function POST(req: NextRequest) {

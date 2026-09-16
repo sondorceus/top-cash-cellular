@@ -1,0 +1,306 @@
+// The synchronous core of quoteDevice() (app/lib/quote.ts) — the price math
+// itself, with the overrides passed in. Split out so a CLIENT component can
+// run the exact engine (the offer page's edit preview): quote.ts pulls in
+// @vercel/blob for readPriceOverrides(), which would drag the Blob SDK and
+// its auth stack into the browser bundle. Nothing here does I/O.
+//
+// quote.ts re-exports the engine, helpers and types — server code imports
+// them from there.
+
+import {
+  PRICE_TABLE,
+  CARRIER_DEDUCTIONS,
+  carrierGapForCondition,
+  MIN_OFFER,
+  SEALED_PREMIUM,
+  BASE_PRICED_MODELS,
+  MANUAL_REVIEW_DEVICES,
+} from "../data/prices";
+import {
+  getResellEstimateForModel,
+  resellMultiplierForCondition,
+  marginCapFor,
+  iwmRuleCeiling,
+  applyGalaxyDrop,
+} from "./resell-estimates";
+import { deductionAmount } from "../data/deductions";
+// No runtime import cycle: macbook-quote.ts takes only a TYPE from quote.ts.
+import { macIsAutoQuotable } from "./macbook-quote";
+
+export type PriceOverrides = {
+  priceTable: Record<string, Record<string, Record<string, number>>>;
+  carrierDeductions: Record<string, Record<string, number>>;
+  baseOverrides: Record<string, number>;
+  conditionAdj: Record<string, Record<string, number>>;
+  updatedAt?: string;
+};
+
+export const EMPTY_OVERRIDES: PriceOverrides = {
+  priceTable: {},
+  carrierDeductions: {},
+  baseOverrides: {},
+  conditionAdj: {},
+};
+
+export type QuoteSpec = {
+  // PRICE_TABLE / BASE_PRICED_MODELS key, e.g. "ip15pm", "gs25u".
+  modelId: string;
+  // Human label, e.g. "iPhone 15 Pro Max". Optional but enables the
+  // 25%-margin resell guardrail (matched by name in RESELL_ESTIMATES).
+  modelLabel?: string;
+  // Price-table storage key: "64" | "128" | "256" | "512" | "1tb" | "2tb".
+  storage?: string;
+  // "sealed" | "mint" (UI: "Excellent") | "good" | "fair" | "broken".
+  condition: string;
+  // "att" | "tmobile" | "verizon" | "other" | "unlocked".
+  carrier?: string;
+  // Only meaningful for Verizon (the one carrier we ask the lock question).
+  carrierLocked?: boolean;
+  // Phones + cellular iPads get the +$25 popular-device bonus.
+  isPhone?: boolean;
+  // Extra −$30 when a phone is broken with BOTH front + back glass cracked.
+  brokenGlass?: "front" | "back" | "both" | null;
+  // Issue flags the seller VOLUNTEERED (bot conversations, admin quotes).
+  // Deduct the buyer-sheet schedule amounts (app/data/deductions.ts) so a
+  // known-MDM / dead-Face-ID device quotes honestly upfront instead of
+  // surprising the seller with an inspection counter. iPhone-only —
+  // amounts resolve to $0 for models without a schedule.
+  mdmLocked?: boolean;
+  faceIdBroken?: boolean;
+};
+
+export type QuoteResult = {
+  ok: boolean;
+  offer: number | null; // TCC's dollar offer; null when manual/unmatched.
+  manualReview: boolean;
+  reason?: string;
+  source: "price-table" | "base-priced" | "additive" | "unmatched";
+  modelId: string;
+  breakdown?: {
+    cellPrice: number;
+    carrierDeduction: number;
+    popularBonus: number;
+    bothGlassPenalty: number;
+    sealedPremium: number;
+    rawQuote: number;
+    resellEstimate: number | null;
+    marginCap: number | null;
+    capped: boolean;
+  };
+};
+
+// Map common listing-speak to our canonical storage/condition keys so the
+// Brain doesn't have to know our exact slugs.
+export function normalizeStorage(s: string | number | undefined): string | undefined {
+  // Callers are typed string, but /api/quote bodies are LLM JSON and often
+  // carry `storage: 256` — (256).toLowerCase() threw and 500'd the batch.
+  if (s == null || s === "") return undefined;
+  const t = String(s).toLowerCase().replace(/\s|gb/g, "");
+  if (t === "1tb" || t === "1024") return "1tb";
+  if (t === "2tb" || t === "2048") return "2tb";
+  return t; // "64" | "128" | "256" | "512"
+}
+
+export function normalizeCondition(c: string | undefined): string {
+  const t = (c || "").toLowerCase().trim();
+  if (["sealed", "new", "brand new", "nib"].includes(t)) return "sealed";
+  if (["mint", "excellent", "like new", "flawless"].includes(t)) return "mint";
+  if (["good", "very good"].includes(t)) return "good";
+  if (["fair", "ok", "okay", "worn", "rough"].includes(t)) return "fair";
+  if (["broken", "cracked", "damaged", "for parts", "not working"].includes(t)) return "broken";
+  return t || "good"; // sensible default; caller can flag low confidence
+}
+
+// Lead-body labels → canonical ids, as the server's anti-tamper cap reads
+// them (server-quote-cap.ts) — here so the offer page's edit preview maps a
+// lead's labels the same way. Funnel condition labels ("Sealed /
+// Unopened", "Excellent", /go's "Like new", …) and free text; substring-
+// based on purpose.
+const normText = (s: unknown) => (typeof s === "string" ? s : "").toLowerCase().replace(/\s+/g, " ").trim();
+export function canonicalCondition(c: unknown): string {
+  const t = normText(c);
+  if (/seal|brand new|unopened|nib/.test(t)) return "sealed";
+  if (/excellent|mint|like new|flawless/.test(t)) return "mint";
+  if (/very good|good|well.?maintained/.test(t)) return "good";
+  if (/fair|worn|heav|rough/.test(t)) return "fair";
+  if (/brok|crack|damag|dead|not working|parts/.test(t)) return "broken";
+  return "good";
+}
+
+export function canonicalCarrier(c: unknown): string {
+  const t = normText(c);
+  if (/t-?mobile|metro/.test(t)) return "tmobile";
+  if (/at&t|att\b|cricket/.test(t)) return "att";
+  if (/verizon|visible/.test(t)) return "verizon";
+  if (!t || /unlock/.test(t)) return "unlocked";
+  // /go's "Not sure (priced as carrier-locked)" chip is priced at the AT&T
+  // tier (app/go/spec.ts); read as "other" its ceiling sat below the honest
+  // /go number and flagged every edit of those leads.
+  if (/not sure/.test(t)) return "att";
+  return "other";
+}
+
+// A lead's "Carrier lock:" answer ("Yes — Locked to carrier", bot
+// "financed / still locked") → the carrierLocked flag. Only Verizon's price
+// depends on it.
+export function carrierLockedFromText(c: unknown): boolean {
+  const t = normText(c);
+  return /financ|still locked|^yes/.test(t) && !/unlock/.test(t);
+}
+
+// Compute TCC's offer for a single device against a given overrides
+// snapshot. quoteDevice() is this plus the live Blob read.
+export function quoteDeviceSync(spec: QuoteSpec, ov: PriceOverrides): QuoteResult {
+  const id = spec.modelId;
+  const storage = normalizeStorage(spec.storage) ?? "base";
+  const cond = normalizeCondition(spec.condition);
+
+  // Devices we never auto-quote regardless of path (vintage/odd SKUs).
+  if (MANUAL_REVIEW_DEVICES.has(id)) {
+    return { ok: true, offer: null, manualReview: true, reason: "model is flagged manual-review in prices.ts", source: "unmatched", modelId: id };
+  }
+
+  // Additively priced MacBooks (chip adj in MACBOOK_SPECS) — their
+  // PRICE_TABLE rows are stale BASE-CHIP leftovers the funnel never reads
+  // (useAdditive wins), so the table path below quoted every chip at the
+  // base-chip number. Their real price needs the chip/RAM spec: quoteMacBook.
+  if (macIsAutoQuotable(id)) {
+    return { ok: true, offer: null, manualReview: true, reason: "MacBook: chip/RAM/storage spec needed to quote (additive path — see app/lib/macbook-quote.ts)", source: "additive", modelId: id };
+  }
+
+  // --- PRICE-TABLE PATH (phones, tablets) — fully computed ---
+  // Sealed uses the per-cell `sealed` column when one exists — the FUNNEL
+  // reads it directly, and since the 2026-07-14 recabs those cells ARE the
+  // intended sealed prices (e.g. 17PM sealed = buyer sheet − 80; the old
+  // mint+premium derivation had this bot quoting a sealed 17PM 1TB $220
+  // UNDER the funnel). Only when a row has no sealed cell do we fall back
+  // to mint + SEALED_PREMIUM (the owner's flat sealed-over-mint rule).
+  const sealedCell = ov.priceTable?.[id]?.[storage]?.sealed ?? PRICE_TABLE[id]?.[storage]?.sealed;
+  const isSealed = cond === "sealed";
+  const sealedFromMint = isSealed && sealedCell == null;
+  const priceCond = sealedFromMint ? "mint" : cond;
+  const cellPrice =
+    ov.priceTable?.[id]?.[storage]?.[priceCond] ?? PRICE_TABLE[id]?.[storage]?.[priceCond];
+
+  if (cellPrice != null) {
+    // Carrier gap (flat $). Verizon is the only carrier with a lock question:
+    // unlocked Verizon pays full (gap 0); locked Verizon loses the verizon
+    // gap, falling back to the att gap. att/tmobile/other apply directly.
+    // Condition-dependent models (17 Pro / Pro Max) resolve via
+    // CARRIER_GAPS_BY_COND first — mirrors the funnel exactly, including the
+    // sealed+locked manual-review route. Skywalker 2026-07-12.
+    const carrier = spec.carrier ?? "unlocked";
+    const condGap = carrierGapForCondition(id, carrier, cond, !!spec.carrierLocked, storage);
+    if (condGap?.manual) {
+      return { ok: true, offer: null, manualReview: true, reason: "sealed + carrier-locked with no per-storage gap — owner prices against the Atlas locked sheet", source: "price-table", modelId: id };
+    }
+    let carrierDeduction = 0;
+    if (condGap != null) {
+      carrierDeduction = condGap.gap;
+    } else if (carrier === "verizon") {
+      carrierDeduction = spec.carrierLocked
+        ? (ov.carrierDeductions?.[id]?.verizon
+            ?? CARRIER_DEDUCTIONS[id]?.verizon
+            ?? ov.carrierDeductions?.[id]?.att
+            ?? CARRIER_DEDUCTIONS[id]?.att
+            ?? 0)
+        : 0;
+    } else if (carrier !== "unlocked") {
+      carrierDeduction =
+        ov.carrierDeductions?.[id]?.[carrier] ?? CARRIER_DEDUCTIONS[id]?.[carrier] ?? 0;
+    }
+
+    const baseQuote = Math.max(0, Math.round(cellPrice - carrierDeduction));
+    const popularBonus = spec.isPhone && baseQuote > 0 ? 25 : 0;
+    const bothGlassPenalty =
+      cond === "broken" && spec.brokenGlass === "both" && baseQuote > 0 ? -30 : 0;
+    // Volunteered-issue deductions (buyer-sheet schedule). Mirrors the
+    // funnel's broken-faceid question; MDM has no funnel question (stated
+    // as a quote assumption) but bot leads sometimes volunteer it.
+    const issuePenalty = baseQuote > 0
+      ? -((spec.mdmLocked ? deductionAmount(id, "mdm") : 0) +
+          (spec.faceIdBroken ? deductionAmount(id, "faceid") : 0))
+      : 0;
+    const rawQuote = Math.max(0, baseQuote + popularBonus + bothGlassPenalty + issuePenalty);
+
+    // 25%-margin guardrail — never offer more than 75% of resell value. Only
+    // applies when we have a resell comp for the label (matched by name).
+    const resell = getResellEstimateForModel(id, spec.modelLabel);
+    const condMult = resellMultiplierForCondition(cond, spec.brokenGlass);
+    const estResellNow = resell != null ? Math.round(resell * condMult) : null;
+    // Shared cap — carrier-aware, so a model with real NET_PAYOUTS (locked vs
+    // unlocked wholesale) is capped against what we ACTUALLY get paid for
+    // that exact carrier state. Mirror of the funnel cap by construction:
+    // both call marginCapFor.
+    const marginCap = marginCapFor({
+      modelId: id,
+      label: spec.modelLabel,
+      condition: cond,
+      brokenGlass: spec.brokenGlass,
+      carrier,
+      carrierLocked: spec.carrierLocked,
+      storage,
+      carrierDeduction,
+    });
+    const capped = marginCap != null && rawQuote > marginCap;
+    const cappedQuote = capped ? marginCap! : rawQuote;
+    // Galaxy S23+ blanket −$75 (mirror of the funnel). Monotone floor
+    // 2026-07-13: see applyGalaxyDrop in resell-estimates.
+    const postGalaxyRaw = applyGalaxyDrop(cappedQuote, id);
+    // THE RULE (IWM × 0.90) lands last — see iwmRuleCeiling. Mirror of the
+    // funnel + parity gate by construction.
+    const ruleCeiling = iwmRuleCeiling({ modelId: id, storage, condition: cond });
+    const postGalaxy = ruleCeiling != null ? Math.min(postGalaxyRaw, ruleCeiling) : postGalaxyRaw;
+    // Sealed premium applies ONLY on the mint-fallback path (no sealed cell).
+    // Added LAST — guaranteed past the resell margin cap, because an unopened
+    // unit genuinely resells above the mint comp the cap is built on. Only on
+    // real offers (a $0 base stays $0, not a lone $45). When a sealed cell
+    // exists, the funnel-identical cell path above already priced it.
+    const sealedPremium = sealedFromMint && postGalaxy > 0 ? SEALED_PREMIUM : 0;
+    const finalQuote = postGalaxy + sealedPremium;
+
+    // Below MIN_OFFER (or cap forces it there) → manual review, no auto-offer.
+    const needsReview = finalQuote < MIN_OFFER || (marginCap != null && marginCap < MIN_OFFER);
+
+    return {
+      ok: true,
+      offer: needsReview ? null : finalQuote,
+      manualReview: needsReview,
+      reason: needsReview ? `quote $${finalQuote} below MIN_OFFER $${MIN_OFFER} or margin floor` : undefined,
+      source: "price-table",
+      modelId: id,
+      breakdown: {
+        cellPrice,
+        carrierDeduction,
+        popularBonus,
+        bothGlassPenalty,
+        sealedPremium,
+        rawQuote,
+        resellEstimate: estResellNow,
+        marginCap,
+        capped,
+      },
+    };
+  }
+
+  // --- ADDITIVE PATH (MacBooks / PC laptops) — needs spec detail (v2) ---
+  if (ov.conditionAdj?.[id] !== undefined || hasAdditiveModel(id)) {
+    return { ok: true, offer: null, manualReview: true, reason: "MacBook/PC laptop: chip/RAM/storage spec needed to quote (additive path, v2)", source: "additive", modelId: id };
+  }
+
+  // --- BASE-PRICED PATH (VR / drones / Garmin) — surface base, review ---
+  const baseModel = BASE_PRICED_MODELS[id];
+  if (baseModel) {
+    const base = ov.baseOverrides?.[id] ?? baseModel.base;
+    return { ok: true, offer: null, manualReview: true, reason: `base-priced device (${baseModel.label}); base $${base}, condition multiplier applied manually`, source: "base-priced", modelId: id };
+  }
+
+  // --- UNMATCHED ---
+  return { ok: true, offer: null, manualReview: true, reason: `no PRICE_TABLE / base-price entry for "${id}"`, source: "unmatched", modelId: id };
+}
+
+// Crude additive-model check used only to route to manualReview with a clear
+// reason. The full MACBOOK_SPECS / pc-laptop additive computation lands in v2.
+function hasAdditiveModel(id: string): boolean {
+  return /^(mbp|mba|mac|ln_|hp_|dell_|alien|as_|ac_|sgbk_|lg_)/.test(id);
+}

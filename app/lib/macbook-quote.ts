@@ -82,6 +82,16 @@ export function quoteMacBook(input: MacQuoteInput, overrides?: PriceOverrides | 
   const mcond = cond in MCOND ? MCOND[cond as MacCondition] : undefined;
   const condAdj = overrideCond ?? specCond ?? mcond;
   if (condAdj === undefined) return { ok: false, reason: "broken MacBooks are priced by hand" };
+  // Broken must actually dock BELOW fair (the homepage's
+  // isUnpricedAdditiveBroken rule): a lone admin broken override like -150
+  // next to the default fair -220 would otherwise pay a broken unit more
+  // than a fair one here while the homepage sends it to manual review.
+  if (cond === "broken") {
+    const fairAdj = (ovMap && "fair" in ovMap ? ovMap.fair : undefined)
+      ?? (spec.condition_adj && "fair" in spec.condition_adj ? spec.condition_adj.fair : undefined)
+      ?? MCOND.fair;
+    if (condAdj >= fairAdj) return { ok: false, reason: "broken MacBooks are priced by hand" };
+  }
 
   const battery = input.battery ?? "good";
   const charger = input.charger ?? "yes";

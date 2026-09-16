@@ -19,18 +19,31 @@
 // null cap skips the clamp (same behavior as before, but now rare).
 
 import skuLabelsJson from "../data/sku-labels.json";
-import { quoteDevice, type PriceOverrides } from "./quote";
+import { quoteDevice, normalizeStorage, canonicalCondition, canonicalCarrier, carrierLockedFromText, type PriceOverrides } from "./quote";
+import { PRICE_TABLE, MANUAL_REVIEW_DEVICES, type MacSpecOption } from "../data/prices";
+import { macIsAutoQuotable, macOptions, quoteMacBook } from "./macbook-quote";
+import { BOARD_MODELS } from "../go/board";
+import { iwmRuleCeiling } from "./resell-estimates";
 
 const SKU_LABELS = skuLabelsJson as Record<string, string>;
 
-// label (normalized) → model id. sku-labels values are unique (verified);
-// PRICE_TABLE ids double as their own aliases so device strings that
-// already carry an id resolve too.
+// label (normalized) → model id. sku-labels values are unique (verified —
+// scripts/check-bot-parity.ts fails the build otherwise); PRICE_TABLE ids
+// double as their own aliases so device strings that already carry an id
+// resolve too.
 const LABEL_TO_ID: Record<string, string> = {};
 const norm = (s: string) => s.toLowerCase().replace(/\s+/g, " ").trim();
 for (const [id, label] of Object.entries(SKU_LABELS)) {
   LABEL_TO_ID[norm(label)] = id;
   LABEL_TO_ID[id] = id;
+}
+// /go leads carry the board's label, which can differ from the homepage one
+// ("PlayStation 4" vs "PlayStation 4 (Standard)") — an unresolved /go line
+// had no ceiling and forced every offer-page edit into manual review. Board
+// labels only fill gaps; they never re-point a label sku-labels already owns.
+for (const m of BOARD_MODELS) {
+  const k = norm(m.label);
+  if (!(k in LABEL_TO_ID)) LABEL_TO_ID[k] = m.id;
 }
 
 export function resolveModelIdFromLabel(label: unknown): string | null {
@@ -38,26 +51,9 @@ export function resolveModelIdFromLabel(label: unknown): string | null {
   return LABEL_TO_ID[norm(label)] ?? null;
 }
 
-// Funnel condition labels ("Sealed / Unopened", "Excellent", …) and lead-
-// body free text → canonical condition ids. Substring-based on purpose.
-export function canonicalCondition(c: unknown): string {
-  const t = norm(typeof c === "string" ? c : "");
-  if (/seal|brand new|unopened|nib/.test(t)) return "sealed";
-  if (/excellent|mint|like new|flawless/.test(t)) return "mint";
-  if (/very good|good|well.?maintained/.test(t)) return "good";
-  if (/fair|worn|heav|rough/.test(t)) return "fair";
-  if (/brok|crack|damag|dead|not working|parts/.test(t)) return "broken";
-  return "good";
-}
-
-function canonicalCarrier(c: unknown): string {
-  const t = norm(typeof c === "string" ? c : "");
-  if (/t-?mobile|metro/.test(t)) return "tmobile";
-  if (/at&t|att\b|cricket/.test(t)) return "att";
-  if (/verizon|visible/.test(t)) return "verizon";
-  if (!t || /unlock/.test(t)) return "unlocked";
-  return "other";
-}
+// Lead label → condition / carrier id mapping lives in quote-engine.ts (the
+// offer page's edit preview uses the same one).
+export { canonicalCondition };
 
 export type LeadLineSpec = {
   model?: unknown;
@@ -76,26 +72,113 @@ export type LeadLineSpec = {
 export async function authoritativeLineCap(line: LeadLineSpec, overrides: PriceOverrides): Promise<number | null> {
   const id = resolveModelIdFromLabel(line.model);
   if (!id) return null;
+  if (MANUAL_REVIEW_DEVICES.has(id)) return null;
+  // Additively priced MacBooks: the homepage (useAdditive) and /go price
+  // chip + RAM + storage, but their PRICE_TABLE rows are stale BASE-CHIP
+  // leftovers — capping from them clamped an honest M4 Max 2TB ($2,880) to
+  // $1,216 and flagged it as tampering. Ceiling = the TOP chip + memory at
+  // the storage/condition the customer chose (nano glass on, battery fine,
+  // charger in), so no honest config can exceed it.
+  if (macIsAutoQuotable(id)) return macBookLineCap(id, line, overrides);
   const glass = line.brokenGlass === "front" || line.brokenGlass === "back" || line.brokenGlass === "both" ? line.brokenGlass : null;
-  const lockTxt = norm(typeof line.carrierLock === "string" ? line.carrierLock : "");
-  const carrierLocked = /financ|still locked|^yes/.test(lockTxt) && !/unlock/.test(lockTxt);
-  const r = await quoteDevice({
+  const carrierLocked = carrierLockedFromText(line.carrierLock);
+  const cond = canonicalCondition(line.condition);
+  const quoteAt = (storage: string | undefined, condition = cond, unlocked = false) => quoteDevice({
     modelId: id,
     modelLabel: SKU_LABELS[id],
-    storage: typeof line.storage === "string" ? line.storage : undefined,
-    condition: canonicalCondition(line.condition),
-    carrier: canonicalCarrier(line.carrier),
-    carrierLocked,
+    storage,
+    condition,
+    carrier: unlocked ? "unlocked" : canonicalCarrier(line.carrier),
+    carrierLocked: unlocked ? false : carrierLocked,
     // Phones + cellular iPads earn the +$25 bonus; granting it to every
     // PRICE_TABLE device only LOOSENS the ceiling by $25 — acceptable
     // inside the headroom, and it can never false-flag an honest quote.
     isPhone: true,
     brokenGlass: glass,
   }, overrides).catch(() => null);
-  if (!r || r.offer == null) return null;
-  // iPads: the funnel's cellular connectivity multiplier (×1.15) is a
-  // funnel-only modifier quoteDevice omits — wider headroom so an honest
-  // cellular iPad never gets fraud-flagged.
-  const headroomPct = id.startsWith("ipad") ? 0.22 : 0.10;
-  return r.offer + Math.max(60, Math.round(r.offer * headroomPct));
+  const storageTxt = typeof line.storage === "string" && line.storage.trim() ? line.storage : undefined;
+  const r = await quoteAt(storageTxt);
+  let offer = r?.offer ?? null;
+  // Storage that matched no cell meant NO ceiling — a hand-posted lead could
+  // drop the field ("iPhone 17 Pro Max", no storage), garble it ("2 TB
+  // (unlocked)") or name a tier the row lacks, and post any price. Fall back
+  // to the model's best cell for this condition/carrier, a ceiling no honest
+  // config of the model can exceed, when:
+  //  - the text is there but isn't a tier (also /go's edition chips,
+  //    "Standard" / "512 GB (white)"), or a tier no phone funnel offers
+  //    ("4 TB"), or
+  //  - it's missing on a phone / iPad — every funnel asks their storage.
+  //    Consoles, watches etc. are priced without it (xsx has no base row:
+  //    the homepage prices it off base × extras, which cells can't bound).
+  //    The homepage cart's "N/A" for those devices counts as missing, not
+  //    garbled — a cell ceiling clamped honest DJI Fly More / Garmin
+  //    edition cart lines and flagged the whole cart.
+  // A clean tier a non-phone row lacks still gets no ceiling.
+  const phoneLike = /^(ip|gs|gz|px|gnote)/.test(id);
+  const given = !!storageTxt && !/^(n\/?a|none|-+)$/i.test(storageTxt.trim());
+  const tier = normalizeStorage(storageTxt) ?? "";
+  const funnelTier = phoneLike ? PHONE_TIERS.has(tier) : /^\d+(tb)?$/.test(tier);
+  const unparsed = given ? !funnelTier : phoneLike;
+  // A phone funnel tier with no cell ("128 GB" on the 256-up iPhone Duo row
+  // — the homepage offers all six tiers to models missing from its
+  // STORAGE_MAP) is priced off base × multipliers with NO flat carrier gap,
+  // capped only by the IWM rule. So bound it by the best UNLOCKED cell for
+  // the condition, or that rule ceiling when higher (a tier above the row's
+  // top: Fold 8 2 TB); broken there is a manual quote whose number still
+  // posts — bound it by the best sealed cell.
+  const offRow = given && funnelTier && phoneLike;
+  if (r && r.offer == null && r.source !== "price-table" && (unparsed || offRow)) {
+    const keys = new Set([...Object.keys(PRICE_TABLE[id] ?? {}), ...Object.keys(overrides.priceTable?.[id] ?? {})]);
+    for (const k of keys) {
+      const alt = offRow ? await quoteAt(k, cond === "broken" ? "sealed" : cond, true) : await quoteAt(k);
+      if (alt?.offer != null && (offer == null || alt.offer > offer)) offer = alt.offer;
+    }
+    const rule = offRow && cond !== "broken" ? iwmRuleCeiling({ modelId: id, storage: tier, condition: cond }) : null;
+    if (rule != null && (offer == null || rule > offer)) offer = rule;
+  }
+  if (offer == null) return null;
+  // iPads: the funnel stacks funnel-only multipliers quoteDevice omits —
+  // cellular ×1.15 and Apple Pencil Pro ×1.07 (app/page.tsx CONNECTIVITY /
+  // BRAND_EXTRAS.ipad), asked even on sealed units. 22% missed the top
+  // sealed 13" M5 2TB cellular + Pencil Pro by $6 and fraud-flagged it; the
+  // headroom now covers the whole stack (+1 absorbs the funnel's rounding).
+  const headroom = id.startsWith("ipad")
+    ? Math.round(offer * (IPAD_FUNNEL_STACK - 1)) + 1
+    : Math.round(offer * 0.10);
+  return offer + Math.max(60, headroom);
+}
+
+// Top of the iPad funnel's multiplier stack: cellular × Apple Pencil Pro.
+const IPAD_FUNNEL_STACK = 1.15 * 1.07;
+// The storage tiers the phone / iPad funnels offer (homepage ALL_STORAGES,
+// /go rows) — the only keys phone and iPad rows carry besides a few
+// legacy "base" rows.
+const PHONE_TIERS = new Set(["64", "128", "256", "512", "1tb", "2tb"]);
+// The homepage's MacBook accessory bonus (accessoryBonusAmount).
+const MAC_ACCESSORY_BONUS = 30;
+
+function macBookLineCap(id: string, line: LeadLineSpec, overrides: PriceOverrides): number | null {
+  const o = macOptions(id);
+  if (!o || !o.processor.length || !o.memory.length || !o.storage.length) return null;
+  const top = (list: MacSpecOption[]) => list.reduce((a, b) => ((b.adj ?? 0) > (a.adj ?? 0) ? b : a), list[0]);
+  // Storage the customer chose, by id or label ("2 TB" → "2tb"); anything
+  // unrecognized takes the top tier (a looser ceiling, never a false flag).
+  const want = normalizeStorage(typeof line.storage === "string" ? line.storage : undefined);
+  const storage = (want && o.storage.find((s) => s.id === want || normalizeStorage(s.label) === want)) || top(o.storage);
+  const at = (condition: string) => quoteMacBook({
+    modelId: id,
+    processor: top(o.processor).id,
+    memory: top(o.memory).id,
+    storage: storage.id,
+    condition,
+    nano: true,
+  }, overrides);
+  const cond = canonicalCondition(line.condition);
+  let r = at(cond);
+  // Unpriced broken goes to review, but the homepage still submits its
+  // number — computed at the MINT adjustment (MCOND has no broken key). So
+  // bound it by the sealed ceiling rather than leave the line uncapped.
+  if (!r.ok && cond === "broken") r = at("sealed");
+  if (!r.ok) return null;
+  return r.offer + MAC_ACCESSORY_BONUS + Math.max(60, Math.round(r.offer * 0.10));
 }

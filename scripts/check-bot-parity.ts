@@ -17,11 +17,28 @@
 // Skipped combos (intentional divergence): rows without a sealed cell
 // (bot's mint+premium fallback serves watches/tablets the funnel prices
 // via multipliers).
+//
+// Two more gates ride along (both fail the build):
+//  - LABELS: every PRICE_TABLE model a funnel can submit (app/page.tsx model
+//    lists, app/go/board.ts) has an app/data/sku-labels.json entry and its
+//    funnel label resolves back to that id in the server's anti-tamper cap
+//    (server-quote-cap.ts). The 2026-09-14 lineup shipped without labels,
+//    which silently removed the ceiling on the priciest phones on the site.
+//    Fix: `python scripts/extract-sku-labels.py`.
+//  - CHAT: the site chat's get_quote text → row mapping (sell-tools.ts)
+//    gives every priced phone row a display name that maps back to itself,
+//    and never maps a funnel label to a DIFFERENT device (Galaxy S25 Edge
+//    once quoted as an S25, Note 20 as an S20, a Duo laptop as the iPhone
+//    Duo). No match (a team quote) is allowed for a funnel label.
 
 import { readFileSync } from "fs";
 import { PRICE_TABLE, MIN_OFFER, carrierGapForCondition, CARRIER_DEDUCTIONS, MANUAL_REVIEW_DEVICES } from "../app/data/prices";
 import { marginCapFor, applyGalaxyDrop, iwmRuleCeiling } from "../app/lib/resell-estimates";
 import { quoteDevice, type PriceOverrides } from "../app/lib/quote";
+import { resolveModelIdFromLabel } from "../app/lib/server-quote-cap";
+import { nameToSlug, slugToDisplay } from "../app/lib/sell-tools";
+import { BOARD_MODELS } from "../app/go/board";
+import skuLabelsJson from "../app/data/sku-labels.json";
 
 const EMPTY: PriceOverrides = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
 
@@ -31,6 +48,58 @@ const pageSrc = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8"
 const LABELS: Record<string, string> = {};
 for (const m of pageSrc.matchAll(/id:\s*"([^"]+)",\s*label:\s*"([^"]+)"/g)) {
   if (!(m[1] in LABELS)) LABELS[m[1]] = m[2];
+}
+
+// Every model label a funnel can submit: page.tsx `{ id, label }` model
+// entries (escaped quotes kept — MacBook/iPad labels carry `\"`) plus the
+// /go board. Only PRICE_TABLE ids are gated.
+const SKU_LABELS = skuLabelsJson as Record<string, string>;
+const FUNNEL: { id: string; label: string; src: string }[] = [];
+for (const m of pageSrc.matchAll(/\{\s*id:\s*"([^"]+)",\s*label:\s*"((?:[^"\\]|\\.)*)"/g)) {
+  FUNNEL.push({ id: m[1], label: m[2].replace(/\\(.)/g, "$1"), src: "app/page.tsx" });
+}
+for (const m of BOARD_MODELS) FUNNEL.push({ id: m.id, label: m.label, src: "app/go/board.ts" });
+
+function labelGate(): string[] {
+  const out: string[] = [];
+  for (const { id, label, src } of FUNNEL) {
+    if (!PRICE_TABLE[id]) continue;
+    if (!SKU_LABELS[id]) out.push(`${id}: no app/data/sku-labels.json entry (${src} "${label}")`);
+    const got = resolveModelIdFromLabel(label);
+    if (got !== id) out.push(`${src} "${label}" (${id}) resolves to ${got ?? "nothing"}`);
+  }
+  const owner = new Map<string, string>();
+  for (const [id, label] of Object.entries(SKU_LABELS)) {
+    const k = label.toLowerCase().replace(/\s+/g, " ").trim();
+    if (owner.has(k)) out.push(`sku-labels.json: "${label}" is on both ${owner.get(k)} and ${id}`);
+    owner.set(k, id);
+  }
+  return [...new Set(out)];
+}
+
+function chatGate(): string[] {
+  const out: string[] = [];
+  for (const id of Object.keys(PRICE_TABLE)) {
+    if (!isPhone(id)) continue;
+    const display = slugToDisplay(id);
+    // A raw-id "name" drops the row from the chat's INSTANT_CATALOG (the Note
+    // rows, S25 Edge and Pixel Fold did). Manual-review rows (gztrifold) are
+    // team quotes anyway.
+    if (display === id) {
+      if (!MANUAL_REVIEW_DEVICES.has(id)) out.push(`${id}: no chat display name (app/lib/sell-tools.ts slugToDisplay)`);
+      continue;
+    }
+    const got = nameToSlug(display)?.slug ?? null;
+    if (got !== id) out.push(`"${display}" (${id}) maps to ${got ?? "nothing"}`);
+  }
+  // Every funnel label, not just phones: "Surface Duo 2" and "ROG Zephyrus
+  // Duo 16" once priced off the iPhone Duo row. A series picker named after
+  // its base model ({ id: "15", label: "iPhone 15" }) is that row's name.
+  for (const { id, label, src } of FUNNEL) {
+    const got = nameToSlug(label)?.slug ?? null;
+    if (got != null && got !== id && label !== slugToDisplay(got)) out.push(`${src} "${label}" (${id}) maps to ${got}`);
+  }
+  return [...new Set(out)];
 }
 
 const CONDS = ["sealed", "mint", "good", "fair", "broken"] as const;
@@ -104,7 +173,15 @@ async function main() {
   for (const m of mismatches.slice(0, 20)) console.log("  MISMATCH " + m);
   if (mismatches.length > 20) console.log(`  …and ${mismatches.length - 20} more`);
   console.log(`\nbot/funnel parity: ${mismatches.length === 0 ? "CLEAN" : mismatches.length + " MISMATCHES"} (${checked} specs compared)`);
-  process.exit(mismatches.length > 0 ? 1 : 0);
+
+  const labelFails = labelGate();
+  for (const f of labelFails) console.log("  LABEL " + f);
+  console.log(`funnel label → server cap id: ${labelFails.length === 0 ? "CLEAN" : labelFails.length + " FAILURES"} (${FUNNEL.filter((f) => PRICE_TABLE[f.id]).length} labels)`);
+  const chatFails = chatGate();
+  for (const f of chatFails) console.log("  CHAT " + f);
+  console.log(`chat get_quote name → row: ${chatFails.length === 0 ? "CLEAN" : chatFails.length + " FAILURES"}`);
+
+  process.exit(mismatches.length + labelFails.length + chatFails.length > 0 ? 1 : 0);
 }
 
 main();

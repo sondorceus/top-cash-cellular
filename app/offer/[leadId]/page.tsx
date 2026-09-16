@@ -8,25 +8,82 @@ import { imageForModel } from "../../lib/device-images";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { PRICE_TABLE } from "../../data/prices";
 import skuLabelsJson from "../../data/sku-labels.json";
+import { quoteDeviceSync, EMPTY_OVERRIDES, normalizeStorage, canonicalCondition, canonicalCarrier } from "../../lib/quote-engine";
 
-// Reverse model-label → SKU map so the offer-page re-quote can hit the
-// absolute PRICE_TABLE (the funnel's source of truth) for the edited
-// condition/storage instead of only scaling by tier ratios. Built once.
+// Reverse model-label → SKU map so the offer-page re-quote can run the
+// pricing engine for the edited condition/storage instead of only scaling
+// by tier ratios. Built once.
+const SKU_LABELS = skuLabelsJson as Record<string, string>;
 const SKU_BY_LABEL: Record<string, string> = Object.fromEntries(
-  Object.entries(skuLabelsJson as Record<string, string>).map(([sku, label]) => [label.toLowerCase().trim(), sku]),
+  Object.entries(SKU_LABELS).map(([sku, label]) => [label.toLowerCase().trim(), sku]),
 );
-// Absolute per-unit price for an edited config, or null when the table
-// can't answer (unknown SKU, custom/inquiry device, or a $0/broken cell)
-// — caller then falls back to the ratio re-quote. The >0 guard keeps a
-// broken/manual edit on the existing path (never surfaces a bare $0).
-function tableRequote(modelLabel: string, storageLabel: string, conditionLabel: string): number | null {
+// Per-unit re-quote for an edited config, or null when the engine can't
+// auto-quote the old or new config (unknown SKU, MacBook, custom/inquiry
+// device, manual-review or sub-minimum config) — caller then falls back to
+// the ratio re-quote.
+//
+// Runs the server's own engine (quote-engine.ts: carrier gap, +$25 bonus,
+// margin cap, Galaxy drop, IWM ceiling) at the bundled prices the homepage
+// shows, then moves the line's CURRENT offer by the engine's step between
+// the old and new configs — so what the engine doesn't see (live admin
+// overrides, the accessory / promo bonuses, an iPad's cellular or Pencil
+// multiplier) carries over: a $ step for phones (flat extras), a ratio for
+// everything else (multipliers). Reverting returns the original exactly.
+// The old bare-cell lookup skipped the carrier gap and caps: an AT&T
+// iPhone 13 Excellent $128 → Good previewed the unlocked $145 and the
+// server refused the save ("An edit can only lower your estimate").
+function tableRequote(
+  modelLabel: string,
+  lead: { carrier?: string; carrierLocked?: boolean },
+  from: { storage: string; condition: string; perUnit: number },
+  toStorage: string,
+  toCondition: string,
+): number | null {
   const sku = SKU_BY_LABEL[(modelLabel || "").toLowerCase().trim()];
-  if (!sku) return null;
-  const storeId = matchTier(REQUOTE_STORAGE, storageLabel)?.id ?? "base";
-  const condId = matchTier(REQUOTE_CONDITIONS, conditionLabel)?.id;
-  if (!condId) return null;
-  const v = PRICE_TABLE[sku]?.[storeId]?.[condId] ?? PRICE_TABLE[sku]?.["base"]?.[condId];
-  return typeof v === "number" && v > 0 ? v : null;
+  const row = sku ? PRICE_TABLE[sku] : undefined;
+  if (!sku || !row) return null;
+  const phone = /^(ip(?!ad)|gs|gz|px|gnote)/.test(sku);
+  const carrier = phone ? canonicalCarrier(lead.carrier) : undefined;
+  const offer = (storageLabel: string, conditionLabel: string, locked: boolean): number | null => {
+    if (!conditionLabel?.trim()) return null;
+    // "256 GB" / /go's "256GB"; rows keyed by edition fall back to base.
+    const tier = matchTier(REQUOTE_STORAGE, storageLabel)?.id ?? normalizeStorage(storageLabel);
+    const storage = tier && row[tier] ? tier : row.base ? "base" : null;
+    if (!storage) return null;
+    const r = quoteDeviceSync({
+      modelId: sku,
+      modelLabel: SKU_LABELS[sku],
+      storage,
+      condition: canonicalCondition(conditionLabel),
+      carrier,
+      carrierLocked: locked,
+      isPhone: phone,
+    }, EMPTY_OVERRIDES);
+    return !r.manualReview && r.offer != null && r.offer > 0 ? r.offer : null;
+  };
+  // Verizon's price hangs on the lock answer, and a 17 / 18 Pro's locked gap
+  // moves with condition — stepping a LOCKED line by the unlocked step saved
+  // an honest 17 Pro Max 2 TB Sealed $1,040 → Excellent edit at $542 (engine:
+  // $927). Use the lead's answer; when it doesn't say (a cart line), the
+  // state whose old-config price sits strictly nearer the line's offer —
+  // unlocked on a tie (a sealed 17 Pro 256 GB prices the same either way)
+  // or with no offer to compare. Only Verizon reads the flag.
+  let locked = lead.carrierLocked ?? false;
+  if (carrier === "verizon" && lead.carrierLocked == null && from.perUnit > 0) {
+    const wl = offer(from.storage, from.condition, true);
+    const wu = offer(from.storage, from.condition, false);
+    locked = wl != null && (wu == null || Math.abs(wl - from.perUnit) < Math.abs(wu - from.perUnit));
+  }
+  const to = offer(toStorage, toCondition, locked);
+  if (to == null) return null;
+  // No current offer to anchor on (a manual-review line) — the engine's.
+  if (!(from.perUnit > 0)) return to;
+  const was = offer(from.storage, from.condition, locked);
+  if (was == null) return null;
+  // Unrounded: the caller rounds after × quantity, so a $255 ×2 line
+  // reverts to $255, not 2 × $128.
+  const v = phone ? from.perUnit + (to - was) : from.perUnit * (to / was);
+  return v > 0 ? v : null;
 }
 
 // /offer/[leadId] — the customer's offer-management page. Shown right
@@ -57,6 +114,8 @@ type Offer = {
   storage?: string;
   condition?: string;
   carrier?: string;
+  // Verizon lock answer (undefined when the lead doesn't say).
+  carrierLocked?: boolean;
   quantity?: number;
   quote?: string;
   payout?: string;
@@ -766,6 +825,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         )}
 
         {/* Offer items — editable before shipping. Editing re-quotes by
+            the pricing engine's step (tableRequote), else by the ratio
             delta (app/lib/requote); the figure is an estimate, the final
             price is confirmed at inspection. */}
         <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.015] border border-white/10 rounded-2xl p-5 mb-5">
@@ -778,9 +838,17 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               const isEditing = editIdx === i;
               const liveQuote = isEditing
                 ? (() => {
-                    // Prefer the absolute table (matches the funnel exactly);
-                    // fall back to ratio scaling when the table can't answer.
-                    const perUnit = tableRequote(it.model, draftStorage, draftCondition);
+                    // Prefer the engine step from this line's own offer (see
+                    // tableRequote); fall back to ratio scaling when the
+                    // engine can't answer. Carrier = the lead's, as the
+                    // server's line cap reads it, with its Verizon lock.
+                    const perUnit = tableRequote(
+                      it.model,
+                      { carrier: offer?.carrier, carrierLocked: offer?.carrierLocked },
+                      { storage: it.storage, condition: it.condition, perUnit: it.quote / (it.quantity > 0 ? it.quantity : 1) },
+                      draftStorage,
+                      draftCondition,
+                    );
                     if (perUnit != null) return Math.round(perUnit * draftQuantity);
                     return Math.round(requote({
                       originalQuote: it.quote,

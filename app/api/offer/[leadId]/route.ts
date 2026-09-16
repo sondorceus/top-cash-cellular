@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { referralCodeForEmail, referralLinkForCode } from "../../../lib/referral";
 import { field, DEVICE_LINE_RE, OFFER_STATUSES } from "../../../lib/lead-devices";
+import { canonicalCarrier, carrierLockedFromText } from "../../../lib/quote-engine";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -273,6 +274,16 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     storage: field(body, "Storage"),
     condition: field(body, "Condition"),
     carrier: field(body, "Carrier"),
+    // Verizon lock state for the edit preview — Verizon is the one carrier
+    // whose price hangs on it. Homepage leads carry a "Carrier lock:" line;
+    // /go's carrier chip IS the lock (its "Verizon" = locked to Verizon) and
+    // its leads (the ones with Lock-Until:) carry none. Undefined = the lead
+    // doesn't say (multi-device carts).
+    carrierLocked: (() => {
+      const lock = field(body, "Carrier lock");
+      if (lock) return carrierLockedFromText(lock);
+      return field(body, "Lock-Until") ? canonicalCarrier(field(body, "Carrier")) !== "unlocked" : undefined;
+    })(),
     // Single-device unit count (the "Quantity:" line). Multi-device
     // leads carry per-device counts instead, so this stays undefined
     // for them.

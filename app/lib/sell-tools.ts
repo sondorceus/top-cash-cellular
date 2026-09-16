@@ -29,10 +29,15 @@ export function slugToDisplay(slug: string): string {
     const v: Record<string, string> = { pm: " Pro Max", p: " Pro", plus: " Plus", mini: " mini", air: " Air" };
     return m[2] === "e" ? `iPhone ${m[1]}e` : `iPhone ${m[1]}${v[m[2] || ""] || ""}`;
   }
-  if ((m = slug.match(/^gs(\d+)(u|p|fe)?$/))) {
-    const v: Record<string, string> = { u: " Ultra", p: "+", fe: " FE" };
+  if ((m = slug.match(/^gs(\d+)(u|p|fe|edge)?$/))) {
+    const v: Record<string, string> = { u: " Ultra", p: "+", fe: " FE", edge: " Edge" };
     return `Galaxy S${m[1]}${v[m[2] || ""] || ""}`;
   }
+  if ((m = slug.match(/^gnote(\d+)(u|p5g|p)?$/))) {
+    const v: Record<string, string> = { u: " Ultra", p5g: "+ 5G", p: "+" };
+    return `Galaxy Note ${m[1]}${v[m[2] || ""] || ""}`;
+  }
+  if (slug === "pxfold") return "Pixel Fold";
   if ((m = slug.match(/^gzflip(\d+)(fe)?$/))) return `Galaxy Z Flip ${m[1]}${m[2] ? " FE" : ""}`;
   if ((m = slug.match(/^gzfold(\d+)(u)?$/))) return `Galaxy Z Fold ${m[1]}${m[2] ? " Ultra" : ""}`;
   if ((m = slug.match(/^px(\d+)(pxl|pfold|p|a)?$/))) {
@@ -60,8 +65,10 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
   const fold = /\bfold\b/.test(n);
   const aser = /\d+\s*a\b|\b\d+a\b/.test(n);
 
-  // iPhone Duo (2026 foldable) has no number in its name.
-  if (/i\s*phone\s*duo|\bduo\b/.test(n) && have("ipduo")) return { slug: "ipduo", label: "iPhone Duo" };
+  // iPhone Duo (2026 foldable) has no number in its name. The iPhone word is
+  // required (a bare "duo" priced a Microsoft "Surface Duo 2" off this row)
+  // and a numbered iPhone never is one.
+  if (/i\s*phone/.test(n) && !/i\s*phone\s*\d/.test(n) && /\bduo\b/.test(n) && have("ipduo")) return { slug: "ipduo", label: "iPhone Duo" };
   // iPhone
   let m = n.match(/i\s*phone\s*(\d{1,2})/) || (/iphone/.test(n) ? n.match(/\b(\d{1,2})\b/) : null);
   if (m) {
@@ -77,6 +84,25 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
     g2 = n.match(/z\s*fold\s*(\d+)/);
     if (g2 && ultra && have("gzfold" + g2[1] + "u")) return { slug: "gzfold" + g2[1] + "u", label: slugToDisplay("gzfold" + g2[1] + "u") };
     if (g2 && have("gzfold" + g2[1])) return { slug: "gzfold" + g2[1], label: slugToDisplay("gzfold" + g2[1]) };
+    // Galaxy Note has its own rows (gnote9 / 10 / 10+ / 10+ 5G / 20). It
+    // must never reach the S matches below: "Note 20 Ultra" fell through to
+    // the bare-number fallback and quoted an S20 Ultra. A Note we don't
+    // price (Note 20 Ultra, Note 8) is a team quote.
+    if (/\bnote\b/.test(n)) {
+      const g = n.match(/note\s*(\d+)/);
+      const id = g ? "gnote" + g[1] + (ultra ? "u" : plus ? (/\b5g\b/.test(n) ? "p5g" : "p") : "") : "";
+      return id && have(id) ? { slug: id, label: slugToDisplay(id) } : null;
+    }
+    // Other Galaxy lines share digits with S models ("Galaxy A 25" → S25,
+    // "Tab S10") — a team quote, never an S row.
+    if (/\b(?:tab|watch|buds|book)\b|\b[am]\s*\d{1,2}\b/.test(n)) return null;
+    // S Edge has its own row (gs25edge); the S match ignored "edge" and
+    // quoted a base S25, $65 under. An Edge we don't price is a team quote.
+    if (/\bedge\b/.test(n)) {
+      const g = n.match(/s\s*(\d{2})/) || n.match(/\b(2\d)\b/);
+      const id = g ? "gs" + g[1] + "edge" : "";
+      return id && have(id) ? { slug: id, label: slugToDisplay(id) } : null;
+    }
     g2 = n.match(/s\s*(\d{2})/);
     if (g2) {
       const v = ultra ? "u" : plus ? "p" : fe ? "fe" : "";
@@ -98,6 +124,11 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
     const g = m[1];
     const v = pro && xl ? "pxl" : pro && fold ? "pfold" : pro ? "p" : aser ? "a" : "";
     if (have("px" + g + v)) return { slug: "px" + g + v, label: slugToDisplay("px" + g + v) };
+  }
+  // The original Pixel Fold has no number. "Pixel Fold 2" isn't a real name
+  // (sellers mean the 9 Pro Fold) — team quote, not the cheaper row.
+  if (/pixel\s*fold\b/.test(n) && !/\bfold\s*\d{1,2}\b/.test(n) && have("pxfold")) {
+    return { slug: "pxfold", label: slugToDisplay("pxfold") };
   }
   return null;
 }
