@@ -73,8 +73,14 @@ export async function POST(req: NextRequest) {
     }
 
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_") || "photo.jpg";
-    const blob = await put(`devices/${Date.now()}-${safeName}`, file, {
+    // Shop listing photos must outlive the 24h purge that /api/cleanup-photos
+    // runs over `devices/` (customer damage shots) — under that prefix every
+    // listing lost its photos within a day. Only a valid admin token can pick
+    // the shop prefix, so a customer upload can never opt out of the purge.
+    const isShop = isAdmin && form.get("purpose") === "shop";
+    const blob = await put(`${isShop ? "shop-photos" : "devices"}/${Date.now()}-${safeName}`, file, {
       access: "public",
+      addRandomSuffix: isShop,
     });
     return NextResponse.json({ url: blob.url, size: file.size, type: file.type });
   } catch (err) {

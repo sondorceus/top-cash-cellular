@@ -18,8 +18,10 @@ export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
 
+// strict: a store outage throws to the error page — never notFound() (a
+// 404 that search engines drop) for a unit that exists.
 async function getListing(id: string) {
-  const listings = await readPublicListings();
+  const listings = await readPublicListings({ strict: true });
   return listings.find((l) => l.id === id) ?? null;
 }
 
@@ -61,7 +63,7 @@ export default async function ListingPage({ params }: Props) {
   // half-built is reachable or indexable (see lib/shop-flag).
   if (!SHOP_ENABLED) notFound();
   const { id } = await params;
-  const all = await readPublicListings();
+  const all = await readPublicListings({ strict: true });
   const l = all.find((x) => x.id === id) ?? null;
   if (!l) notFound();
 
@@ -111,7 +113,7 @@ export default async function ListingPage({ params }: Props) {
         </nav>
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          <Gallery images={images} alt={name} sold={l.status === "sold"} />
+          <Gallery images={images} alt={name} sold={l.status === "sold"} fallback={l.stockImage} />
 
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-3">

@@ -42,24 +42,30 @@ export default function StockAlert({ context }: { context: string }) {
   }
 
   return (
-    <form onSubmit={submit} className="mt-5 flex gap-2 max-w-sm mx-auto">
-      <input
-        type="email"
-        required
-        placeholder="you@email.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        maxLength={120}
-        className="flex-1 min-w-0 bg-white/5 border border-white/15 rounded-full px-4 py-2.5 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#00c853]/60"
-      />
-      <button
-        type="submit"
-        disabled={state === "busy"}
-        className="bg-white/10 border border-white/15 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:border-[#00c853]/60 hover:text-[#00c853] transition disabled:opacity-60 whitespace-nowrap"
-      >
-        {state === "busy" ? "…" : "Notify me"}
-      </button>
-      {state === "error" && <span className="sr-only">Signup failed</span>}
+    <form onSubmit={submit} className="mt-5 max-w-sm mx-auto">
+      <div className="flex gap-2">
+        <input
+          type="email"
+          required
+          placeholder="you@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          maxLength={120}
+          className="flex-1 min-w-0 bg-white/5 border border-white/15 rounded-full px-4 py-2.5 text-sm text-white placeholder-[#666] focus:outline-none focus:border-[#00c853]/60"
+        />
+        <button
+          type="submit"
+          disabled={state === "busy"}
+          className="bg-white/10 border border-white/15 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:border-[#00c853]/60 hover:text-[#00c853] transition disabled:opacity-60 whitespace-nowrap"
+        >
+          {state === "busy" ? "…" : "Notify me"}
+        </button>
+      </div>
+      {/* Visible AND announced — the old sr-only span left sighted users
+          watching the button reset with no clue the signup failed. */}
+      <p role="status" aria-live="polite" className={`text-xs text-[#ff6b6b] ${state === "error" ? "mt-2" : ""}`}>
+        {state === "error" ? "Couldn't sign you up — check the address and try again." : ""}
+      </p>
     </form>
   );
 }

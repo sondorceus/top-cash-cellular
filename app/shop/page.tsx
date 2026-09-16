@@ -50,10 +50,13 @@ export default async function ShopPage() {
   if (!SHOP_ENABLED) notFound();
   const listings = await readPublicListings();
   listings.sort((a, b) => (a.postedAt < b.postedAt ? 1 : -1));
-  const activeListings = listings.filter((l) => l.status !== "sold");
+  // Only `listed` units are buyable. On-hold units still show in the grid
+  // with their badge, but they must not make a tile say "1 available" or
+  // put an "Available now" heading over a unit nobody can claim.
+  const availableListings = listings.filter((l) => l.status === "listed");
 
   const tileCounts = new Map(
-    SHOP_CATEGORIES.map((c) => [c.slug, activeListings.filter((l) => listingInCategory(l.category, c)).length]),
+    SHOP_CATEGORIES.map((c) => [c.slug, availableListings.filter((l) => listingInCategory(l.category, c)).length]),
   );
 
   const comingSoon = (
@@ -157,7 +160,7 @@ export default async function ShopPage() {
         </div>
 
         {/* grid */}
-        {activeListings.length > 0 && (
+        {availableListings.length > 0 && (
           <h2 className="text-2xl font-bold mb-5">Available now</h2>
         )}
         <ShopBrowser listings={listings} emptyState={comingSoon} />

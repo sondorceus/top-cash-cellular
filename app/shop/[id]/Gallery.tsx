@@ -1,12 +1,23 @@
 "use client";
 
 import { useRef, useState } from "react";
+import ShopImg from "../ShopImg";
 
 // Swipeable photo carousel for one listing. Native scroll-snap does the
 // heavy lifting: swipe on touch, trackpad-scroll on desktop, arrows and
-// thumbnails drive scrollTo. Plain <img>: photos are remote Blob URLs and
-// next/image has no remotePatterns configured.
-export default function Gallery({ images, alt, sold }: { images: string[]; alt: string; sold: boolean }) {
+// thumbnails drive scrollTo. ShopImg: photos are remote Blob URLs (no
+// next/image remotePatterns), and a dead one falls back to `fallback`.
+export default function Gallery({
+  images,
+  alt,
+  sold,
+  fallback,
+}: {
+  images: string[];
+  alt: string;
+  sold: boolean;
+  fallback?: string;
+}) {
   const scroller = useRef<HTMLDivElement>(null);
   const [idx, setIdx] = useState(0);
 
@@ -44,9 +55,9 @@ export default function Gallery({ images, alt, sold }: { images: string[]; alt: 
         >
           {images.map((src, i) => (
             <div key={src} className="h-full w-full flex-shrink-0 snap-center flex items-center justify-center p-8">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <ShopImg
                 src={src}
+                fallback={fallback}
                 alt={many ? `${alt} — photo ${i + 1} of ${images.length}` : alt}
                 loading={i === 0 ? "eager" : "lazy"}
                 draggable={false}
@@ -120,8 +131,7 @@ export default function Gallery({ images, alt, sold }: { images: string[]; alt: 
                 i === idx ? "border-[#00c853]" : "border-white/10 hover:border-white/30"
               }`}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="w-full h-full object-contain" />
+              <ShopImg src={src} fallback={fallback} alt="" className="w-full h-full object-contain" />
             </button>
           ))}
         </div>

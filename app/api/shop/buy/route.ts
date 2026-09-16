@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clientIp, rateLimit, rateLimitResponse } from "../../../lib/rate-limit";
-import { readListingsDoc, writeListingsDoc } from "../../../lib/shop-listings";
+import { mutateListings, ListingsUnavailableError, type ShopListing } from "../../../lib/shop-listings";
 import { validateEmail } from "../../../lib/email-validate";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { mailShell, esc } from "../../../lib/email-shell";
@@ -34,6 +34,41 @@ const INQUIRY_WINDOW_MS = 10 * 60 * 1000;
 // MC body, same defense as the sales route's clean().
 function clean(v: unknown, maxLen = 200): string {
   return String(v ?? "").replace(/[\[\]]/g, "").replace(/[\r\n]+/g, " ").trim().slice(0, maxLen);
+}
+
+type ClaimFailure = "gone" | "sold" | "on_hold" | "unavailable";
+type Claim = { kind: "held"; listing: ShopListing; holdAt: string } | { kind: ClaimFailure };
+
+const CLAIM_FAILED: Record<ClaimFailure, [number, string]> = {
+  gone: [404, "That listing is gone."],
+  sold: [409, "Sorry — this one just sold."],
+  on_hold: [409, "Someone beat you to it — this device is on hold. If their deal falls through it comes right back."],
+  // A store we can't read is NOT "that listing is gone" — nothing was
+  // written, so the honest answer is try again.
+  unavailable: [503, "We couldn't reach our inventory just now — give it a moment and try again."],
+};
+
+// Claim the unit. Two same-second buyers used to BOTH get 200 and a "nobody
+// else can claim it" email (plain read-modify-write), and their overlapping
+// writes could wipe the store. mutateListings() is a compare-and-swap now:
+// of two buyers who both saw `listed`, exactly one write lands; the other
+// re-reads, sees on_hold, and gets the 409. Postgres claim_unit() takes over
+// when checkout goes live.
+async function claimUnit(listingId: string): Promise<Claim> {
+  const holdAt = new Date().toISOString();
+  try {
+    return await mutateListings<Claim>((ls) => {
+      const l = ls.find((x) => x.id === listingId);
+      if (!l || l.status === "removed") return { write: false, result: { kind: "gone" } };
+      if (l.status !== "listed") return { write: false, result: { kind: l.status } };
+      l.status = "on_hold";
+      l.updatedAt = holdAt;
+      return { write: true, result: { kind: "held", listing: { ...l }, holdAt } };
+    });
+  } catch (e) {
+    if (e instanceof ListingsUnavailableError) return { kind: "unavailable" };
+    throw e;
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -73,29 +108,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Claim the unit. Read-modify-write on the blob is racy in theory, but the
-  // loser of a same-second race is caught by the owner (two inquiry emails,
-  // one phone) — a human mediates every sale in v1, so the race is annoying,
-  // not costly. Postgres claim_unit() takes over when checkout goes live.
-  const doc = await readListingsDoc();
-  const listing = doc.listings.find((l) => l.id === listingId);
-  if (!listing || listing.status === "removed") {
-    return NextResponse.json({ ok: false, error: "That listing is gone." }, { status: 404 });
+  const claim = await claimUnit(listingId);
+  if (claim.kind !== "held") {
+    const [status, error] = CLAIM_FAILED[claim.kind];
+    return NextResponse.json({ ok: false, error }, { status });
   }
-  if (listing.status === "sold") {
-    return NextResponse.json({ ok: false, error: "Sorry — this one just sold." }, { status: 409 });
-  }
-  if (listing.status === "on_hold") {
-    return NextResponse.json(
-      { ok: false, error: "Someone beat you to it — this device is on hold. If their deal falls through it comes right back." },
-      { status: 409 },
-    );
-  }
-
-  const prevStatus = listing.status;
-  listing.status = "on_hold";
-  listing.updatedAt = new Date().toISOString();
-  await writeListingsDoc(doc.listings);
+  const { listing, holdAt } = claim;
 
   const price = (listing.priceCents / 100).toFixed(2);
   const deviceLine = [listing.modelLabel, listing.storage, listing.color, listing.carrier]
@@ -128,6 +146,9 @@ export async function POST(req: NextRequest) {
         tags: ["shop", "inquiry"],
         priority: "urgent",
       }),
+      // Bounded: a hung MC (it restarts on every deploy) must fall through to
+      // the SMS fallback, not hold the unit while the request times out.
+      signal: AbortSignal.timeout(15_000),
     });
     if (r.ok) {
       const d = await r.json().catch(() => ({}));
@@ -151,14 +172,17 @@ export async function POST(req: NextRequest) {
   // sale evaporates in silence. Put the listing back and tell them to call.
   // (/api/slots/[id]/book already does the honest thing and 502s — match it.)
   if (!mcId && !smsSent) {
+    // Undo only OUR hold (updatedAt still the one we wrote) — if the owner
+    // touched it since, it's his call now.
+    const releasedAt = new Date().toISOString();
     try {
-      const back = await readListingsDoc();
-      const l = back.listings.find((x) => x.id === listingId);
-      if (l && l.status === "on_hold") {
-        l.status = prevStatus;
-        l.updatedAt = new Date().toISOString();
-        await writeListingsDoc(back.listings);
-      }
+      await mutateListings((ls) => {
+        const l = ls.find((x) => x.id === listingId);
+        if (!l || l.status !== "on_hold" || l.updatedAt !== holdAt) return { write: false, result: undefined };
+        l.status = "listed";
+        l.updatedAt = releasedAt;
+        return { write: true, result: undefined };
+      });
     } catch {}
     return NextResponse.json(
       {

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ShopListingPublic } from "../lib/shop-listings";
 import { GRADE_LABEL, LISTING_GRADES, type ListingGrade } from "../lib/shop-grades";
+import ShopImg from "./ShopImg";
 
 // Client half of the shop grids: sort + grade filter + the listing cards.
 // Category navigation happens ABOVE this component (tiles + header bar), so
@@ -46,11 +47,10 @@ export function ListingCard({ l }: { l: ShopListingPublic }) {
     >
       <div className="relative aspect-square bg-white/[0.03] flex items-center justify-center p-6">
         {img ? (
-          // Plain <img>: listing photos are remote Blob URLs and next/image
-          // has no remotePatterns configured. Stock images ride along fine.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          // Falls back to the stock image if the listing photo is gone.
+          <ShopImg
             src={img}
+            fallback={l.stockImage}
             alt={l.modelLabel}
             loading="lazy"
             className={`max-h-full max-w-full object-contain transition duration-300 group-hover:scale-[1.04] ${

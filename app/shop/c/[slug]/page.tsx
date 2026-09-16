@@ -46,9 +46,10 @@ export default async function CategoryPage({ params }: Props) {
   all.sort((a, b) => (a.postedAt < b.postedAt ? 1 : -1));
   const listings = all.filter((l) => listingInCategory(l.category, cat));
 
-  // Which other categories have live stock — for the empty state.
+  // Which other categories have live stock — for the empty state. Only
+  // `listed` counts: an on-hold unit isn't "available today".
   const othersWithStock = SHOP_CATEGORIES.filter(
-    (c) => c.slug !== cat.slug && all.some((l) => l.status !== "sold" && listingInCategory(l.category, c)),
+    (c) => c.slug !== cat.slug && all.some((l) => l.status === "listed" && listingInCategory(l.category, c)),
   );
 
   const emptyState = (

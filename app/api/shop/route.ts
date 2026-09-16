@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { readPublicListings } from "../../lib/shop-listings";
+import { readPublicListings, type ShopListingPublic } from "../../lib/shop-listings";
 import { SHOP_ENABLED } from "../../lib/shop-flag";
 
 // Public storefront feed. Serves everything a buyer may see — listed units,
@@ -14,7 +14,13 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   // Storefront hidden (see lib/shop-flag) — no public feed, no reservations.
   if (!SHOP_ENABLED) return NextResponse.json({ error: "not found" }, { status: 404 });
-  const listings = await readPublicListings();
+  let listings: ShopListingPublic[];
+  try {
+    listings = await readPublicListings({ strict: true });
+  } catch {
+    // An outage is not an empty shop — don't tell a feed reader "no stock".
+    return NextResponse.json({ error: "listings unavailable" }, { status: 503 });
+  }
   // Newest first — the shop reads like a feed, and "just posted" is the
   // whole energy of a one-of-one store.
   listings.sort((a, b) => (a.postedAt < b.postedAt ? 1 : -1));

@@ -109,6 +109,10 @@ export default function AdminShopPage() {
   // failed at post time and the listing is live with fewer than intended.
   const [photoEdit, setPhotoEdit] = useState<{ id: string; photos: string[] } | null>(null);
   const editFileRef = useRef<HTMLInputElement>(null);
+  // One PATCH at a time — a double-click used to fire overlapping writes.
+  // The ref is the guard (no stale closure); the state drives the UI.
+  const busyRef = useRef(false);
+  const [busy, setBusy] = useState(false);
 
   const getToken = useCallback((): string | null => {
     let t = token || localStorage.getItem(TOKEN_KEY) || "";
@@ -132,7 +136,13 @@ export default function AdminShopPage() {
         setFlash("Bad token — reload to re-enter.");
         return;
       }
-      const d = await r.json();
+      const d = await r.json().catch(() => ({}));
+      // A store outage (503) is not an empty store — keep what's on screen
+      // instead of showing "Listings (0)".
+      if (!r.ok) {
+        setFlash(d.error || `Couldn't load listings (server said ${r.status}).`);
+        return;
+      }
       setListings(Array.isArray(d.listings) ? d.listings : []);
     } catch {
       setFlash("Couldn't load listings.");
@@ -192,6 +202,8 @@ export default function AdminShopPage() {
       }
       const fd = new FormData();
       fd.append("file", new File([body], name, { type: small ? "image/jpeg" : f.type }));
+      // Keeps listing photos out of the 24h customer-photo purge (see /api/upload).
+      fd.append("purpose", "shop");
       try {
         const r = await fetch("/api/upload", { method: "POST", headers: { "x-admin-token": t }, body: fd });
         const d = await r.json().catch(() => ({}));
@@ -262,19 +274,45 @@ export default function AdminShopPage() {
     }
   };
 
-  const patch = async (id: string, body: Record<string, unknown>) => {
+  // Resolves true only when the server applied the change.
+  const patch = async (id: string, body: Record<string, unknown>): Promise<boolean> => {
     const t = getToken();
-    if (!t) return;
+    if (!t) return false;
+    if (busyRef.current) {
+      setFlash("Still saving the last change — try again in a second.");
+      return false;
+    }
+    busyRef.current = true;
+    setBusy(true);
     try {
       const r = await fetch("/api/admin/shop", {
         method: "PATCH",
         headers: { "Content-Type": "application/json", "x-admin-token": t },
         body: JSON.stringify({ id, ...body }),
       });
-      if (!r.ok) setFlash((await r.json()).error || "Update failed.");
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        setFlash(d.error || "Update failed.");
+      } else if (body.status === "sold" && d.saleLogged === false) {
+        // The route has always reported this; nothing ever showed it.
+        setFlash(
+          `Marked SOLD, but the profit-ledger write wasn't confirmed. Check /admin/profit for "shop listing ${id}" and add the sale there if it's missing.`,
+        );
+      } else if (d.saleVoided === false) {
+        setFlash(
+          `Back in inventory, but its old sale is STILL in the profit ledger. Delete the "shop listing ${id}" sale on /admin/profit so a resale isn't counted twice.`,
+        );
+      } else if (d.saleVoided === true) {
+        setFlash("Back in inventory — its old sale was removed from the profit ledger.");
+      }
       await load();
+      return r.ok;
     } catch {
       setFlash("Update failed — network.");
+      return false;
+    } finally {
+      busyRef.current = false;
+      setBusy(false);
     }
   };
 
@@ -295,7 +333,8 @@ export default function AdminShopPage() {
 
   const savePhotoEdit = async () => {
     if (!photoEdit) return;
-    await patch(photoEdit.id, { photos: photoEdit.photos });
+    // Keep the editor (and the failure message) open if the save didn't land.
+    if (!(await patch(photoEdit.id, { photos: photoEdit.photos }))) return;
     setPhotoEdit(null);
     setFlash("Photos saved — live now.");
   };
@@ -564,7 +603,7 @@ export default function AdminShopPage() {
                 <span className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border uppercase tracking-wide ${pill}`}>
                   {l.status.replace("_", " ")}
                 </span>
-                <div className="flex gap-1.5">
+                <div className={`flex gap-1.5 ${busy ? "opacity-50 pointer-events-none" : ""}`}>
                   {l.status !== "sold" && (
                     <button onClick={() => markSold(l)} className="px-3 py-1.5 rounded-full text-xs font-bold bg-white/5 border border-white/15 hover:border-[#00c853]/60 transition">
                       Sold
@@ -576,7 +615,16 @@ export default function AdminShopPage() {
                     </button>
                   )}
                   {(l.status === "on_hold" || l.status === "sold") && (
-                    <button onClick={() => patch(l.id, { status: "listed" })} className="px-3 py-1.5 rounded-full text-xs font-bold bg-white/5 border border-white/15 hover:border-[#00c853]/60 transition">
+                    <button
+                      onClick={() =>
+                        // Relisting a SOLD unit also pulls its sale out of the
+                        // profit ledger (a 30-day return) — never on a stray click.
+                        (l.status !== "sold" ||
+                          window.confirm(`Relist the sold ${l.modelLabel}? Its sale comes out of the profit ledger (use this for a return).`)) &&
+                        patch(l.id, { status: "listed" })
+                      }
+                      className="px-3 py-1.5 rounded-full text-xs font-bold bg-white/5 border border-white/15 hover:border-[#00c853]/60 transition"
+                    >
                       Relist
                     </button>
                   )}
