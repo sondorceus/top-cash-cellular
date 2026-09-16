@@ -5129,6 +5129,9 @@ export default function Home() {
     // so legacy localStorage payloads still hydrate; migration backfills
     // from the cart-level handoffMethod at load time.
     handoff?: "ship" | "local";
+    // Funnel device type at add-to-cart ("lenovo") — the FedEx label's
+    // package-kind fallback when the model name alone is unknown.
+    deviceType?: string;
   };
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -12088,6 +12091,7 @@ export default function Home() {
                       // reached add-to-cart without picking — but the funnel
                       // gates this earlier, so the fallback is defensive.
                       handoff: handoffMethod ?? "local",
+                      deviceType: deviceType ?? undefined,
                     };
                     setCartItems(prev => {
                       // Dedup includes handoff — same config added as
@@ -13062,6 +13066,7 @@ export default function Home() {
                       // Per-item handoff so the backend can split mixed
                       // carts into ship vs local fulfillment groups.
                       handoff: it.handoff ?? "local",
+                      deviceType: it.deviceType,
                     };
                   });
                   const totalQuote = devicesPayload.reduce((s, d) => s + (d.quote || 0), 0);

@@ -8,7 +8,8 @@
 // Gated on the session's own server-written notes: a LOCKED note (a real
 // lead exists) and a CONTACT note. The lead id comes from the LEAD-ID note
 // the lock route writes, so the [LABEL:] marker lands on the right lead row.
-// Idempotent: a session that already has a label gets it back, no re-mint.
+// Idempotent per lock: a lock that already has a label gets it back, no
+// re-mint; a second device locked in the same thread gets its own label.
 // Labels cost money, so this is rate-limited harder than the chat.
 import { NextRequest, NextResponse } from "next/server";
 import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
@@ -39,20 +40,29 @@ export async function POST(req: NextRequest) {
   if (!validGoSession(sid)) return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "start from your quote" }, { status: 400 });
 
   const state = await readChat(sid, 0);
-  const notes = state.msgs.filter((m) => m.role === "note").map((m) => m.text);
-  const locked = [...notes].reverse().find((t) => t.startsWith("LOCKED:"));
+  const noteMsgs = state.msgs.filter((m) => m.role === "note");
+  const notes = noteMsgs.map((m) => m.text);
+  const lockedNote = [...noteMsgs].reverse().find((m) => m.text.startsWith("LOCKED:"));
   const contactNote = [...notes].reverse().find((t) => t.startsWith("CONTACT: "));
-  if (!locked || !contactNote) {
+  if (!lockedNote || !contactNote) {
     return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "lock in your quote first, then we print the label" }, { status: 400 });
   }
-  // Already issued for this session → hand it back (no second FedEx charge).
-  const prior = [...notes].reverse().find((t) => t.startsWith("LABEL: "));
+  const locked = lockedNote.text;
+  // Everything below belongs to the NEWEST lock. "got another one?" lets a
+  // seller lock a second device in the same thread, and that lead needs its
+  // own label, [LABEL:] marker and delivery record — the session-wide check
+  // handed device #2 device #1's label and returned before any of that was
+  // written. The lock route writes LOCKED and LEAD-ID together, so notes
+  // stamped at/after the newest LOCKED are this lock's.
+  const sinceLock = noteMsgs.filter((m) => m.ts >= lockedNote.ts).map((m) => m.text);
+  const leadId = [...sinceLock].reverse().find((t) => t.startsWith("LEAD-ID: "))?.slice("LEAD-ID: ".length).trim() || null;
+  // Already issued for this lock → hand it back (no second FedEx charge).
+  const prior = [...sinceLock].reverse().find((t) => t.startsWith("LABEL: "));
   if (prior) {
     const m = prior.match(/tracking=(\S+) url=(\S+)/);
     if (m) return NextResponse.json({ ok: true, tracking: m[1], url: m[2], service: "FedEx", existing: true });
   }
   const contact = contactNote.slice("CONTACT: ".length).trim();
-  const leadId = [...notes].reverse().find((t) => t.startsWith("LEAD-ID: "))?.slice("LEAD-ID: ".length).trim() || null;
   // "LOCKED: iPhone 17 Pro 256 good unlocked $560 — 512…" → device + value
   const lockBody = locked.slice("LOCKED:".length).split(" — ")[0].trim();
   const offer = Number(lockBody.match(/\$(\d+)/)?.[1] || 0) || undefined;
@@ -90,7 +100,7 @@ export async function POST(req: NextRequest) {
       });
     } catch { /* best-effort */ }
   }
-  if (!notes.some((t) => t.startsWith("HANDOFF-CHOICE:"))) await appendChatMsg(sid, "note", "HANDOFF-CHOICE: ship (free label) — address entered on /go");
+  if (!sinceLock.some((t) => t.startsWith("HANDOFF-CHOICE:"))) await appendChatMsg(sid, "note", "HANDOFF-CHOICE: ship (free label) — address entered on /go");
 
   const result = await mintGoLabel({ leadId, name, phoneDigits, street, unit: unit || undefined, city, state: stateCode, zip, deviceLabel, declaredValueUsd: offer });
   const link = `https://topcashcellular.com/admin/chats?session=${sid}`;
@@ -101,7 +111,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json(result, { status: result.kind === "ADDRESS_INVALID" ? 400 : 502 });
   }
-  await appendChatMsg(sid, "note", `LABEL: tracking=${result.tracking} url=${result.url} — ${name}, ${city} ${stateCode} ${zip}`);
+  await appendChatMsg(sid, "note", `LABEL: tracking=${result.tracking} url=${result.url}${leadId ? ` lead=${leadId}` : ""} — ${name}, ${city} ${stateCode} ${zip}`);
 
   // Deliver the label to the seller — text (relay) and/or email. The card on
   // the page shows it too, so a failed text is not a dead end.

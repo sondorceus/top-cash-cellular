@@ -995,6 +995,10 @@ export default function AdminPage() {
         body: JSON.stringify({
           leadId: lead.id,
           deviceLabel: lead.model || lead.device,
+          deviceType: lead.device,
+          // Edit address / Regenerate on a labelled lead REPLACE the label
+          // on screen — the route otherwise hands back the existing one.
+          replace: lead.fedexTracking || undefined,
           customerEmail: lead.email,
           customer: {
             customerName: lead.name,
@@ -1015,7 +1019,13 @@ export default function AdminPage() {
         // failed-state UI collapses immediately. Auto-refresh from MC
         // will reconcile within 30s.
         setLeads((cur) => cur.map((l) => l.id === lead.id ? { ...l, fedexTracking: d.tracking, fedexLabelUrl: d.labelUrl, fedexService: d.serviceType, fedexLabelError: undefined } : l));
-        setAddressEditId(null);
+        if (d.reused) {
+          // Nothing was minted — the lead already had a newer label than the
+          // one on screen. Say so instead of closing the form as if it worked.
+          setLabelErrorById((s) => ({ ...s, [lead.id]: `No new label minted — this lead already has label ${d.tracking || "(see above)"}. Use Edit address / Regenerate to replace it.` }));
+        } else {
+          setAddressEditId(null);
+        }
       }
     } catch (e) {
       setLabelErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
@@ -1694,6 +1704,7 @@ export default function AdminPage() {
           phone: lead.phone,
           email: lead.email,
           device: lead.model || lead.device,
+          deviceType: lead.device,
           quote: lead.quote,
           payout: lead.payout,
           rejectionReason: newStatus === "rejected" ? reason : undefined,

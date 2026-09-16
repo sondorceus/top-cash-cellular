@@ -58,10 +58,13 @@ export async function GET(req: NextRequest) {
   if (full) {
     const notes = state.msgs.filter((m) => m.role === "note");
     contactOnFile = notes.some((m) => m.text.startsWith("CONTACT: "));
-    const lm = [...notes].reverse().find((m) => m.text.startsWith("LABEL: "))?.text.match(/tracking=(\S+) url=(https:\/\/\S+)/);
-    if (lm) label = { tracking: lm[1], url: lm[2] };
     const lastQspec = [...notes].reverse().find((m) => m.text.startsWith("QSPEC: "));
     const lastLock = [...notes].reverse().find((m) => m.text.startsWith("LOCKED:"));
+    // Only a label minted for the NEWEST lock (same rule as /api/go/label) —
+    // a second device locked in this thread would otherwise reload to
+    // device #1's label ("here's your label again") instead of its ship form.
+    const lm = [...notes].reverse().find((m) => m.text.startsWith("LABEL: ") && m.ts >= (lastLock?.ts ?? 0))?.text.match(/tracking=(\S+) url=(https:\/\/\S+)/);
+    if (lm) label = { tracking: lm[1], url: lm[2] };
     // 14-day gate mirrors the published price-lock promise — past it the
     // stored number may be stale, so the seller redoes the (30s) flow and
     // gets a fresh engine number instead of a "still good" that isn't.

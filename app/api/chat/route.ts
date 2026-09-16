@@ -305,7 +305,13 @@ export async function POST(req: NextRequest) {
   // for the address" round trip).
   const msgText = detectText(message);
   const hasLock = storeNotes.some((t) => t.startsWith("LOCKED:"));
-  const labelNote = [...storeNotes].reverse().find((t) => t.startsWith("LABEL: "))?.match(/tracking=(\S+) url=(https:\/\/\S+)/);
+  // A label belongs to the lock it was minted for (same rule as
+  // /api/go/label): after "got another one?" locks device #2, device #1's
+  // label must not stand in for it — "ship it" opens the form for #2.
+  const lastLockTs = (live?.msgs || []).reduce((t, m) => (m.role === "note" && m.text.startsWith("LOCKED:") && m.ts > t ? m.ts : t), 0);
+  const labelNote = (live?.msgs || [])
+    .filter((m) => m.role === "note" && m.ts >= lastLockTs && m.text.startsWith("LABEL: "))
+    .pop()?.text.match(/tracking=(\S+) url=(https:\/\/\S+)/);
   const wantsShip = /\b(ship|shipping|mail(ing)?( it)?|send it in|sending it|label|fedex|by post)\b/i.test(msgText);
   const wantsTrack = /\b(track(ing)?|where('?s| is) (my|the) (phone|package|device|label)|did (it|my phone) (arrive|get there))\b/i.test(msgText);
   const wantsMeet = /\b(meet ?up|meet you|in person|local(ly)?|cash in hand|same day cash)\b/i.test(msgText);

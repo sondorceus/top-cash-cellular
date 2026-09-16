@@ -404,12 +404,51 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
 // device-type string to the LabelInputs deviceKind enum.
 export function deviceKindFromString(s?: string): LabelInputs["deviceKind"] {
   const k = (s || "").toLowerCase();
+  // "Galaxy Book5" / "Pixelbook" are laptops — check before the phone brands.
+  if (k.includes("laptop") || k.includes("book")) return "laptop";
   if (k.includes("phone") || k.includes("iphone") || k.includes("galaxy") || k.includes("pixel")) return "phone";
   if (k.includes("tablet") || k.includes("ipad")) return "tablet";
-  if (k.includes("laptop") || k.includes("macbook") || k.includes("book")) return "laptop";
-  if (k.includes("console") || k.includes("ps5") || k.includes("xbox") || k.includes("switch")) return "console";
-  if (k.includes("desktop") || k.includes("imac") || k.includes("mac mini") || k.includes("alienware")) return "desktop";
+  // Desktops are matched by NAME before any brand check. Alienware sells
+  // laptops ("Alienware 15 R4", "m16", "x17", "Area-51m", "16 Aurora (2026)")
+  // as well as desktops ("Aurora R16", "Area-51 Desktop"); treating the brand
+  // as a desktop withheld every Alienware laptop label ("Desktops are
+  // heavy…"). Mac Studio / Mac Pro are Apple desktops like iMac / Mac mini
+  // (a 40 lb Mac Pro was minted as a 3 lb "other"); the rest are the funnel's
+  // desktop families whose names never say "desktop".
+  if (
+    k.includes("desktop") || k.includes("imac") || k.includes("mac mini") ||
+    k.includes("mac studio") || /\bmac pro\b/.test(k) || /\baurora r\d/.test(k) ||
+    k.includes("all-in-one") || /\b(tower|optiplex|thinkcentre|ideacentre|elitedesk|prodesk|aegis|trident|codex|nuc)\b/.test(k) ||
+    /\b(precision 3680|strix g16ch|tuf gaming (tm?\d{3}|fx10cp)|expertcenter d\d|pro dp\d+)\b/.test(k)
+  ) return "desktop";
+  if (k.includes("alienware") || /\b(thinkpad|xps|ideapad|latitude|inspiron)\b/.test(k)) return "laptop";
+  // "PlayStation 5 Slim" (the funnel's label) never contained "ps5", so a
+  // ~10 lb console shipped on a 3 lb label. "PlayStation VR2" stays "other".
+  if (k.includes("console") || /playstation\s*\d/.test(k) || k.includes("ps5") || /\bps4\b/.test(k) || k.includes("xbox") || k.includes("switch")) return "console";
   return "other";
+}
+
+// Funnel device-type ids (app/page.tsx DeviceType, app/go/spec.ts) that pin
+// the package kind when the model name doesn't ("IdeaPad 5", "Aegis RS").
+// Only unambiguous categories: "surface" spans tablets, laptops and a
+// desktop, so it stays out.
+const CATEGORY_KIND: Record<string, LabelInputs["deviceKind"]> = {
+  iphone: "phone", android: "phone", pixel: "phone",
+  ipad: "tablet", samsung_tab: "tablet", lenovo_tab: "tablet", oneplus_tab: "tablet", google_tab: "tablet",
+  macbook: "laptop", samsung_pc: "laptop", lenovo: "laptop", dell: "laptop", alienware: "laptop",
+  hp: "laptop", acer: "laptop", lg_pc: "laptop", asus_pc: "laptop",
+  console: "console", sony: "console", microsoft: "console", nintendo: "console",
+};
+
+/** Package kind from the model name, falling back to the funnel device type. */
+export function deviceKindFor(model?: string, category?: string): LabelInputs["deviceKind"] {
+  const byName = deviceKindFromString(model);
+  if (byName !== "other") return byName;
+  const c = (category || "").trim().toLowerCase();
+  if (c.endsWith("_desktop")) return "desktop";
+  // Plain-word categories ("Desktop", "Laptop", "Game Console") classify
+  // like a name; unknown ids ("surface", "garmin") stay "other".
+  return CATEGORY_KIND[c] || deviceKindFromString(c);
 }
 
 // Track API — Skywalker 2026-05-19. Polls a tracking number's current

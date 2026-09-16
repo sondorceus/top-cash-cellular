@@ -151,6 +151,7 @@ type LeadShape = {
   lockUntil?: string;
   isGo?: boolean;
   manual?: boolean; // Quote: TBD (custom) — hand quote, no number to remind about
+  smsOptIn?: boolean; // "SMS opt-in: YES" on the lead — express consent to texts
 };
 
 // The seller's own thread when we know it (HMAC-signed so the /go client
@@ -414,12 +415,22 @@ export async function GET(req: NextRequest) {
     const source = parseField(m.body, "Source") || "";
     const session = parseField(m.body, "Session");
     const quoteRaw = parseField(m.body, "Quote") || "";
+    const isGo = /source=go\b/i.test(source);
+    // TCPA: text only numbers we have consent for. Main-funnel leads carry
+    // "SMS opt-in: YES" when the seller ticked the consent box; ship/mixed
+    // leads may give a phone for the FedEx label only ("SMS opt-in: no" —
+    // /api/lead promises we won't text them), so those get email only.
+    // /go leads record "no" for MARKETING, but the seller typed the number
+    // into "we text you the quote" — the texts about that quote (this
+    // reminder, the expiry note) are what they asked for. STOP ends both.
+    const smsOptIn = /^yes\b/i.test(parseField(m.body, "SMS opt-in") || "");
+    const textable = !!phone && !optedOutIn(messages, phone) && (smsOptIn || isGo);
     const lead: LeadShape = {
       id: m.id,
       body: m.body,
       timestamp: m.timestamp,
       name,
-      phone: phone && optedOutIn(messages, phone) ? undefined : phone,
+      phone: textable ? phone : undefined,
       email,
       device: deviceLine.split(" — ")[0],
       model: deviceLine.split(" — ")[1],
@@ -433,7 +444,8 @@ export async function GET(req: NextRequest) {
       handoffMethod: handoffMethod ?? (session ? handoffBySession.get(session) : undefined),
       session,
       lockUntil: parseField(m.body, "Lock-Until"),
-      isGo: /source=go\b/i.test(source),
+      isGo,
+      smsOptIn,
     };
     if (!lead.phone && !lead.email) continue; // opted out and no email
 
@@ -461,7 +473,11 @@ export async function GET(req: NextRequest) {
 
     // Review reminder — paid or met, status flipped 24-48h ago, no
     // review submitted yet, no review-reminder sent yet.
-    if (statusName === "paid" || statusName === "met") {
+    // A review ask is not about the seller's quote, so it texts only sellers
+    // with express SMS consent (never a /go "SMS opt-in: no" number); the
+    // rest get it by email or not at all.
+    const canAskReview = (!!lead.phone && lead.smsOptIn) || !!lead.email;
+    if ((statusName === "paid" || statusName === "met") && canAskReview) {
       if (ageMs >= REMIND_AFTER_MS && ageMs < REMIND_UNTIL_MS && !remindedByKind.review.has(m.id) && !reviewUsedLeads.has(m.id)) {
         reviewCandidates.push({ lead, statusTs });
       }
@@ -502,7 +518,7 @@ export async function GET(req: NextRequest) {
       expiry: expiryReady.map((l) => ({ id: l.id, lockUntil: l.lockUntil, channel: l.phone ? "sms" : "email" })),
       skippedOwnerWorked: ownerWorked.size,
       chat: chatReady.map((c) => ({ id: c.id, session: c.session, device: c.device, channel: c.contact.includes("@") ? "email" : "sms" })),
-      review: reviewCandidates.map((r) => ({ id: r.lead.id })),
+      review: reviewCandidates.map((r) => ({ id: r.lead.id, sms: !!(r.lead.phone && r.lead.smsOptIn), email: !!r.lead.email })),
       skippedChatChecks: Math.max(0, chatCandidates.length - MAX_CHAT_CHECKS),
     });
   }
@@ -612,7 +628,7 @@ export async function GET(req: NextRequest) {
       const reviewUrl = `${SITE}/reviews/new?${params.toString()}`;
       const tmpl = templateReviewReminder(lead, reviewUrl);
       const tasks: Promise<boolean>[] = [];
-      if (lead.phone) tasks.push(sendSms(lead.phone, tmpl.smsBody));
+      if (lead.phone && lead.smsOptIn) tasks.push(sendSms(lead.phone, tmpl.smsBody));
       if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
       const results = await Promise.all(tasks);
       // Only mark reminded if a channel actually delivered (see quote loop).

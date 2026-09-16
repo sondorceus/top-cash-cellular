@@ -500,7 +500,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { leadId, status, name, phone, email, device, quote, payout, rejectionReason, shipAddress, payoutConfirmation } = body;
+  const { leadId, status, name, phone, email, device, deviceType, quote, payout, rejectionReason, shipAddress, payoutConfirmation } = body;
 
   if (!leadId || !status || !STATUSES.includes(status)) {
     return NextResponse.json({ error: "leadId and valid status required" }, { status: 400 });
@@ -539,6 +539,8 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           leadId,
           deviceLabel: device,
+          // Package-kind fallback for model names the classifier doesn't know.
+          deviceType: typeof deviceType === "string" ? deviceType : undefined,
           customerEmail: email,
           silent: false, // let the label route send its own dedicated label email
           customer: {

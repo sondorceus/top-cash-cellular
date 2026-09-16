@@ -8,6 +8,9 @@
 // and append the reply to it. No blob token ever crosses repos — the notary
 // side holds only the shared relay token, exactly like TCC holds only that
 // token for the outbound leg.
+// No /go thread for the number (main-funnel sellers get reminder texts from
+// the same line): a reply from a number on a recent TCC lead is posted to MC
+// as [CUSTOMER REPLY] + an owner alert; anything else is the notary's own.
 //
 // Keywords (2026-09-11):
 //   STOP / UNSUBSCRIBE / CANCEL / END / QUIT → opt-out: SMS-STOP session note
@@ -23,8 +26,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { sidToken } from "../../../lib/go-sid-token";
 import { after } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
-import { appendChatMsg, findSessionByPhone, readChat } from "../../../lib/gochat-store";
+import { appendChatMsg, findSessionByPhone, readChat, phoneKey } from "../../../lib/gochat-store";
+import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
+import { rateLimit } from "../../../lib/rate-limit";
 import { sendSellerSms, smsOptOutMarker, STOP_RE, SMS_STOP_NOTE, notesHaveOptOut } from "../../../lib/seller-sms";
 
 export const dynamic = "force-dynamic";
@@ -59,6 +64,45 @@ async function postMc(body: string, tags: string[], priority = "high"): Promise<
   }
 }
 
+// A text from a number with no /go thread. Forwarded ONLY when the number
+// is on a recent TCC lead (its Phone: line, or a customer [CONTACT-UPDATE])
+// — the notary line's own customers text this number too, and their
+// messages are none of TCC's business. Same [CUSTOMER REPLY] shape the old
+// Twilio inbound route wrote, plus an owner alert.
+const REPLY_LOOKBACK_MS = 30 * 24 * 3600_000;
+async function forwardLeadReply(from: string, text: string): Promise<void> {
+  const key = phoneKey(from);
+  if (!key || !MC_KEY) return;
+  const messages = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: REPLY_LOOKBACK_MS, maxPages: 12 });
+  const fromClean = clean(from, 30);
+  const textClean = clean(text, 800);
+  const replyHead = `[CUSTOMER REPLY] from=${fromClean} lead=`;
+  const replyTail = ` via=sms-relay\n${textClean}`;
+  const dupeFloor = Date.now() - DUPE_WINDOW_MS;
+  let leadId = "";
+  const bodyById = new Map<string, string>();
+  for (const m of messages) {
+    if (!m.body) continue;
+    // Telnyx delivers at-least-once: this exact reply was just forwarded.
+    if (m.body.startsWith(replyHead) && m.body.endsWith(replyTail) && new Date(m.timestamp).getTime() >= dupeFloor) return;
+    if (/\[NEW BUYBACK LEAD/i.test(m.body)) {
+      bodyById.set(m.id, m.body);
+      // Ascending order: the last match is the seller's newest lead.
+      if (phoneKey(m.body.match(/(?:^|\n)Phone:[ \t]*([^\n]*)/i)?.[1] || "") === key) leadId = m.id;
+    }
+    const cu = m.body.match(/\[CONTACT-UPDATE:\s*([\w-]+)\][^\n]*phone=([^\n]+)/i);
+    if (cu && phoneKey(cu[2]) === key && bodyById.has(cu[1])) leadId = cu[1];
+  }
+  if (!leadId) return;
+  const body = bodyById.get(leadId) || "";
+  const name = clean(body.match(/(?:^|\n)Name:[ \t]*([^\n]*)/i)?.[1] || "", 60);
+  const device = clean((body.match(/(?:^|\n)Device:[ \t]*([^\n]*)/i)?.[1] || "").split(" — ").slice(-1)[0], 80);
+  const posted = await postMc(`${replyHead}${leadId}${replyTail}`, ["sms", "inbound"]);
+  await notifyOwnerSms(
+    `📨 SMS reply from ${name || "a seller"}${device ? ` (${device})` : ""} · ${fromClean}\n"${textClean.slice(0, 300)}"${posted ? "" : "\n(MC post failed)"}\nhttps://topcashcellular.com/admin`,
+  );
+}
+
 export async function POST(req: NextRequest) {
   const expect = process.env.SMS_RELAY_TOKEN;
   if (!expect || !safeEqual(req.headers.get("x-relay-token"), expect)) {
@@ -85,6 +129,19 @@ export async function POST(req: NextRequest) {
     if (STOP_RE.test(text)) {
       await postMc(`${smsOptOutMarker(from)} texted STOP (no /go session matched)`, ["sms-opt-out"], "low");
       return NextResponse.json({ ok: true, matched: false, optedOut: true });
+    }
+    // Main-funnel sellers have no /go thread, but the reminders cron texts
+    // them from this same number — the local-meetup one literally says
+    // "reply with a time + part of Austin". Those replies used to vanish
+    // here. Forward them when the number belongs to a TCC lead (after the
+    // response: it pages MC, and the notary webhook shouldn't wait on it).
+    // Throttled BEFORE the scan: every unmatched text (mostly the notary's
+    // own traffic) costs ~10 full MC pages, so a number texting in a loop —
+    // or a spray of numbers — must not turn into a flood of MC reads and
+    // owner alerts. Per sender, then a global per-instance ceiling.
+    const key = phoneKey(from);
+    if (key && rateLimit(`smsfwd:${key}`, 8, 10 * 60_000).ok && rateLimit("smsfwd:global", 40, 10 * 60_000).ok) {
+      after(() => forwardLeadReply(from, text));
     }
     return NextResponse.json({ ok: true, matched: false });
   }
@@ -115,11 +172,15 @@ export async function POST(req: NextRequest) {
     // What we know about this seller lives in the session notes the lock
     // route wrote: LOCKED: <spec> $<offer> — <contact>, plus CONTACT:.
     const state = await readChat(sid, 0);
-    const notes = state.msgs.filter((m) => m.role === "note").map((m) => m.text);
-    // One choice per thread. A later "meet at 5 at the HEB?" in a live
+    const noteMsgs = state.msgs.filter((m) => m.role === "note");
+    const notes = noteMsgs.map((m) => m.text);
+    // One choice per LOCK. A later "meet at 5 at the HEB?" in a live
     // negotiation must not re-post a delivery option, re-alert Sonny, or
-    // auto-text over him.
-    if (notes.some((t) => t.startsWith("HANDOFF-CHOICE:"))) {
+    // auto-text over him — but a second device locked in the same thread
+    // ("got another one?") needs its own choice, so only choices made at or
+    // after the newest LOCKED note count (same rule as /api/go/label).
+    const lastLockTs = noteMsgs.reduce((t, m) => (m.text.startsWith("LOCKED:") && m.ts > t ? m.ts : t), 0);
+    if (noteMsgs.some((m) => m.ts >= lastLockTs && m.text.startsWith("HANDOFF-CHOICE:"))) {
       return NextResponse.json({ ok: true, matched: true, sid, handoff: "already-chosen" });
     }
     const ownerActive = state.lastOwnerTs > 0 && Date.now() - state.lastOwnerTs < 24 * 3600_000;

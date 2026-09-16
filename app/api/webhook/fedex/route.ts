@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTracking } from "../../../lib/fedex";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { safeEqual } from "../../../lib/admin-auth";
+import { fetchCommsPaged } from "../../../lib/mc-comms";
 
 // =========================================================================
 // REAL-TIME FedEx TRACKING WEBHOOK.
@@ -79,26 +80,30 @@ export async function POST(req: NextRequest) {
 
   // Find the lead this tracking belongs to, its status, and the last state
   // we already reacted to (so repeat pushes are idempotent).
-  let messages: { id: string; body?: string; timestamp: string }[] = [];
-  try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, { headers: { "x-api-key": MC_KEY }, cache: "no-store" });
-    if (r.ok) { const d = await r.json(); messages = Array.isArray(d.messages) ? d.messages : []; }
-  } catch {}
+  // 30 days, same window as the fedex-poll cron: limit=1000 was ~3 days, so
+  // a box dropped off later than that answered "no matching lead".
+  const messages: { id: string; body?: string; timestamp: string }[] = MC_KEY
+    ? await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 30 * 24 * 60 * 60 * 1000, maxPages: 12 })
+    : [];
 
+  // Patterns built once — the 30-day window is ~10k messages.
+  const labelRe = new RegExp(`\\[LABEL:\\s*([\\w-]+)\\][^\\n]*?tracking=${tracking}\\b`, "i");
   let leadId = "";
   for (const m of messages) {
     if (!m.body) continue;
-    const lab = m.body.match(new RegExp(`\\[LABEL:\\s*([\\w-]+)\\][^\\n]*?tracking=${tracking}\\b`, "i"));
+    const lab = m.body.match(labelRe);
     if (lab) { leadId = lab[1]; break; }
   }
   if (!leadId) return NextResponse.json({ ok: true, tracking, state: newState, note: "no matching lead" });
 
   let status = "quote_requested", lastState = "", leadBody = "", statusTs = "", evtTs = "";
+  const statusRe = new RegExp(`\\[STATUS:\\s*([\\w_]+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i");
+  const eventRe = new RegExp(`\\[FEDEX-EVENT:\\s*${leadId}\\s+state=([a-z_]+)`, "i");
   for (const m of messages) {
     if (!m.body) continue;
-    const sm = m.body.match(new RegExp(`\\[STATUS:\\s*([\\w_]+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
+    const sm = m.body.match(statusRe);
     if (sm && m.timestamp > statusTs) { status = sm[1].toLowerCase(); statusTs = m.timestamp; }
-    const fm = m.body.match(new RegExp(`\\[FEDEX-EVENT:\\s*${leadId}\\s+state=([a-z_]+)`, "i"));
+    const fm = m.body.match(eventRe);
     if (fm && m.timestamp > evtTs) { lastState = fm[1].toLowerCase(); evtTs = m.timestamp; }
     if (m.id === leadId) leadBody = m.body;
   }

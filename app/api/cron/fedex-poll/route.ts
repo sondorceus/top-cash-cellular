@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTracking } from "../../../lib/fedex";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
+import { fetchCommsPaged } from "../../../lib/mc-comms";
 
-// Hourly FedEx tracking poll — Skywalker 2026-05-19. For every ship-
-// handoff lead in quote_requested or shipped status with a tracking
-// number, hit the FedEx Track API and auto-flip status when the
+// Hourly FedEx tracking poll — Skywalker 2026-05-19. For every lead with
+// a [LABEL:] tracking number (ship, mixed-cart or /go) in quote_requested
+// or shipped status, hit the FedEx Track API and auto-flip status when the
 // physical package state changes. Removes the manual "did they ship
 // yet?" guesswork.
 //
@@ -81,19 +82,17 @@ export async function GET(req: NextRequest) {
   const origin = new URL(req.url).origin;
 
   // Pull MC comms — need lead bodies, status markers, AND prior fedex-
-  // event markers so we don't double-react. 1000 messages covers ~3 days.
-  let messages: MCMessage[] = [];
-  try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (!r.ok) return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
-    const data = await r.json();
-    messages = Array.isArray(data.messages) ? data.messages : [];
-  } catch {
-    return NextResponse.json({ error: "MC fetch failed" }, { status: 502 });
-  }
+  // event markers so we don't double-react. A single limit=1000 slice only
+  // covered ~3 days, so a seller who dropped the box off later than that
+  // (the lead + its [LABEL:] had aged out) was never tracked. Page back 30
+  // days — a label older than that is either delivered or abandoned.
+  const messages: MCMessage[] = await fetchCommsPaged({
+    apiKey: MC_KEY,
+    includeArchive: true,
+    sinceMs: 30 * 24 * 60 * 60 * 1000,
+    maxPages: 12,
+  });
+  if (messages.length === 0) return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
 
   // Index: latest status per lead, latest FEDEX-EVENT state per lead,
   // and the set of deleted lead ids.
@@ -108,8 +107,18 @@ export async function GET(req: NextRequest) {
   // API not enabled on the FedEx project), so we alert at most once per
   // ~20h instead of every 30-min run.
   let trackForbiddenAlertAt = "";
+  // NEWEST [LABEL: leadId] per lead (/api/lead, /go, admin, retry all write
+  // the same shape). After a regenerate the lead has two markers; admin,
+  // /offer and /track show the newest, so that's the one to poll — the old
+  // loop broke on the first (oldest) match.
+  const labelByLead = new Map<string, { tracking: string; ts: string }>();
   for (const m of messages) {
     if (!m.body) continue;
+    const lab = m.body.match(/\[LABEL:\s*([\w-]+)\][^\n]*?tracking=([^\s\]]+)/i);
+    if (lab) {
+      const prev = labelByLead.get(lab[1]);
+      if (!prev || m.timestamp >= prev.ts) labelByLead.set(lab[1], { tracking: lab[2], ts: m.timestamp });
+    }
     const sm = m.body.match(/\[STATUS:\s*([\w_]+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
     if (sm) {
       const prev = statusByLead.get(sm[2]);
@@ -129,8 +138,8 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Walk lead messages, pick the ship-handoff ones in active states with
-  // a tracking number, and skip what we've already processed.
+  // Walk lead messages, pick the labeled ones in active states, and skip
+  // what we've already processed.
   type Candidate = {
     id: string; tracking: string; status: string; lastState?: string; lastCode?: string;
     labelAt?: string; // timestamp of the [LABEL:] marker — for the stalled-ship watchdog
@@ -143,26 +152,19 @@ export async function GET(req: NextRequest) {
     if (!m.body || !m.id) continue;
     if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
     if (deletedLeads.has(m.id)) continue;
-    // Only ship handoffs have tracking. Local meetups are out of scope
-    // for this poll. The MC lead body contains "--- Handoff: SHIPPING ---"
-    // when /api/lead wrote a ship handoff.
-    if (!/--- Handoff: SHIPPING ---/i.test(m.body)) continue;
-    // Tracking number is on the [LABEL: leadId] marker, NOT in the lead
-    // body. Need to find it.
+    // A lead is trackable when it HAS a label — the [LABEL: leadId] marker
+    // carries the tracking number, not the lead body. Keying on the
+    // "--- Handoff: SHIPPING ---" header skipped every /go shipment
+    // ("Handoff: TBD (seller picks)", label minted later from the chat) and
+    // every mixed cart ("Handoff: MIXED"), so those boxes arrived silently.
+    const label = labelByLead.get(m.id);
+    if (!label) continue;
     const status = statusByLead.get(m.id)?.status || "quote_requested";
     if (["paid", "met", "rejected", "received", "tested"].includes(status)) continue; // terminal or post-receive
     const lastState = lastFedexStateByLead.get(m.id)?.state;
     const lastCode = lastFedexStateByLead.get(m.id)?.code;
-    // Find the lead's tracking number from a [LABEL: leadId] marker.
-    // /api/lead writes these immediately after minting.
-    let tracking = "";
-    let labelAt: string | undefined;
-    for (const lm of messages) {
-      if (!lm.body) continue;
-      const lab = lm.body.match(new RegExp(`\\[LABEL:\\s*${m.id}\\][^\\n]*?tracking=([^\\s\\]]+)`, "i"));
-      if (lab) { tracking = lab[1]; labelAt = lm.timestamp; break; }
-    }
-    if (!tracking) continue;
+    const tracking = label.tracking;
+    const labelAt: string | undefined = label.ts;
     candidates.push({
       id: m.id, tracking, status, lastState, lastCode, labelAt,
       customer: {
@@ -185,6 +187,13 @@ export async function GET(req: NextRequest) {
   // number per call (single-tracking endpoint). 25 × ~500ms ≈ 12s well
   // under Vercel's 60s function ceiling.
   const MAX_PER_RUN = 25;
+  // The 30-day window holds more labels than one run polls, and labels that
+  // were never dropped off stay in quote_requested for weeks. Poll packages
+  // already moving first (Shipped → waiting on delivery), then the newest
+  // labels, so stale ones can't starve a live shipment out of the batch.
+  candidates.sort((a, b) =>
+    (a.status === "shipped" ? 0 : 1) - (b.status === "shipped" ? 0 : 1) ||
+    String(b.labelAt || "").localeCompare(String(a.labelAt || "")));
   const processed: Array<{ leadId: string; tracking: string; before: string; nowState: string; flippedTo?: string; mcPosted: boolean; error?: string }> = [];
   let errorCount = 0;
   // Set if any Track call comes back 403 FORBIDDEN — the credentials aren't

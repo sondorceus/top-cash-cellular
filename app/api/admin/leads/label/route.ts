@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { put } from "@vercel/blob";
-import { createReturnLabel, deviceKindFromString, type LabelInputs } from "../../../../lib/fedex";
+import { createReturnLabel, deviceKindFor, type LabelInputs } from "../../../../lib/fedex";
 import { findFreshLabel } from "../../../../lib/fedex-retry";
 import { logComm } from "../../../../lib/comms-log";
 import { mailShell, mailDetails, esc } from "../../../../lib/email-shell";
@@ -30,6 +30,12 @@ type LabelPayload = {
   customerEmail?: string;
   silent?: boolean; // if true, skip customer email (e.g. auto-fire wants
   // to send its own combined SMS+email via the status endpoint)
+  // Funnel device type ("lenovo", "msi_desktop") — package-kind fallback
+  // when the model name alone is unknown.
+  deviceType?: string;
+  // Tracking number of the label staff are REPLACING (Edit address /
+  // Regenerate). Only that exact label may be superseded; see below.
+  replace?: string;
 };
 
 async function emailLabel(to: string, name: string, tracking: string, labelUrl: string, serviceType: string) {
@@ -76,6 +82,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   const { leadId, customer, deviceLabel, customerEmail, silent } = payload;
+  const deviceType = typeof payload.deviceType === "string" ? payload.deviceType.slice(0, 40) : undefined;
+  const replaceTracking = typeof payload.replace === "string" ? payload.replace.trim() : "";
   if (!leadId) return NextResponse.json({ error: "leadId required" }, { status: 400 });
   if (!customer?.customerName || !customer?.customerPhone || !customer?.customerStreet || !customer?.customerCity || !customer?.customerState || !customer?.customerZip) {
     return NextResponse.json({ error: "Customer name, phone, and full address are required." }, { status: 400 });
@@ -87,7 +95,7 @@ export async function POST(req: NextRequest) {
   // without scanning the tracking number first.
   const labelInput: LabelInputs = {
     ...customer,
-    deviceKind: customer.deviceKind || deviceKindFromString(deviceLabel),
+    deviceKind: customer.deviceKind || deviceKindFor(deviceLabel, deviceType),
     customerReference: customer.customerReference || (deviceLabel ? String(deviceLabel).slice(0, 30) : "1 device"),
     poNumber: customer.poNumber || `TCC-${leadId}`,
   };
@@ -97,8 +105,14 @@ export async function POST(req: NextRequest) {
   // already exists (operator double-click, or the status-route auto-fire
   // raced this manual call), reuse it instead of creating — and paying for —
   // a second shipment the customer would never use.
+  // Staff replacing a label on purpose (wrong address, wrong weight) name
+  // the tracking on their screen: when that is still the newest label we
+  // mint. findFreshLabel looks back ~60 days, so without this the Edit
+  // address / Regenerate buttons silently handed back the old label. A
+  // different newest label means it was already replaced — reuse that one.
+  // The status auto-fire and the first-time Generate never send `replace`.
   const existing = await findFreshLabel(leadId);
-  if (existing) {
+  if (existing && !(replaceTracking && existing.tracking === replaceTracking)) {
     return NextResponse.json({
       ok: true,
       tracking: existing.tracking,

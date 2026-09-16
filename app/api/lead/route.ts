@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { put } from "@vercel/blob";
-import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
+import { createReturnLabel, deviceKindFor, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
 import { fetchCommsPaged } from "../../lib/mc-comms";
@@ -666,6 +666,8 @@ export async function POST(req: NextRequest) {
     // Per-item handoff (ship | local) for mixed-cart orders so staff
     // know which devices to expect in the FedEx box vs at the meetup.
     handoff?: "ship" | "local";
+    // Funnel device type of THIS item ("lenovo") — label package kind only.
+    deviceType?: string;
   };
   const deviceList = Array.isArray(devices) ? (devices as DeviceEntry[]).filter((d) => d && (d.model || d.condition)) : [];
   const isMulti = deviceList.length > 1;
@@ -1482,9 +1484,18 @@ Pick the best channel per device. Be concise.`;
       // FedEx bills the actual scanned weight regardless of what we
       // declare — but declaring the realistic weight upfront sets the
       // right service tier and avoids correction surcharges of $5-15.
+      // The model name decides the kind; the funnel device type is the
+      // fallback for names the classifier doesn't know ("Legion 5 Pro",
+      // "IdeaPad 5" → lenovo → laptop). Cart items carry their own type —
+      // the top-level `device` is whatever category the page was on at
+      // checkout, so it only speaks for a plain single-device submit.
+      // Client JSON: anything that isn't a string is ignored, never thrown on.
+      const str = (v: unknown) => (typeof v === "string" ? v : undefined);
       const deviceKinds = shipOnlyMulti
-        ? shipOnlyDevices.map((d) => ({ deviceKind: deviceKindFromString(d.model || "") }))
-        : [{ deviceKind: deviceKindFromString((shipOnlyDevices[0]?.model || model) as string) }];
+        ? shipOnlyDevices.map((d) => ({ deviceKind: deviceKindFor(str(d.model), str(d.deviceType)) }))
+        : [{ deviceKind: shipOnlyDevices[0]
+            ? deviceKindFor(str(shipOnlyDevices[0].model) || str(model), str(shipOnlyDevices[0].deviceType))
+            : deviceKindFor(str(model), str(device)) }];
       const totalWeight = aggregateWeight(deviceKinds);
 
       // Auto-skip when ANY device in the order is too heavy/expensive
@@ -1540,7 +1551,7 @@ Pick the best channel per device. Be concise.`;
           customerCity: a!.city!,
           customerState: a!.state!,
           customerZip: a!.zip!,
-          deviceKind: deviceKindFromString(model as string),
+          deviceKind: deviceKinds[0].deviceKind,
           weightLbs: totalWeight,
           customerReference: refText,
           poNumber: `TCC-${effectiveLeadId}`,
