@@ -661,6 +661,8 @@ export async function POST(req: NextRequest) {
     paidOff?: boolean | null;
     imei?: string;
     imeiWarnings?: string[];
+    carrierLock?: string;
+    accessoriesIncluded?: boolean;
     // Per-item handoff (ship | local) for mixed-cart orders so staff
     // know which devices to expect in the FedEx box vs at the meetup.
     handoff?: "ship" | "local";
@@ -691,6 +693,10 @@ export async function POST(req: NextRequest) {
       if (d.batteryHealth)     specBits.push(`Battery health: ${cleanField(d.batteryHealth, 30)}`);
       if (d.charger)           specBits.push(`Charger: ${cleanField(d.charger, 40)}`);
       if (d.carrier)           specBits.push(`Carrier: ${cleanField(d.carrier, 40)}`);
+      // Same lock / accessories lines as the single-device specLines.
+      if (d.carrierLock)       specBits.push(`Carrier lock: ${cleanField(d.carrierLock, 40)}`);
+      if (d.accessoriesIncluded === true) specBits.push("Accessories: ✅ all original accessories included (bonus applied)");
+      else if (d.accessoriesIncluded === false) specBits.push("Accessories: none included");
       if (d.connectivity)      specBits.push(`Connectivity: ${cleanField(d.connectivity, 40)}`);
       if (d.imei)              specBits.push(`IMEI: ${cleanField(d.imei, 20).replace(/[^0-9]/g, "")}`);
       if (Array.isArray(d.imeiWarnings) && d.imeiWarnings.length > 0) specBits.push(`[IMEI WARNINGS] ${(d.imeiWarnings as unknown[]).map((x) => cleanField(x, 100)).filter(Boolean).join(" | ")}`);
@@ -771,7 +777,14 @@ export async function POST(req: NextRequest) {
   else if (accessoriesIncluded === false) specLines.push("Accessories: none included");
 
   const imeiLines: string[] = [];
-  if (imei) imeiLines.push(`IMEI: ${cleanField(imei, 20).replace(/[^0-9]/g, "")}`);
+  if (imei) {
+    const imeiDigits = cleanField(imei, 20).replace(/[^0-9]/g, "");
+    // A bundle's top-level IMEI is the checkout's ONE shared field and can't
+    // say which device it is. As a bare "IMEI:" line the admin parser reads
+    // it into lead.imei, which satisfies the pre-payout IMEI/serial check for
+    // EVERY device in the order — so label it apart (info only, not on file).
+    imeiLines.push(isMulti ? `Shared IMEI (device not specified): ${imeiDigits}` : `IMEI: ${imeiDigits}`);
+  }
   if (Array.isArray(imeiWarnings) && imeiWarnings.length > 0) {
     imeiLines.push(`[IMEI WARNINGS] ${(imeiWarnings as unknown[]).map((x) => cleanField(x, 100)).filter(Boolean).join(" | ")}`);
   }
@@ -1068,6 +1081,11 @@ export async function POST(req: NextRequest) {
         ...reviewLines,
         ...customerMetaLines,
         ...multiLines,
+        // Order-level IMEI from the checkout's single IMEI field (the
+        // funnel can't tell which bundled device it belongs to) — written
+        // as "Shared IMEI …", never "IMEI:", so it can't stand in for the
+        // per-device identifiers the payout check needs.
+        ...imeiLines,
         ...handoffLines,
       ].filter(Boolean).join("\n")
     : [

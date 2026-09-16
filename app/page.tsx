@@ -4154,6 +4154,9 @@ export default function Home() {
   const [partsName, setPartsName] = useState("");
   const [partsEmail, setPartsEmail] = useState("");
   const [partsPhone, setPartsPhone] = useState("");
+  // Explicit SMS consent for the modal's phone — it used to send
+  // smsOptIn:!!partsPhone, recording consent nobody gave.
+  const [partsSmsOptIn, setPartsSmsOptIn] = useState(false);
   const [partsIssue, setPartsIssue] = useState<"locked_mdm" | "locked_icloud" | "locked_carrier" | "wont_turn_on" | "physical" | "other" | null>(null);
   const [partsDescription, setPartsDescription] = useState("");
   const [partsSubmitting, setPartsSubmitting] = useState(false);
@@ -4719,6 +4722,16 @@ export default function Home() {
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [slotError, setSlotError] = useState<string | null>(null);
+  // Slot this visit already booked on a submit whose lead POST then
+  // failed. There's no public un-book, so a retry that booked again got
+  // 409 from the customer's OWN hold ("That window was just taken").
+  // Reuse the hold instead; cleared once the lead is saved. slotChoices
+  // keeps it pickable after a refresh — the open-only list drops it once
+  // our booking fills it.
+  const [heldSlot, setHeldSlot] = useState<Slot | null>(null);
+  const slotChoices = heldSlot && !availableSlots.some((s) => s.id === heldSlot.id)
+    ? [heldSlot, ...availableSlots].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
+    : availableSlots;
   // Slot-loading effect was here originally — moved below the cart
   // derivations (cartNeedsLocal) so a mixed cart triggers slot load
   // even when the cart-level handoffMethod is "ship". See ~line 4730.
@@ -5106,6 +5119,10 @@ export default function Home() {
     // warning (single-device leads kept it) — staff could unknowingly buy
     // a blacklisted device in a multi-device order.
     imeiWarnings?: string[];
+    // Verizon lock answer (label) and the accessories answer — both move
+    // the quote, and staff need them to reconcile it at inspection.
+    carrierLock?: string;
+    accessoriesIncluded?: boolean;
     // Per-item handoff — captured at add-to-cart time so a mixed cart
     // (some items local, others shipped) preserves each customer's intent
     // instead of last-write-wins on a cart-level handoffMethod. Optional
@@ -5343,6 +5360,10 @@ export default function Home() {
   }, [cartItems, step, abandonNudged]);
   const [inquiryCategory, setInquiryCategory] = useState("");
   const [inquirySent, setInquirySent] = useState(false);
+  // Why a custom-device inquiry POST failed — shown instead of the old
+  // unconditional "sent" screen, which silently lost rejected leads.
+  const [inquiryError, setInquiryError] = useState<string | null>(null);
+  const [inquirySubmitting, setInquirySubmitting] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   // Photo section collapsed by default — keeps the contact step tidy.
   const [photosOpen, setPhotosOpen] = useState(false);
@@ -8050,7 +8071,7 @@ export default function Home() {
               <div className="text-center py-3">
                 <p className="text-4xl mb-2">✓</p>
                 <p className="text-lg font-extrabold text-white">Got it — we&apos;ll quote you within the hour.</p>
-                <p className="text-sm text-[#c5c5c5] mt-1">Check your email{partsPhone ? " and texts" : ""}.</p>
+                <p className="text-sm text-[#c5c5c5] mt-1">Check your email{partsPhone && partsSmsOptIn ? " and texts" : ""}.</p>
                 <button
                   type="button"
                   onClick={() => {
@@ -8085,6 +8106,13 @@ export default function Home() {
                       alert("Add an email or phone so we can send the quote.");
                       return;
                     }
+                    // Mirror /api/lead's TCPA rule (a 10-digit phone needs
+                    // explicit consent) so the customer gets a clear ask
+                    // instead of a rejected submit.
+                    if (partsPhone.replace(/\D/g, "").length >= 10 && !partsSmsOptIn) {
+                      alert("Please tick the SMS consent box under your phone number, or clear the number.");
+                      return;
+                    }
                     setPartsSubmitting(true);
                     try {
                       const issueLabel: Record<string, string> = {
@@ -8109,12 +8137,19 @@ export default function Home() {
                           condition: "Parts — manual review",
                           quote: 0,
                           notes,
-                          smsOptIn: !!partsPhone,
-                          attribution: typeof window !== "undefined" ? (window as unknown as { __tccAttribution?: Record<string, string> }).__tccAttribution : undefined,
+                          // Only the consent the customer actually ticked.
+                          smsOptIn: !!partsPhone && partsSmsOptIn,
+                          // Same localStorage attribution every other submit
+                          // sends — window.__tccAttribution was never set, so
+                          // ad-driven parts leads showed no source.
+                          attribution: readAttribution(),
                         }),
                       });
                       if (!r.ok) {
-                        alert("Couldn't submit — try again or text us at " + EMAIL);
+                        // Show the server's reason (bad email domain, rate
+                        // limit…) so the customer can actually fix it.
+                        const d = await r.json().catch(() => ({}));
+                        alert(typeof d?.error === "string" && d.error ? d.error : "Couldn't submit — try again or email us at " + EMAIL);
                         return;
                       }
                       setPartsSubmitted(true);
@@ -8178,8 +8213,12 @@ export default function Home() {
                     onChange={(e) => {
                       // Inline format → "(123) 456-7890" — matches the
                       // main funnel's phone input UX without depending on
-                      // an external helper.
-                      const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      // an external helper. Drop a leading US country code
+                      // first: autofill/paste of "+1 512 555 0123" kept the
+                      // first 10 digits → (151) 255-5012.
+                      let digits = e.target.value.replace(/\D/g, "");
+                      if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
+                      digits = digits.slice(0, 10);
                       let formatted = digits;
                       if (digits.length > 6) formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
                       else if (digits.length > 3) formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
@@ -8189,6 +8228,20 @@ export default function Home() {
                     placeholder="Phone (optional)"
                     className="w-full px-3 py-2.5 tcc-input text-sm"
                   />
+                  {partsPhone && (
+                    <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={partsSmsOptIn}
+                        onChange={(e) => setPartsSmsOptIn(e.target.checked)}
+                        required
+                        className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
+                      />
+                      <span className="text-[#e6e6e6] text-[11px] leading-relaxed">
+                        I agree to receive SMS updates about my trade-in from Top Cash Cellular at the number above. Msg &amp; data rates may apply, msg frequency varies, reply STOP to opt out, HELP for help. See our <a href="/privacy" className="underline hover:text-[#00c853]">privacy policy</a>.
+                      </span>
+                    </label>
+                  )}
                   <textarea
                     value={partsDescription}
                     onChange={(e) => setPartsDescription(e.target.value)}
@@ -9273,8 +9326,14 @@ export default function Home() {
                 <form onSubmit={async (e) => {
                   e.preventDefault();
                   if (!inquiryHandoff) return; // required — picker below gates submit too
+                  if (inquirySubmitting) return;
+                  setInquiryError(null);
+                  setInquirySubmitting(true);
+                  // Only show "sent" when /api/lead actually saved it — a 400
+                  // (bad/disposable email, no MX) or 429 used to fall through
+                  // to the success screen and the lead was silently lost.
                   try {
-                    await fetch("/api/lead", {
+                    const res = await fetch("/api/lead", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       // Custom/TBD quote — send only the handoff METHOD (no address).
@@ -9283,8 +9342,23 @@ export default function Home() {
                       // collected (renderShipBlock no-address branch in /api/lead).
                       body: JSON.stringify({ name, phone, email, device: inquiryCategory, model: model.label, storage: "N/A", condition: condition.label, quote: 0, payout: "TBD", handoff: { method: inquiryHandoff }, notes: "Custom device - full flow submission", photos: photoUrls, smsOptIn, attribution: readAttribution() }),
                     });
-                  } catch {}
-                  setInquirySent(true);
+                    if (!res.ok) {
+                      const d = await res.json().catch(() => ({})) as { error?: unknown; suggestion?: unknown };
+                      const msg = typeof d.error === "string" && d.error ? d.error : "We couldn't send your request. Please try again or email us at " + EMAIL + ".";
+                      if (typeof d.suggestion === "string" && d.suggestion) {
+                        setEmailErr({ message: msg, suggestion: d.suggestion });
+                        setInquiryError("Please check your email address above.");
+                      } else {
+                        setInquiryError(msg);
+                      }
+                      return;
+                    }
+                    setInquirySent(true);
+                  } catch {
+                    setInquiryError("Couldn't reach the server. Please try again or email us at " + EMAIL + ".");
+                  } finally {
+                    setInquirySubmitting(false);
+                  }
                 }} className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">How are you handing off the device?</label>
@@ -9316,7 +9390,11 @@ export default function Home() {
                   <div>
                     <label className="block text-xs font-medium text-[#e6e6e6] mb-1.5 uppercase tracking-wider">Phone</label>
                     <input type="tel" autoComplete="tel" value={phone} onChange={(e) => {
-                      const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      // Strip a leading US country code before keeping 10
+                      // digits — "+1 512 555 0123" autofill became (151) 255-5012.
+                      let digits = e.target.value.replace(/\D/g, "");
+                      if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
+                      digits = digits.slice(0, 10);
                       if (!digits) { setPhone(""); return; }
                       const isDeleting = e.target.value.length < phone.length;
                       if (isDeleting) { setPhone(digits); return; }
@@ -9388,8 +9466,11 @@ export default function Home() {
                       </div>
                     )}
                   </div>
-                  <button type="submit" disabled={uploading || !inquiryHandoff} className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed">
-                    {inquiryHandoff ? "Get My Custom Quote" : "Choose a handoff method above"}
+                  {inquiryError && (
+                    <p role="alert" className="text-xs text-red-300 bg-red-900/20 border border-red-700/40 rounded-lg px-3 py-2">{inquiryError}</p>
+                  )}
+                  <button type="submit" disabled={uploading || !inquiryHandoff || inquirySubmitting} className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-lg font-semibold cursor-pointer hover:bg-[#00e676] transition tap-press disabled:opacity-40 disabled:cursor-not-allowed">
+                    {inquirySubmitting ? "Sending…" : inquiryHandoff ? "Get My Custom Quote" : "Choose a handoff method above"}
                   </button>
                 </form>
                 <button onClick={() => setCondition(null)} className="mt-4 text-[#e6e6e6] text-sm cursor-pointer hover:text-white transition">← Change condition</button>
@@ -11996,6 +12077,12 @@ export default function Home() {
                       paidOff: paidOff ?? undefined,
                       imei: imeiInput.replace(/\D/g, "") || undefined,
                       imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined,
+                      // Lock + accessories answers ride with the item (the
+                      // cart submit never read the live funnel values, so
+                      // they never reached the lead). Accessories only when
+                      // the toggle was actually on screen for this quote.
+                      carrierLock: carrierLock?.label,
+                      accessoriesIncluded: (!isManualQuote && !isPendingQuote && showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined,
                       // Snapshot the handoff method as the user chose it for
                       // THIS item. Falls back to "local" if they somehow
                       // reached add-to-cart without picking — but the funnel
@@ -12776,7 +12863,7 @@ export default function Home() {
               // customer: they saw "we'll text you to coordinate a time" but
               // Submit silently demanded a slot that didn't exist on screen.
               // No slots → let them book and we coordinate by text.
-              if (cartNeedsLocal && availableSlots.length > 0 && !selectedSlot) {
+              if (cartNeedsLocal && slotChoices.length > 0 && !selectedSlot) {
                 alert("Please pick a meetup window for your local items.");
                 focusByQuery(['[data-validate="slot"]']);
                 return;
@@ -12787,6 +12874,28 @@ export default function Home() {
               if (!complianceAttested) {
                 alert("Please confirm you're 18 or older and the legal owner of this device to continue.");
                 focusByQuery(['[data-validate="attestation"]']);
+                return;
+              }
+              // Mirror /api/lead's TCPA rule: a local-only order with a
+              // 10-digit phone needs explicit SMS consent. The consent box
+              // only mounts while the phone section is open, so a phone
+              // prefilled by Login / a restored session skipped the browser's
+              // `required` check and the server 400'd. Runs BEFORE bookSlot
+              // so a doomed submit never books a window. (Ship/mixed are
+              // exempt server-side — cartNeedsShip covers both.)
+              if (!cartNeedsShip && phone.replace(/\D/g, "").length >= 10 && !smsOptIn) {
+                setPhoneOpen(true);
+                alert("Please tick the SMS consent box under your phone number (or clear the number) to continue.");
+                // Defer so the just-opened section is in the DOM.
+                setTimeout(() => focusByQuery(['[data-validate="sms-consent"]', '[data-validate="phone"]']), 0);
+                return;
+              }
+              // A digital payout with no handle (restored session, back/
+              // forward nav past the payout step's gate) would submit a
+              // bare "Zelle" with nowhere to send the money.
+              if (payout && PAYOUT_HANDLE_META[payout.id] && !payoutHandle.trim()) {
+                alert(`Please enter your ${PAYOUT_HANDLE_META[payout.id].field} so we know where to send your payout.`);
+                setStep("payout"); pushHistory("payout");
                 return;
               }
               setSubmittingLead(true);
@@ -12804,7 +12913,9 @@ export default function Home() {
                 // re-pick instead of losing data / getting a confusing
                 // half-submitted state.
                 let bookedSlotInfo: { id: string; date: string; time: string; label?: string } | undefined;
-                if (cartNeedsLocal && selectedSlot) {
+                // Skip the book when an earlier failed submit already holds
+                // this exact window for us (see heldSlot).
+                if (cartNeedsLocal && selectedSlot && heldSlot?.id !== selectedSlot.id) {
                   const r = await bookSlot(selectedSlot.id, {
                     sellerName: name,
                     sellerPhone: phone || undefined,
@@ -12833,8 +12944,22 @@ export default function Home() {
                     setSubmittingLead(false);
                     return;
                   }
+                  setHeldSlot(selectedSlot);
+                }
+                if (cartNeedsLocal && selectedSlot) {
                   bookedSlotInfo = { id: selectedSlot.id, date: selectedSlot.date, time: selectedSlot.time, label: selectedSlot.label };
                 }
+                // /api/lead's own reason (MX-failed email, rate limit, bad
+                // payout handle…) — the old `throw new Error("Failed")`
+                // replaced it with a generic alert the customer couldn't act
+                // on. Carried to the catch below.
+                const leadFailure = async (res: Response) => {
+                  const d = await res.json().catch(() => ({})) as { error?: unknown; suggestion?: unknown };
+                  return Object.assign(new Error("Failed"), {
+                    userMessage: typeof d.error === "string" && d.error ? d.error : undefined,
+                    suggestion: typeof d.suggestion === "string" && d.suggestion ? d.suggestion : undefined,
+                  });
+                };
                 // Mixed cart: send both shipping address AND slot info under a
                 // "mixed" method so the backend can split fulfillment. Pure
                 // single-method orders keep their original payload shape for
@@ -12887,6 +13012,15 @@ export default function Home() {
                 // number (and is searchable in admin).
                 let leadIdLocal: string | null = null;
                 if (submitViaCart) {
+                  // The IMEI field lives on THIS step, after items were
+                  // snapshotted, so it.imei / it.imeiWarnings were empty or
+                  // stale and a flagged (iCloud-locked / blacklisted) IMEI
+                  // never reached staff. A one-item cart's field is clearly
+                  // that device's; a multi-item cart has one shared field, so
+                  // it goes on the order instead of guessing a device.
+                  const singleItem = cartItems.length === 1;
+                  const liveImei = imeiInput.replace(/\D/g, "") || undefined;
+                  const liveImeiWarnings = imeiState === "warn" ? imeiResult?.warnings : undefined;
                   const devicesPayload = cartItems.map((it) => {
                     // Must match the photo-tab __key (incl. handoff) so each
                     // cart line's photos attach to the right device. (bug fix)
@@ -12921,8 +13055,10 @@ export default function Home() {
                       // order-level answer to each carrier-connected device; the
                       // question doesn't apply to non-carrier devices. (bug fix)
                       paidOff: it.carrier ? paidOff : undefined,
-                      imei: it.imei,
-                      imeiWarnings: it.imeiWarnings,
+                      imei: singleItem ? liveImei : it.imei,
+                      imeiWarnings: singleItem ? liveImeiWarnings : it.imeiWarnings,
+                      carrierLock: it.carrierLock,
+                      accessoriesIncluded: it.accessoriesIncluded,
                       // Per-item handoff so the backend can split mixed
                       // carts into ship vs local fulfillment groups.
                       handoff: it.handoff ?? "local",
@@ -12942,7 +13078,19 @@ export default function Home() {
                         ? `${cartItems.length} devices — ${cartItems[0].model} + ${cartItems.length - 1} more`
                         : cartItems[0].model,
                       condition: cartItems.length > 1 ? "Multi-device" : cartItems[0].condition,
-                      carrier: carrier?.label,
+                      // One-item cart: the server reads these at the top
+                      // level (its devices[0] hydration skips lock and
+                      // accessories), so send the ITEM's answers — and the
+                      // item's carrier, so the lock-aware cap pairs the lock
+                      // with the carrier it was quoted under, not whatever
+                      // the funnel shows now.
+                      carrier: singleItem ? cartItems[0].carrier : carrier?.label,
+                      carrierLock: singleItem ? cartItems[0].carrierLock : undefined,
+                      accessoriesIncluded: singleItem ? cartItems[0].accessoriesIncluded : undefined,
+                      // Multi-item cart: the shared contact-step IMEI goes on
+                      // the order (single-item carts carry it on devices[0]).
+                      imei: singleItem ? undefined : liveImei,
+                      imeiWarnings: singleItem ? undefined : liveImeiWarnings,
                       quote: totalQuote,
                       payout: payoutValue,
                       handoff: handoffPayload,
@@ -12957,7 +13105,7 @@ export default function Home() {
                       attestation: complianceAttested,
                     }),
                   });
-                  if (!r.ok) throw new Error("Failed");
+                  if (!r.ok) throw await leadFailure(r);
                   const d = await r.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
@@ -12970,13 +13118,18 @@ export default function Home() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponLabel || undefined, referralCode: referralCode || undefined, attestation: complianceAttested }),
                   });
-                  if (!res.ok) throw new Error('Failed');
+                  if (!res.ok) throw await leadFailure(res);
                   const d = await res.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
                   if (d?.leadId) { setSubmittedLeadId(d.leadId); leadIdLocal = d.leadId; }
                 }
                 setSubmittedLabel(leadLabel);
+                // Lead saved — the slot hold is now this lead's booking. Also
+                // clear the IMEI so a second trade this visit doesn't carry
+                // the first device's number (and warnings) into its lead.
+                setHeldSlot(null);
+                setImeiInput(""); setImeiState("idle"); setImeiResult(null);
                 // Leave a returning-visitor marker so a future visit
                 // gets a "welcome back" greeting on the landing step.
                 try {
@@ -13098,7 +13251,27 @@ export default function Home() {
                 try { localStorage.removeItem("tcc-cart"); } catch {}
                 localStorage.removeItem("tcc-session");
                 setStep("done"); pushHistory("done");
-              } catch { alert("Something went wrong. Please try again or call us directly."); }
+              } catch (err) {
+                const { userMessage: msg, suggestion } = (err ?? {}) as { userMessage?: string; suggestion?: string };
+                if (!msg) {
+                  alert("Something went wrong. Please try again or call us directly.");
+                } else if (/bitcoin|cash app|zelle/i.test(msg)) {
+                  // Payout-handle rejection — send them back to fix it.
+                  alert(msg);
+                  setStep("payout"); pushHistory("payout");
+                } else if (suggestion || /email (address|domain)/i.test(msg)) {
+                  // Email lives on the checkout step — same routing as the
+                  // client-side email check above, with the server's reason.
+                  setEmailErr({ message: msg, suggestion });
+                  setStep("checkout"); pushHistory("checkout");
+                } else if (/sms consent/i.test(msg)) {
+                  // Consent box lives in the (collapsible) phone section.
+                  setPhoneOpen(true);
+                  alert("Please tick the SMS consent box under your phone number (or clear the number) to continue.");
+                } else {
+                  alert(msg);
+                }
+              }
               finally { setSubmittingLead(false); }
             }} className="space-y-4">
               {/* HANDOFF SECTION — if the user picked Local or Shipping on the
@@ -13278,7 +13451,7 @@ export default function Home() {
                           )}
                         </div>
                         <p className="text-[#bdbdbd] text-xs leading-snug">
-                          {availableSlots.length > 0
+                          {slotChoices.length > 0
                             ? "Pick an open meetup window below. We'll confirm the exact location via text."
                             : "We'll text or email you within the hour to coordinate a time and a public spot in Austin you're comfortable with."}
                         </p>
@@ -13288,14 +13461,14 @@ export default function Home() {
                     {/* SLOT PICKER — appears only when Skywalker has
                         published open slots via /admin/slots. Atomic
                         book on form submit prevents double-booking. */}
-                    {(slotsLoading || availableSlots.length > 0) && (
+                    {(slotsLoading || slotChoices.length > 0) && (
                       <div data-validate="slot">
                         <label className="block text-xs font-medium text-[#e6e6e6] mb-2 uppercase tracking-wider">Pick a meetup time</label>
                         {slotsLoading ? (
                           <p className="text-[11px] text-[#888]">Loading available windows…</p>
                         ) : (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {availableSlots.map((s) => {
+                            {slotChoices.map((s) => {
                               const isPicked = selectedSlot?.id === s.id;
                               const dateLabel = new Date(s.date + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
                               // All-day "open day" slots have empty s.time — render
@@ -13393,7 +13566,12 @@ export default function Home() {
                   </div>
                 )}
                 <input type="tel" autoComplete="tel" value={phone} onChange={(e) => {
-                  const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  // Strip a leading US country code before keeping 10
+                  // digits — "+1 512 555 0123" autofill/paste became
+                  // (151) 255-5012, which then went on the FedEx label.
+                  let digits = e.target.value.replace(/\D/g, "");
+                  if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
+                  digits = digits.slice(0, 10);
                   if (!digits) { setPhone(""); return; }
                   // Detect deletion — if the raw value got shorter, set
                   // the unformatted digits so the user can backspace past
@@ -13414,6 +13592,7 @@ export default function Home() {
                       checked={smsOptIn}
                       onChange={(e) => setSmsOptIn(e.target.checked)}
                       required={handoffMethod !== "ship"}
+                      data-validate="sms-consent"
                       className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
                     />
                     <span className="text-[#e6e6e6] text-[11px] leading-relaxed">

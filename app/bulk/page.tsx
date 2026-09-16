@@ -16,11 +16,19 @@ export default function BulkPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  // TCPA consent — /api/lead rejects any non-ship lead that carries a
+  // 10-digit phone without smsOptIn:true, so this form (which asks for a
+  // phone) lost every bulk lead that included one. Same unchecked box +
+  // wording as the main funnel.
+  const [smsOptIn, setSmsOptIn] = useState(false);
+  const phoneDigits = phone.replace(/\D/g, "");
 
   const submit = async () => {
     setError("");
     if (!name || !email || !details) { setError("Name, email, and device details are required."); return; }
+    if (phoneDigits.length >= 10 && !smsOptIn) { setError("Please tick the SMS consent box under your phone number, or leave the phone blank."); return; }
     setSubmitting(true);
+    let serverMsg = "";
     try {
       const res = await fetch("/api/lead", {
         method: "POST",
@@ -34,12 +42,21 @@ export default function BulkPage() {
           quote: 0,
           payout: "TBD",
           notes: details,
+          // Consent only counts with a number to text (box may stay
+          // ticked after the phone is cleared).
+          smsOptIn: phoneDigits.length > 0 && smsOptIn,
         }),
       });
-      if (!res.ok) throw new Error("submit failed");
+      // Show the server's reason (bad email domain, rate limit…) — a
+      // generic message left the customer retrying the same failure.
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        if (typeof d?.error === "string") serverMsg = d.error;
+        throw new Error("submit failed");
+      }
       setSubmitted(true);
     } catch {
-      setError("Something went wrong. Try again or text us.");
+      setError(serverMsg || "Something went wrong. Try again or email us.");
     } finally {
       setSubmitting(false);
     }
@@ -137,6 +154,19 @@ export default function BulkPage() {
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email *" aria-label="Email" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853]" />
               <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Phone (recommended)" aria-label="Phone" className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853]" />
             </div>
+            {phone.trim() && (
+              <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={smsOptIn}
+                  onChange={(e) => setSmsOptIn(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 shrink-0 rounded border-white/25 bg-white/5 accent-[#00c853] cursor-pointer"
+                />
+                <span className="text-[#dcdcdc] text-[11px] leading-relaxed">
+                  I agree to receive SMS updates about my trade-in from Top Cash Cellular at the number above. Msg &amp; data rates may apply, msg frequency varies, reply STOP to opt out, HELP for help. See our <a href="/privacy" className="underline hover:text-[#00c853]">privacy policy</a>.
+                </span>
+              </label>
+            )}
             <input value={count} onChange={(e) => setCount(e.target.value)} placeholder="Approx number of devices (e.g. 25)" aria-label="Approximate number of devices" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853]" />
             <textarea value={details} onChange={(e) => setDetails(e.target.value)} required rows={5} placeholder="Mix of devices? Brands, models, conditions — anything you can describe. e.g. '20 iPhone 13 Pro 256GB, 10 MacBook Air M2, all flawless.'" aria-label="Device details" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-[#d4d4d4] focus:outline-none focus:border-[#00c853] resize-none" />
             {error && <p className="text-sm text-red-400">{error}</p>}
