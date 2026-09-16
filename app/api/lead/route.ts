@@ -9,9 +9,9 @@ import { validateEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from "
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../lib/resell-estimates";
-import { mailShell, mailDetails, MAIL, mailLogo } from "../../lib/email-shell";
+import { mailShell, mailDetails, MAIL, mailLogo, esc as escHtml } from "../../lib/email-shell";
 import { registerEasyPostTracker } from "../../lib/easypost";
-import { notifyOwnerSms } from "../../lib/owner-sms";
+import { notifyOwnerSms, ownBlobStoreHost } from "../../lib/owner-sms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -60,13 +60,51 @@ const DEDUP_CUSTOM_MS = 5 * 60 * 1000; // 5min for custom-quote flows
 // a `\n` in a field could inject a forged `Quote: $99999` / `Payout: …`
 // line. Matches the shared cleanField in app/lib/lead-devices.ts (the two
 // had drifted; this one was bracket-only).
+// U+2028/U+2029 too: JS treats them as line breaks for `^` under the /m
+// flag, so one in a name beat the line-anchored `^Total payout:` parsers.
 function cleanField(s: unknown, max = 300): string {
   if (s === undefined || s === null) return "";
   const str = typeof s === "string" ? s : String(s);
-  return str.replace(/[\[\]\n\r\t]/g, " ").slice(0, max).trim();
+  return str.replace(/[\[\]\n\r\t\u2028\u2029]/g, " ").slice(0, max).trim();
 }
 
-function isDuplicate(email: string, contact: string, device: string, model: string, isCustom: boolean): boolean {
+// Request audit fields (IP, User-Agent, tcc_visitor_id cookie) go into the
+// MC body as well, and the client controls all three: a User-Agent could
+// carry `[STATUS: paid] [LEAD: <id>]`, and Next URL-decodes cookie values,
+// so `%0A` in the visitor cookie injected whole `Total payout:` /
+// `Referred-by:` lines. Same scrub as every other customer field.
+function requestMeta(req: NextRequest): { ip: string; ua: string; visitorId: string } {
+  const rawIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "";
+  return {
+    ip: cleanField(rawIp, 64) || "unknown",
+    ua: cleanField(req.headers.get("user-agent"), 240) || "unknown",
+    visitorId: cleanField(req.cookies.get("tcc_visitor_id")?.value, 64),
+  };
+}
+
+// Customer photo URLs. `photos` was the one customer field written into the
+// MC body RAW — a "URL" like `https://x.jpg [STATUS: paid] [LEAD: <id>]`, or
+// one carrying `\nReferred-by: …` / `Total payout: $2500`, forged admin
+// markers, and photos[0] went straight into the owner SMS and the owner
+// email's href. Every real funnel photo comes from /api/upload, which puts a
+// public blob named `devices/<ts>-<[A-Za-z0-9._-]>` in OUR store, so accept
+// exactly that shape and drop everything else. (Generic Vercel Blob host only
+// when no token is configured to read our store id from.)
+function safePhotoList(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  const host = ownBlobStoreHost();
+  const hostRe = host ? host.replace(/\./g, "\\.") : "[a-z0-9]+\\.public\\.blob\\.vercel-storage\\.com";
+  const re = new RegExp(`^https://${hostRe}/[A-Za-z0-9._/-]+$`, "i");
+  return v.filter((u): u is string => typeof u === "string" && u.length <= 500 && re.test(u)).slice(0, 12);
+}
+
+// Links in customer text never belong in an owner alert — a name like
+// "https://evil.example/tcc-login" used to become the alert email's button.
+function alertText(s: unknown): string {
+  return String(s ?? "").replace(/[\r\n\t]+/g, " ").replace(/https?:\/\/\S+/gi, "(link removed)").trim();
+}
+
+function dedupKey(email: string, contact: string, device: string, model: string, isCustom: boolean): string {
   const e = (email || "").toLowerCase().trim();
   // Phone normalization: strip every non-digit (handles spaces, dashes,
   // parens), then strip a leading 1 from an 11-digit US number so
@@ -77,7 +115,18 @@ function isDuplicate(email: string, contact: string, device: string, model: stri
   // For custom flows: key on device-category only (Tablet/Desktop/etc.) so
   // free-text condition tweaks dedupe. For regular flows: key on full model.
   const productKey = isCustom ? (device || "").toLowerCase() : (model || "").toLowerCase();
-  const key = `${e || c}|${productKey}|${isCustom ? "custom" : "regular"}`;
+  return `${e || c}|${productKey}|${isCustom ? "custom" : "regular"}`;
+}
+
+// A submit that never reached Mission Control must not leave its key behind:
+// the customer's retry would otherwise get `{ ok: true, deduped: true }`,
+// which the funnel treats as success — for a lead that was never saved.
+function forgetDuplicate(email: string, contact: string, device: string, model: string, isCustom: boolean): void {
+  recentLeads.delete(dedupKey(email, contact, device, model, isCustom));
+}
+
+function isDuplicate(email: string, contact: string, device: string, model: string, isCustom: boolean): boolean {
+  const key = dedupKey(email, contact, device, model, isCustom);
   const window = isCustom ? DEDUP_CUSTOM_MS : DEDUP_REGULAR_MS;
   const now = Date.now();
   const lastSeen = recentLeads.get(key);
@@ -578,8 +627,11 @@ export async function POST(req: NextRequest) {
   // (where a re-quote on edit would drop it).
   const offerBonus = (couponApplied?.value || 0) + referralBonus;
 
-  const photoLines = (photos as string[] | undefined)?.length
-    ? [`Photos: ${(photos as string[]).join(" | ")}`]
+  // Only our own blob photo URLs — see safePhotoList(). Used for the MC body,
+  // the AI photo check and both owner alerts.
+  const safePhotos = safePhotoList(photos);
+  const photoLines = safePhotos.length
+    ? [`Photos: ${safePhotos.join(" | ")}`]
     : [];
 
   // Multi-device submission — Skywalker 2026-05-17: "when customers
@@ -653,8 +705,9 @@ export async function POST(req: NextRequest) {
       if (d.brokenFaceId === "no") specBits.push("Face ID: ⚠️ NOT WORKING (deduction applied in quote)");
       else if (d.brokenFaceId === "yes") specBits.push("Face ID: working");
       for (const bit of specBits) multiLines.push(`     ${bit}`);
-      if (Array.isArray(d.photos) && d.photos.length > 0) {
-        multiLines.push(`     Photos: ${d.photos.join(" | ")}`);
+      const dPhotos = safePhotoList(d.photos);
+      if (dPhotos.length > 0) {
+        multiLines.push(`     Photos: ${dPhotos.join(" | ")}`);
       }
     });
     const total = deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0);
@@ -732,7 +785,11 @@ export async function POST(req: NextRequest) {
     couponLines.push(`Coupon applied: ${couponApplied.code} (+$${couponApplied.value} thank-you bonus)`);
     couponLines.push(`Total payout amount: $${quoteNum} (base $${baseQuoteNum} + bonus $${couponApplied.value})`);
   } else if (couponError && typeof couponCode === "string" && couponCode.trim()) {
-    couponLines.push(`Coupon attempt: ${couponCode.trim().toUpperCase()} · failed: ${couponError.slice(0, 200)}`);
+    // The echoed code is whatever the customer typed — scrub it like any
+    // other field, or "x\nTotal payout: $2600\n[OFFER-BONUS: amount=1000]"
+    // lands as real lines (the parsers are case-insensitive, so the
+    // upper-casing doesn't defuse it).
+    couponLines.push(`Coupon attempt: ${cleanField(couponCode, 64).toUpperCase()} · failed: ${couponError.slice(0, 200)}`);
   }
   // Promo (percent) coupon audit — the discount is already inside the quote;
   // this line records that the cap was raised so the offer wasn't clamped.
@@ -776,7 +833,8 @@ export async function POST(req: NextRequest) {
   if (typeof notes === "string" && notes.trim()) {
     // Strip [ and ] too — collapse-to-bullet handled newlines, but the
     // marker-injection threat requires removing brackets as well.
-    const clean = notes.replace(/[\r\n]+/g, " · ").replace(/[\[\]]/g, "").trim().slice(0, 500);
+    // (U+2028/U+2029 count as line breaks too — see cleanField.)
+    const clean = notes.replace(/[\r\n\u2028\u2029]+/g, " · ").replace(/[\[\]]/g, "").trim().slice(0, 500);
     customerMetaLines.push(`Note from customer: ${clean}`);
   }
   // Record SMS-consent disposition (TCPA audit trail). When phone is
@@ -813,13 +871,7 @@ export async function POST(req: NextRequest) {
   //   - fraud detection (same IP submitting many leads)
   //   - geo sanity check (claims-to-be-Austin-but-IP-in-Florida)
   //   - cross-session attribution (came back N times before converting)
-  const ip = (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
-  ).slice(0, 64);
-  const ua = (req.headers.get("user-agent") || "unknown").slice(0, 240);
-  const visitorId = (req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
+  const { ip, ua, visitorId } = requestMeta(req);
   customerMetaLines.push(`Source-IP: ${ip}`);
   customerMetaLines.push(`Source-UA: ${ua}`);
   if (visitorId) customerMetaLines.push(`Visitor-ID: ${visitorId}`);
@@ -921,7 +973,8 @@ export async function POST(req: NextRequest) {
     const shipping = 10;
     const netProfit = margin - shipping;
     marginLines.push("--- MARGIN ANALYSIS ---");
-    const refNote = condMult < 1 ? ` (working: $${resellWorking}, ${Math.round(condMult*100)}% for ${condition})` : "";
+    // condition is customer text ("Good\n[STATUS: paid] …" still maps to 0.80).
+    const refNote = condMult < 1 ? ` (working: $${resellWorking}, ${Math.round(condMult*100)}% for ${cleanField(condition, 60)})` : "";
     marginLines.push(`Sells for: ~$${resellEst}${refNote}`);
     marginLines.push(`You pay: $${quoteNum}`);
     marginLines.push(`You make: $${netProfit} after shipping (${marginPct}% margin)`);
@@ -1045,49 +1098,69 @@ export async function POST(req: NextRequest) {
   // leadId for the [LABEL: <id>] marker below so the admin lead row picks
   // up tracking automatically.
   let leadId: string | null = null;
-  try {
-    const r = await fetch(`${MC_API}/api/comms`, {
-      method: "POST",
-      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: "topcash-web",
-        fromName: "Top Cash Cellular",
-        role: "system",
-        body: leadBody,
-        // needs-review tag matches the items/append convention so tag-based
-        // tooling and the admin queue see funnel review-leads the same way.
-        tags: reviewRequired ? ["lead", "buyback", "needs-review"] : ["lead", "buyback"],
-        priority: "urgent",
-      }),
-    });
-    if (r.ok) {
-      const data = await r.json().catch(() => ({}));
-      leadId = data?.message?.id || null;
-      // Commit the coupon burn NOW that the lead is safely recorded — never
-      // before (a pre-post redeem burns the one-time code even if this POST
-      // fails). Best-effort: if the burn itself fails, the lead still stands
-      // with its credit and staff reconcile from the "Coupon applied" line —
-      // far better than silently eating the customer's code. MC re-checks
-      // identity + already-used server-side, so this stays authoritative.
-      if (couponApplied) {
-        try {
-          const rdm = await fetch(`${MC_API}/api/coupons`, {
-            method: "PATCH",
-            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              code: couponApplied.code,
-              action: "redeem",
-              email: (email || "").toLowerCase().trim(),
-              phone: (phone || "").replace(/\D/g, ""),
-            }),
-          });
-          if (!rdm.ok) console.warn(`[lead] coupon ${couponApplied.code} applied to lead ${leadId} but redeem-commit failed (${rdm.status}) — reconcile manually.`);
-        } catch (e) {
-          console.warn(`[lead] coupon ${couponApplied.code} redeem-commit threw for lead ${leadId}:`, e instanceof Error ? e.message : e);
-        }
+  // MC is the ONLY place the full lead lives (payout handle, address/slot,
+  // specs, IMEI, coupon, referral). A failed write used to be swallowed by an
+  // empty catch and the customer still got ok:true, the done screen and a
+  // confirmation email for an offer number that maps to nothing. Retry once
+  // (MC restarts on every deploy), and remember the failure so it is handled
+  // after the label block below. A 4xx other than 408/429 won't fix itself.
+  let mcSaved = false;
+  let mcFailure = "";
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const r = await fetch(`${MC_API}/api/comms`, {
+        method: "POST",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "topcash-web",
+          fromName: "Top Cash Cellular",
+          role: "system",
+          body: leadBody,
+          // needs-review tag matches the items/append convention so tag-based
+          // tooling and the admin queue see funnel review-leads the same way.
+          tags: reviewRequired ? ["lead", "buyback", "needs-review"] : ["lead", "buyback"],
+          priority: "urgent",
+        }),
+      });
+      if (r.ok) {
+        mcSaved = true;
+        const data = await r.json().catch(() => ({}));
+        leadId = data?.message?.id || null;
+        break;
       }
+      mcFailure = `HTTP ${r.status}`;
+      // A 4xx (rotated key, rejected body) won't fix itself on a retry.
+      if (r.status >= 400 && r.status < 500 && r.status !== 408 && r.status !== 429) break;
+    } catch (e) {
+      // Network error. A retry could in rare cases double-post a lead MC
+      // did accept — a visible duplicate beats an invisible lost lead.
+      mcFailure = e instanceof Error ? e.message : String(e);
     }
-  } catch {}
+    if (attempt < 2) await new Promise((res) => setTimeout(res, 1000));
+  }
+  // Commit the coupon burn NOW that the lead is safely recorded — never
+  // before (a pre-post redeem burns the one-time code even if this POST
+  // fails). Best-effort: if the burn itself fails, the lead still stands
+  // with its credit and staff reconcile from the "Coupon applied" line —
+  // far better than silently eating the customer's code. MC re-checks
+  // identity + already-used server-side, so this stays authoritative.
+  if (mcSaved && couponApplied) {
+    try {
+      const rdm = await fetch(`${MC_API}/api/coupons`, {
+        method: "PATCH",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: couponApplied.code,
+          action: "redeem",
+          email: (email || "").toLowerCase().trim(),
+          phone: (phone || "").replace(/\D/g, ""),
+        }),
+      });
+      if (!rdm.ok) console.warn(`[lead] coupon ${couponApplied.code} applied to lead ${leadId} but redeem-commit failed (${rdm.status}) — reconcile manually.`);
+    } catch (e) {
+      console.warn(`[lead] coupon ${couponApplied.code} redeem-commit threw for lead ${leadId}:`, e instanceof Error ? e.message : e);
+    }
+  }
 
   // FedEx label minting must NOT depend on MC being reachable — the
   // customer paid us their time, they need their prepaid label even
@@ -1107,16 +1180,16 @@ export async function POST(req: NextRequest) {
   // Skywalker 2026-05-19. Only runs when photos are present + we
   // have a leadId to tie the marker to. Auto-skips for multi-device
   // leads since per-device photos are nested differently.
-  if (leadId && Array.isArray(photos) && photos.length > 0 && !isMulti && model) {
+  if (leadId && safePhotos.length > 0 && !isMulti && model) {
     after(async () => {
       try {
         const { callAI, postAIMarker } = await import("../../lib/ai-gateway");
-        const imageItems = (photos as string[]).slice(0, 4).map((url) => ({
+        const imageItems = safePhotos.slice(0, 4).map((url) => ({
           type: "image_url" as const,
           image_url: { url },
         }));
         const sysPrompt = `You are a device-inspection assistant for Top Cash Cellular, a phone-buyback service. The customer claimed a specific device + condition. Inspect the attached photos and return STRICT JSON: {"match": true|false, "observed_model": "<best guess or 'unclear'>", "observed_condition": "Excellent|Good|Fair|Broken|unclear", "issues": [<short strings>], "confidence": "high|medium|low", "recommendation": "approve|manual-review|reject"}. Flag two-tier condition discrepancies (Excellent vs Broken). Flag screenshots (visible OS UI). Skip minor cosmetic noise.`;
-        const userPrompt = `Customer claim:\n- Model: ${model}\n- Condition: ${condition || "(n/a)"}\n\nInspect the ${(photos as string[]).length} photo(s).`;
+        const userPrompt = `Customer claim:\n- Model: ${model}\n- Condition: ${condition || "(n/a)"}\n\nInspect the ${safePhotos.length} photo(s).`;
         const result = await callAI({
           model: "anthropic/claude-sonnet-4-6",
           messages: [
@@ -1529,8 +1602,63 @@ Pick the best channel per device. Be concise.`;
     }
   }
 
+  // MC write failed (after the retry). Never lose the lead: the owner gets
+  // the FULL body (everything MC would have held) on every alert channel,
+  // plus a logged error. Then:
+  //  - nothing committed yet (no label, no slot) → answer 503 so the funnel
+  //    shows its "Something went wrong, please try again" alert instead of
+  //    the done screen + a confirmation email for an offer that exists
+  //    nowhere. The dedup key is dropped so that retry is processed, not
+  //    answered `deduped: true`.
+  //  - a FedEx label already minted (ship/mixed) → keep the 2026-05-19 rule
+  //    and hand the customer their label; an error here would hide it and a
+  //    retry would bill a second label. Staff rebuild from the alert.
+  //  - a meetup slot already booked (local/mixed) → same: the funnel books
+  //    the slot BEFORE this POST and booking isn't idempotent, so a retry
+  //    409s on the customer's own booking ("That window was just taken")
+  //    or takes a second seat, and the first booking is orphaned.
+  if (!mcSaved) {
+    // Logged after the response (its own MC post may hang on the same outage).
+    const failure = mcFailure || "unknown";
+    const tracking = fedexLabel?.tracking ?? null;
+    const bookedHandoff = (handoff && typeof handoff === "object")
+      ? (handoff as { method?: string; slot?: { id?: unknown } })
+      : null;
+    const slotBooked = !!bookedHandoff
+      && (bookedHandoff.method === "local" || bookedHandoff.method === "mixed")
+      && !!bookedHandoff.slot?.id;
+    after(() => reportError("lead.mc.post", new Error(`Mission Control rejected the lead: ${failure}`), {
+      customerEmail: typeof email === "string" ? email : undefined,
+      extra: { labelMinted: !!tracking, tracking, slotBooked },
+    }));
+    // Photo lines hold our own whitelisted URLs; any other link in the body
+    // is customer text (name, referrer…) and must not ride into the alert.
+    const alertBody = leadBody
+      .split("\n")
+      .map((l) => (/^\s*Photos:/.test(l) ? l : l.replace(/https?:\/\/\S+/gi, "(link removed)")))
+      .join("\n");
+    try {
+      await notifyOwnerSms(
+        `🚨 LEAD NOT SAVED — Mission Control write failed (${failure}). ` +
+        (fedexLabel
+          ? `FedEx label ${fedexLabel.tracking} was minted and given to the customer${slotBooked ? " (meetup slot booked too)" : ""} — add this lead by hand.`
+          : slotBooked
+          ? "Meetup slot was booked (see Slot line) and the customer was told it went through — add this lead by hand."
+          : "Customer was asked to retry — if no saved lead follows, contact them.") +
+        `\n${alertBody}`,
+      );
+    } catch {}
+    if (!fedexLabel && !slotBooked) {
+      if (!isPreviewSave) forgetDuplicate(email, phone, device, model, isCustom);
+      return NextResponse.json(
+        { error: "We couldn't save your trade-in just now. Please try again in a minute — or call or text us and we'll finish it for you." },
+        { status: 503 },
+      );
+    }
+  }
+
   {
-    const photoNote = (photos as string[] | undefined)?.length ? ` Photos: ${(photos as string[])[0]}` : "";
+    const photoNote = safePhotos.length ? ` Photos: ${safePhotos[0]}` : "";
     const reviewTag = reviewRequired ? "⚠️ REVIEW: " : "";
     // Surface the fulfillment method so staff can dispatch immediately
     // without opening the lead (ship needs warehouse intake, local needs
@@ -1551,7 +1679,9 @@ Pick the best channel per device. Be concise.`;
     // quoteNum is the SERVER-VALIDATED payout (tamper-clamped + coupon/
     // referral) — the raw client `quote` showed the inflated number on a
     // tampered lead (deferred bug hunt, fixed 2026-07-14).
-    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${name} wants to sell ${model} (${condition})${quoteNum > 0 ? ` for $${quoteNum}${quoteTampered ? " (CLAMPED — tamper flag)" : ""}` : " — custom quote needed"}. Phone: ${phone || "N/A"} Email: ${email || "N/A"}${photoNote}${labelNote}`;
+    // Customer fields go through alertText(): no line breaks, no links — the
+    // only URL in this alert is our own (whitelisted) photo.
+    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${alertText(name)} wants to sell ${alertText(model)} (${alertText(condition)})${quoteNum > 0 ? ` for $${quoteNum}${quoteTampered ? " (CLAMPED — tamper flag)" : ""}` : " — custom quote needed"}. Phone: ${alertText(phone) || "N/A"} Email: ${alertText(email) || "N/A"}${photoNote}${labelNote}`;
     try {
       await notifyOwnerSms(ownerSms);
     } catch {}
@@ -1614,11 +1744,12 @@ Pick the best channel per device. Be concise.`;
   // escaped before they enter the template.
   if (process.env.RESEND_API_KEY) {
     try {
-      const esc = (s: unknown) => String(s ?? "").replace(/[<>&]/g, (ch) => (ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : "&amp;"));
+      // Shared esc() also escapes `"` — this value lands inside href="…".
+      const esc = escHtml;
       const oneLine = (s: unknown) => String(s ?? "").replace(/[\r\n]+/g, " ").trim();
       const handoffMethodStr = (handoff && typeof handoff === "object") ? String((handoff as { method?: string }).method || "") : "";
       const handoffTag = handoffMethodStr === "ship" ? "📦 SHIP" : handoffMethodStr === "local" ? "🤝 LOCAL" : handoffMethodStr === "mixed" ? "📦+🤝 MIXED" : "";
-      const firstPhoto = (photos as string[] | undefined)?.length ? (photos as string[])[0] : "";
+      const firstPhoto = safePhotos[0] || "";
       const rows: [string, string][] = [
         ["Customer", oneLine(name) || "—"],
         ["Device", `${oneLine(model)} · ${oneLine(condition)}`],
@@ -1704,6 +1835,16 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
       { status: 400 }
     );
   }
+  // This path emails a TCC-branded certificate to whatever address it is
+  // given — hold it to the same email check as the main path (typos,
+  // disposable inboxes, dead domains; DNS errors fail open). The funnel
+  // shows the returned reason.
+  {
+    const ec = await validateEmail(email, { checkMx: true });
+    if (!ec.ok) {
+      return NextResponse.json({ error: ec.reason || "Please enter a valid email address.", suggestion: ec.suggestion }, { status: 400 });
+    }
+  }
 
   // Sanitize every customer-supplied field before interpolating into MC
   // — same marker-injection defense the main path uses.
@@ -1717,13 +1858,7 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
 
   // Server-side IP + UA + visitor cookie — same audit trail the main
   // path captures, so recycle leads also support fraud + attribution.
-  const ip = (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
-  ).slice(0, 64);
-  const ua = (req.headers.get("user-agent") || "unknown").slice(0, 240);
-  const visitorId = (req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
+  const { ip, ua, visitorId } = requestMeta(req);
 
   const leadBody = [
     `[NEW BUYBACK LEAD] ♻ RECYCLE-ONLY`,
@@ -1779,21 +1914,32 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
     const padded = (idSource + "00000000").slice(0, 8);
     const certNumber = `${padded.slice(0, 4)}-${padded.slice(4, 8)}`;
     const certDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-    const deviceLabel = [safeModel, safeStorage, safeCondition].filter(Boolean).join(" · ") || safeModel || "Device";
+    // Anyone can aim this email at any inbox, so customer text must not carry
+    // links into it (a "name" of "Claim your $500 payout: https://…" would be
+    // a phishing relay from noreply@topcashcellular.com). HTML is escaped in
+    // the template; links are stripped here for the HTML, text and PDF alike.
+    // Bare domains too ("… at tcc-payouts.com", "x.com?id=1") — mail clients
+    // auto-link them. A TLD needs 2+ letters, so "12.9-inch" / "J.R." stay.
+    const noLinks = (s: string) => s
+      .replace(/(?:https?:\/\/|www\.)\S+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)+\/\S*/gi, "")
+      .replace(/\b(?:[a-z0-9-]+\.)+[a-z]{2,}\b\S*/gi, "")
+      .replace(/\s{2,}/g, " ").trim();
+    const certName = noLinks(safeName);
+    const deviceLabel = noLinks([safeModel, safeStorage, safeCondition].filter(Boolean).join(" · ")) || "Device";
     const html = renderRecycleCertificateEmail({
-      customerName: safeName,
+      customerName: certName,
       deviceLabel,
       certNumber,
       certDate,
     });
-    const text = `Hi ${safeName}, your Certificate of Responsible Recycling from Top Cash Cellular is attached as a PDF. Device: ${deviceLabel}. Certificate #${certNumber}. Issued ${certDate}. Your device will be securely wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled. Questions? Reply to this email or write to support@topcashcellular.com.`;
+    const text = `Hi ${certName || "there"}, your Certificate of Responsible Recycling from Top Cash Cellular is attached as a PDF. Device: ${deviceLabel}. Certificate #${certNumber}. Issued ${certDate}. Your device will be securely wiped to NIST 800-88 and either refurbished for reuse or broken down for component recovery — never landfilled. Questions? Reply to this email or write to support@topcashcellular.com.`;
     // Generate the actual certificate PDF to attach. Graceful: if PDF gen
     // ever fails, we still send the email (which has the certificate panel
     // in-body) rather than leaving the customer with nothing.
     let certAttachments: { filename: string; content: Buffer }[] | undefined;
     try {
       const { generateRecycleCertificatePdf } = await import("../../lib/recycle-certificate-pdf");
-      const pdfBytes = await generateRecycleCertificatePdf({ customerName: safeName, deviceLabel, certNumber, certDate });
+      const pdfBytes = await generateRecycleCertificatePdf({ customerName: certName, deviceLabel, certNumber, certDate });
       certAttachments = [{ filename: `Recycling-Certificate-${certNumber}.pdf`, content: Buffer.from(pdfBytes) }];
     } catch (err) {
       reportError("recycle.cert.pdf", err, { customerEmail: email, critical: false, extra: { model: safeModel } });
@@ -1868,13 +2014,7 @@ async function handleQuoteSave(req: NextRequest, data: Record<string, unknown>) 
   const safeCondition = cleanField(condition, 60);
   const safeCarrier = cleanField(carrier, 40);
 
-  const ip = (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown"
-  ).slice(0, 64);
-  const ua = (req.headers.get("user-agent") || "unknown").slice(0, 240);
-  const visitorId = (req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
+  const { ip, ua, visitorId } = requestMeta(req);
 
   const leadBody = [
     `[QUOTE SAVED]`,
@@ -1926,7 +2066,12 @@ function renderRecycleCertificateEmail(opts: {
   certNumber: string;
   certDate: string;
 }): string {
-  const { customerName, deviceLabel, certNumber, certDate } = opts;
+  // Name and device are customer-typed: escape them (the recycle path was
+  // the one TCC email still interpolating them raw — /api/confirm already
+  // escapes). certNumber is [A-Z0-9-] and certDate is server-made.
+  const { certNumber, certDate } = opts;
+  const customerName = escHtml(opts.customerName);
+  const deviceLabel = escHtml(opts.deviceLabel);
   return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>

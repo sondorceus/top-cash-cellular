@@ -905,7 +905,9 @@ export async function GET(req: NextRequest) {
       }
       flush();
       if (devices.length === 0) devices = undefined;
-      const totalMatch = m.body.match(/Total payout:\s*\$([0-9,]+)/);
+      // Line-anchored — customer text mid-line ("Note from customer: …
+      // Total payout: $2500") must not beat the real footer (see lead-money).
+      const totalMatch = m.body.match(/^Total payout:\s*\$([0-9,]+)/m);
       if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);
     }
     // Apply a customer device edit (latest [ITEM-UPDATE] marker) so the

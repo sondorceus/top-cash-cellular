@@ -22,9 +22,13 @@ export function parseDollarAmount(raw: string | undefined | null): number {
 // Multi-device leads don't carry a `Quote:` field — their grand total
 // lives in a `Total payout: $1,234` line near the bottom of the body.
 // Returns 0 when absent so callers can `|| 0` it.
+// Line-anchored: /api/lead writes the footer at the start of its own line,
+// while customer text (notes, name, model) sits mid-line after a "Key: "
+// prefix. Unanchored, a note saying "Total payout: $2500" above the real
+// footer won the first match. Same anchor the offer route already uses.
 export function parseTotalPayoutLine(body: string | undefined | null): number {
   if (!body) return 0;
-  const m = body.match(/Total payout:\s*\$([0-9,]+(?:\.\d+)?)/i);
+  const m = body.match(/^Total payout:\s*\$([0-9,]+(?:\.\d+)?)/im);
   if (!m) return 0;
   const n = parseFloat(m[1].replace(/,/g, ""));
   return Number.isFinite(n) ? Math.round(n) : 0;
