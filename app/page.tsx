@@ -2190,6 +2190,12 @@ const ALL_STORAGES = [
 ];
 
 const STORAGE_MAP: Record<string, string[]> = {
+  // iPhone 18 series + Duo (2026-09-14 lineup) — tiers mirror the PRICE_TABLE
+  // rows. Without an entry the picker offered ALL_STORAGES (64 GB–2 TB) and a
+  // tier with no table cell quoted off base × multiplier.
+  ip18pm: ["256", "512", "1tb", "2tb"],
+  ip18p: ["256", "512", "1tb", "2tb"],
+  ipduo: ["256", "512", "1tb", "2tb"],
   // iPhone 17 series — confirmed by Skywalker
   ip17pm: ["256", "512", "1tb", "2tb"],
   ip17p: ["256", "512", "1tb"],
@@ -2201,7 +2207,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   ip16p: ["128", "256", "512", "1tb"],
   ip16plus: ["128", "256", "512"],
   ip16: ["128", "256", "512"],
-  ip16e: ["128", "256"],
+  ip16e: ["128", "256", "512"],  // 16e ships in 512 GB and PRICE_TABLE prices it — it was hidden
   // iPhone 15 series
   ip15pm: ["256", "512", "1tb"],
   ip15p: ["128", "256", "512", "1tb"],
@@ -2227,6 +2233,11 @@ const STORAGE_MAP: Record<string, string[]> = {
   ip11p: ["64", "256", "512"],
   ip11: ["64", "128", "256"],
   // Samsung Galaxy
+  // 2026-09-14 foldables — tiers mirror the PRICE_TABLE rows (same reason as iPhone 18 above).
+  gzfold8u: ["256", "512", "1tb"],
+  gzfold8: ["256", "512", "1tb"],
+  gzflip8: ["256", "512"],
+  gzflip7fe: ["128", "256"],
   gs26u: ["256", "512", "1tb"],
   gs26p: ["256", "512"],
   gs26: ["256", "512"],  // S26 base starts at 256GB in the US — no 128GB SKU (2026-07-17 audit)
@@ -4080,6 +4091,14 @@ function GoogleSignInButton({ onCredential }: { onCredential: (p: GoogleCredenti
   );
 }
 
+// Today's Austin calendar day, YYYY-MM-DD — slot dates are Austin days. The
+// UTC date rolls over at 7pm CDT and hid tonight's windows. (bug fix)
+function austinToday(): string {
+  const dp = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  const dpart = (t: string) => dp.find((x) => x.type === t)?.value ?? "";
+  return `${dpart("year")}-${dpart("month")}-${dpart("day")}`;
+}
+
 type PriceOverrides = {
   priceTable: Record<string, Record<string, Record<string, number>>>;
   carrierDeductions: Record<string, Record<string, number>>;
@@ -4088,17 +4107,20 @@ type PriceOverrides = {
 };
 
 export default function Home() {
-  // Price overrides — pulled on mount from /api/admin/prices. Lets
-  // Skywalker edit prices via /admin/prices and have them apply
+  // Price overrides — pulled on mount from the public /api/prices/overrides.
+  // Lets Skywalker edit prices via /admin/prices and have them apply
   // without a redeploy (the lookupPrice block below checks this
   // first, falls back to the bundled PRICE_TABLE / CARRIER_DEDUCTIONS).
   // Skywalker 2026-05-18 self-serve price editor.
+  // It used to read /api/admin/prices, which is admin-gated since
+  // 2026-06-19 — customers got a 401 and never saw an override, while the
+  // server (lead cap, confirm, /go) priced from them. (bug fix)
   const [priceOverrides, setPriceOverrides] = useState<PriceOverrides | null>(null);
   useEffect(() => {
-    fetch("/api/admin/prices")
+    fetch("/api/prices/overrides")
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
-        if (d?.overrides) setPriceOverrides(d.overrides);
+        if (d?.priceTable) setPriceOverrides(d as PriceOverrides);
       })
       .catch(() => {});
   }, []);
@@ -4947,16 +4969,25 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imei: clean, deviceCategory: deviceType }),
       });
-      const d = await r.json();
-      if (!d.ok && d.stage === "format") {
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || (!d.ok && d.stage === "format")) {
+        // Bad format, or the request itself was refused (429 / 400) —
+        // nothing was checked.
         setImeiState("error");
-        setImeiResult({ error: d.error });
+        setImeiResult({ error: d.error || "Couldn't verify — try again or skip." });
       } else if (d.warnings && d.warnings.length > 0) {
         setImeiState("warn");
         setImeiResult({ model: d.model, warnings: d.warnings });
-      } else {
+      } else if (d.stage === "full") {
         setImeiState("ok");
         setImeiResult({ model: d.model });
+      } else {
+        // "format-only": the Sickw lookup failed (e.g. low balance) or isn't
+        // configured, so only the Luhn check ran. Never call that "Verified".
+        // Shown as a heads-up, and it rides to the lead as an IMEI warning
+        // so staff know the lock/blacklist check never happened. (bug fix)
+        setImeiState("warn");
+        setImeiResult({ warnings: ["IMEI lock/blacklist check couldn't run — we'll verify it at handoff."] });
       }
     } catch {
       setImeiState("error");
@@ -5136,7 +5167,7 @@ export default function Home() {
     if (step !== "contact" || !cartNeedsLocal) return;
     let alive = true;
     setSlotsLoading(true);
-    const fromDate = new Date().toISOString().slice(0, 10);
+    const fromDate = austinToday();
     listSlots({ openOnly: true, fromDate })
       .then((s) => { if (alive) setAvailableSlots(s.slice(0, 18)); })
       .catch(() => {})
@@ -5763,6 +5794,12 @@ export default function Home() {
       if (s.shipZip) setShipZip(s.shipZip);
       if (s.shipHasBox) setShipHasBox(s.shipHasBox);
       if (s.payout) setPayout(s.payout);
+      // Payout handle ($cashtag / Zelle / BTC address) + its confirm copy —
+      // without them a reload on the contact step submitted a bare "Zelle"
+      // with no destination. Both are restored separately so the payout
+      // step's double-entry check still means something. (bug fix)
+      if (typeof s.payoutHandle === "string") setPayoutHandle(s.payoutHandle.slice(0, 120));
+      if (typeof s.payoutHandleConfirm === "string") setPayoutHandleConfirm(s.payoutHandleConfirm.slice(0, 120));
       if (s.name) setName(s.name);
       if (s.phone) setPhone(s.phone);
       // Restore the spec / connectivity / carrier-lock / broken state that
@@ -5777,12 +5814,19 @@ export default function Home() {
       if (s.displayGlass) setDisplayGlass(s.displayGlass);
       if (s.batteryHealth) setBatteryHealth(s.batteryHealth);
       if (s.charger) setCharger(s.charger);
-      if (s.brokenFunctional) setBrokenFunctional(s.brokenFunctional);
+      // `false` ("not functional") is the meaningful value here — a truthy
+      // check dropped it, so a dead device came back auto-priced. (bug fix)
+      if (typeof s.brokenFunctional === "boolean") setBrokenFunctional(s.brokenFunctional);
       if (s.brokenGlass) setBrokenGlass(s.brokenGlass);
       if (s.brokenFaceId) setBrokenFaceId(s.brokenFaceId);
       if (s.extras) setExtras(s.extras);
       if (typeof s.extrasIndex === "number") setExtrasIndex(s.extrasIndex);
-      setStep(s.step);
+      // A contact-step session saved before the handle was persisted (or
+      // with it missing) would submit a digital payout with no account —
+      // resume on the payout step so the customer re-enters it.
+      const handleMissing = s.step === "contact" && !!s.payout && !!PAYOUT_HANDLE_META[s.payout.id]
+        && !(typeof s.payoutHandle === "string" && s.payoutHandle.trim());
+      setStep(handleMissing ? "payout" : s.step);
     } catch {}
   }, []);
 
@@ -5806,12 +5850,14 @@ export default function Home() {
   }, [cartItems, handoffMethod]);
 
   useEffect(() => {
-    if (step === "device") { localStorage.removeItem("tcc-session"); return; }
+    // "done" is never restored, and the submit handler wipes the session
+    // just before it — don't re-save it (with the payout handle) here.
+    if (step === "device" || step === "done") { localStorage.removeItem("tcc-session"); return; }
     try {
       localStorage.setItem("tcc-session", JSON.stringify({
         step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email,
         handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox,
-        payout, name, phone,
+        payout, payoutHandle, payoutHandleConfirm, name, phone,
         // Spec / connectivity / carrier-lock / broken sub-state MUST persist
         // too — without them a refresh-resume to "quote" recomputes the price
         // from null inputs: locked Verizon phones lose their carrier deduction
@@ -5823,7 +5869,7 @@ export default function Home() {
         ts: Date.now(),
       }));
     } catch {}
-  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox, payout, name, phone, connectivity, carrierLock, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, brokenFunctional, brokenGlass, brokenFaceId, extras, extrasIndex]);
+  }, [step, deviceType, selectedSeries, model, storage, condition, carrier, quantity, email, handoffMethod, shipStreet, shipUnit, shipCity, shipState, shipZip, shipHasBox, payout, payoutHandle, payoutHandleConfirm, name, phone, connectivity, carrierLock, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, brokenFunctional, brokenGlass, brokenFaceId, extras, extrasIndex]);
 
   const storageMultiplier = storage?.multiplier ?? 1;
   const carrierMultiplier = carrierMultiplierFor(carrier?.id, carrierLock?.id);
@@ -12771,7 +12817,9 @@ export default function Home() {
                       : `Couldn't reserve that window: ${r.error}`);
                     // Refresh open slots so the booked one drops off.
                     try {
-                      const fromDate = new Date().toISOString().slice(0, 10);
+                      // Same Austin day as the first fetch — a UTC date
+                      // wiped tonight's other windows after a lost race.
+                      const fromDate = austinToday();
                       const fresh = await listSlots({ openOnly: true, fromDate });
                       setAvailableSlots(fresh.slice(0, 18));
                     } catch {}
