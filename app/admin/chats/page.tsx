@@ -51,23 +51,39 @@ export default function LiveChatsPage() {
   // for records newer than the newest we've rendered — idle ticks cost the
   // server a list() and zero blob fetches.
   const cursorRef = useRef<{ sid: string; ts: number }>({ sid: "", ts: 0 });
+  // The thread on screen. A response for a thread Sonny already left (a slow
+  // full load for A landing after B's) is dropped — it used to replace B's
+  // messages, takeover state and cursor while B's header stayed up.
+  const openRef = useRef<string | null>(null);
   const loadThread = useCallback((sid: string) => {
     const after = cursorRef.current.sid === sid ? cursorRef.current.ts : 0;
     fetch(`/api/admin/chats?session=${sid}&after=${after}`, { headers: hdrs, cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (!d) return;
+      .then(async (r) => (r.ok ? { d: await r.json(), date: r.headers.get("date") } : null))
+      .then((res) => {
+        if (!res || openRef.current !== sid) return;
+        const { d } = res;
         const fresh: StoredMsg[] = Array.isArray(d.msgs) ? d.msgs : [];
         // Return the SAME array when nothing new: an unconditional spread made
         // every 4s poll a new identity → re-render → the scroll effect yanked
         // the thread to the bottom while Sonny was scrolled up reading photos.
+        // The cursor trails (below), so already-shown records are skipped by
+        // identity, not by ts alone.
+        const key = (m: StoredMsg) => `${m.ts}|${m.role}|${m.text}`;
         setMsgs((cur) => {
           if (after === 0) return fresh;
-          const add = fresh.filter((m) => m.ts > after);
+          const have = new Set(cur.map(key));
+          const add = fresh.filter((m) => m.ts > after && !have.has(key(m)));
           return add.length ? [...cur, ...add] : cur;
         });
+        // A record's ts is taken before its blob upload finishes, so a seller
+        // message still uploading can list AFTER a newer note. The cursor only
+        // passes records 15s old (server clock) — jumping to the newest ts
+        // hid that message until the thread was reopened.
+        const serverNow = Date.parse(res.date || "") || Date.now();
         const maxTs = fresh.length ? Math.max(...fresh.map((m) => m.ts)) : after;
-        cursorRef.current = { sid, ts: Math.max(after, maxTs, typeof d.lastTs === "number" ? d.lastTs : 0) };
+        const newest = Math.max(maxTs, typeof d.lastTs === "number" ? d.lastTs : 0);
+        const prev = cursorRef.current.sid === sid ? cursorRef.current.ts : 0;
+        cursorRef.current = { sid, ts: Math.max(prev, Math.min(newest, serverNow - 15_000)) };
         setTakeoverState(!!d.takeover);
       })
       .catch(() => {});
@@ -77,12 +93,14 @@ export default function LiveChatsPage() {
   // Deep link: /admin/chats?session=<sid> opens that thread directly.
   useEffect(() => {
     const sid = new URLSearchParams(window.location.search).get("session");
-    if (sid && /^[a-z0-9-]{4,32}$/i.test(sid)) setOpen(sid);
+    // Same shape the store accepts (older ids carry "_").
+    if (sid && /^[a-z0-9_-]{4,32}$/i.test(sid)) setOpen(sid);
     loadInbox();
   }, [loadInbox]);
 
   // Poll: the open thread every 4s, the inbox every 15s.
   useEffect(() => {
+    openRef.current = open;
     if (!open) return;
     loadThread(open);
     const iv = setInterval(() => loadThread(open), 4000);

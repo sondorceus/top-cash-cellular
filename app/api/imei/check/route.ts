@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { lookupImei } from "../../../lib/imei-lookup";
 import { clientIp, rateLimit, rateLimitResponse } from "../../../lib/rate-limit";
+import { getSessionFromRequest, isAdminEmail } from "../../../lib/auth";
+
+// "Couldn't run" is never "clean". Before this, a Sickw failure (e.g.
+// "Error B01: Low Balance!") came back as ok:true with no warnings and the
+// funnel showed "✓ Verified" — a Find My-locked or blacklisted phone looked
+// checked. The warning makes every client (old bundles included) show a
+// heads-up, and the funnel carries it to the lead as an IMEI warning.
+const UNCHECKED_WARNING = "IMEI lock/blacklist check couldn't run — we'll verify it at handoff.";
+// Sickw services that carry the lock / blacklist answer (lib/imei-lookup:
+// 61 = Apple FMI + blacklist, 54 = blacklist for everything else). A failed
+// info-only call (92 / 1 / 42) still leaves the lock check done.
+const INFO_ONLY_SERVICES = new Set(["92", "1", "42"]);
 
 // Sickw IMEI/serial check.
 // Free TAC validation runs first (Luhn + length); if that passes, we hit
@@ -97,10 +109,20 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Stage 2: Sickw lookup (paid). Skip silently if no key configured.
-  if (!SICKW_KEY) {
-    return NextResponse.json({ ok: true, stage: "format-only", imei: clean });
-  }
+  // Sickw's own error text (billing state included) is for staff only: the
+  // admin device-correction panel shows it; anonymous callers never see it.
+  const staff = (() => {
+    try { return isAdminEmail(getSessionFromRequest(req)?.email); } catch { return false; }
+  })();
+  // stage "format-only" = only the Luhn check ran (no key, or the lookup
+  // failed). Same shape the funnel keys on; never cached.
+  const unchecked = (why: string) => {
+    console.error(`[imei/check] ${clean} lookup did not run: ${why}`);
+    return NextResponse.json({ ok: true, stage: "format-only", imei: clean, warnings: [UNCHECKED_WARNING], ...(staff ? { sickwError: why } : {}) });
+  };
+
+  // Stage 2: Sickw lookup (paid).
+  if (!SICKW_KEY) return unchecked("no SICKW_API_KEY");
 
   // Same (imei, category) within the last hour returns the cached
   // result without paying Sickw again.
@@ -112,15 +134,29 @@ export async function POST(req: NextRequest) {
 
   try {
     const lk = await lookupImei(clean);
-    if (!lk.ok) {
-      return NextResponse.json({ ok: true, stage: "format-only", imei: clean, sickwError: lk.error || "lookup failed" });
+    // lk.ok only says the brand call named a model; the sub-calls may still
+    // have answered (and a missing model with a lock answer is still a
+    // check). Nothing at all came back = the check didn't run.
+    if (!lk.ok && !lk.model && !lk.fmiRaw && !lk.blacklistRaw) {
+      return unchecked(lk.error || "lookup failed");
     }
+    // PARTIAL: a sub-call failed (lookupImei lists them as "61:error …;
+    // 92:threw …"). Unless every failure is an info-only service, the lock /
+    // blacklist answer is missing — its false flags mean "unknown", not
+    // "clean". Anything unparseable counts as missing.
+    const failedServices = lk.error ? lk.error.split(";").map((f) => f.trim().split(":")[0]) : [];
+    const partial = !!lk.error;
+    const lockUnchecked = partial && !(failedServices.length > 0 && failedServices.every((s) => INFO_ONLY_SERVICES.has(s)));
     const model = lk.model || null;
     const fmiOn = lk.fmiOn;
     const blacklisted = lk.blacklisted;
     const warnings: string[] = [];
     if (fmiOn) warnings.push("Find My / iCloud lock is ON — must be turned off before payout.");
     if (blacklisted) warnings.push("Device is blacklisted — typically reported lost or stolen.");
+    if (lockUnchecked) {
+      console.error(`[imei/check] ${clean} partial lookup: ${lk.error}`);
+      warnings.push(UNCHECKED_WARNING);
+    }
 
     // Light cross-check vs the device category the customer picked.
     if (deviceCategory && model) {
@@ -132,13 +168,20 @@ export async function POST(req: NextRequest) {
 
     const result = {
       ok: warnings.length === 0,
-      stage: "full" as const,
+      // "partial" = the lock/blacklist answer is missing (always with the
+      // warning above, so no client reads it as verified).
+      stage: lockUnchecked ? ("partial" as const) : ("full" as const),
       imei: clean,
       model,
       fmiOn,
       blacklisted,
       warnings,
     };
+    // A result with any failed sub-call is never cached: a transient Sickw
+    // failure must be retried, not pinned as this IMEI's answer for an hour.
+    if (partial) {
+      return NextResponse.json({ ...result, ...(staff ? { sickwError: lk.error } : {}) });
+    }
     // Cache successful Sickw responses only — transient failures
     // should be re-tried (not pinned to a stale "format-only" hit).
     // Also dropped the `raw` field: it leaked Sickw's response text
@@ -150,6 +193,6 @@ export async function POST(req: NextRequest) {
     cacheSet(cacheKey, result);
     return NextResponse.json(result);
   } catch (e) {
-    return NextResponse.json({ ok: true, stage: "format-only", imei: clean, sickwError: e instanceof Error ? e.message : "unknown" });
+    return unchecked(e instanceof Error ? e.message : "unknown");
   }
 }

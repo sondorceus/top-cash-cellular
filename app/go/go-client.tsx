@@ -247,9 +247,24 @@ type Msg =
 // facebook.com/); unset = the affordance never renders.
 const MSGR_HANDLE = process.env.NEXT_PUBLIC_FB_PAGE || "";
 
+// Client-side ceiling for one chat turn. The server stops its model loop at
+// ~45s; past this the seller gets the "try again" bubble instead of typing
+// dots until the platform timeout. undefined where AbortSignal.timeout is
+// missing (older iOS webviews) — the fetch then simply has no ceiling.
+function chatTimeout(): AbortSignal | undefined {
+  try {
+    return typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function" ? AbortSignal.timeout(75_000) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function newSessionId(src: string) {
   const rand = Math.random().toString(36).slice(2, 10);
-  return `go${src ? `-${src}` : ""}-${rand}`.slice(0, 24);
+  // The tag slot must match validGoSession (letters/digits, ≤10) or every
+  // /go endpoint refuses the id.
+  const tag = src.replace(/[^a-zA-Z0-9]/g, "").slice(0, 10);
+  return `go${tag ? `-${tag}` : ""}-${rand}`.slice(0, 24);
 }
 
 // Messenger-style continuity: the session id survives tab closes (7 days),
@@ -267,7 +282,9 @@ function persistentSessionId(src: string): string {
     const raw = localStorage.getItem(SESSION_KEY);
     if (raw) {
       const { sid, ts } = JSON.parse(raw) as { sid?: string; ts?: number };
-      if (typeof sid === "string" && /^go[a-z0-9-]{2,30}$/i.test(sid) && typeof ts === "number" && Date.now() - ts < 7 * 24 * 3600_000) {
+      // GO_SID_SHAPE, not a looser pattern: an id the /go endpoints refuse
+      // (an older "go-fb-rt-…" tag) is replaced instead of kept for a week.
+      if (typeof sid === "string" && sid.length <= 32 && GO_SID_SHAPE.test(sid) && typeof ts === "number" && Date.now() - ts < 7 * 24 * 3600_000) {
         return sid;
       }
     }
@@ -346,6 +363,41 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     return () => window.removeEventListener("resize", onResize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
+  // The default corner vs the page's own bottom bars: the homepage's fixed
+  // quote / checkout CTA rows (and the cookie bar) sit right where the pill
+  // lives, so taps on the right half of "Lock In My Offer" opened the chat
+  // instead. While such a bar is on screen the pill rides above it; a pill
+  // the seller dragged somewhere keeps its spot.
+  const [fabLift, setFabLift] = useState(0);
+  useEffect(() => {
+    if (mode !== "widget" || fabPos || chatOpen) return;
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      let lift = 0;
+      document.querySelectorAll<HTMLElement>(".fixed.bottom-0, [data-bottom-bar]").forEach((el) => {
+        if (fabRef.current && (el === fabRef.current || el.contains(fabRef.current))) return;
+        const r = el.getBoundingClientRect();
+        // hidden (lg:hidden), not a bar (a tall sheet), or not at the bottom
+        if (r.height <= 0 || r.height > 220 || r.bottom < vh - 4 || r.top >= vh) return;
+        if (getComputedStyle(el).position !== "fixed") return; // lg:static on desktop
+        lift = Math.max(lift, Math.ceil(vh - r.top));
+      });
+      setFabLift(lift);
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(measure); };
+    measure();
+    // Bars come and go with the funnel step (React state, no resize event).
+    const mo = new MutationObserver(schedule);
+    mo.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      mo.disconnect();
+      window.removeEventListener("resize", schedule);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [mode, fabPos, chatOpen]);
   useEffect(() => {
     if (mode !== "widget") return;
     const onOpen = () => setChatOpen(true);
@@ -462,6 +514,22 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   const [aiQuoted, setAiQuoted] = useState(false);
   const [contactCaptured, setContactCaptured] = useState(false);
   const lastSyncRef = useRef(0);
+  // Owner messages already on screen ("ts|text") — the cursor below trails
+  // the newest record, so a poll can return the same reply twice.
+  const seenOwnerRef = useRef<Set<string>>(new Set());
+  // A record's ts is taken BEFORE its blob upload finishes, so Sonny's reply
+  // can become listable after a NEWER record (the seller's own message, a tap
+  // note). Jumping the cursor straight to the newest ts skipped that reply
+  // for good. The cursor only passes records at least SYNC_SETTLE_MS old (by
+  // the server's clock, from the Date header); once the thread goes quiet it
+  // catches up to lastTs, so idle polls stay zero-fetch server-side.
+  const SYNC_SETTLE_MS = 15_000;
+  const advanceSyncCursor = (lastTs: unknown, r: Response) => {
+    if (typeof lastTs !== "number") return;
+    const serverNow = Date.parse(r.headers.get("date") || "") || Date.now();
+    const next = Math.min(lastTs, serverNow - SYNC_SETTLE_MS);
+    if (next > lastSyncRef.current) lastSyncRef.current = next;
+  };
   const hasActivity = msgs.length > 0;
   useEffect(() => {
     if (!chatOpen || !hasActivity) return; // nothing stored server-side until the seller does something
@@ -471,14 +539,18 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         if (!r.ok) return; // a rate-limited tick must never flip UI state
         const d = await r.json();
         if (Array.isArray(d?.msgs) && d.msgs.length) {
-          const fresh = d.msgs.filter((m: { ts?: number }) => typeof m?.ts === "number" && m.ts > lastSyncRef.current);
+          const fresh = (d.msgs as { ts?: unknown; text?: unknown }[]).filter((m) => {
+            if (typeof m?.ts !== "number") return false;
+            const key = `${m.ts}|${String(m.text)}`;
+            if (seenOwnerRef.current.has(key)) return false;
+            seenOwnerRef.current.add(key);
+            return true;
+          });
           if (fresh.length) {
-            setMsgs((cur) => [...cur, ...fresh.map((m: { text: string }) => ({ from: "owner" as const, text: String(m.text) }))]);
+            setMsgs((cur) => [...cur, ...fresh.map((m) => ({ from: "owner" as const, text: String(m.text) }))]);
           }
         }
-        // Cursor rides the session's newest record (not just owner msgs), so
-        // idle polls stay zero-fetch server-side.
-        if (typeof d?.lastTs === "number" && d.lastTs > lastSyncRef.current) lastSyncRef.current = d.lastTs;
+        advanceSyncCursor(d?.lastTs, r);
         if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
       } catch { /* next tick */ }
     }, 4000);
@@ -524,10 +596,20 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           setChatOpen(true); // the SMS said "reply in your chat" — the board would be a dead end
         }
         if (Array.isArray(d?.msgs) && d.msgs.length) {
-          const restored: Msg[] = d.msgs.map((m: { role: string; text: string }) => ({
-            from: m.role === "user" ? ("user" as const) : m.role === "owner" ? ("owner" as const) : ("bot" as const),
-            text: String(m.text),
-          }));
+          // Owner replies are keyed like the poll's, so a tick that already
+          // rendered one (seller tapped before this resolved) isn't doubled.
+          const restored: Msg[] = (d.msgs as { role: string; text: string; ts?: unknown }[])
+            .filter((m) => {
+              if (m.role !== "owner" || typeof m.ts !== "number") return true;
+              const key = `${m.ts}|${String(m.text)}`;
+              if (seenOwnerRef.current.has(key)) return false;
+              seenOwnerRef.current.add(key);
+              return true;
+            })
+            .map((m) => ({
+              from: m.role === "user" ? ("user" as const) : m.role === "owner" ? ("owner" as const) : ("bot" as const),
+              text: String(m.text),
+            }));
           // MERGE, never discard: if the seller tapped a tile before this
           // fetch resolved, dropping the restored thread also skipped the
           // cursor past Sonny's while-away replies — they'd never render.
@@ -565,7 +647,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             ]);
           }
         }
-        if (typeof d?.lastTs === "number" && d.lastTs > lastSyncRef.current) lastSyncRef.current = d.lastTs;
+        advanceSyncCursor(d?.lastTs, r);
         if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
         if (d?.contactOnFile) setContactCaptured(true);
         // A label already issued → show it again ("where's my label?").
@@ -1065,7 +1147,8 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       }
       if (d?.moved && typeof d.offer === "number") {
         const live: number = d.offer;
-        logNote(`price moved at lock: $${quotedOffer ?? "?"} → $${live}`);
+        // (the "price moved at lock" note + the live quote note are written
+        // server-side by the lock route)
         setMsgs((cur) => cur.map((m) => ("kind" in m && m.kind === "quote" && !m.done ? { ...m, offer: live } : m)));
         return `the live number is $${live.toLocaleString("en-US")} — tap again to lock that`;
       }
@@ -1097,13 +1180,19 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: t, history, sessionId, src, landed, ...fbCookies() }),
+          signal: chatTimeout(),
         });
-      } catch {
+      } catch (e) {
+        // A timed-out turn may still be running server-side — resending it
+        // would store the message twice. Only a dropped connection retries.
+        const errName = (e as { name?: unknown } | null)?.name;
+        if (errName === "TimeoutError" || errName === "AbortError") throw e;
         await new Promise((r) => setTimeout(r, 900));
         res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: t, history, sessionId, src, landed, ...fbCookies() }),
+          signal: chatTimeout(),
         });
       }
       const d = await res.json();
@@ -1259,6 +1348,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: `IMG::${last}`, history: batchHistory, sessionId, src, landed, ...fbCookies() }),
+          signal: chatTimeout(),
         });
         const dd = await res.json();
         if (Array.isArray(dd?.quoted) && dd.quoted.length) setAiQuoted(true);
@@ -1676,7 +1766,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     </div>
   )}
 
-  {/* footer — real business, real pages */}
+  {/* footer — real business, real pages. /go only: the site-wide widget
+      sits on pages with their own footer, and this one stacked a second
+      /go-styled strip under it. */}
+  {mode === "page" && (<>
   <footer className="mt-10 pt-4 border-t border-white/10 text-[13px] text-white/50">
     <p>TOP CASH CELLULAR LLC · austin tx</p>
     <p className="mt-1 text-white/70">
@@ -1698,6 +1791,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       this page needs javascript — <a href="/sell-iphone-austin" className="underline">see prices and how it works here</a>.
     </p>
   </noscript>
+  </>)}
     </>
   );
   if (mode === "widget") {
@@ -1711,7 +1805,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             className="fixed z-40 flex items-center gap-2 rounded-full bg-[#00c853] text-[#0a0a0a] font-bold text-[15px] pl-4 pr-5 py-3 shadow-[0_6px_24px_rgba(0,0,0,0.45)] select-none"
             style={fabPos
               ? { left: fabPos.x, top: fabPos.y, touchAction: "none", cursor: fabDrag.current?.moved ? "grabbing" : "grab" }
-              : { right: 16, bottom: "max(16px, env(safe-area-inset-bottom))", touchAction: "none", cursor: "grab" }}
+              : { right: 16, bottom: fabLift ? `${fabLift + 12}px` : "max(16px, env(safe-area-inset-bottom))", touchAction: "none", cursor: "grab" }}
+            // Keyboard / screen-reader activation (Enter, Space) arrives as a
+            // click with detail 0 — the pointer handlers below never see it.
+            // A real tap opens on pointerup and its click (detail ≥ 1) is ignored.
+            onClick={(e) => { if (e.detail === 0) openChat(); }}
             onPointerDown={(e) => {
               const r = e.currentTarget.getBoundingClientRect();
               fabDrag.current = { startX: e.clientX, startY: e.clientY, origX: r.left, origY: r.top, moved: false };

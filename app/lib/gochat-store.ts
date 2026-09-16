@@ -76,8 +76,11 @@ function parsePath(pathname: string): Parsed | null {
 // `cap` bounds CONTENT fetches to the newest N non-ctl records — the chat
 // route reads the store every turn and only needs recent history + notes;
 // flags (takeover/notified/ts) stay pathname-derived over the FULL record
-// list regardless.
-export async function readChat(sid: string, after = 0, cap = Infinity): Promise<ChatState> {
+// list regardless. `noteCap` also keeps the newest N NOTE records from
+// before that window (role is in the pathname — no extra list call): on a
+// long chat the cap used to drop the early CONTACT/LOCKED/GEO/quote notes,
+// which re-fired the lead and hid the lock and the quoted numbers.
+export async function readChat(sid: string, after = 0, cap = Infinity, noteCap = 0): Promise<ChatState> {
   const empty: ChatState = { msgs: [], takeover: false, notified: false, lastTs: 0, takeoverTs: 0, lastOwnerTs: 0 };
   if (!validSession(sid)) return empty;
   try {
@@ -110,7 +113,12 @@ export async function readChat(sid: string, after = 0, cap = Infinity): Promise<
       else if (b.p.cmd === "tkoff") { takeover = false; takeoverTs = b.p.ts; }
       if (b.p.cmd === "ntf") notified = true;
     }
-    const wanted = parsed.filter((b) => b.p.role !== "ctl" && b.p.ts > after).slice(-(Number.isFinite(cap) ? cap : parsed.length));
+    const records = parsed.filter((b) => b.p.role !== "ctl" && b.p.ts > after);
+    const keep = new Set([
+      ...records.slice(-(Number.isFinite(cap) ? cap : parsed.length)),
+      ...(noteCap > 0 ? records.filter((b) => b.p.role === "note").slice(-noteCap) : []),
+    ]);
+    const wanted = records.filter((b) => keep.has(b));
     const fetched = await Promise.all(
       wanted.map((b) =>
         fetch(b.url, { cache: "no-store" })

@@ -31,7 +31,11 @@ export default async function GoPage({
 }) {
   const sp = await searchParams;
   const rawSrc = typeof sp.src === "string" ? sp.src : typeof sp.utm_source === "string" ? sp.utm_source : "";
-  const src = rawSrc.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 8);
+  // Letters and digits only: the tag rides inside the session id
+  // (go-<src>-<rand>), and the /go endpoints (chat-sync, upload, quote,
+  // label) refuse ids with "_" or "-" in that slot — an ad tagged
+  // ?utm_source=fb_ads got no takeover, no photos and no quote notes.
+  const src = rawSrc.replace(/[^a-zA-Z0-9]/g, "").slice(0, 8);
   // ?v=lot — the bulk/liquidation-seller variant. Same page, same engine;
   // the headline, chips, and composer speak to someone with a LOT of
   // phones who needs cash, and a jump pill sits above the board. Ads for

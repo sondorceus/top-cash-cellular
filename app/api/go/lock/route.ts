@@ -195,6 +195,19 @@ export async function POST(req: NextRequest) {
   // write NOTHING — the client repaints the card and the lock becomes an
   // explicit second tap on a number they've actually seen.
   if (quotedOffer != null && offer != null && offer !== quotedOffer) {
+    // The card is about to repaint with the live number — record it the way
+    // /api/go/quote does (server-side, engine result in hand) so the chat
+    // brain's quote table, the console and a restored card all show it. The
+    // move itself is logged here too; the page used to post it through
+    // chat-sync, where any script can write that line. ($quotedOffer is the
+    // client's claim — the chat route checks it against the quote notes.)
+    if (validGoSession(sessionId)) {
+      after(async () => {
+        await appendChatMsg(sessionId, "note", `price moved at lock: $${quotedOffer} → $${offer}`);
+        await appendChatMsg(sessionId, "note", `quote shown: ${spec.specLine} → $${offer}`);
+        await appendChatMsg(sessionId, "note", `QSPEC: ${spec.entry.id}|${spec.storage}|${spec.condition}|${spec.secondary}|${offer}`);
+      });
+    }
     return NextResponse.json({ ok: false, moved: true, offer });
   }
 
@@ -262,6 +275,9 @@ export async function POST(req: NextRequest) {
     const res = await fetch(`${MC_API}/api/comms`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      // A stalled MC must not hold "locking…" until the platform timeout —
+      // the owner alert below is the fallback path.
+      signal: AbortSignal.timeout(12_000),
       body: JSON.stringify({
         from: "topcash-web",
         fromName: "Top Cash Cellular",
@@ -281,13 +297,27 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error("[go/lock] MC post threw:", e);
   }
-  let smsOk = false;
-  try {
-    smsOk = await notifyOwnerSms(
-      `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\n📍 ${geo.label}${geo.area === "metro" ? "" : ` (${AREA_WORDS[geo.area]})`}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}`,
-    );
-  } catch (e) {
+  // The owner alert only DECIDES the response when MC refused the lead; with
+  // the lead saved it finishes in the background. Either way the wait is
+  // bounded: Twilio, Resend and the relay calls carry no timeout of their
+  // own, and a stall used to hold "locking…" until the platform 504 — the
+  // seller's retap then wrote a second lead and a second alert.
+  const alertP = notifyOwnerSms(
+    `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\n📍 ${geo.label}${geo.area === "metro" ? "" : ` (${AREA_WORDS[geo.area]})`}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}`,
+  ).catch((e) => {
     console.error("[go/lock] owner alert threw:", e);
+    return false;
+  });
+  after(() => alertP);
+  let smsOk = false;
+  if (!mcOk) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    smsOk = await Promise.race([
+      alertP,
+      new Promise<boolean>((r) => { timer = setTimeout(() => r(false), 12_000); }),
+    ]);
+    clearTimeout(timer);
+    if (!smsOk) console.error("[go/lock] MC failed and the owner alert did not confirm in time");
   }
   if (!mcOk && !smsOk) {
     return NextResponse.json({ ok: false, error: "couldn't save that — tap it once more" }, { status: 502 });
