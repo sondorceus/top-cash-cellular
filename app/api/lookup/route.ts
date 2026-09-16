@@ -5,20 +5,21 @@ const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
 // Returning-customer lookup. Given a phone OR email, scan recent MC comms
-// for past lead submissions matching that contact, and return a summary
-// (name, last quote, devices traded). No password — just contact recall.
+// for past lead submissions matching that contact, and return ONLY what the
+// funnel's "welcome back" hint needs: found, first name, trade count.
+//
+// No proof of ownership is required here (it's a typing-time hint), so the
+// response must never carry trade details. It used to return up to 10 leads
+// with device, quote and the Payout line ("Cash App: $tag", a BTC address…)
+// plus the full name — anyone with a customer's phone/email could read them.
+// Trade history is served only behind the signed magic link (/api/track/request
+// → /track, or /api/account/login's emailed link → /account).
 //
 // Past leads are written by /api/lead/route.ts as comms messages with body
 // starting "[NEW BUYBACK LEAD]" containing Name/Phone/Email/Device/Quote lines.
 
 interface PastLead {
   name?: string;
-  device?: string;
-  model?: string;
-  storage?: string;
-  condition?: string;
-  quote?: string;
-  payout?: string;
   timestamp: string;
 }
 
@@ -39,22 +40,14 @@ const BUYBACK_RE = /\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i;
 
 function parseLeadBody(body: string, timestamp: string): PastLead | null {
   if (!BUYBACK_RE.test(body) && !body.includes("[CHAT LEAD]")) return null;
-  const get = (key: string) => field(body, key);
-  return {
-    name: get("Name"),
-    device: get("Device")?.split(" — ")[0],
-    model: get("Device")?.split(" — ")[1],
-    storage: get("Storage"),
-    condition: get("Condition"),
-    quote: get("Quote") || get("Offer"),
-    payout: get("Payout"),
-    timestamp,
-  };
+  // First name only — a full name from a bare phone/email is itself a leak.
+  const first = field(body, "Name")?.split(/\s+/)[0]?.slice(0, 40);
+  return { name: first || undefined, timestamp };
 }
 
 export async function POST(req: NextRequest) {
-  // Throttle enumeration — this returns a customer's leads from just an
-  // email/phone (recall-based access by design), so cap attempts per IP.
+  // Throttle enumeration — this says whether a phone/email has traded (and
+  // the first name) without proof of ownership, so cap attempts per IP.
   const rl = rateLimit(`lookup:${clientIp(req)}`, 12, 60_000);
   if (!rl.ok) {
     return NextResponse.json({ error: "Too many lookups — please wait a moment and try again." }, { status: 429 });
@@ -124,11 +117,10 @@ export async function POST(req: NextRequest) {
   // Sort newest first
   matched.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
 
+  // Hint fields only — no quotes, devices or payout handles (see header).
   return NextResponse.json({
     found: true,
     name: matched[0].name,
-    lastQuote: matched[0].quote,
     leadCount: matched.length,
-    leads: matched.slice(0, 10), // cap at 10 most recent
   });
 }

@@ -1,15 +1,20 @@
 // GET /api/account/me — returns the logged-in customer's identity +
 // their trade history (open + past). Accepts either the admin
-// tcc_session cookie (Google-verified) or the customer-only
-// tcc_customer cookie (email-verified).
+// tcc_session cookie (Google-verified) or a customer-only tcc_customer
+// cookie minted from a verified magic link (see /api/account/login).
 //
-// Trade list mirrors what /api/lookup returns but tagged with current
-// status (parsed from the same [STATUS: ...] markers admin/leads uses)
-// so the customer sees if a trade is in flight, paid, or returned.
+// Trade list is tagged with current status (parsed from the same
+// [STATUS: ...] markers admin/leads uses) so the customer sees if a trade
+// is in flight, paid, or returned. It carries payout handles, addresses
+// and lead ids, so it is only ever served to a verified owner.
 // Skywalker 2026-05-19.
 
 import { NextResponse } from "next/server";
-import { getCustomerSessionFromCookies, getProfileFromCookies } from "../../../lib/auth";
+import { cookies } from "next/headers";
+import {
+  getCustomerSessionFromCookies, getProfileFromCookies, getServerSession,
+  verifyCustomerSession, CUSTOMER_COOKIE_NAME, type CustomerSessionPayload,
+} from "../../../lib/auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -49,6 +54,23 @@ export async function GET() {
     return NextResponse.json({ authenticated: false }, {
       headers: { "Cache-Control": "no-store" },
     });
+  }
+  // Without a Google tcc_session, the tcc_customer cookie must carry the
+  // magic-link mark (`ml`, set by /api/account/login). Cookies from the old
+  // login minted a session from a typed email alone and stay signature-
+  // valid for 30 days — treat them as signed out (and clear them) so the
+  // customer re-verifies through the emailed link.
+  if (!(await getServerSession())) {
+    const cookieStore = await cookies();
+    const cust = verifyCustomerSession(cookieStore.get(CUSTOMER_COOKIE_NAME)?.value) as
+      (CustomerSessionPayload & { ml?: unknown }) | null;
+    if (!cust || cust.ml !== 1) {
+      const res = NextResponse.json({ authenticated: false, reverify: true }, {
+        headers: { "Cache-Control": "no-store" },
+      });
+      res.cookies.set(CUSTOMER_COOKIE_NAME, "", { httpOnly: true, path: "/", maxAge: 0 });
+      return res;
+    }
   }
   const email = session.email.toLowerCase();
   // Editable profile overlay — when the customer has saved a name /

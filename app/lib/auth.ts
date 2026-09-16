@@ -80,6 +80,12 @@ export function verifySession(token: string | undefined | null): SessionPayload 
     const payload = JSON.parse(base64urlDecode(body).toString("utf8")) as SessionPayload;
     if (typeof payload.exp !== "number" || payload.exp < Date.now()) return null;
     if (typeof payload.email !== "string" || !payload.email) return null;
+    // Customer tokens (signCustomerSession) use this same secret and format
+    // but always carry `via`; Google sessions never do. Without this a
+    // tcc_customer value copied into tcc_session passed as a Google login —
+    // skipping /api/account/me's magic-link check, and proxy.ts's admin gate
+    // for an allowlisted email.
+    if ("via" in payload) return null;
     return payload;
   } catch {
     return null;

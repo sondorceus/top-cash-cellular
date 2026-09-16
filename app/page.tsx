@@ -4982,13 +4982,36 @@ export default function Home() {
   };
   const [lookupContact, setLookupContact] = useState("");
   const [lookupLoading, setLookupLoading] = useState(false);
-  const [lookupResult, setLookupResult] = useState<{ found: boolean; name?: string; lastQuote?: string; leadCount?: number; leads?: Array<{ name?: string; device?: string; model?: string; quote?: string; timestamp: string }> } | null>(null);
+  // /api/lookup is a no-proof hint (found + first name + count only); past
+  // trades are shown only via the magic link sent to the contact itself.
+  const [lookupResult, setLookupResult] = useState<{ found: boolean; name?: string; leadCount?: number } | null>(null);
   const [lookupError, setLookupError] = useState("");
+  const [lookupLink, setLookupLink] = useState<"idle" | "sending" | "sent">("idle");
+  const [lookupLinkError, setLookupLinkError] = useState("");
+  const sendLookupLink = async () => {
+    setLookupLink("sending");
+    setLookupLinkError("");
+    try {
+      const r = await fetch("/api/track/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contact: lookupContact.trim() }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) throw new Error(d.error || "");
+      setLookupLink("sent");
+    } catch (e) {
+      setLookupLink("idle");
+      setLookupLinkError((e instanceof Error && e.message) || "Couldn't send the link — try again or contact us.");
+    }
+  };
   const handleLookup = async () => {
     if (!lookupContact.trim()) return;
     setLookupLoading(true);
     setLookupError("");
     setLookupResult(null);
+    setLookupLink("idle");
+    setLookupLinkError("");
     const isEmail = lookupContact.includes("@");
     try {
       const r = await fetch("/api/lookup", {
@@ -8389,7 +8412,7 @@ export default function Home() {
                     <span className="text-[10px] uppercase tracking-wider text-[#888] font-bold">or</span>
                     <span className="flex-1 h-px bg-white/10" />
                   </div>
-                  <p className="text-[#d4d4d4] text-sm mb-3">Or enter the phone number or email you used last time — we&apos;ll pull up your past quotes.</p>
+                  <p className="text-[#d4d4d4] text-sm mb-3">Or enter the phone number or email you used last time — we&apos;ll fill in your info and can send you a secure link to your past quotes.</p>
                   <input
                     type="text"
                     inputMode="email"
@@ -8414,19 +8437,24 @@ export default function Home() {
                   <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-4 mb-4">
                     <p className="text-[#00c853] text-xs font-semibold uppercase tracking-wider mb-1">Welcome back</p>
                     <p className="text-white text-lg font-bold">{lookupResult.name || "Hi there"}</p>
-                    {lookupResult.lastQuote && <p className="text-[#d4d4d4] text-sm mt-1">Last quote: <span className="text-white font-semibold">{lookupResult.lastQuote}</span></p>}
                     <p className="text-[#e6e6e6] text-xs mt-1">{lookupResult.leadCount} past trade{lookupResult.leadCount === 1 ? "" : "s"}</p>
                   </div>
-                  {lookupResult.leads && lookupResult.leads.length > 0 && (
-                    <div className="space-y-1.5 mb-4 max-h-48 overflow-y-auto">
-                      {lookupResult.leads.slice(0, 5).map((l, i) => (
-                        <div key={i} className="text-xs bg-white/[0.06] border border-white/10 rounded-lg px-3 py-2">
-                          <div className="text-white font-medium">{l.device || "Device"} {l.model ? `— ${l.model}` : ""}</div>
-                          <div className="text-[#e6e6e6]">{l.quote || "—"} · {new Date(l.timestamp).toLocaleDateString()}</div>
-                        </div>
-                      ))}
-                    </div>
+                  {/* Trade details go only to the phone/email itself (signed
+                      30-min link → /track), never to whoever typed it here. */}
+                  {lookupLink === "sent" ? (
+                    <p className="text-[#d4d4d4] text-xs bg-white/[0.06] border border-white/10 rounded-lg px-3 py-2 mb-4">
+                      Sent — check your {lookupContact.includes("@") ? "email" : "texts"} for a secure link to your past trades (expires in 30 minutes).
+                    </p>
+                  ) : (
+                    <button
+                      onClick={sendLookupLink}
+                      disabled={lookupLink === "sending"}
+                      className="w-full mb-3 bg-white/10 hover:bg-white/15 disabled:opacity-50 text-white text-sm font-semibold py-2.5 rounded-xl transition tap-press cursor-pointer"
+                    >
+                      {lookupLink === "sending" ? "Sending…" : `${lookupContact.includes("@") ? "Email" : "Text"} me a link to my past trades`}
+                    </button>
                   )}
+                  {lookupLinkError && <p className="text-[#ff4d4d] text-xs -mt-1 mb-3">{lookupLinkError}</p>}
                   <button onClick={applyLookup} className="tcc-button-primary w-full py-3 font-bold">Use this info →</button>
                 </>
               )}
@@ -12196,8 +12224,8 @@ export default function Home() {
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
 
               {/* Customer Login — verifies the email against past leads via /api/lookup.
-                  If the email has a prior trade, we prefill the name from history;
-                  otherwise we surface an inline error nudging them to Guest above. */}
+                  If the email has a prior trade, we prefill the first name from
+                  history; otherwise we surface an inline error nudging them to Guest above. */}
               <p className="text-xs font-semibold text-[#e6e6e6] uppercase tracking-wider mb-2">Returning Customer</p>
               <form onSubmit={async (e) => {
                 e.preventDefault();
@@ -12212,10 +12240,8 @@ export default function Home() {
                     return;
                   }
                   if (d.name) setName(d.name);
-                  // Persist the customer cookie so this person sees their
-                  // account history on future visits without re-typing email.
-                  // Fire-and-forget — funnel never blocks on this.
-                  fetch("/api/account/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) }).catch(() => {});
+                  // No account cookie from here: a typed email isn't proof of
+                  // ownership. /account signs customers in by emailed link.
                   await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});
                   setStep("payout"); pushHistory("payout");
                 } catch {
