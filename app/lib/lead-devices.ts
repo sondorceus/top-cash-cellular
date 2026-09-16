@@ -142,8 +142,11 @@ export function resolveCurrentDevices(
     if (out.length) return out;
   }
 
-  // 3. Single-device lead.
-  const q = parseTotalPayoutLine(body) || parseDollarAmount(field(body, "Quote"));
+  // 3. Single-device lead. Its Quote line folds in the coupon/referral
+  //    bonus, but this is the DEVICE line — the offer GET re-adds the
+  //    [OFFER-BONUS] on top of any [ITEM-UPDATE] total, so keeping it here
+  //    counted the bonus twice after an edit/add.
+  const q = Math.max(0, (parseTotalPayoutLine(body) || parseDollarAmount(field(body, "Quote"))) - parseOfferBonus(body));
   return [normDevice({
     model: field(body, "Model") || field(body, "Device")?.split(" — ")[1] || field(body, "Device") || "Device",
     storage: field(body, "Storage"),
@@ -151,6 +154,20 @@ export function resolveCurrentDevices(
     quote: q,
     quantity: field(body, "Quantity") ? parseInt(field(body, "Quantity")!, 10) : 1,
   })];
+}
+
+// The coupon/referral credit recorded at submit ("[OFFER-BONUS: amount=N]"),
+// bounded $0–$1,000. 0 when absent.
+//
+// Only the WHOLE LINE /api/lead writes counts, exact case. The old
+// unanchored /i match also read a customer-typed copy inside another line
+// (a failed "Coupon attempt: ZZ [OFFER-BONUS: AMOUNT=1000] …") — that
+// forged $1,000 went into the confirm email, the offer page and the edit
+// ceiling. Customer fields are newline-stripped, so they can't start a line.
+export function parseOfferBonus(body: string): number {
+  const m = body.match(/(?:^|\n)\[OFFER-BONUS:[ \t]*amount=(\d+(?:\.\d+)?)\][ \t]*(?=\r?\n|$)/);
+  const b = Math.round(parseFloat(m?.[1] || ""));
+  return Number.isFinite(b) && b > 0 && b <= 1000 ? b : 0;
 }
 
 // Sum of line totals for a resolved device list.

@@ -4,6 +4,7 @@ import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFromString, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
+import { fetchCommsPaged } from "../../lib/mc-comms";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
 import { validateEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from "../../lib/email-validate";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
@@ -467,15 +468,13 @@ export async function POST(req: NextRequest) {
         // tag/search filter), so at 1000 a busy stream could age out an older
         // referral marker (referee silently loses $10) OR an older prior lead
         // (a returning customer slips the first-trade gate and re-collects).
-        // 5000 matches the heaviest consumers (admin referrals/analytics) and
-        // covers far more history. A definitive fix needs MC-side filtering.
-        const rr = await fetch(`${MC_API}/api/comms?limit=5000`, {
-          headers: { "x-api-key": MC_KEY },
-          cache: "no-store",
-        });
-        if (rr.ok) {
-          const rd = await rr.json().catch(() => ({}));
-          const refMsgs: { body?: string }[] = Array.isArray(rd.messages) ? rd.messages : [];
+        // A single limit=5000 slice (~2 weeks) still lost a code registered
+        // earlier (the offer page registers it when shown), so page back
+        // through the archive the way the admin leads view does. Only
+        // referral submissions pay for this; pages are 5000 so the common
+        // case is still one round-trip. Empty = MC unreachable → skip.
+        const refMsgs: { body?: string }[] = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, pageSize: 5000, maxPages: 4 });
+        if (refMsgs.length > 0) {
           let referrerEmail: string | null = null;
           for (const m of refMsgs) {
             if (!m.body) continue;
@@ -627,8 +626,9 @@ export async function POST(req: NextRequest) {
   // (where a re-quote on edit would drop it).
   const offerBonus = (couponApplied?.value || 0) + referralBonus;
 
-  // Only our own blob photo URLs — see safePhotoList(). Used for the MC body,
-  // the AI photo check and both owner alerts.
+  // Only our own blob photo URLs — see safePhotoList(). Client-sent, so a raw
+  // "\n[OFFER-BONUS: amount=…]" entry would forge a marker line. Used for the
+  // MC body, the AI photo check and both owner alerts.
   const safePhotos = safePhotoList(photos);
   const photoLines = safePhotos.length
     ? [`Photos: ${safePhotos.join(" | ")}`]

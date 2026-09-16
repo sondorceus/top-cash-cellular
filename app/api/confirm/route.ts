@@ -5,10 +5,44 @@ import { formatOfferNumber } from "../../lib/offer-number";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { authoritativeLineCap } from "../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../lib/quote";
+import { field, parseOfferBonus } from "../../lib/lead-devices";
+import { REFERRAL_REFEREE_BONUS } from "../../lib/referral";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "";
+const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
+const MC_KEY = process.env.MC_API_KEY || "";
+// The only thank-you coupon value ever minted (/api/reviews → value: 25).
+const MAX_COUPON_BONUS = 25;
+
+// The [OFFER-BONUS] amount (0 when absent) on the lead this confirmation is
+// for, or null when that lead can't be read or isn't this customer's — the
+// caller then falls back. The funnel calls us right after /api/lead returns
+// the id, so the lead is among the newest comms.
+async function leadOfferBonus(leadId: unknown, email: unknown, phone: unknown): Promise<number | null> {
+  if (!MC_KEY || typeof leadId !== "string" || !/^[\w-]+$/.test(leadId)) return null;
+  try {
+    const r = await fetch(`${MC_API}/api/comms?limit=500`, {
+      headers: { "x-api-key": MC_KEY },
+      cache: "no-store",
+      signal: AbortSignal.timeout(6000),
+    });
+    if (!r.ok) return null;
+    const data = await r.json();
+    const msgs: { id?: string; body?: string }[] = Array.isArray(data?.messages) ? data.messages : [];
+    const b = msgs.find((m) => m.id === leadId)?.body || "";
+    if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(b)) return null;
+    // Must be THIS customer's lead — someone else's id can't lend its bonus.
+    const e = typeof email === "string" ? email.trim().toLowerCase() : "";
+    const p = typeof phone === "string" ? phone.replace(/\D/g, "").slice(-10) : "";
+    const mine = (!!e && e === (field(b, "Email") || "").toLowerCase())
+      || (p.length === 10 && p === (field(b, "Phone") || "").replace(/\D/g, "").slice(-10));
+    return mine ? parseOfferBonus(b) : null;
+  } catch {
+    return null;
+  }
+}
 
 // Review-platform links shown in the email footer. TCC has no social
 // media, but does have Trustpilot + Yelp. Both env-overridable so the
@@ -53,10 +87,21 @@ export async function POST(req: NextRequest) {
   }
   const { name, email, phone, devices, handoffMethod, fedexLabel, leadId } = body;
   let { payout } = body;
-  // Coupon bonus ($) applied at submission — surfaced as its own line
-  // in the receipt breakdown ("Coupon Bonus +$5"). Optional; 0/absent
-  // means no coupon and the line is hidden. Skywalker 2026-05-19.
-  const couponBonus = Number(body?.couponBonus) > 0 ? Math.round(Number(body.couponBonus)) : 0;
+  // Coupon/referral bonus ($) applied at submission — surfaced as its own
+  // line in the receipt breakdown. 0 means none and the line is hidden.
+  // Skywalker 2026-05-19.
+  //
+  // Never trust the client's figure: it went straight into a "Locked-In
+  // Offer $X" email (couponBonus: 5000 → "$5300, valid 14 days"). The
+  // amount /api/lead actually applied is the lead's [OFFER-BONUS] marker
+  // (coupon + referral), so read it from the lead this confirmation is for.
+  // If that lead can't be read, fall back to the client figure capped at
+  // the only coupon value ever minted ($25, /api/reviews).
+  const clientBonus = Number(body?.couponBonus) > 0 ? Math.min(MAX_COUPON_BONUS, Math.round(Number(body.couponBonus))) : 0;
+  const leadBonus = await leadOfferBonus(leadId, body?.email, body?.phone);
+  // Defense in depth: never promise more than the largest bonus /api/lead
+  // can apply (one $25 coupon + the referee credit), whatever the lead says.
+  const couponBonus = leadBonus != null ? Math.min(leadBonus, MAX_COUPON_BONUS + REFERRAL_REFEREE_BONUS) : clientBonus;
   // fedexLabel = { tracking, url, service } when /api/lead minted a label.
   // Only ship handoffs get one — local meetups stay on the existing copy.
   //
@@ -157,7 +202,9 @@ export async function POST(req: NextRequest) {
   // them toward free recycling. Pending leads instead get a "custom quote
   // coming within the hour" message; staff send the real number via the
   // admin adjust/email actions once they price it.
-  const isPending = offerTotal <= 0;
+  // Keyed on the DEVICE figure: a $25 coupon on a custom-quote lead is not
+  // a "$25 locked-in offer".
+  const isPending = deviceSubtotal <= 0;
 
   if (!email && !phone) return NextResponse.json({ ok: false, error: "No contact info" });
 
@@ -184,8 +231,9 @@ export async function POST(req: NextRequest) {
     // funnel somehow didn't pass a leadId (e.g. MC was down at submit).
     const offerNum = formatOfferNumber(typeof leadId === "string" ? leadId : "") || Date.now().toString(36).toUpperCase();
     const offerDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    // Digits-only phone for the /track URL query string. Falls back to
-    // empty so the template's `phoneDigits || email` ternary picks email.
+    // Digits-only phone for the /track URL query string. The button prefills
+    // EMAIL (this message arrived by email, so the magic link /track sends
+    // lands in the same inbox); phone only if there's somehow no email.
     const phoneDigits = phone ? phone.replace(/\D/g, "") : "";
     const htmlEmail = `<!DOCTYPE html>
 <html>
@@ -242,7 +290,7 @@ ${isMulti ? deviceArr.map((d) => { const thumb = mailDeviceImg(d.model, 44); ret
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Storage</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${hStorage}</td></tr>
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Condition</td><td style="padding:8px 0;color:#fff;font-size:13px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.06)">${hCondition}</td></tr>`}
 <tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">Payout method</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">${hPayout}</td></tr>
-${couponBonus > 0 ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🎁 Coupon bonus</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">+$${couponBonus}.00</td></tr>` : ""}
+${couponBonus > 0 ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🎁 Bonus credit (coupon / referral)</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)">+$${couponBonus}.00</td></tr>` : ""}
 ${isShipping ? `<tr><td style="padding:8px 0;color:#888;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.06)">🚚 Prepaid shipping label</td><td style="padding:8px 0;color:#00c853;font-size:13px;text-align:right;font-weight:800;border-bottom:1px solid rgba(255,255,255,0.06)">FREE</td></tr>` : ""}
 <tr><td style="padding:12px 0 4px 0;color:#fff;font-size:14px;font-weight:800">Offer total</td><td style="padding:12px 0 4px 0;color:#00c853;font-size:18px;text-align:right;font-weight:800">${isPending ? "Custom quote" : `$${offerTotal}.00`}</td></tr>
 </table>
@@ -519,7 +567,7 @@ ${(phoneDigits || email) ? `<tr><td style="padding:18px 28px 0 28px">
 <tr><td style="padding:16px 20px">
 <div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:6px">Track your trade anytime</div>
 <div style="font-size:13px;color:#dcdcdc;line-height:1.55;margin-bottom:12px">Live status, FedEx scans, payout method. Bookmark it — no password needed.</div>
-<a href="https://topcashcellular.com/track?${phoneDigits ? `phone=${encodeURIComponent(phoneDigits)}` : `email=${encodeURIComponent(email || "")}`}" style="display:inline-block;padding:10px 22px;background:rgba(0,200,83,0.12);color:#00c853;border:1px solid rgba(0,200,83,0.35);border-radius:999px;text-decoration:none;font-weight:700;font-size:13px">📍 Track your trade →</a>
+<a href="https://topcashcellular.com/track?${email ? `email=${encodeURIComponent(email)}` : `phone=${encodeURIComponent(phoneDigits)}`}" style="display:inline-block;padding:10px 22px;background:rgba(0,200,83,0.12);color:#00c853;border:1px solid rgba(0,200,83,0.35);border-radius:999px;text-decoration:none;font-weight:700;font-size:13px">📍 Track your trade →</a>
 </td></tr>
 </table>
 </td></tr>` : ""}

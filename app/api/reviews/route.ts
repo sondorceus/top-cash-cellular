@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { mailLogo, mailButton, esc as shellEsc } from "../../lib/email-shell";
 import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 import { notifyOwnerSms } from "../../lib/owner-sms";
+import { verifyReviewToken } from "../../lib/review-token";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -157,10 +158,12 @@ export async function POST(req: NextRequest) {
   }
   let verification: { valid?: boolean; leadId?: string; error?: string; email?: string; phone?: string; name?: string };
   try {
-    const origin = new URL(req.url).origin;
-    const v = await fetch(`${origin}/api/reviews/verify-token?token=${encodeURIComponent(token)}`, { cache: "no-store" });
-    verification = await v.json();
-    if (!v.ok || !verification.valid) {
+    // Direct call, not an HTTP hop to /api/reviews/verify-token: that hop
+    // carried our own egress IP, so every reviewer shared verify-token's
+    // per-IP bucket and a junk-token flood 429'd real customers. This
+    // route's own per-client limit above is the throttle.
+    verification = await verifyReviewToken(token);
+    if (!verification.valid) {
       return NextResponse.json({ error: verification.error || "Invalid or expired review link" }, { status: 401 });
     }
   } catch {
@@ -201,7 +204,7 @@ export async function POST(req: NextRequest) {
   try {
     // Stamp verified:true + the leadId on the upstream payload. The
     // caller has already validated the token + lead-is-paid-or-met
-    // via /api/reviews/verify-token, so we have a trustworthy
+    // via verifyReviewToken, so we have a trustworthy
     // leadId in `verification`. MC trusts the payload because the
     // call uses MC_API_KEY. Token-gated submissions land with the
     // verified badge AND attribute to the right lead in /admin.
@@ -214,7 +217,7 @@ export async function POST(req: NextRequest) {
     if (!r.ok) return NextResponse.json({ error: data.error || "Submission failed." }, { status: r.status });
 
     // Burn the token — post a [REVIEW-USED: token=X] marker so this
-    // token can never submit again. The verify-token endpoint refuses
+    // token can never submit again. verifyReviewToken refuses
     // any submission once this marker exists. AWAIT it (was fire-and-
     // forget) so the marker is durably posted before we return — a
     // sequential retry/double-click then sees it and is blocked. (Truly

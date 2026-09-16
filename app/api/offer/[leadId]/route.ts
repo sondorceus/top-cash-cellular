@@ -4,9 +4,9 @@
 // message id) is the secret. Follows the same trust model as FedEx
 // tracking-number links. Skywalker 2026-05-19.
 
-import { NextRequest, NextResponse } from "next/server";
-import { referralCodeForEmail, referralLinkForCode } from "../../../lib/referral";
-import { field, DEVICE_LINE_RE, OFFER_STATUSES } from "../../../lib/lead-devices";
+import { NextRequest, NextResponse, after } from "next/server";
+import { referralCodeForEmail, referralLinkForCode, referralCodeMarker, hasReferralCodeMarker } from "../../../lib/referral";
+import { field, DEVICE_LINE_RE, OFFER_STATUSES, parseOfferBonus } from "../../../lib/lead-devices";
 import { canonicalCarrier, carrierLockedFromText } from "../../../lib/quote-engine";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -198,12 +198,9 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   // line on the offer page (not baked into a device price) and preserved
   // across device edits — the marker lives in the IMMUTABLE original body,
   // so an [ITEM-UPDATE] (which carries only device lines) can't strip it.
-  let bonus = 0;
-  const bonusMatch = body.match(/\[OFFER-BONUS:\s*amount=([\d.]+)\]/i);
-  if (bonusMatch) {
-    const b = Math.round(parseFloat(bonusMatch[1]));
-    if (Number.isFinite(b) && b > 0 && b <= 1000) bonus = b;
-  }
+  // Shared whole-line parse — a customer-typed copy of the marker inside
+  // another line must not add a bonus here.
+  let bonus = parseOfferBonus(body);
 
   // Cancellation / deletion check — staff can soft-delete leads.
   const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
@@ -234,7 +231,10 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   // is most recent wins. This is the number the customer agreed to; without
   // it the offer page keeps showing the pre-negotiation figure.
   let offerRevised: { amount: number; kind: "counter" | "adjusted" } | undefined;
-  if (counterRespAccept === true && counterOfferAmt != null) {
+  // An accept only counts for the LATEST counter-offer when it was posted at
+  // or after that mint (same pairing as the admin leads route). An accept of
+  // an earlier offer must not be shown as agreement to a re-issued one.
+  if (counterRespAccept === true && counterOfferAmt != null && counterRespAt >= counterOfferAt) {
     offerRevised = { amount: counterOfferAmt, kind: "counter" };
   }
   if (quoteAdjustedAmt != null && (!offerRevised || quoteAdjustedAt > counterRespAt)) {
@@ -255,6 +255,35 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   const customerEmail = field(body, "Email");
   const referralCode = customerEmail ? referralCodeForEmail(customerEmail) : undefined;
   const referralLink = referralCode ? referralLinkForCode(referralCode) : undefined;
+  // /api/lead resolves a friend's code ONLY through a [REFERRAL-CODE:] marker
+  // in its newest-5000 scan, and nothing posted one for a code shown here
+  // (only the logged-in /api/referral dashboard did) — so the friend was
+  // shown "$10 added", the server silently dropped it, and this customer
+  // was never credited. Register the code whenever it's shown and the marker
+  // isn't in this same newest-5000 window (which also re-posts one that has
+  // aged out). After the response, so the page never waits on it.
+  // (The page hides the link on a cancelled/rejected offer — skip those.)
+  if (referralCode && customerEmail && !cancelled && status !== "rejected" && !hasReferralCodeMarker(messages, referralCode)) {
+    const marker = referralCodeMarker(referralCode, customerEmail);
+    if (marker) {
+      after(async () => {
+        try {
+          await fetch(`${MC_API}/api/comms`, {
+            method: "POST",
+            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              from: "topcash-web",
+              fromName: "Top Cash Cellular",
+              role: "system",
+              body: marker,
+              tags: ["referral", "code"],
+              priority: "low",
+            }),
+          });
+        } catch { /* best-effort — the next view retries */ }
+      });
+    }
+  }
 
   return NextResponse.json({
     found: true,

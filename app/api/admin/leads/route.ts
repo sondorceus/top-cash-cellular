@@ -6,6 +6,7 @@ import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-looku
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import { parseDollarAmount } from "../../../lib/lead-money";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
+import { parseOfferBonus } from "../../../lib/lead-devices";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -940,7 +941,12 @@ export async function GET(req: NextRequest) {
       if (devicesHeaderMatch || editedDevices.length > 1) {
         devices = editedDevices;
         deviceCount = editedDevices.length;
-        totalPayout = editedTotal;
+        // The marker total is the DEVICE subtotal; the coupon/referral
+        // bonus lives only in the lead body. Add it back, as the offer GET
+        // does, or the mark-paid default (and the payout rollups) came in
+        // short of what the customer was shown. A $0 subtotal = every line
+        // awaits a hand re-quote — leave it 0 rather than read "$25".
+        totalPayout = editedTotal > 0 ? editedTotal + parseOfferBonus(m.body) : editedTotal;
       } else if (editedDevices.length === 1) {
         const d0 = editedDevices[0];
         modelOverride = d0.model;

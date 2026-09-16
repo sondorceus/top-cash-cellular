@@ -31,6 +31,7 @@ import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "
 import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
+import { parseOfferBonus } from "../../../../lib/lead-devices";
 
 // Server-side quote ceiling per added device — mirrors /api/lead's anti-tamper
 // guard so a tampered offer link can't inflate the order total (which flows into
@@ -119,8 +120,10 @@ function resolveCurrentDevices(
     if (out.length) return out;
   }
 
-  // 3. Single-device lead.
-  const q = parseTotalPayoutLine(body) || parseDollarAmount(field(body, "Quote"));
+  // 3. Single-device lead. Its Quote line includes the coupon/referral
+  //    bonus; strip it — the offer GET re-adds [OFFER-BONUS] on top of the
+  //    [ITEM-UPDATE] total we post, so leaving it in paid the bonus twice.
+  const q = Math.max(0, (parseTotalPayoutLine(body) || parseDollarAmount(field(body, "Quote"))) - parseOfferBonus(body));
   const qtyRaw = field(body, "Quantity");
   const qty = qtyRaw ? parseInt(qtyRaw, 10) || 1 : 1;
   return [{
@@ -281,7 +284,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   {
     try {
       const customerName = field(leadMsg.body, "Name") || "Customer";
-      const text = `${anyReview ? "⚠️ NEEDS REVIEW — " : ""}ADDED: ${customerName} added ${added.length} device(s) to ${leadId.slice(0, 10).toUpperCase()} → est. $${total}. ${clean(addedSummary, 160)}`;
+      // `total` is the device subtotal; the order figure (what the offer
+      // page shows) adds the coupon/referral bonus back.
+      const text = `${anyReview ? "⚠️ NEEDS REVIEW — " : ""}ADDED: ${customerName} added ${added.length} device(s) to ${leadId.slice(0, 10).toUpperCase()} → est. $${total + parseOfferBonus(leadMsg.body)}. ${clean(addedSummary, 160)}`;
       await notifyOwnerSms(text.slice(0, 480));
     } catch { /* SMS non-fatal */ }
   }

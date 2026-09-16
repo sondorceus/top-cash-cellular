@@ -26,7 +26,7 @@ import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import {
-  field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES,
+  field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES, parseOfferBonus,
 } from "../../../../lib/lead-devices";
 
 const SERVER_QUOTE_TOLERANCE = 5;
@@ -158,10 +158,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // The body's Quote / Total-payout figures INCLUDE the coupon/referral
   // bonus, but the [ITEM-UPDATE] marker stores the device SUBTOTAL and the
   // offer GET re-adds the bonus on top — so a ceiling that includes the
-  // bonus lets an edit double-count it. Strip it here (same marker parse
-  // as the offer GET, capped at $1,000).
-  const bonusMatch = leadMsg.body.match(/\[OFFER-BONUS:\s*amount=([\d.]+)\]/i);
-  const bodyBonus = Math.min(1000, Math.max(0, Number(bonusMatch?.[1]) || 0));
+  // bonus lets an edit double-count it. Strip it here (the offer GET's
+  // shared whole-line parse — a customer-typed copy of the marker used to
+  // count here too and zero the ceiling).
+  const bodyBonus = parseOfferBonus(leadMsg.body);
   const ceiling = Math.max(
     devicesTotal(current),
     parseTotalPayoutLine(leadMsg.body) - bodyBonus,
@@ -228,7 +228,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     try {
       const customerName = field(leadMsg.body, "Name") || "Customer";
       const summary = devices.map((d) => `${d.model} (${d.condition || "?"}${d.storage ? ", " + d.storage : ""})`).join("; ");
-      const text = `${anyReview ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total}. ${summary}`;
+      // `total` is the device subtotal; the order figure (what the offer
+      // page shows) adds the coupon/referral bonus back.
+      const text = `${anyReview ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total + bodyBonus}. ${summary}`;
       await notifyOwnerSms(text.slice(0, 480));
     } catch { /* SMS non-fatal */ }
   }

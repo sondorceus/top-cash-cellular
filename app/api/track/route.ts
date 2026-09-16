@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, clientIp } from "../../lib/rate-limit";
 import { verifyTrackToken } from "../../lib/track-token";
+import { fetchCommsPaged } from "../../lib/mc-comms";
 
-const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
 // Customer-facing order-tracking endpoint. Given a phone or email, scan
@@ -102,15 +102,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Phone or email required" }, { status: 400 });
   }
 
-  const r = await fetch(`${MC_API}/api/comms?limit=500`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) {
+  // Paged read through the archive (was a single limit=500 slice ≈ 1–2 days
+  // of the shared feed, so anyone who traded last week got "no trades
+  // found" — exactly the shipped/paid customers who come here). Up to 30k
+  // messages (~3 months of the feed), floored at a year. The helper returns
+  // [] on an MC failure; the feed is never empty, so treat that as
+  // unavailable. /api/track/request uses the same window.
+  const messages: { id: string; body?: string; timestamp: string }[] = MC_KEY
+    ? await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 })
+    : [];
+  if (messages.length === 0) {
     return NextResponse.json({ error: "Tracking service unavailable" }, { status: 502 });
   }
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
   // Pass 1: collect status updates by lead id.
   type PayoutProof = { method?: string; reference?: string; amount?: number; at?: string };

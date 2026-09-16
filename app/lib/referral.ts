@@ -6,8 +6,10 @@
 // and FedEx events do. Two marker types:
 //
 //   [REFERRAL-CODE: code=REF-XXXXXX email=foo@bar.com]
-//     posted once, the first time a customer generates their code.
-//     Maps a referral code back to its owner's email.
+//     posted when a customer's code is shown to them (the /account
+//     dashboard via /api/referral, and the /offer page via the offer GET)
+//     and no marker is in the recent comms window. Maps a referral code
+//     back to its owner's email.
 //
 //   [REFERRAL-EARNED: referrer=foo@bar.com amount=10 code=REF-XXXXXX referee-lead=<leadId>]
 //     posted once when a referee's trade completes (status flips to
@@ -56,4 +58,25 @@ export function referralCodeForEmail(email: string): string {
 // the ?ref= param off this URL on mount.
 export function referralLinkForCode(code: string): string {
   return `https://topcashcellular.com/?ref=${code}`;
+}
+
+// Same marker regex /api/lead and /api/referral resolve codes with.
+const REFERRAL_CODE_MARKER_RE = /\[REFERRAL-CODE:\s*code=(REF-[A-Z0-9]{6})\s+email=([^\s\]]+)/i;
+
+// The [REFERRAL-CODE:] reverse-lookup marker body for a code + its owner's
+// email, or null when the email can't be written safely (the email must be
+// one token with no marker delimiters, or the lookup regex can't read it
+// back / a crafted value could close the marker).
+export function referralCodeMarker(code: string, email: string): string | null {
+  const e = (email || "").toLowerCase().trim();
+  if (!REFERRAL_CODE_RE.test(code) || !/^[^\s@[\]]+@[^\s@[\]]+\.[^\s@[\]]+$/.test(e)) return null;
+  return `[REFERRAL-CODE: code=${code} email=${e}]`;
+}
+
+// True when `messages` already carry a [REFERRAL-CODE:] marker for `code`.
+export function hasReferralCodeMarker(messages: { body?: string }[], code: string): boolean {
+  return messages.some((m) => {
+    const cm = m.body?.match(REFERRAL_CODE_MARKER_RE);
+    return !!cm && cm[1].toUpperCase() === code;
+  });
 }
