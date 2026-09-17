@@ -16,8 +16,8 @@ import {
   verifyCustomerSession, CUSTOMER_COOKIE_NAME,
 } from "../../../lib/auth";
 import { isCustomerLeadPost } from "../../../lib/lead-devices";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
-const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
 type Trade = {
@@ -74,30 +74,32 @@ export async function GET() {
   // name. MC-independent so it always resolves.
   const profile = await getProfileFromCookies();
   const displayName = profile?.name || session.name;
-  if (!MC_KEY) {
-    // Customer is recognized but we can't pull their trades without
-    // MC. Return identity + empty list so the dashboard still renders.
+
+  // The same paged one-year window that sign-in (/api/account/login) and
+  // /api/track search. The old newest-800 slice is only a few days of the
+  // shared feed (/api/track notes 500 ≈ 1–2 days), so a customer the link
+  // had just signed in could land on "No trades yet". When MC can't be read
+  // (it restarts on every deploy) — not at all, or only its newer pages
+  // (!complete: an older trade may sit on the page that failed) — that is
+  // "unavailable", not "no trades" (the feed is never empty): keep the
+  // customer signed in and say so (tradesUnavailable) instead of a short or
+  // empty history, or the old { error } body that /account read as signed out.
+  const read = MC_KEY
+    ? await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 })
+    : { messages: [], complete: false };
+  const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
+  if (!read.complete || messages.length === 0) {
     return NextResponse.json({
       authenticated: true,
       email: session.email,
       name: displayName,
       phone: profile?.phone,
       via: session.via,
+      tradesUnavailable: true,
       trades: [],
       summary: { total: 0, paid: 0, openCount: 0 },
-    }, { headers: { "Cache-Control": "no-store" } });
+    }, { status: 503, headers: { "Cache-Control": "no-store" } });
   }
-
-  // Pull recent MC comms. 800 covers months of history per customer.
-  const r = await fetch(`${MC_API}/api/comms?limit=800`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) {
-    return NextResponse.json({ error: "Trade history unavailable" }, { status: 502 });
-  }
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
   // Pass 1: collect lead messages whose body mentions this customer's
   // email (case-insensitive). Pass 2: pick the most-recent status per

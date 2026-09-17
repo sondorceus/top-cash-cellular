@@ -15,7 +15,8 @@ export const OAUTH_STATE_COOKIE = "tcc_oauth_state";
 // admin access — admin gates only look at tcc_session. This cookie is
 // purely for the customer's /account dashboard recognition + trade
 // history view. It is set ONLY when the customer opens the signed sign-in
-// link /api/account/login emails them (payload carries `ml: 1`); a typed
+// link /api/account/login emails them and presses Continue on the /account
+// confirm prompt (payload carries `ml: 1`); opening the link alone, a typed
 // email or a /api/lookup match never sets it. Skywalker 2026-05-19.
 export const CUSTOMER_COOKIE_NAME = "tcc_customer";
 

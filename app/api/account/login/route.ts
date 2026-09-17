@@ -3,10 +3,20 @@
 //
 //   POST { email }  → if the email matches a past lead, EMAIL a signed
 //                     sign-in link to it. Never sets a cookie.
-//   GET  ?t=TOKEN   → the link itself: verify the token, set the cookie,
-//                     redirect to /account.
-//   POST { token }  → same check as the link, for a client already holding
-//                     a token; returns { ok: true, name, leadCount }.
+//   GET  ?t=TOKEN   → the link itself: verify the token and bounce to
+//                     /account?confirm=TOKEN. Never sets a cookie.
+//   POST { token }  → the "Sign in as <full email>?" Continue button on
+//                     /account: verify the token, set the cookie; returns
+//                     { ok: true, name, leadCount }.
+//
+// Why the confirm step (R9, login CSRF): the link used to sign in whichever
+// browser opened it. An attacker could request a link for THEIR OWN email
+// and text it to a victim — the victim's browser became the attacker's
+// session, and the homepage funnel then pre-filled the attacker's email
+// into the victim's trade. Now a person has to see which account and press
+// Continue, and that POST must come from our own page (isSameOriginPost) so
+// a cross-site form can't press it for them. Mail scanners that pre-fetch
+// the GET no longer sign anything in either.
 //
 // This used to mint a 30-day session from a typed email alone, and
 // /api/account/me then served that email's payout handles, home address
@@ -23,7 +33,7 @@ import { signCustomerSession, CUSTOMER_COOKIE_NAME, COOKIE_MAX_AGE } from "../..
 import { rateLimit, clientIp } from "../../../lib/rate-limit";
 import { makeTrackToken, verifyTrackToken } from "../../../lib/track-token";
 import { sendCustomerEmail } from "../../../lib/customer-send";
-import { fetchCommsPaged } from "../../../lib/mc-comms";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 const MC_KEY = process.env.MC_API_KEY || "";
 const LOOKUP_DOWN = "We couldn't check your trades just now — please try again in a minute.";
@@ -43,13 +53,15 @@ type MagicLinkSession = Parameters<typeof signCustomerSession>[0] & { ml: 1 };
 //
 // Same paged one-year window as /api/track: the newest-500 slice could lose
 // the trade between mailing a link and the tap. `failed` = MC couldn't be
-// read (it restarts on every deploy) — not the same as "no trade".
+// read (it restarts on every deploy) — not the same as "no trade". A read
+// that lost a page part-way counts as failed too: an older trade may be on
+// the page that errored.
 async function findLeads(email: string): Promise<{ name?: string; leadCount: number; failed?: boolean }> {
   let name: string | undefined;
   let leadCount = 0;
   if (!MC_KEY) return { leadCount, failed: true };
-  const messages = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 });
-  if (messages.length === 0) return { leadCount, failed: true };
+  const { messages, complete } = await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 });
+  if (!complete || messages.length === 0) return { leadCount, failed: true };
   for (const m of messages) {
     if (!m.body) continue;
     if (!m.body.includes("[NEW BUYBACK LEAD")) continue;
@@ -84,26 +96,43 @@ function setSessionCookie(res: NextResponse, email: string, name?: string) {
   });
 }
 
-// Magic-link landing. Always redirects to /account; the cookie is set only
-// when the token is valid and the email has a past trade. Anything else says
-// why on /account (?link=…) instead of silently showing the form again — a
-// valid link that hit an MC restart can simply be tapped again.
+// Login-CSRF guard for every POST here (minting a session or mailing a
+// link). A cross-site <form enctype="text/plain"> needs no CORS preflight
+// and req.json() still parses its body, so without this any page could
+// press Continue with the attacker's own valid token. Browsers send
+// Sec-Fetch-Site on fetches (Chrome 76+, Firefox 90+, Safari 16.4+); older
+// ones still send Origin on a POST. Neither header = no browser page we can
+// vouch for → refuse (the only caller is /account, a same-origin fetch).
+function isSameOriginPost(req: NextRequest): boolean {
+  const site = req.headers.get("sec-fetch-site");
+  if (site) return site === "same-origin";
+  const origin = req.headers.get("origin");
+  if (!origin || origin === "null") return false;
+  const host = req.headers.get("host") || req.nextUrl.host;
+  try { return new URL(origin).host === host; } catch { return false; }
+}
+
+// Magic-link landing. Always redirects to /account and never sets the
+// cookie: a valid token goes to the confirm prompt (?confirm=TOKEN, which
+// /account moves out of the address bar), anything else says why
+// (?link=…) instead of silently showing the form again. The trade lookup
+// (retry / notrade) runs on Continue, so a scanner's pre-fetch costs no
+// MC read.
 export async function GET(req: NextRequest) {
   const account = `${req.nextUrl.origin}/account`;
   const noStore = { headers: { "Cache-Control": "no-store" } };
   const rl = rateLimit(`login:${clientIp(req)}`, 8, 60_000);
   if (!rl.ok) return NextResponse.redirect(`${account}?link=retry`, noStore);
-  const email = emailFromToken(req.nextUrl.searchParams.get("t") || "");
-  if (!email) return NextResponse.redirect(`${account}?link=expired`, noStore);
-  const { name, leadCount, failed } = await findLeads(email);
-  if (failed) return NextResponse.redirect(`${account}?link=retry`, noStore);
-  if (leadCount === 0) return NextResponse.redirect(`${account}?link=notrade`, noStore);
-  const res = NextResponse.redirect(account, noStore);
-  setSessionCookie(res, email, name);
-  return res;
+  const token = req.nextUrl.searchParams.get("t") || "";
+  if (!emailFromToken(token)) return NextResponse.redirect(`${account}?link=expired`, noStore);
+  return NextResponse.redirect(`${account}?confirm=${encodeURIComponent(token)}`, noStore);
 }
 
 export async function POST(req: NextRequest) {
+  // Before the throttle, so a hostile page can't burn a victim's bucket.
+  if (!isSameOriginPost(req)) {
+    return NextResponse.json({ error: "Open the sign-in link from your email again to continue.", crossSite: true }, { status: 403 });
+  }
   // Throttle — cap attempts per IP to blunt scripted probing of known
   // addresses.
   const rl = rateLimit(`login:${clientIp(req)}`, 8, 60_000);
@@ -115,6 +144,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
+  // The confirm prompt's Continue — the only path that sets the cookie.
   const token = typeof payload.token === "string" ? payload.token : "";
   if (token) {
     const email = emailFromToken(token);

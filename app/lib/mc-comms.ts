@@ -52,6 +52,20 @@ export type FetchCommsOpts = {
  * caller's previous behaviour was a single best-effort fetch too).
  */
 export async function fetchCommsPaged(opts: FetchCommsOpts): Promise<McMessage[]> {
+  return (await fetchCommsRead(opts)).messages;
+}
+
+export type CommsRead = {
+  messages: McMessage[];
+  // false = a page request failed (MC restarting, 5xx, bad body) before the
+  // read reached its own end (short page, `sinceMs` floor or `maxPages`).
+  // `messages` is then only the newer part of the window, so "not found in
+  // it" must read as "unknown", not "none" — e.g. a customer's trade list.
+  complete: boolean;
+};
+
+/** fetchCommsPaged, plus whether every page it asked for was read. */
+export async function fetchCommsRead(opts: FetchCommsOpts): Promise<CommsRead> {
   const {
     apiKey,
     pageSize = 1000,
@@ -63,6 +77,7 @@ export async function fetchCommsPaged(opts: FetchCommsOpts): Promise<McMessage[]
   const floorTs = sinceMs ? Date.now() - sinceMs : 0;
   const byId = new Map<string, McMessage>();
   let before: string | undefined;
+  let complete = true;
 
   for (let page = 0; page < maxPages; page++) {
     const qs = new URLSearchParams({ limit: String(pageSize) });
@@ -75,10 +90,12 @@ export async function fetchCommsPaged(opts: FetchCommsOpts): Promise<McMessage[]
         headers: { "x-api-key": apiKey },
         cache: "no-store",
       });
-      if (!r.ok) break;
+      if (!r.ok) { complete = false; break; }
       const data = await r.json();
-      msgs = Array.isArray(data.messages) ? data.messages : [];
+      if (!Array.isArray(data?.messages)) { complete = false; break; }
+      msgs = data.messages;
     } catch {
+      complete = false;
       break;
     }
     if (msgs.length === 0) break;
@@ -97,6 +114,7 @@ export async function fetchCommsPaged(opts: FetchCommsOpts): Promise<McMessage[]
     before = oldestTs;
   }
 
-  return [...byId.values()].sort((a, b) =>
+  const messages = [...byId.values()].sort((a, b) =>
     String(a.timestamp).localeCompare(String(b.timestamp)));
+  return { messages, complete };
 }

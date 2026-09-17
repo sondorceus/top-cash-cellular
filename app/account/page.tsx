@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useContinueArm } from "./continue-arm";
 
 // Customer account dashboard. Shows the signed-in customer their
 // open + past trades, with live status pulled from the same MC
@@ -10,7 +11,8 @@ import { useEffect, useState } from "react";
 // Auth: any of
 //   1. tcc_session cookie (Google sign-in, granted via /api/auth/google)
 //   2. tcc_customer cookie (email-only, set when the customer opens the
-//      sign-in link /api/account/login emails them)
+//      sign-in link /api/account/login emails them AND presses Continue on
+//      the "Sign in as …?" prompt below)
 // The /api/account/me endpoint accepts either. Logout clears whichever
 // one is set.
 
@@ -60,9 +62,33 @@ type AccountData = {
   name?: string;
   phone?: string;
   via?: "email" | "google";
+  // Signed in, but Mission Control couldn't be read — the empty list is
+  // "unknown", not "no trades".
+  tradesUnavailable?: boolean;
   trades?: Trade[];
   summary?: { total: number; paid: number; openCount: number };
 };
+
+const LINK_EXPIRED = "That sign-in link expired or isn't valid — enter your email and we'll send a new one.";
+const LINK_RETRY = "We couldn't finish signing you in just now — tap the link in your email again in a minute (it works for 30 minutes).";
+const LINK_NOTRADE = "We don't see a past trade for that email — try Guest Checkout instead.";
+
+// The email a sign-in link is for, read from the token itself (base64url
+// JSON {c, e} before the ".", see app/lib/track-token.ts) — never from a
+// separate URL param, which a forged link could set to anything. A
+// tampered payload fails the server's signature check on Continue, so the
+// prompt always names the account Continue would sign into. Expiry is left
+// to the server (a skewed phone clock shouldn't reject a good link).
+function linkEmail(token: string): string | null {
+  try {
+    const p = token.split(".")[0].replace(/-/g, "+").replace(/_/g, "/");
+    const bin = atob(p + "=".repeat((4 - (p.length % 4)) % 4));
+    const { c } = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (ch) => ch.charCodeAt(0))));
+    return typeof c === "string" && c.includes("@") ? c : null;
+  } catch {
+    return null;
+  }
+}
 
 // `emoji` holds an SVG path `d` string (Heroicons-style outline),
 // wrapped in <svg> at the render site. Renamed from literal emoji
@@ -98,6 +124,14 @@ export default function AccountPage() {
   const [loginError, setLoginError] = useState("");
   // Non-error notice under the sign-in form ("check your email …").
   const [loginNotice, setLoginNotice] = useState("");
+  // Pending "Sign in as …?" prompt from an emailed link (?confirm=TOKEN).
+  const [linkPrompt, setLinkPrompt] = useState<{ token: string; email: string } | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [confirmError, setConfirmError] = useState("");
+  // Continue only counts a deliberate press (DoubleClickjacking, see
+  // ./continue-arm); `armHint` = the last press was too quick to count.
+  const continueArm = useContinueArm(!!linkPrompt);
+  const [armHint, setArmHint] = useState(false);
   // Side-nav section — starts on Trade-Ins since that's what most
   // returning customers come here for. Account Info is the
   // "I want to manage my settings" path, Addresses is read-only
@@ -167,19 +201,68 @@ export default function AccountPage() {
   useEffect(() => { refresh(); }, []);
 
   // The emailed sign-in link lands on /api/account/login, which bounces a
-  // link it couldn't sign in with back here with ?link=<why>.
+  // link it couldn't use back here with ?link=<why>, and a valid one with
+  // ?confirm=<token>. The link never signs in by itself (login CSRF, R9):
+  // the customer sees which account and presses Continue.
   useEffect(() => {
     try {
-      const why = new URLSearchParams(window.location.search).get("link");
+      const params = new URLSearchParams(window.location.search);
+      const why = params.get("link");
       if (why === "expired") {
-        setLoginError("That sign-in link expired or isn't valid — enter your email and we'll send a new one.");
+        setLoginError(LINK_EXPIRED);
       } else if (why === "retry") {
-        setLoginError("We couldn't finish signing you in just now — tap the link in your email again in a minute (it works for 30 minutes).");
+        setLoginError(LINK_RETRY);
       } else if (why === "notrade") {
-        setLoginError("We don't see a past trade for that email — try Guest Checkout instead.");
+        setLoginError(LINK_NOTRADE);
+      }
+      const token = params.get("confirm");
+      if (token) {
+        const email = linkEmail(token);
+        if (email) setLinkPrompt({ token, email });
+        else setLoginError(LINK_EXPIRED);
+        // Keep the token in state only — out of the address bar, history
+        // and anything copied from it.
+        params.delete("confirm");
+        const qs = params.toString();
+        window.history.replaceState(null, "", `${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash}`);
       }
     } catch { /* no URL access — nothing to show */ }
   }, []);
+
+  // Continue on the "Sign in as …?" prompt — the only step that sets the
+  // tcc_customer cookie.
+  const confirmSignIn = async () => {
+    if (!linkPrompt || confirmLoading) return;
+    setConfirmLoading(true);
+    setConfirmError("");
+    setLoginError("");
+    setLoginNotice("");
+    try {
+      const r = await fetch("/api/account/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: linkPrompt.token }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (r.ok && d.ok) {
+        setLinkPrompt(null);
+        await refresh();
+        return;
+      }
+      // MC blip / throttle: the link is still good — keep the prompt so
+      // Continue can simply be pressed again.
+      if (r.status === 503 || r.status === 429) {
+        setConfirmError(d.error || "We couldn't finish signing you in just now — press Continue again in a minute.");
+        return;
+      }
+      setLinkPrompt(null);
+      setLoginError(r.status === 401 ? LINK_EXPIRED : r.status === 404 ? LINK_NOTRADE : (d.error || "Couldn't sign you in."));
+    } catch {
+      setConfirmError("Couldn't reach us — check your connection and press Continue again.");
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
 
   // Fetch referral data the first time the customer opens the tab.
   // Re-runs only if a prior fetch left us with no data (e.g. a
@@ -263,6 +346,53 @@ export default function AccountPage() {
     params.set("q", t.model);
     window.location.href = `/?${params.toString()}#search`;
   };
+
+  // Emailed-link prompt — shown whatever the current session, so a link
+  // someone else sent can't switch accounts without a visible choice.
+  if (linkPrompt) {
+    return (
+      <main className="min-h-screen bg-[#0a0a0a] text-white">
+        <div className="max-w-md mx-auto px-4 py-12">
+          <a href="/" className="text-[#00c853] text-sm font-semibold mb-6 inline-block">← Back to Top Cash</a>
+          {/* The FULL address: a mask like j••••@gmail.com reads the same for
+              an attacker's jx8812@gmail.com as for the victim's john@, and
+              the token isn't secret from whoever holds the link anyway. */}
+          <h1 className="text-2xl font-bold mb-2">Sign in as <span className="break-all">{linkPrompt.email}</span>?</h1>
+          <p className="text-[#bdbdbd] text-sm mb-4">You opened a secure sign-in link for this email.</p>
+          <div className="mb-6 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30">
+            <p className="text-amber-200 text-xs leading-relaxed">
+              Only continue if this is <span className="font-semibold">your</span> email and you just asked us for a sign-in link. If someone else sent you this link, tap Cancel — continuing would sign you into their account.
+            </p>
+          </div>
+          {confirmError && <p role="alert" className="text-[#ff5566] text-xs font-semibold mb-3">{confirmError}</p>}
+          <button
+            type="button"
+            onClick={(e) => {
+              if (!continueArm.accept(e.detail)) { setArmHint(true); return; }
+              setArmHint(false);
+              confirmSignIn();
+            }}
+            disabled={confirmLoading}
+            className={`w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-extrabold hover:bg-[#00e676] disabled:opacity-50 transition cursor-pointer${continueArm.lit ? "" : " opacity-50"}`}
+          >
+            {confirmLoading ? "Signing in…" : "Continue"}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setLinkPrompt(null); setConfirmError(""); setArmHint(false); }}
+            disabled={confirmLoading}
+            className="w-full mt-3 bg-white/10 text-white py-3.5 rounded-2xl text-base font-semibold hover:bg-white/15 disabled:opacity-50 transition cursor-pointer"
+          >
+            Cancel
+          </button>
+          {/* Below the buttons so it never shifts Continue under the pointer. */}
+          <p aria-live="polite" className="min-h-[1rem] mt-4 text-center text-[#bdbdbd] text-xs">
+            {armHint ? "Take a second to check the email above, then press Continue." : ""}
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   if (loading) {
     return (
@@ -412,6 +542,13 @@ export default function AccountPage() {
           {/* Main content area */}
           <div className="max-w-3xl mx-auto">
 
+        {data.tradesUnavailable && (
+          <div role="alert" className="mb-6 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 flex-wrap">
+            <p className="flex-1 min-w-0 text-amber-200 text-sm">We couldn&apos;t load your trades just now — that&apos;s on our side. Try again in a minute.</p>
+            <button type="button" onClick={refresh} className="text-sm font-bold text-[#0a0a0a] bg-amber-300 hover:bg-amber-200 px-4 py-2 rounded-xl transition cursor-pointer">Try again</button>
+          </div>
+        )}
+
         {section === "account" && (
           <div className="space-y-4">
             <h2 className="text-lg font-bold mb-1">Welcome back, {displayName}</h2>
@@ -532,15 +669,15 @@ export default function AccountPage() {
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Trades</p>
-                <p className="text-2xl font-extrabold">{summary.total}</p>
+                <p className="text-2xl font-extrabold">{data.tradesUnavailable ? "—" : summary.total}</p>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Paid out</p>
-                <p className="text-2xl font-extrabold text-[#00c853]">${summary.paid.toLocaleString()}</p>
+                <p className="text-2xl font-extrabold text-[#00c853]">{data.tradesUnavailable ? "—" : `$${summary.paid.toLocaleString()}`}</p>
               </div>
               <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
                 <p className="text-[10px] text-[#888] uppercase tracking-wider font-bold mb-1">Open</p>
-                <p className="text-2xl font-extrabold">{summary.openCount}</p>
+                <p className="text-2xl font-extrabold">{data.tradesUnavailable ? "—" : summary.openCount}</p>
               </div>
             </div>
 
@@ -556,7 +693,7 @@ export default function AccountPage() {
             <p className="text-[#bdbdbd] text-sm mb-4">Used on past shipping trades. We&apos;ll pre-fill the address you pick when you submit a new offer.</p>
             {addresses.length === 0 ? (
               <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
-                <p className="text-[#bdbdbd] text-sm mb-3">No saved addresses yet — they show up after your first shipping trade.</p>
+                <p className="text-[#bdbdbd] text-sm mb-3">{data.tradesUnavailable ? "Your saved addresses load with your trades — try again in a minute." : "No saved addresses yet — they show up after your first shipping trade."}</p>
                 <a href="/" className="inline-block bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-5 py-2.5 rounded-xl font-bold transition">
                   Start a trade
                 </a>
@@ -739,7 +876,7 @@ export default function AccountPage() {
           </section>
         )}
 
-        {trades.length === 0 && (
+        {trades.length === 0 && !data.tradesUnavailable && (
           <div className="bg-white/5 border border-white/10 rounded-2xl p-8 text-center">
             <p className="text-[#bdbdbd] text-sm mb-4">No trades yet on this email.</p>
             <a href="/" className="inline-block bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] px-6 py-3 rounded-2xl font-bold transition">
