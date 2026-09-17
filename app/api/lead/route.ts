@@ -189,7 +189,7 @@ async function isDuplicateMC(email: string, contact: string, device: string, mod
 // fork that drifted — stale Xbox numbers, missing Pixels/Watches/iPad, and
 // no brokenGlass deduction — which silently clamped legit quotes down and
 // false-flagged them as tampered. Always import; never re-fork.)
-import { authoritativeLineCap, resolveModelIdFromLabel, type LeadLineSpec } from "../../lib/server-quote-cap";
+import { authoritativeLineCap, macSpecUnclaimed, resolveModelIdFromLabel, type LeadLineSpec } from "../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../lib/quote";
 import { MANUAL_REVIEW_DEVICES } from "../../data/prices";
 
@@ -571,7 +571,9 @@ export async function POST(req: NextRequest) {
   const sanitizeQty = (q: unknown) => Math.min(50, Math.max(1, Math.round(Number(q) || 1)));
   let serverQuoteCap: number | null;
   if (isMultiDeviceCart) {
-    const devs = (data as { devices: { model?: string; storage?: string; condition?: string; carrier?: string; quantity?: number; quote?: number; brokenGlass?: unknown }[] }).devices;
+    // Each cart line carries its own chip/RAM labels (processor/memory) —
+    // the MacBook cap prices that config.
+    const devs = (data as { devices: { model?: string; storage?: string; condition?: string; carrier?: string; quantity?: number; quote?: number; brokenGlass?: unknown; processor?: unknown; memory?: unknown }[] }).devices;
     let acc = 0;
     let anyKnown = false;
     let allKnown = true;
@@ -600,9 +602,15 @@ export async function POST(req: NextRequest) {
     // Single device: per-unit ceiling × quantity. The old code never
     // multiplied by quantity, so every honest ×2+ submission was falsely
     // "tamper"-clamped to a one-unit payout wherever a resell cap existed.
-    const cap = await lineCap({ model, storage, condition, carrier, carrierLock, brokenGlass });
+    const cap = await lineCap({ model, storage, condition, carrier, carrierLock, brokenGlass, processor, memory });
     serverQuoteCap = cap != null ? cap * sanitizeQty(quantity) : null;
   }
+  // A priced MacBook line with no recognizable chip/RAM was capped at the
+  // model's TOP config — the funnel always sends both, so a line without
+  // them (hand-posted) gets a hand check instead of that loose ceiling.
+  const macSpecMissing = isMultiDeviceCart
+    ? (data as { devices: (LeadLineSpec & { quote?: unknown })[] }).devices.some((d) => !!d && (Number(d.quote) || 0) > 0 && macSpecUnclaimed(d))
+    : submittedQuoteNum > 0 && macSpecUnclaimed({ model, processor, memory });
   // Quote-step promo coupons (/coupons.json) apply a PERCENT bonus that the
   // client folds into the submitted quote. The server MUST re-validate the code
   // against the same source (never trust a client-claimed percent) and raise the
@@ -1046,8 +1054,11 @@ export async function POST(req: NextRequest) {
   const uncappedSanity = serverQuoteCap == null && (isMulti
     ? deviceList.some((d) => (Number(d.quote) || 0) > NO_CAP_SANITY_MAX)
     : submittedQuoteNum > NO_CAP_SANITY_MAX);
-  const reviewRequired = highValueReview || quoteTampered || !attested || uncappedSanity;
+  const reviewRequired = highValueReview || quoteTampered || !attested || uncappedSanity || macSpecMissing;
   const reviewLines: string[] = [];
+  if (macSpecMissing) {
+    reviewLines.push("⚠️ MACBOOK CHIP/RAM MISSING — the quote was only bounded by this model's top configuration. Confirm the chip + RAM and re-check the quote before ANY payout.");
+  }
   if (uncappedSanity) {
     reviewLines.push(`🚨 UNCAPPED HIGH QUOTE — no server-side price ceiling exists for this model and the submitted figure exceeds $${NO_CAP_SANITY_MAX}. Verify the quote by hand before ANY payout.`);
   }

@@ -27,6 +27,7 @@ import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import {
   field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES, parseOfferBonus, isCustomerLeadPost,
+  nextItemUpdateVersion,
 } from "../../../../lib/lead-devices";
 
 const SERVER_QUOTE_TOLERANCE = 5;
@@ -200,7 +201,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
 
   // Post the item-update marker. Human-readable lead-in for staff
   // scanning MC; the trailing JSON is what the offer GET route parses.
-  const json = JSON.stringify({ v: 1, devices, total });
+  // v2 = device prices exclude the offer bonus (see nextItemUpdateVersion).
+  const json = JSON.stringify({ v: nextItemUpdateVersion(messages, leadId), devices, total });
   const reviewNote = devices.some((d) => d.needsReview)
     ? " ⚠️ MANUAL REVIEW NEEDED — customer marked a device broken; re-quote by hand."
     : unverifiable

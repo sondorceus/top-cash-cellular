@@ -28,10 +28,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../../../lib/resell-estimates";
-import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
+import { authoritativeLineCap, macSpecUnclaimed } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
-import { parseOfferBonus, isCustomerLeadPost } from "../../../../lib/lead-devices";
+import { parseOfferBonus, isCustomerLeadPost, nextItemUpdateVersion } from "../../../../lib/lead-devices";
 
 // Server-side quote ceiling per added device — mirrors /api/lead's anti-tamper
 // guard so a tampered offer link can't inflate the order total (which flows into
@@ -61,7 +61,7 @@ function field(body: string, key: string): string | undefined {
   return m?.[1]?.trim() || undefined;
 }
 function clean(s: unknown, max: number): string {
-  return String(s ?? "").replace(/[\[\]\n\r\t]/g, " ").trim().slice(0, max);
+  return String(s ?? "").replace(/[\[\]\n\r\t\u2028\u2029]/g, " ").trim().slice(0, max);
 }
 
 // Rebuild the order's CURRENT device list server-side. Resolution order
@@ -135,7 +135,7 @@ function resolveCurrentDevices(
   }];
 }
 
-type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; carrier?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
+type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; carrier?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown; processor?: unknown; memory?: unknown };
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
   const { leadId } = await ctx.params;
@@ -181,6 +181,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (added.some((d) => !d.model)) {
     return NextResponse.json({ error: "Every device needs a model." }, { status: 400 });
   }
+  // MacBook chip / RAM labels (index-aligned with `added`) — the funnel sends
+  // them so the ceiling prices the claimed config; the marker text records
+  // them for inspection.
+  const specs = raw.map((d) => ({ processor: clean(d.processor, 60), memory: clean(d.memory, 30) }));
 
   // Pull the lead to verify ownership + that it's still editable. limit=5000
   // (full live cap, was 1000) so an older offer still resolves by id.
@@ -227,17 +231,17 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // manual staff re-quote and never trusted into the estimate.
   const leadCarrier = field(leadMsg.body, "Carrier");
   const capOverrides = await readPriceOverrides();
-  for (const d of added) {
+  for (const [i, d] of added.entries()) {
     if (d.needsReview || d.quote <= 0) continue;
-    const unitCap =
-      (await authoritativeLineCap(
-        { model: d.model, storage: d.storage, condition: d.condition, carrier: d.carrier || leadCarrier },
-        capOverrides,
-      )) ?? computeUnitCap(d.model, d.condition);
+    const line = { model: d.model, storage: d.storage, condition: d.condition, carrier: d.carrier || leadCarrier, ...specs[i] };
+    const unitCap = (await authoritativeLineCap(line, capOverrides)) ?? computeUnitCap(d.model, d.condition);
     if (unitCap == null) {
       d.needsReview = true;
       continue;
     }
+    // No chip/RAM → the MacBook ceiling is the model's top config; a staff
+    // re-quote instead of trusting it (the funnel always sends both).
+    if (macSpecUnclaimed(line)) d.needsReview = true;
     const lineCap = unitCap * d.quantity;
     if (d.quote > lineCap + SERVER_QUOTE_TOLERANCE) {
       console.warn(`[offer-append] Line over ceiling: ${d.model.slice(0, 60)} submitted=$${d.quote} lineCap=$${lineCap} — clamped.`);
@@ -259,8 +263,12 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
 
   // Post the combined item-update marker. Human-readable lead-in for
   // staff scanning MC; the trailing JSON is what the offer GET parses.
-  const json = JSON.stringify({ v: 1, devices, total });
-  const addedSummary = added.map((d) => `${d.model}${d.condition ? ` (${d.condition})` : ""}`).join(", ");
+  // v2 = device prices exclude the offer bonus (see nextItemUpdateVersion).
+  const json = JSON.stringify({ v: nextItemUpdateVersion(messages, leadId), devices, total });
+  const addedSummary = added.map((d, i) => {
+    const spec = [specs[i]?.processor, specs[i]?.memory].filter(Boolean).join(" / ");
+    return `${d.model}${spec ? ` · ${spec}` : ""}${d.condition ? ` (${d.condition})` : ""}`;
+  }).join(", ");
   const reviewNote = anyReview ? " ⚠️ A new device needs a manual re-quote." : "";
   const updateBody = `[ITEM-UPDATE: ${leadId}] Customer added ${added.length} device(s): ${clean(addedSummary, 200)} — new estimated total $${total}.${reviewNote} ${json}`;
   const postRes = await fetch(`${MC_API}/api/comms`, {

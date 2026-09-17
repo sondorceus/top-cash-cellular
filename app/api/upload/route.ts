@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { safeEqual } from "../../lib/admin-auth";
+import { getSessionFromRequest, isAdminEmail } from "../../lib/auth";
 
 // Customer photo upload. Funnel posts JPEG/PNG/WEBP captures of the
 // device for the AI fraud + condition check on the lead side. Hardened
@@ -33,7 +34,11 @@ export async function POST(req: NextRequest) {
   // scripted Blob-quota floods. A valid admin token bypasses the cap —
   // posting a batch of shop listings (up to 8 photos each) from
   // /admin/shop would trip it in one device and a half otherwise.
-  const isAdmin = safeEqual(req.headers.get("x-admin-token"), process.env.TCC_ADMIN_TOKEN);
+  // A Google admin session counts too: proxy.ts injects the real token only
+  // on /api/admin/*, so a stale token saved in /admin/shop still worked
+  // there while its photos landed under `devices/` here and were purged.
+  const isAdmin = safeEqual(req.headers.get("x-admin-token"), process.env.TCC_ADMIN_TOKEN)
+    || (() => { try { return isAdminEmail(getSessionFromRequest(req)?.email); } catch { return false; } })();
   if (!isAdmin) {
     const ip = clientIp(req);
     const rl = rateLimit(`upload:${ip}`, UPLOAD_LIMIT, UPLOAD_WINDOW_MS);

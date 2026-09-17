@@ -24,8 +24,10 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const RESEND_KEY = process.env.RESEND_API_KEY;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Line breaks (U+2028/U+2029 included) become spaces: these fields are
+// "Key: value" lines of the [DELIVERY OPTION] comm.
 function clean(v: unknown, max: number): string {
-  return typeof v === "string" ? v.replace(/[\[\]<>]/g, "").trim().slice(0, max) : "";
+  return typeof v === "string" ? v.replace(/[\[\]<>]/g, "").replace(/[\n\r\t\u2028\u2029]/g, " ").trim().slice(0, max) : "";
 }
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] as string));
 

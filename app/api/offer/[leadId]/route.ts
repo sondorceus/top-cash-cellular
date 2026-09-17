@@ -192,7 +192,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
         quantity: dQty ? parseInt(dQty, 10) : undefined,
       });
     }
-    const totalMatch = body.match(/^Total payout:\s*\$([0-9,]+(?:\.\d+)?)/m);
+    // \n only — /m also splits at U+2028/U+2029 (see lead-money).
+    const totalMatch = body.match(/(?:^|\n)Total payout:[ \t]*\$([0-9,]+(?:\.\d+)?)/);
     if (totalMatch) totalPayout = Math.round(parseFloat(totalMatch[1].replace(/,/g, "")));
   }
 

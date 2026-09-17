@@ -25,10 +25,11 @@ export function parseDollarAmount(raw: string | undefined | null): number {
 // Line-anchored: /api/lead writes the footer at the start of its own line,
 // while customer text (notes, name, model) sits mid-line after a "Key: "
 // prefix. Unanchored, a note saying "Total payout: $2500" above the real
-// footer won the first match. Same anchor the offer route already uses.
+// footer won the first match. Only a real \n starts a line: under /m, JS
+// also breaks lines at U+2028/U+2029, which a /go name or cookie carried.
 export function parseTotalPayoutLine(body: string | undefined | null): number {
   if (!body) return 0;
-  const m = body.match(/^Total payout:\s*\$([0-9,]+(?:\.\d+)?)/im);
+  const m = body.match(/(?:^|\n)Total payout:[ \t]*\$([0-9,]+(?:\.\d+)?)/i);
   if (!m) return 0;
   const n = parseFloat(m[1].replace(/,/g, ""));
   return Number.isFinite(n) ? Math.round(n) : 0;

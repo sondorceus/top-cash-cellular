@@ -19,10 +19,11 @@
 //
 // Marker body shape (same as the customer flow but tagged "Staff"):
 //   [ITEM-UPDATE: <leadId>] Staff corrected device specs — total $N.
-//   {"v":1,"devices":[…with imei…],"total":N,"source":"admin"}
+//   {"v":2,"devices":[…with imei…],"total":N,"source":"admin"}
 
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
+import { nextItemUpdateVersion, type LeadMessage } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -105,6 +106,7 @@ export async function POST(req: NextRequest) {
   // [ITEM-UPDATE] marker with no matching [LEAD: …] is harmless data
   // litter on MC but confusing in audit logs.
   let leadOk = false;
+  let messages: LeadMessage[] = [];
   try {
     const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
       headers: { "x-api-key": MC_KEY },
@@ -112,7 +114,7 @@ export async function POST(req: NextRequest) {
     });
     if (r.ok) {
       const data = await r.json();
-      const messages: { id: string; body?: string }[] = data.messages || [];
+      messages = data.messages || [];
       leadOk = messages.some((m) => m.id === leadId && /\[NEW BUYBACK LEAD/i.test(m.body || ""));
     }
   } catch { /* handled below */ }
@@ -122,7 +124,9 @@ export async function POST(req: NextRequest) {
 
   // Total is the sum of line totals (matches the customer flow's math).
   const total = devices.reduce((s, d) => s + d.quote, 0);
-  const json = JSON.stringify({ v: 1, devices, total, source: "admin" });
+  // v2 = device prices exclude the offer bonus (DeviceCorrection seeds them
+  // that way); a lead still on a v1 list stays v1 — see nextItemUpdateVersion.
+  const json = JSON.stringify({ v: nextItemUpdateVersion(messages, leadId), devices, total, source: "admin" });
   const lead = note
     ? `Staff corrected device specs — total $${total}. ${note}`
     : `Staff corrected device specs — total $${total}.`;

@@ -23,9 +23,10 @@ import { signCustomerSession, CUSTOMER_COOKIE_NAME, COOKIE_MAX_AGE } from "../..
 import { rateLimit, clientIp } from "../../../lib/rate-limit";
 import { makeTrackToken, verifyTrackToken } from "../../../lib/track-token";
 import { sendCustomerEmail } from "../../../lib/customer-send";
+import { fetchCommsPaged } from "../../../lib/mc-comms";
 
-const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
+const LOOKUP_DOWN = "We couldn't check your trades just now — please try again in a minute.";
 const SITE = "https://topcashcellular.com";
 
 // `ml: 1` marks a session minted from a verified magic link.
@@ -39,32 +40,28 @@ type MagicLinkSession = Parameters<typeof signCustomerSession>[0] & { ml: 1 };
 // the name from the first one. Not a whole-body substring — otherwise an
 // email that merely appears in a STRANGER'S lead body (notes, etc.) would
 // count their trade as yours (IDOR). Same fix as /api/track + /lookup.
-async function findLeads(email: string): Promise<{ name?: string; leadCount: number }> {
+//
+// Same paged one-year window as /api/track: the newest-500 slice could lose
+// the trade between mailing a link and the tap. `failed` = MC couldn't be
+// read (it restarts on every deploy) — not the same as "no trade".
+async function findLeads(email: string): Promise<{ name?: string; leadCount: number; failed?: boolean }> {
   let name: string | undefined;
   let leadCount = 0;
-  if (!MC_KEY) return { leadCount };
-  try {
-    const r = await fetch(`${MC_API}/api/comms?limit=500`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (r.ok) {
-      const data = await r.json();
-      const messages: { body?: string; timestamp: string }[] = data.messages || [];
-      for (const m of messages) {
-        if (!m.body) continue;
-        if (!m.body.includes("[NEW BUYBACK LEAD")) continue;
-        const leadEmail = m.body.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i)?.[1]?.trim().toLowerCase() || "";
-        if (leadEmail !== email) continue;
-        leadCount += 1;
-        if (!name) {
-          const nm = m.body.match(/(?:^|\n)Name:[ \t]*([^\n]*)/i);
-          const v = nm?.[1]?.trim();
-          if (v) name = v;
-        }
-      }
+  if (!MC_KEY) return { leadCount, failed: true };
+  const messages = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 });
+  if (messages.length === 0) return { leadCount, failed: true };
+  for (const m of messages) {
+    if (!m.body) continue;
+    if (!m.body.includes("[NEW BUYBACK LEAD")) continue;
+    const leadEmail = m.body.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i)?.[1]?.trim().toLowerCase() || "";
+    if (leadEmail !== email) continue;
+    leadCount += 1;
+    if (!name) {
+      const nm = m.body.match(/(?:^|\n)Name:[ \t]*([^\n]*)/i);
+      const v = nm?.[1]?.trim();
+      if (v) name = v;
     }
-  } catch { /* fall through — no leads found */ }
+  }
   return { name, leadCount };
 }
 
@@ -88,18 +85,21 @@ function setSessionCookie(res: NextResponse, email: string, name?: string) {
 }
 
 // Magic-link landing. Always redirects to /account; the cookie is set only
-// when the token is valid and the email has a past trade, so a bad or
-// expired link just shows the sign-in form again.
+// when the token is valid and the email has a past trade. Anything else says
+// why on /account (?link=…) instead of silently showing the form again — a
+// valid link that hit an MC restart can simply be tapped again.
 export async function GET(req: NextRequest) {
   const account = `${req.nextUrl.origin}/account`;
   const noStore = { headers: { "Cache-Control": "no-store" } };
   const rl = rateLimit(`login:${clientIp(req)}`, 8, 60_000);
-  if (!rl.ok) return NextResponse.redirect(account, noStore);
+  if (!rl.ok) return NextResponse.redirect(`${account}?link=retry`, noStore);
   const email = emailFromToken(req.nextUrl.searchParams.get("t") || "");
   if (!email) return NextResponse.redirect(`${account}?link=expired`, noStore);
-  const { name, leadCount } = await findLeads(email);
+  const { name, leadCount, failed } = await findLeads(email);
+  if (failed) return NextResponse.redirect(`${account}?link=retry`, noStore);
+  if (leadCount === 0) return NextResponse.redirect(`${account}?link=notrade`, noStore);
   const res = NextResponse.redirect(account, noStore);
-  if (leadCount > 0) setSessionCookie(res, email, name);
+  setSessionCookie(res, email, name);
   return res;
 }
 
@@ -122,7 +122,8 @@ export async function POST(req: NextRequest) {
     if (!email || (claimed && claimed !== email)) {
       return NextResponse.json({ error: "This sign-in link is invalid or expired. Request a new one.", expired: true }, { status: 401 });
     }
-    const { name, leadCount } = await findLeads(email);
+    const { name, leadCount, failed } = await findLeads(email);
+    if (failed) return NextResponse.json({ error: LOOKUP_DOWN }, { status: 503 });
     if (leadCount === 0) {
       return NextResponse.json({ found: false, error: "We don't see a past trade for that email — try Guest Checkout instead." }, { status: 404 });
     }
@@ -139,7 +140,8 @@ export async function POST(req: NextRequest) {
 
   // Confirm the email actually appears in at least one past lead before
   // mailing a link — no sign-in mail to random typos / probed addresses.
-  const { leadCount } = await findLeads(email);
+  const { leadCount, failed } = await findLeads(email);
+  if (failed) return NextResponse.json({ error: LOOKUP_DOWN }, { status: 503 });
   if (leadCount === 0) {
     return NextResponse.json({ found: false, error: "We don't see a past trade for that email — try Guest Checkout instead." }, { status: 404 });
   }

@@ -52,9 +52,10 @@ export function field(body: string, key: string): string | undefined {
 }
 
 // Sanitize a customer-controlled value before it enters an MC body / JSON
-// marker: strip the [ ] marker delimiters and control chars.
+// marker: strip the [ ] marker delimiters and control chars (U+2028/U+2029
+// included — JS regexes treat them as line breaks).
 export function cleanField(s: unknown, max: number): string {
-  return String(s ?? "").replace(/[\[\]\n\r\t]/g, " ").trim().slice(0, max);
+  return String(s ?? "").replace(/[\[\]\n\r\t\u2028\u2029]/g, " ").trim().slice(0, max);
 }
 
 // A customer-submitted post: a funnel lead ([NEW BUYBACK LEAD …]), a saved
@@ -179,6 +180,32 @@ export function parseOfferBonus(body: string): number {
   const m = body.match(/(?:^|\n)\[OFFER-BONUS:[ \t]*amount=(\d+(?:\.\d+)?)\][ \t]*(?=\r?\n|$)/);
   const b = Math.round(parseFloat(m?.[1] || ""));
   return Number.isFinite(b) && b > 0 && b <= 1000 ? b : 0;
+}
+
+// [ITEM-UPDATE] JSON `v`. From v2 every writer stores DEVICE prices only and
+// readers add the [OFFER-BONUS] on top. v1 markers are ambiguous — a staff
+// correction started from the bonus-inclusive Quote, and the old append
+// folded the bonus into device #1 — so the admin view keeps their figures
+// as written, and a writer continuing a v1 list stays v1 (its carried
+// lines may still hold the bonus).
+export const ITEM_UPDATE_BONUS_EXCLUDED = 2;
+
+// The `v` to stamp on a new [ITEM-UPDATE] for this lead: v2 unless its
+// latest marker is a pre-v2 one.
+export function nextItemUpdateVersion(messages: LeadMessage[], leadId: string): number {
+  const iuRe = new RegExp(`\\[ITEM-UPDATE:\\s*${reEscape(leadId)}\\][^\\n]*?(\\{.*\\})`, "i");
+  let v: number | null = null;
+  let at = "";
+  for (const m of messages) {
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
+    const iu = m.body.match(iuRe);
+    if (!iu || (at && m.timestamp <= at)) continue;
+    try {
+      const parsed = JSON.parse(iu[1]);
+      if (parsed && Array.isArray(parsed.devices)) { v = Number(parsed.v) || 1; at = m.timestamp; }
+    } catch { /* ignore malformed marker */ }
+  }
+  return v == null || v >= ITEM_UPDATE_BONUS_EXCLUDED ? ITEM_UPDATE_BONUS_EXCLUDED : 1;
 }
 
 // Sum of line totals for a resolved device list.

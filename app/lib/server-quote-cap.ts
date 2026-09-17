@@ -62,6 +62,10 @@ export type LeadLineSpec = {
   carrierLock?: unknown;
   storage?: unknown;
   brokenGlass?: unknown;
+  // MacBook chip / RAM as the funnel labels them ("M4 Pro", "24 GB") — the
+  // additive cap prices THIS config (see macBookLineCap).
+  processor?: unknown;
+  memory?: unknown;
 };
 
 /**
@@ -76,9 +80,10 @@ export async function authoritativeLineCap(line: LeadLineSpec, overrides: PriceO
   // Additively priced MacBooks: the homepage (useAdditive) and /go price
   // chip + RAM + storage, but their PRICE_TABLE rows are stale BASE-CHIP
   // leftovers — capping from them clamped an honest M4 Max 2TB ($2,880) to
-  // $1,216 and flagged it as tampering. Ceiling = the TOP chip + memory at
-  // the storage/condition the customer chose (nano glass on, battery fine,
-  // charger in), so no honest config can exceed it.
+  // $1,216 and flagged it as tampering. Ceiling = the chip + memory the
+  // customer claimed at their storage/condition (nano glass on, battery
+  // fine, charger in); lines without a resolvable chip/RAM get the TOP
+  // config — callers flag those (macSpecUnclaimed).
   if (macIsAutoQuotable(id)) return macBookLineCap(id, line, overrides);
   const glass = line.brokenGlass === "front" || line.brokenGlass === "back" || line.brokenGlass === "both" ? line.brokenGlass : null;
   const carrierLocked = carrierLockedFromText(line.carrierLock);
@@ -157,28 +162,64 @@ const PHONE_TIERS = new Set(["64", "128", "256", "512", "1tb", "2tb"]);
 // The homepage's MacBook accessory bonus (accessoryBonusAmount).
 const MAC_ACCESSORY_BONUS = 30;
 
+const topOption = (list: MacSpecOption[]) => list.reduce((a, b) => ((b.adj ?? 0) > (a.adj ?? 0) ? b : a), list[0]);
+
+// The priced option a funnel label names, or null. Chip labels repeat across
+// core counts ("M4 Pro" = 12- and 14-core), so the priciest match bounds it.
+function claimedOption(list: MacSpecOption[], label: unknown): MacSpecOption | null {
+  const t = typeof label === "string" ? norm(label) : "";
+  const hits = t ? list.filter((o) => norm(o.label) === t) : [];
+  return hits.length ? topOption(hits) : null;
+}
+
+/**
+ * True for an auto-priced MacBook line whose chip or RAM label is missing or
+ * unknown — its ceiling assumed the model's top config, far above a base
+ * machine's price. The funnel always sends both, so callers flag these for a
+ * hand check instead of trusting that ceiling.
+ */
+export function macSpecUnclaimed(line: LeadLineSpec): boolean {
+  const id = resolveModelIdFromLabel(line.model);
+  if (!id || MANUAL_REVIEW_DEVICES.has(id) || !macIsAutoQuotable(id)) return false;
+  const o = macOptions(id);
+  if (!o) return false;
+  return !claimedOption(o.processor, line.processor) || !claimedOption(o.memory, line.memory);
+}
+
 function macBookLineCap(id: string, line: LeadLineSpec, overrides: PriceOverrides): number | null {
   const o = macOptions(id);
   if (!o || !o.processor.length || !o.memory.length || !o.storage.length) return null;
-  const top = (list: MacSpecOption[]) => list.reduce((a, b) => ((b.adj ?? 0) > (a.adj ?? 0) ? b : a), list[0]);
   // Storage the customer chose, by id or label ("2 TB" → "2tb"); anything
   // unrecognized takes the top tier (a looser ceiling, never a false flag).
   const want = normalizeStorage(typeof line.storage === "string" ? line.storage : undefined);
-  const storage = (want && o.storage.find((s) => s.id === want || normalizeStorage(s.label) === want)) || top(o.storage);
-  const at = (condition: string) => quoteMacBook({
-    modelId: id,
-    processor: top(o.processor).id,
-    memory: top(o.memory).id,
-    storage: storage.id,
-    condition,
-    nano: true,
-  }, overrides);
+  const storage = (want && o.storage.find((s) => s.id === want || normalizeStorage(s.label) === want)) || topOption(o.storage);
+  // Same for chip + RAM: the top-config ceiling let a base machine post a
+  // Max-chip price unflagged, so price the config the lead claims — a
+  // tamperer then has to write a false chip into the lead, which inspection
+  // catches. No/unknown label (offer-page edits, /api/confirm) → top.
+  const topProc = topOption(o.processor), topMem = topOption(o.memory);
+  const processor = claimedOption(o.processor, line.processor) || topProc;
+  const memory = claimedOption(o.memory, line.memory) || topMem;
   const cond = canonicalCondition(line.condition);
-  let r = at(cond);
-  // Unpriced broken goes to review, but the homepage still submits its
-  // number — computed at the MINT adjustment (MCOND has no broken key). So
-  // bound it by the sealed ceiling rather than leave the line uncapped.
-  if (!r.ok && cond === "broken") r = at("sealed");
+  const priced = (p: MacSpecOption, m: MacSpecOption) => {
+    const at = (condition: string) => quoteMacBook({
+      modelId: id,
+      processor: p.id,
+      memory: m.id,
+      storage: storage.id,
+      condition,
+      nano: true,
+    }, overrides);
+    const r = at(cond);
+    // Unpriced broken goes to review, but the homepage still submits its
+    // number — computed at the MINT adjustment (MCOND has no broken key). So
+    // bound it by the sealed ceiling rather than leave the line uncapped.
+    return !r.ok && cond === "broken" ? at("sealed") : r;
+  };
+  let r = priced(processor, memory);
+  // A claimed config that can't be priced (under MIN_OFFER) must not drop
+  // the ceiling altogether — bound it by the top config instead.
+  if (!r.ok && (processor !== topProc || memory !== topMem)) r = priced(topProc, topMem);
   if (!r.ok) return null;
   return r.offer + MAC_ACCESSORY_BONUS + Math.max(60, Math.round(r.offer * 0.10));
 }

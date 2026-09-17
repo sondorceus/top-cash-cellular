@@ -5074,7 +5074,9 @@ export default function Home() {
   };
   const applyLookup = () => {
     if (!lookupResult?.found) return;
-    if (lookupResult.name) setName(lookupResult.name);
+    // lookupResult.name is a FIRST-name greeting hint only — never the
+    // lead's Name (it replaced a typed full name and reached the lead, the
+    // FedEx label and the payout record as just "Maria").
     const isEmail = lookupContact.includes("@");
     if (isEmail) setEmail(lookupContact.trim());
     else setPhone(lookupContact.trim());
@@ -6252,6 +6254,10 @@ export default function Home() {
         // its own carrier's ceiling, not the original lead's — adding an
         // unlocked phone onto an AT&T lead used to false-flag the line.
         carrier: carrier?.label,
+        // MacBook chip / RAM — the append route's ceiling prices this config
+        // (and flags a MacBook line that arrives without them).
+        processor: processor?.label,
+        memory: memory?.label,
         quote: quote * quantity,
         quantity,
         needsReview: isManualQuote || isPendingQuote,
@@ -12363,8 +12369,8 @@ export default function Home() {
               <div className="flex items-center gap-3 my-3"><div className="flex-1 h-px bg-white/10" /><span className="text-[#d4d4d4] text-xs">or</span><div className="flex-1 h-px bg-white/10" /></div>
 
               {/* Customer Login — verifies the email against past leads via /api/lookup.
-                  If the email has a prior trade, we prefill the first name from
-                  history; otherwise we surface an inline error nudging them to Guest above. */}
+                  If the email has a prior trade we continue (the name is still typed
+                  at the contact step); otherwise we surface an inline error nudging them to Guest above. */}
               <p className="text-xs font-semibold text-[#e6e6e6] uppercase tracking-wider mb-2">Returning Customer</p>
               <form onSubmit={async (e) => {
                 e.preventDefault();
@@ -12378,7 +12384,9 @@ export default function Home() {
                     setLoginError("We don't see a past trade for that email — try Guest Checkout above.");
                     return;
                   }
-                  if (d.name) setName(d.name);
+                  // d.name is a first-name hint, not the Name field — the
+                  // contact step still asks for the full name (it goes on
+                  // the lead, the FedEx label and the payout record).
                   // No account cookie from here: a typed email isn't proof of
                   // ownership. /account signs customers in by emailed link.
                   await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ previewSave: true, name: d.name || "Returning Customer", phone: "", email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: "TBD", quantity, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, photos: photoUrls.length ? photoUrls : undefined }) }).catch(() => {});

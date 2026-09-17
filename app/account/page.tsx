@@ -166,12 +166,17 @@ export default function AccountPage() {
   };
   useEffect(() => { refresh(); }, []);
 
-  // The emailed sign-in link lands on /api/account/login, which bounces an
-  // expired or invalid token back here with ?link=expired.
+  // The emailed sign-in link lands on /api/account/login, which bounces a
+  // link it couldn't sign in with back here with ?link=<why>.
   useEffect(() => {
     try {
-      if (new URLSearchParams(window.location.search).get("link") === "expired") {
+      const why = new URLSearchParams(window.location.search).get("link");
+      if (why === "expired") {
         setLoginError("That sign-in link expired or isn't valid — enter your email and we'll send a new one.");
+      } else if (why === "retry") {
+        setLoginError("We couldn't finish signing you in just now — tap the link in your email again in a minute (it works for 30 minutes).");
+      } else if (why === "notrade") {
+        setLoginError("We don't see a past trade for that email — try Guest Checkout instead.");
       }
     } catch { /* no URL access — nothing to show */ }
   }, []);

@@ -61,8 +61,10 @@ const LOCK_DAYS = 14;
 // the lead body is line-anchored "Key: value" fields with the customer's
 // Name/Phone lines ABOVE the real Quote:/Payout: lines, so a \n inside a
 // field could inject a forged first-match "Quote: $99999" line.
+// U+2028/U+2029 too (same set as /api/lead's cleanField) — JS regexes treat
+// them as line breaks, and Next URL-decodes the visitor cookie.
 function sanitize(s: string): string {
-  return s.replace(/[\[\]\n\r\t]/g, " ").slice(0, 200).trim();
+  return s.replace(/[\[\]\n\r\t\u2028\u2029]/g, " ").slice(0, 200).trim();
 }
 
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;

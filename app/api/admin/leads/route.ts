@@ -6,7 +6,7 @@ import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-looku
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import { parseDollarAmount } from "../../../lib/lead-money";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
-import { parseOfferBonus, isCustomerLeadPost } from "../../../lib/lead-devices";
+import { parseOfferBonus, isCustomerLeadPost, ITEM_UPDATE_BONUS_EXCLUDED } from "../../../lib/lead-devices";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -188,8 +188,9 @@ interface AdminLead {
   condition?: string;
   carrier?: string;
   quote?: string;
-  // Coupon + referral credit from the lead's [OFFER-BONUS] line (already
-  // inside a single-device `quote`).
+  // Coupon + referral credit from the lead's [OFFER-BONUS] line — set only
+  // while it sits on top of the device price(s) (so inside a single-device
+  // `quote`); unset when a pre-v2 [ITEM-UPDATE] governs the figures.
   offerBonus?: number;
   payout?: string;
   imei?: string;
@@ -501,7 +502,7 @@ export async function GET(req: NextRequest) {
   const labelErrorByLead = new Map<string, { kind: string; reason: string; timestamp: string }>();
   // Customer device edits — the latest [ITEM-UPDATE: leadId] marker per
   // lead (posted by the offer-page editor). Most recent wins.
-  const itemUpdateByLead = new Map<string, { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown }>; total?: unknown; timestamp: string }>();
+  const itemUpdateByLead = new Map<string, { devices: Array<{ model?: unknown; storage?: unknown; condition?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown }>; total?: unknown; v: number; timestamp: string }>();
   const commsByLead = new Map<string, { sms: number; email: number; lastAt?: string }>();
   const idCapturedByLead = new Map<string, { type: string; last4: string; dobYear: string; photoUrl: string; timestamp: string }>();
   // Review token bookkeeping. minted = "[REVIEW-TOKEN: leadId] token=X
@@ -686,7 +687,7 @@ export async function GET(req: NextRequest) {
         if (parsed && Array.isArray(parsed.devices)) {
           const prev = itemUpdateByLead.get(lid);
           if (!prev || m.timestamp > prev.timestamp) {
-            itemUpdateByLead.set(lid, { devices: parsed.devices, total: parsed.total, timestamp: m.timestamp });
+            itemUpdateByLead.set(lid, { devices: parsed.devices, total: parsed.total, v: Number(parsed.v) || 1, timestamp: m.timestamp });
           }
         }
       } catch { /* ignore malformed marker */ }
@@ -914,8 +915,9 @@ export async function GET(req: NextRequest) {
       flush();
       if (devices.length === 0) devices = undefined;
       // Line-anchored — customer text mid-line ("Note from customer: …
-      // Total payout: $2500") must not beat the real footer (see lead-money).
-      const totalMatch = m.body.match(/^Total payout:\s*\$([0-9,]+)/m);
+      // Total payout: $2500") must not beat the real footer (see lead-money;
+      // \n only — /m also splits at U+2028/U+2029).
+      const totalMatch = m.body.match(/(?:^|\n)Total payout:[ \t]*\$([0-9,]+)/);
       if (totalMatch) totalPayout = parseInt(totalMatch[1].replace(/,/g, ""), 10);
     }
     // Apply a customer device edit (latest [ITEM-UPDATE] marker) so the
@@ -931,6 +933,10 @@ export async function GET(req: NextRequest) {
     let itemsNeedReview = false;
     const funnelNeedsReview = m.body.includes("⚠️ NEEDS REVIEW");
     const itemUpd = itemUpdateByLead.get(m.id);
+    // The coupon/referral bonus sits on top of the device price(s) unless a
+    // pre-v2 [ITEM-UPDATE] (bonus possibly already inside a device price —
+    // see ITEM_UPDATE_BONUS_EXCLUDED) is in charge; those keep their figures.
+    const bonusOnTop = !itemUpd || itemUpd.v >= ITEM_UPDATE_BONUS_EXCLUDED ? parseOfferBonus(m.body) : 0;
     if (itemUpd) {
       itemsEditedAt = itemUpd.timestamp;
       const editedDevices = itemUpd.devices.map((d) => ({
@@ -953,7 +959,7 @@ export async function GET(req: NextRequest) {
         // does, or the mark-paid default (and the payout rollups) came in
         // short of what the customer was shown. A $0 subtotal = every line
         // awaits a hand re-quote — leave it 0 rather than read "$25".
-        totalPayout = editedTotal > 0 ? editedTotal + parseOfferBonus(m.body) : editedTotal;
+        totalPayout = editedTotal > 0 ? editedTotal + bonusOnTop : editedTotal;
       } else if (editedDevices.length === 1) {
         const d0 = editedDevices[0];
         modelOverride = d0.model;
@@ -965,7 +971,7 @@ export async function GET(req: NextRequest) {
         // invoice defaults match the offer page — DeviceCorrection takes it
         // back out (offerBonus) when it seeds a device price. $0 = awaiting
         // a hand re-quote; leave it.
-        quoteOverride = d0.quote != null ? `$${d0.quote > 0 ? d0.quote + parseOfferBonus(m.body) : d0.quote}` : undefined;
+        quoteOverride = d0.quote != null ? `$${d0.quote > 0 ? d0.quote + bonusOnTop : d0.quote}` : undefined;
       }
     }
     // Handoff method + details. /api/lead writes a header line like
@@ -1008,7 +1014,9 @@ export async function GET(req: NextRequest) {
       condition: conditionOverride ?? parseField(m.body, "Condition"),
       carrier: parseField(m.body, "Carrier"),
       quote: quoteOverride ?? (parseField(m.body, "Quote") || parseField(m.body, "Offer")),
-      offerBonus: parseOfferBonus(m.body) || undefined,
+      // Only when it sits ON TOP of the device prices — DeviceCorrection
+      // subtracts it from `quote` to seed a device price.
+      offerBonus: bonusOnTop || undefined,
       payout: parseField(m.body, "Payout"),
       imei: parseField(m.body, "IMEI"),
       // A bundle's one checkout IMEI (/api/lead labels it so it can't pass
