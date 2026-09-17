@@ -385,6 +385,8 @@ const IPHONE_SERIES = [
     { id: "ip13pm", label: "iPhone 13 Pro Max", base: 284, image: "/devices/bm/iphone-13-pro-max.png" },     // IWM est 128GB=$299
     { id: "ip13p", label: "iPhone 13 Pro", base: 245, image: "/devices/bm/iphone-13-pro.png" },              // IWM est 128GB=$258
     { id: "ip13", label: "iPhone 13", base: 167, image: "/devices/bm/iphone-13.png" },                       // IWM est 128GB=$176
+    // Priced in PRICE_TABLE and quoted on /go + chat, but had no card here (2026-09-16).
+    { id: "ip13mini", label: "iPhone 13 mini", base: 152, image: "/devices/iphone-13-mini.webp" },           // IWM 128GB=$160
   ]},
   { id: "12", label: "iPhone 12", image: "/iphone12.png", year: "2020", topPrice: 198, variants: [
     { id: "ip12pm", label: "iPhone 12 Pro Max", base: 198, image: "/devices/bm/iphone-12-pro-max.png" },     // IWM est 128GB=$209
@@ -1649,6 +1651,10 @@ const MICROSOFT_MODELS = [
 ];
 
 const NINTENDO_MODELS = [
+  // Switch 2: PRICE_TABLE row existed (quoted on /go) with no card here. base =
+  // its mint cell, like the siblings. No Switch 2 render in public/ yet — this
+  // reuses the original Switch photo, same as /go (2026-09-16).
+  { id: "nsw2", label: "Nintendo Switch 2", base: 252, image: "/devices/nintendo-switch.webp" },
   { id: "switch", label: "Nintendo Switch OLED", base: 126, image: "/devices/switch-oled.webp" },
   { id: "switchv2", label: "Nintendo Switch V2", base: 76, image: "/devices/switch-oled.webp" },
   { id: "switchlite", label: "Nintendo Switch Lite", base: 36, image: "/devices/switch-lite.webp" },
@@ -2244,7 +2250,9 @@ const STORAGE_MAP: Record<string, string[]> = {
   gs25u: ["256", "512", "1tb"],
   gs25edge: ["256", "512"],
   gs25p: ["256", "512"],
-  gs25: ["128", "256", "512"],
+  // US tiers only (2026-09-16 audit vs Samsung US): the base S25, S25 FE and
+  // S24 were sold here in 128/256 — their 512GB table rows are non-US SKUs.
+  gs25: ["128", "256"],
   gs25fe: ["128", "256"],
   gs24fe: ["128", "256"],
   gs23fe: ["128", "256"],
@@ -2254,7 +2262,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   gs24p: ["256", "512"],
   gs24: ["128", "256"],
   gs23u: ["256", "512", "1tb"],
-  gs23p: ["256", "512"],
+  gs23p: ["256", "512"],  // S23+ starts at 256GB everywhere — the 128 table row is not a real SKU
   gs23: ["128", "256"],  // base S23 US only shipped 128/256 — 512GB was +/Ultra-only (2026-07-17 audit)
   gs22u: ["128", "256", "512", "1tb"],
   gs22p: ["128", "256"],
@@ -2262,10 +2270,14 @@ const STORAGE_MAP: Record<string, string[]> = {
   gs21u: ["128", "256", "512"],
   gs21p: ["128", "256"],
   gs21: ["128", "256"],
-  gs20u: ["128", "256", "512"],
-  gs20p: ["128", "256", "512"],
+  // US S20 Ultra / S20+ shipped 128/512 only; 256GB was a non-US SKU (and the
+  // S20+ row has no 256 cell, so it quoted off base × multiplier). S20 is
+  // 128GB-only; its table row is keyed "base", so a picked "128" quotes off
+  // base × multiplier, not that row (same for px7a/px5/px5a — owner's call).
+  gs20u: ["128", "512"],
+  gs20p: ["128", "512"],
   gs20: ["128"],
-  gztrifold: ["512", "1tb"],
+  gztrifold: ["512"],  // US TriFold is 512GB only; the 1TB was a China/Korea SKU
   gzfold7: ["256", "512", "1tb"],
   gzfold6: ["256", "512", "1tb"],
   gzfold5: ["256", "512", "1tb"],
@@ -2294,7 +2306,7 @@ const STORAGE_MAP: Record<string, string[]> = {
   px8a: ["128", "256"],
   px7p: ["128", "256", "512"],
   px7: ["128", "256"],
-  px7a: ["128"],
+  px7a: ["128"],  // 7a, 5 and 5a were only ever sold in 128GB (GSMArena)
   pxfold: ["256", "512"],
   px6p: ["128", "256", "512"],
   px6: ["128", "256"],
@@ -2488,30 +2500,53 @@ const STORAGE_MAP: Record<string, string[]> = {
   stabs9u: ["256", "512", "1tb"],
   stabs9p: ["256", "512"],
   stabs9: ["128", "256"],
+  // S9 FE/FE+ and S7–S4 had no entry, so the picker offered 64 GB–2 TB and
+  // priced the phantom tiers off base × multiplier (2026-09-16 audit).
+  stabs9fep: ["128", "256"],
+  stabs9fe: ["128", "256"],
   stabs8u: ["128", "256", "512"],
-  stabs8p: ["128", "256"],
+  stabs8p: ["128", "256", "512"],  // US Tab S8+ also sold a 512GB Wi-Fi SKU (SM-X800)
   stabs8: ["128", "256"],
   stabs7p: ["128", "256", "512"],
+  stabs7fe: ["64", "128", "256"],
+  stabs7: ["128", "256", "512"],
+  stabs6l: ["64", "128"],
+  stabs6: ["128", "256"],
+  stabs5e: ["64", "128"],
+  stabs4: ["64", "256"],
   staba9: ["64", "128"],
   // Samsung Galaxy Note — these were falling back to ALL_STORAGES.
-  gnote20u:   ["128", "256", "512"],
+  gnote20u:   ["128", "512"],  // US Note 20 Ultra was 128/512; 256GB was non-US
   gnote20:    ["128"],
   gnote10p5g: ["256", "512"],
   gnote10p:   ["256", "512"],
   gnote10:    ["256"],
   gnote9:     ["128", "512"],
-  // Surface
+  // Surface — every priced model now has an entry (the missing ones offered
+  // 64 GB–2 TB). Tiers per Microsoft's configs; Pro 9 and Go 4 were short one.
+  surfpro11: ["256", "512", "1tb"],
+  surfpro10biz: ["256", "512", "1tb"],
   surfpro10: ["256", "512", "1tb"],
-  surfpro9: ["128", "256", "512"],
-  surfgo4: ["64", "128"],
+  surfpro9: ["128", "256", "512", "1tb"],
+  surfpro8: ["128", "256", "512", "1tb"],
+  surfpro7p: ["128", "256", "512", "1tb"],
+  surfpro7: ["128", "256", "512", "1tb"],
+  surfpro6: ["128", "256", "512", "1tb"],
+  surfprox2020: ["256", "512"],  // SQ2 models
+  surfprox2019: ["128", "256", "512"],
+  surfgo4: ["64", "128", "256"],
   surfgo3: ["64", "128"],
+  surfgo2: ["64", "128", "256"],
   // Lenovo Tabs
   ltabp12: ["128", "256"],
   ltabp11g2: ["128", "256"],
   ltabp11: ["64", "128"],  // base Tab P11 (1st gen) US is 64/128; 256GB belonged to the P11 Plus (2026-07-17 audit)
   ltabm11: ["64", "128"],
-  // OnePlus
-  oppad2: ["128", "256"],
+  legtabg3: ["256"],  // Legion Tab Gen 3 is 12GB/256GB only in the US
+  // OnePlus — US SKUs: Pad 3 and Pad 2 are 256GB-only, Pad Go 2 128/256.
+  oppad3: ["256"],
+  oppadgo2: ["128", "256"],
+  oppad2: ["256"],
   oppad: ["128", "256"],
   // Google
   gpixeltab: ["128", "256"],
@@ -2756,6 +2791,45 @@ const maxPopularDeviceBonus = (dt?: string | null): number => {
   if (dt === "ipad") return 25;
   return 0;
 };
+// The catalog headline is the max over EVERY PRICE_TABLE cell, but the picker
+// can't quote a tier STORAGE_MAP hides (TriFold read "up to $2,138" off the
+// non-US 1TB; its 512GB pays $2,070). When a hidden tier outranks the shown
+// ones, returns the best offer the shown tiers reach — the phone funnel's best
+// config per tier: unlocked, accessories in, cell → bonuses → per-storage
+// cap → Galaxy drop → IWM rule. null = nothing to cap. Phones only: iPads,
+// tablets and desktops add extras (Pencil, covers, RAM) this doesn't mirror.
+const shownTierCeiling = (id: string, dt?: string | null): number | null => {
+  if (dt !== "iphone" && dt !== "android" && dt !== "pixel") return null;
+  const shown = STORAGE_MAP[id];
+  const table = PRICE_TABLE[id];
+  if (!shown || !table) return null;
+  // A shown tier with no cells quotes off base × multiplier — can't bound it here.
+  if (shown.some(sid => !table[sid])) return null;
+  const label = (SKU_LABELS as Record<string, string>)[id] ?? null;
+  const conds = getConditionsFor(dt).filter(c => c.id !== "broken");
+  const best = (sids: string[]): number => {
+    let top = 0;
+    for (const sid of sids) {
+      for (const c of conds) {
+        const cell = table[sid]?.[c.id];
+        if (cell == null || cell <= 0) continue;
+        const acc = dt === "iphone" && c.id === "mint" ? maxAccessoryBonus(dt) : 0;
+        let q = cell + acc + maxPopularDeviceBonus(dt);
+        const cap = marginCapFor({ modelId: id, label, condition: c.id, carrier: "unlocked", storage: sid, carrierDeduction: 0 });
+        if (cap != null && cap < MIN_OFFER) continue;  // funnel sends this to manual review
+        if (cap != null) q = Math.min(q, cap);
+        q = applyGalaxyDrop(q, id);
+        const rule = iwmRuleCeiling({ modelId: id, storage: sid, condition: c.id });
+        if (rule != null) q = Math.min(q, rule);
+        if (q >= MIN_OFFER && q > top) top = q;
+      }
+    }
+    return top;
+  };
+  const shownBest = best(shown);
+  const allBest = best(Object.keys(table).filter(k => k !== "base"));
+  return shownBest > 0 && shownBest < allBest ? shownBest : null;
+};
 const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
   // Direction B (2026-06-19): the displayed "up to $X" is the realistic
   // catalog headline — the SAME number /sell/[slug] + landing pages show —
@@ -2800,7 +2874,9 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   }
   const dropped = applyGalaxyDrop(val, m.id);
   const rule = iwmRuleCeiling({ modelId: m.id, condition: "sealed" });
-  return rule != null ? Math.min(dropped, rule) : dropped;
+  const ruled = rule != null ? Math.min(dropped, rule) : dropped;
+  const shown = shownTierCeiling(m.id, dt);
+  return shown != null ? Math.min(ruled, shown) : ruled;
 };
 
 const PAYOUTS = [
@@ -3855,15 +3931,43 @@ function collectCatalogHits(match: (label: string) => boolean): CatalogHit[] {
 //          model picker so they choose the storage variant themselves
 const catNorm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
 const catStripStorage = (label: string) => label.replace(/\s*\([^)]*\)\s*$/, "").replace(/\b\d+\s?(gb|tb)\b/gi, "");
+// catNorm drops the spaces, so "Switch 2019" / "Switch 256GB" contained
+// "switch2" and matched the Switch 2. A label ending in a digit only counts
+// where the typed text doesn't carry straight on into more digits.
+function catTextIndex(text: string): { norm: string; digitAfter: boolean[] } {
+  let norm = "";
+  const digitAfter: boolean[] = [];
+  for (let k = 0; k < text.length; k++) {
+    for (const ch of text[k].toLowerCase()) {
+      if (!/[a-z0-9]/.test(ch)) continue;
+      norm += ch;
+      digitAfter.push(/[0-9]/.test(text[k + 1] ?? ""));
+    }
+  }
+  return { norm, digitAfter };
+}
+function catHas(t: { norm: string; digitAfter: boolean[] }, nl: string): boolean {
+  if (!nl) return false;
+  const endsInDigit = /[0-9]$/.test(nl);
+  for (let i = t.norm.indexOf(nl); i !== -1; i = t.norm.indexOf(nl, i + 1)) {
+    if (!endsInDigit || !t.digitAfter[i + nl.length - 1]) return true;
+  }
+  return false;
+}
+// Models whose trailing number reads as a count or a revision in free text
+// ("Nintendo Switch, 2 joycons", "switch 2nd gen" = the V2). They never jump
+// straight to a price — the seller picks from the brand's list, where the
+// OLED / V2 / Lite / Switch 2 cards sit side by side. Value = banner wording.
+const INQUIRY_PICKER_ONLY = new Map<string, string>([["nsw2", "Nintendo Switch consoles"]]);
 function suggestFromInquiry(text: string): { hit: CatalogHit; exact: boolean } | null {
-  const nt = catNorm(text);
-  if (nt.length < 4) return null;
-  const exact = collectCatalogHits((label) => { const nl = catNorm(label); return nl.length >= 4 && nt.includes(nl); });
+  const ti = catTextIndex(text);
+  if (ti.norm.length < 4) return null;
+  const exact = collectCatalogHits((label) => { const nl = catNorm(label); return nl.length >= 4 && catHas(ti, nl); });
   if (exact.length) {
     exact.sort((a, b) => catNorm(b.label).length - catNorm(a.label).length || b.base - a.base);
-    return { hit: exact[0], exact: true };
+    return { hit: exact[0], exact: !INQUIRY_PICKER_ONLY.has(exact[0].modelId) };
   }
-  const line = collectCatalogHits((label) => { const nc = catNorm(catStripStorage(label)); return nc.length >= 5 && nt.includes(nc); });
+  const line = collectCatalogHits((label) => { const nc = catNorm(catStripStorage(label)); return nc.length >= 5 && catHas(ti, nc); });
   if (line.length) {
     line.sort((a, b) => catNorm(catStripStorage(b.label)).length - catNorm(catStripStorage(a.label)).length || b.base - a.base);
     return { hit: line[0], exact: false };
@@ -9275,8 +9379,17 @@ export default function Home() {
                     >
                       <svg className="w-6 h-6 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                       <div className="flex-1 min-w-0">
-                        <p className="text-white text-sm font-bold leading-tight">Good news — we have an instant offer for the {inquirySuggestion.hit.label}</p>
-                        <p className="text-[#bdbdbd] text-xs mt-0.5">{inquirySuggestion.exact ? "See your price now — no waiting for a manual quote." : "Pick your storage and see your price now — no manual quote needed."}</p>
+                        {INQUIRY_PICKER_ONLY.has(inquirySuggestion.hit.modelId) ? (
+                          <>
+                            <p className="text-white text-sm font-bold leading-tight">Good news — we have instant offers for {INQUIRY_PICKER_ONLY.get(inquirySuggestion.hit.modelId)}</p>
+                            <p className="text-[#bdbdbd] text-xs mt-0.5">Pick your exact model and see your price now — no manual quote needed.</p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-white text-sm font-bold leading-tight">Good news — we have an instant offer for the {inquirySuggestion.hit.label}</p>
+                            <p className="text-[#bdbdbd] text-xs mt-0.5">{inquirySuggestion.exact ? "See your price now — no waiting for a manual quote." : "Pick your storage and see your price now — no manual quote needed."}</p>
+                          </>
+                        )}
                       </div>
                       <svg className="w-5 h-5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </button>
@@ -9636,7 +9749,7 @@ export default function Home() {
               {category === "consoles" && [
                 { id: "sony" as const, label: "Sony", sub: "PlayStation 4, PS4 Pro, PS5", brandIcon: BRAND_ICONS.playstation },
                 { id: "microsoft" as const, label: "Microsoft", sub: "Xbox One, Series S, Series X", brandIcon: BRAND_ICONS.microsoft },
-                { id: "nintendo" as const, label: "Nintendo", sub: "Switch OLED, Switch V2, Switch Lite", brandIcon: BRAND_ICONS.nintendoswitch },
+                { id: "nintendo" as const, label: "Nintendo", sub: "Switch 2, Switch OLED, V2, Lite", brandIcon: BRAND_ICONS.nintendoswitch },
               ].map((b) => (
                 <button key={b.id} onClick={() => { selectBrand(b.id); }} className={`flex flex-col items-center justify-center p-4 rounded-2xl tcc-card tcc-brand-card cursor-pointer h-[130px] tap-press ${funnelPop === `brand-${b.id}` ? "tap-confirm" : ""}`}>
                   <span className="flex-shrink-0 mb-2 tcc-brand-tile">{b.brandIcon}</span>
