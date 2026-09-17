@@ -1,16 +1,16 @@
 // /go board data — server-only.
 //
-// The "up to $X" ceilings are computed from the LIVE engine (quoteDevice at
-// sealed / best storage / best secondary option), NOT from
-// CATALOG_PRICE_BY_MODEL_ID. Deliberate: the catalog headlines bake in
-// funnel bonuses the bot-path quote doesn't grant, so for gs25u/gs24u the
-// catalog number sits ABOVE anything the chip flow can return (466 vs 391,
-// 355 vs 280 — verified 2026-08-19). A seller who tapped the board and
-// answered best-everything would watch the number DROP with no cause —
-// the exact "it went down when i engaged" failure /go exists to avoid.
-// Engine-derived ceilings are reachable by construction: answer
-// sealed + top storage + unlocked (or cellular, or disc) and you land
-// exactly on the headline.
+// The "up to $X" ceilings come from engineCeiling() (app/lib/advertised-up-to.ts)
+// run against the LIVE overrides — the same function that generates
+// CATALOG_PRICE_BY_MODEL_ID for /sell and the homepage — and never exceed
+// that catalog number, so the three surfaces print one headline. (The
+// catalog once stored Galaxy headlines $75 high for getMaxPrice to drop,
+// which put gs25u/gs24u above anything the chip flow returns; a seller who
+// tapped the board and answered best-everything watched the number DROP —
+// the exact "it went down when i engaged" failure /go exists to avoid.)
+// Live ceilings are reachable by construction: answer sealed + top storage
+// + unlocked (or cellular, or disc) and you land on the headline; the
+// catalog cap only lowers it where the homepage offers fewer tiers.
 //
 // 2026-09-11: iPads and consoles joined the deterministic flow. Both were
 // already price-table devices (quoteDevice prices them today) — they just
@@ -19,10 +19,10 @@
 // first campaign). Each model declares its own chip STEPS so the client
 // walks any category generically; app/go/spec.ts turns the answers into
 // the engine call for both /api/go/quote and /api/go/lock.
-import { quoteDevice } from "../lib/quote";
 import { cachedOverrides } from "../lib/overrides-cache";
-import { PRICE_TABLE } from "../data/prices";
-import { macCeiling, macOptions } from "../lib/macbook-quote";
+import { macOptions } from "../lib/macbook-quote";
+import { engineCeiling, tableStorages, CELLULAR_MULT, CELLULAR_BONUS } from "../lib/advertised-up-to";
+import { CATALOG_PRICE_BY_MODEL_ID } from "../data/catalog-prices";
 
 export type GoCat = "phone" | "ipad" | "console" | "macbook";
 // Chip questions after the model pick, in order.
@@ -222,18 +222,12 @@ export type BoardRow = BoardModel & {
 // Homepage-only multipliers the engine doesn't apply (app/page.tsx
 // connectivityMultiplier / sony discdrive extras). Mirrored here so a /go
 // number matches the number the homepage would show for the same answers.
-export const CELLULAR_MULT = 1.15;
+// The cellular pair lives with the up-to function that also needs it.
+export { CELLULAR_MULT, CELLULAR_BONUS };
 export const DIGITAL_MULT = 0.92;
-// The popular-device bonus the engine adds for phones (isPhone); the homepage
-// gives it to cellular iPads too, AFTER the multiplier.
-export const CELLULAR_BONUS = 25;
-
-const STORAGE_ORDER = ["64", "128", "256", "512", "1tb", "2tb", "base", "carbonblack"];
 
 export function storageKeysFor(id: string): string[] {
-  return Object.keys(PRICE_TABLE[id] || {}).sort(
-    (a, b) => STORAGE_ORDER.indexOf(a) - STORAGE_ORDER.indexOf(b),
-  );
+  return tableStorages(id);
 }
 
 export async function computeBoard(): Promise<BoardRow[]> {
@@ -244,19 +238,25 @@ export async function computeBoard(): Promise<BoardRow[]> {
   const overrides = await cachedOverrides();
   const rows: BoardRow[] = [];
   for (const m of BOARD_MODELS) {
+    const ceiling = engineCeiling(m.id, { overrides, label: m.label });
+    // A model with no live engine price would render "up to $0" — a broken
+    // promise on an ad landing page. Drop the row instead; the funnel link
+    // still covers it.
+    if (!ceiling) continue;
+    // Never above the catalog headline /sell and the homepage print (lower
+    // only where the homepage offers fewer storage tiers than the table).
+    const catalog: number | undefined = CATALOG_PRICE_BY_MODEL_ID[m.id];
+    const upTo = catalog != null && catalog > 0 ? Math.min(ceiling.upTo, catalog) : ceiling.upTo;
     if (m.cat === "macbook") {
       // Pure arithmetic — no engine call, no table row.
       const o = macOptions(m.id);
       if (!o || !o.processor.length || !o.memory.length || !o.storage.length) continue;
-      const upTo = macCeiling(m.id, overrides);
-      if (upTo <= 0) continue;
       const opt = (l: { id: string; label: string; sub?: string }, withSub = false): GoOpt => ({ key: l.id, label: withSub && l.sub ? `${l.label} · ${l.sub}` : l.label });
-      const topStorage = o.storage.reduce((a, b) => ((b.adj ?? 0) > (a.adj ?? 0) ? b : a), o.storage[0]);
       rows.push({
         ...m,
         upTo,
         storages: o.storage.map((x) => x.id),
-        bestStorage: topStorage.id,
+        bestStorage: ceiling.storage,
         options: {
           processor: o.processor.map((p) => opt(p, true)),
           memory: o.memory.map((x) => opt(x)),
@@ -265,30 +265,7 @@ export async function computeBoard(): Promise<BoardRow[]> {
       });
       continue;
     }
-    const storages = storageKeysFor(m.id);
-    let upTo = 0;
-    let bestStorage = storages[storages.length - 1] || "";
-    for (const s of storages) {
-      const r = await quoteDevice({
-        modelId: m.id,
-        modelLabel: m.label,
-        storage: s,
-        condition: "sealed",
-        carrier: m.cat === "phone" ? "unlocked" : undefined,
-        isPhone: m.cat === "phone",
-      }, overrides).catch(() => null);
-      if (!r?.offer) continue;
-      // The reachable ceiling: cellular for iPads, disc for consoles.
-      const offer = m.cat === "ipad" ? Math.round(r.offer * CELLULAR_MULT) + CELLULAR_BONUS : r.offer;
-      if (offer > upTo) {
-        upTo = offer;
-        bestStorage = s;
-      }
-    }
-    // A model with no live engine price would render "up to $0" — a broken
-    // promise on an ad landing page. Drop the row instead; the funnel link
-    // still covers it.
-    if (upTo > 0) rows.push({ ...m, upTo, storages, bestStorage });
+    rows.push({ ...m, upTo, storages: storageKeysFor(m.id), bestStorage: ceiling.storage });
   }
   return rows;
 }

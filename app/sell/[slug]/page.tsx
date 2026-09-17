@@ -13,14 +13,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const device = getDevice(slug);
   if (!device) return { title: "Sell Your Device | Top Cash Cellular" };
+  // No instant quote exists for this model (inquiry-only): no dollar figure
+  // anywhere — a "$80" SE 1st Gen title promised a price the funnel never shows.
+  if (device.customQuote) {
+    return {
+      title: `Sell ${device.name} for Cash in Austin TX | Get a Custom Quote | Top Cash Cellular`,
+      description: `Sell your ${device.name} in Austin TX. Tell us about it and get a custom cash quote, same-day payout. Cash, Cash App, Zelle, or BTC.`,
+      alternates: { canonical: `/sell/${device.slug}` },
+      openGraph: {
+        title: `Sell ${device.name} — Get a Custom Quote`,
+        description: `Get a custom cash quote for your ${device.name}. Same-day payout in Austin TX.`,
+        type: "website",
+        url: `https://topcashcellular.com/sell/${device.slug}`,
+      },
+    };
+  }
   // Only make the comparison claim in the meta description when it's
   // actually true at this device's headline price. iPhone 17 Pro Max
   // sat at ~$767 with Apple Trade-In showing $700 in the JSON — but
   // when Apple removed it from their site, our old static text still
   // promised "more than Apple". Now it's checked per-slug.
   const cmp = getOemComparison(slug, device.price);
+  // Both numbers are best-config ceilings, so the gap is an "up to" too —
+  // "$3,020+" would promise it to every seller of a top-spec headline model.
   const tail =
-    cmp.kind === "we-beat" ? ` Beat ${cmp.oem} Trade-In by $${cmp.diff}+.` :
+    cmp.kind === "we-beat" ? ` Beat ${cmp.oem} Trade-In by up to $${cmp.diff}.` :
     cmp.kind === "wont-trade" ? ` ${cmp.oem} won't take this on trade-in — we will.` :
     "";
   return {
@@ -47,9 +64,11 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
   if (!device) notFound();
 
   const related = DEVICES.filter((d) => d.category === device.category && d.slug !== device.slug).slice(0, 4);
+  // Inquiry-only model: every price slot below says "custom quote" instead.
+  const custom = !!device.customQuote;
   const cmp = getOemComparison(slug, device.price);
   const oemBullet =
-    cmp.kind === "we-beat" ? `We pay $${cmp.diff}+ more than ${cmp.oem} Trade-In` :
+    cmp.kind === "we-beat" ? `We pay up to $${cmp.diff} more than ${cmp.oem} Trade-In` :
     cmp.kind === "wont-trade" ? `${cmp.oem} won't take this on trade-in — we will` :
     "Same-day cash for any condition";
 
@@ -82,7 +101,11 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
           Sell Your {device.name}
         </h1>
         <p className="text-[#dcdcdc] text-lg mb-6">
-          Get up to <span className="text-[#00c853] font-bold">${device.price}</span> — Austin TX
+          {custom ? (
+            <>Get a <span className="text-[#00c853] font-bold">custom quote</span> — Austin TX</>
+          ) : (
+            <>Get up to <span className="text-[#00c853] font-bold">${device.price}</span> — Austin TX</>
+          )}
         </p>
 
         <Link href="/?ask=handoff" className="block w-full bg-[#00c853] text-[#0a0a0a] py-5 rounded-2xl text-xl font-bold text-center hover:bg-[#00e676] transition shadow-lg mb-8">
@@ -91,8 +114,8 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
 
         <div className="grid grid-cols-3 gap-3 mb-8">
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
-            <p className="text-[#00c853] text-lg font-bold">${device.price}</p>
-            <p className="text-[#dcdcdc] text-[10px]">Up to</p>
+            <p className="text-[#00c853] text-lg font-bold">{custom ? "Custom" : `$${device.price}`}</p>
+            <p className="text-[#dcdcdc] text-[10px]">{custom ? "Quote" : "Up to"}</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-center">
             <p className="text-white text-lg font-bold">Same Day</p>
@@ -111,7 +134,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
           <h2 className="text-lg font-bold mb-4">How It Works</h2>
           <div className="space-y-4">
             {[
-              { num: "1", title: "Get Your Quote", desc: `Select ${device.name}, choose your storage and condition to get an instant price.` },
+              { num: "1", title: "Get Your Quote", desc: custom ? `Select ${device.name} and its condition — we reply with a custom quote.` : `Select ${device.name}, choose your storage and condition to get an instant price.` },
               { num: "2", title: "Meet Up or Ship", desc: "Austin local meetup or free prepaid shipping label — your choice." },
               { num: "3", title: "Get Paid", desc: "Cash, Cash App, Zelle, or BTC. Same-day payout on local meetups." },
             ].map((s) => (
@@ -146,7 +169,7 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
               {related.map((d) => (
                 <Link key={d.slug} href={`/sell/${d.slug}`} className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 hover:bg-white/10 transition">
                   <span className="text-white text-xs font-medium">{d.name}</span>
-                  <span className="text-[#00c853] text-xs font-bold">${d.price}</span>
+                  <span className="text-[#00c853] text-xs font-bold">{d.customQuote ? "Quote" : `$${d.price}`}</span>
                 </Link>
               ))}
             </div>
@@ -169,9 +192,11 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
             "@context": "https://schema.org",
             "@type": "Offer",
             "name": `Sell ${device.name}`,
-            "description": `Sell your ${device.name} for up to $${device.price} in Austin TX. Same-day payout on local meetups; same-day after inspection on shipped trades.`,
-            "price": device.price,
-            "priceCurrency": "USD",
+            "description": custom
+              ? `Sell your ${device.name} in Austin TX for a custom cash quote. Same-day payout on local meetups; same-day after inspection on shipped trades.`
+              : `Sell your ${device.name} for up to $${device.price} in Austin TX. Same-day payout on local meetups; same-day after inspection on shipped trades.`,
+            // No price on a custom-quote Offer — schema.org treats it as optional.
+            ...(custom ? {} : { "price": device.price, "priceCurrency": "USD" }),
             "url": `https://topcashcellular.com/sell/${device.slug}`,
             "seller": {
               "@type": "LocalBusiness",

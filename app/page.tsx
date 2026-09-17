@@ -2791,9 +2791,11 @@ const maxPopularDeviceBonus = (dt?: string | null): number => {
   if (dt === "ipad") return 25;
   return 0;
 };
-// The catalog headline is the max over EVERY PRICE_TABLE cell, but the picker
-// can't quote a tier STORAGE_MAP hides (TriFold read "up to $2,138" off the
-// non-US 1TB; its 512GB pays $2,070). When a hidden tier outranks the shown
+// Fallback for phones with no catalog headline (getMaxPrice returns the
+// catalog number first; scripts/regen-up-to.ts already limits it to these
+// STORAGE_MAP tiers). The raw max over EVERY PRICE_TABLE cell can name a tier
+// the picker hides (TriFold read "up to $2,138" off the non-US 1TB; its 512GB
+// pays $2,070). When a hidden tier outranks the shown
 // ones, returns the best offer the shown tiers reach — the phone funnel's best
 // config per tier: unlocked, accessories in, cell → bonuses → per-storage
 // cap → Galaxy drop → IWM rule. null = nothing to cap. Phones only: iPads,
@@ -2831,17 +2833,17 @@ const shownTierCeiling = (id: string, dt?: string | null): number | null => {
   return shownBest > 0 && shownBest < allBest ? shownBest : null;
 };
 const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
-  // Direction B (2026-06-19): the displayed "up to $X" is the realistic
-  // catalog headline — the SAME number /sell/[slug] + landing pages show —
-  // not the sealed-2TB ceiling. Keeps homepage cards, the Top Payouts
-  // ticker, and every funnel "up to" label consistent with /sell, so there's
-  // no bait-and-switch and we never advertise a price almost no one gets
-  // (a used MacBook 14 M3 read "up to $2955" off the raw ceiling). Models
-  // not in the catalog (consoles, Dell, desktops, Surface, DJI) fall through
-  // to the computed ceiling below.
+  // Engine-priced models (every PRICE_TABLE row with an instant number, the
+  // additive MacBooks): the catalog headline — advertisedUpTo(), the SAME
+  // number /sell/[slug], the landing pages and the /go board show (see
+  // app/data/catalog-prices.ts). It is already the engine's final offer
+  // (caps, Galaxy −$75, IWM rule), so it is NOT re-capped below: the old
+  // path stored Galaxy headlines $75 high to survive a second drop.
+  const catalogPrice = CATALOG_PRICE_BY_MODEL_ID[m.id];
+  if (typeof catalogPrice === "number" && catalogPrice > 0) return catalogPrice;
+  // Everything else (base-priced laptops/desktops, Surface, rows under the
+  // minimum offer) falls through to the computed ceiling below.
   const rawMax = (): number => {
-    const catalogPrice = CATALOG_PRICE_BY_MODEL_ID[m.id];
-    if (typeof catalogPrice === "number" && catalogPrice > 0) return catalogPrice;
     const table = PRICE_TABLE[m.id];
     if (table) {
       let topPrice = 0;
@@ -2878,6 +2880,12 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   const shown = shownTierCeiling(m.id, dt);
   return shown != null ? Math.min(ruled, shown) : ruled;
 };
+// Series tile "up to" (Galaxy S / Z / Note, MacBook lines): the best
+// headline among the series' quotable variants. The hand-typed topPrice
+// drifted — S Series read $657 while no S model pays over $510, and MacBook
+// Neo read $270 with every model inquiry-only. 0 → "Get a quote".
+const getSeriesMaxPrice = (s: { variants: readonly { id: string; base?: number; inquiryOnly?: boolean }[] }, dt?: string | null): number =>
+  s.variants.reduce((best, v) => (v.inquiryOnly ? best : Math.max(best, getMaxPrice(v, dt))), 0);
 
 const PAYOUTS = [
   { id: "cash", label: "Cash" },
@@ -9881,7 +9889,7 @@ export default function Home() {
                       )}
                       <p className="font-bold text-sm">{s.label}</p>
                       <p className="text-[#e6e6e6] text-[10px] text-center">{s.year}</p>
-                      <p className="text-[#00c853] font-bold text-xs mt-0.5">Up to ${s.topPrice}</p>
+                      <p className="text-[#00c853] font-bold text-xs mt-0.5">{getSeriesMaxPrice(s, deviceType) ? `Up to $${getSeriesMaxPrice(s, deviceType)}` : "Get a quote"}</p>
                     </button>
                   ))}
                 </div>
@@ -10022,7 +10030,8 @@ export default function Home() {
                 <p className="text-[#e6e6e6] text-sm mb-6">Choose your line</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {MACBOOK_SERIES.map((s) => {
-                    const seriesInq = !!(s as { inquiryOnly?: boolean }).inquiryOnly;
+                    const seriesUpTo = getSeriesMaxPrice(s, deviceType);
+                    const seriesInq = !!(s as { inquiryOnly?: boolean }).inquiryOnly || !seriesUpTo;
                     return (
                       <button key={s.id} onClick={() => setSelectedSeries(s.id)} className="tap-press flex flex-col items-center justify-center p-4 rounded-2xl tcc-card cursor-pointer h-[150px]">
                         {s.image ? (
@@ -10032,7 +10041,7 @@ export default function Home() {
                         )}
                         <p className="font-bold text-sm">{s.label}</p>
                         <p className="text-[#e6e6e6] text-[10px] text-center px-1 leading-tight">{s.year}</p>
-                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{seriesInq ? "Get a quote" : `Up to $${s.topPrice}`}</p>
+                        <p className="text-[#00c853] font-bold text-xs mt-0.5">{seriesInq ? "Get a quote" : `Up to $${seriesUpTo}`}</p>
                       </button>
                     );
                   })}
