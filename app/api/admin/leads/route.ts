@@ -6,7 +6,7 @@ import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-looku
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import { parseDollarAmount } from "../../../lib/lead-money";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
-import { parseOfferBonus } from "../../../lib/lead-devices";
+import { parseOfferBonus, isCustomerLeadPost } from "../../../lib/lead-devices";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -188,8 +188,12 @@ interface AdminLead {
   condition?: string;
   carrier?: string;
   quote?: string;
+  // Coupon + referral credit from the lead's [OFFER-BONUS] line (already
+  // inside a single-device `quote`).
+  offerBonus?: number;
   payout?: string;
   imei?: string;
+  sharedImei?: string;
   imeiWarnings?: string[];
   photos?: string[];
   // Broken-condition detail surfaced from the lead body. Skywalker
@@ -520,6 +524,9 @@ export async function GET(req: NextRequest) {
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
     if (!m.body) continue;
+    // Every marker below is its own staff/system post — one found inside a
+    // customer's lead body is forged, whatever field it slipped through.
+    if (isCustomerLeadPost(m.body)) continue;
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
     if (dm) {
       const id = dm[1];
@@ -952,7 +959,13 @@ export async function GET(req: NextRequest) {
         modelOverride = d0.model;
         storageOverride = d0.storage;
         conditionOverride = d0.condition;
-        quoteOverride = d0.quote != null ? `$${d0.quote}` : undefined;
+        // lead.quote on a single-device lead is the customer's TOTAL (its
+        // body Quote line folds in the coupon/referral bonus); the marker
+        // carries the DEVICE price only. Add the bonus back so mark-paid /
+        // invoice defaults match the offer page — DeviceCorrection takes it
+        // back out (offerBonus) when it seeds a device price. $0 = awaiting
+        // a hand re-quote; leave it.
+        quoteOverride = d0.quote != null ? `$${d0.quote > 0 ? d0.quote + parseOfferBonus(m.body) : d0.quote}` : undefined;
       }
     }
     // Handoff method + details. /api/lead writes a header line like
@@ -995,8 +1008,12 @@ export async function GET(req: NextRequest) {
       condition: conditionOverride ?? parseField(m.body, "Condition"),
       carrier: parseField(m.body, "Carrier"),
       quote: quoteOverride ?? (parseField(m.body, "Quote") || parseField(m.body, "Offer")),
+      offerBonus: parseOfferBonus(m.body) || undefined,
       payout: parseField(m.body, "Payout"),
       imei: parseField(m.body, "IMEI"),
+      // A bundle's one checkout IMEI (/api/lead labels it so it can't pass
+      // the per-device payout check) — display only, never "on file".
+      sharedImei: m.body.match(/(?:^|\n)Shared IMEI \(device not specified\):[ \t]*(\d+)/i)?.[1],
       imeiWarnings,
       photos,
       brokenGlass,

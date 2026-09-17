@@ -16,6 +16,7 @@
 import { NextResponse } from "next/server";
 import { getCustomerSessionFromCookies } from "../../lib/auth";
 import { referralCodeForEmail, referralLinkForCode } from "../../lib/referral";
+import { isCustomerLeadPost } from "../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -69,7 +70,8 @@ export async function GET() {
   let earned = 0;
   let referralCount = 0;
   for (const m of messages) {
-    if (!m.body) continue;
+    // Referral markers are their own system posts, never lead-body text.
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     // The owning marker — matched on this exact code.
     const cm = m.body.match(/\[REFERRAL-CODE:\s*code=(REF-[A-Z0-9]{6})\s+email=([^\s\]]+)/i);
     if (cm && cm[1].toUpperCase() === code) {

@@ -12,9 +12,10 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import {
-  getCustomerSessionFromCookies, getProfileFromCookies, getServerSession,
-  verifyCustomerSession, CUSTOMER_COOKIE_NAME, type CustomerSessionPayload,
+  getCustomerSessionFromCookies, getProfileFromCookies,
+  verifyCustomerSession, CUSTOMER_COOKIE_NAME,
 } from "../../../lib/auth";
+import { isCustomerLeadPost } from "../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -49,28 +50,23 @@ function parseField(body: string, key: string): string | undefined {
 }
 
 export async function GET() {
+  // getCustomerSessionFromCookies only accepts a Google tcc_session or a
+  // tcc_customer cookie with the magic-link mark (`ml`, set by
+  // /api/account/login). Cookies from the old login minted a session from a
+  // typed email alone and stay signature-valid for 30 days — they read as
+  // signed out, and are cleared here so the customer re-verifies through
+  // the emailed link.
   const session = await getCustomerSessionFromCookies();
   if (!session) {
-    return NextResponse.json({ authenticated: false }, {
+    const cookieStore = await cookies();
+    // No valid Google session here, so a signature-valid customer cookie
+    // that still got refused is an unmarked (old) one.
+    const stale = !!verifyCustomerSession(cookieStore.get(CUSTOMER_COOKIE_NAME)?.value);
+    const res = NextResponse.json(stale ? { authenticated: false, reverify: true } : { authenticated: false }, {
       headers: { "Cache-Control": "no-store" },
     });
-  }
-  // Without a Google tcc_session, the tcc_customer cookie must carry the
-  // magic-link mark (`ml`, set by /api/account/login). Cookies from the old
-  // login minted a session from a typed email alone and stay signature-
-  // valid for 30 days — treat them as signed out (and clear them) so the
-  // customer re-verifies through the emailed link.
-  if (!(await getServerSession())) {
-    const cookieStore = await cookies();
-    const cust = verifyCustomerSession(cookieStore.get(CUSTOMER_COOKIE_NAME)?.value) as
-      (CustomerSessionPayload & { ml?: unknown }) | null;
-    if (!cust || cust.ml !== 1) {
-      const res = NextResponse.json({ authenticated: false, reverify: true }, {
-        headers: { "Cache-Control": "no-store" },
-      });
-      res.cookies.set(CUSTOMER_COOKIE_NAME, "", { httpOnly: true, path: "/", maxAge: 0 });
-      return res;
-    }
+    if (stale) res.cookies.set(CUSTOMER_COOKIE_NAME, "", { httpOnly: true, path: "/", maxAge: 0 });
+    return res;
   }
   const email = session.email.toLowerCase();
   // Editable profile overlay — when the customer has saved a name /
@@ -111,7 +107,9 @@ export async function GET() {
   const statusByLead = new Map<string, { status: string; at: string; payoutProof?: PayoutProof }>();
   const labelByLead = new Map<string, string>();
   for (const m of messages) {
-    if (!m.body) continue;
+    // Status/label markers are their own posts — never read them out of a
+    // customer's lead body (see isCustomerLeadPost).
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const body = m.body;
     // Status marker
     const sm = body.match(/\[STATUS:\s*(\w+)\]\s*\[LEAD:\s*([\w-]+)\]/i);

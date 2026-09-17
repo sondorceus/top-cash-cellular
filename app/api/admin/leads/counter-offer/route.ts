@@ -13,6 +13,8 @@ import { mailLogo, mailButton, mailDeviceImg } from "../../../../lib/email-shell
 import { safeEqual } from "../../../../lib/admin-auth";
 import { signCounterToken } from "../../../../lib/counter-token";
 import { reportError } from "../../../../lib/error-report";
+import { fetchCommsPaged } from "../../../../lib/mc-comms";
+import { isCustomerLeadPost } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -131,13 +133,14 @@ export async function POST(req: NextRequest) {
   // get a live accept/decline link for a finished trade. Counters during
   // inspection (shipped/received/tested) are normal and stay allowed. Fails
   // OPEN if MC is unreachable so a transient blip doesn't block staff.
+  // Paged through the archive: a single limit=1000 slice is ~3 days, so a
+  // lead paid last week could still be sent a counter. Empty = MC down.
   try {
-    const cr = await fetch(`${MC_API}/api/comms?limit=1000`, { headers: { "x-api-key": MC_KEY }, cache: "no-store" });
-    if (cr.ok) {
-      const cd = await cr.json();
-      const msgs: { body?: string; timestamp: string }[] = cd.messages || [];
+    const msgs = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 180 * 24 * 3600_000, pageSize: 5000, maxPages: 4 });
+    if (msgs.length > 0) {
       let curStatus = "", curAt = "";
       for (const m of msgs) {
+        if (isCustomerLeadPost(m.body)) continue; // a status line typed into a lead is forged
         const sm = m.body?.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
         if (sm && (!curAt || m.timestamp > curAt)) { curStatus = sm[1].toLowerCase(); curAt = m.timestamp; }
       }

@@ -17,6 +17,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
+import { isCustomerLeadPost } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   }
 
   // Already cancelled? No point editing.
-  const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  const cancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
   if (cancelled) {
     return NextResponse.json({ error: "This offer was cancelled." }, { status: 409 });
   }

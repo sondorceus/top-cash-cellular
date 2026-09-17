@@ -14,9 +14,9 @@ export const OAUTH_STATE_COOKIE = "tcc_oauth_state";
 // email-only logins (no Google verification) can't accidentally grant
 // admin access — admin gates only look at tcc_session. This cookie is
 // purely for the customer's /account dashboard recognition + trade
-// history view, and can be set after a successful /api/lookup match
-// (email or phone), a Google sign-in, or any other future auth path.
-// Skywalker 2026-05-19.
+// history view. It is set ONLY when the customer opens the signed sign-in
+// link /api/account/login emails them (payload carries `ml: 1`); a typed
+// email or a /api/lookup match never sets it. Skywalker 2026-05-19.
 export const CUSTOMER_COOKIE_NAME = "tcc_customer";
 
 // Default admin allowlist. Overridable via ADMIN_GOOGLE_EMAILS env (comma-
@@ -130,9 +130,18 @@ export type CustomerSessionPayload = {
   email: string;
   name?: string;
   via: "email" | "google";
+  // 1 = minted from a verified emailed link. The old login minted cookies
+  // from a typed email alone (no mark); they stay signature-valid for 30
+  // days and must not count as signed in.
+  ml?: 1;
   iat: number;
   exp: number;
 };
+
+// A tcc_customer payload that proves inbox ownership (see `ml`).
+export function isVerifiedCustomerSession(p: CustomerSessionPayload | null): p is CustomerSessionPayload {
+  return !!p && p.ml === 1;
+}
 
 export function signCustomerSession(payload: Omit<CustomerSessionPayload, "iat" | "exp">): string {
   const now = Date.now();
@@ -162,13 +171,16 @@ export function verifyCustomerSession(token: string | undefined | null): Custome
 
 // Server-side customer recognition. Prefers the stronger tcc_session
 // (Google-verified) when both cookies exist — falls back to the
-// email-only tcc_customer cookie. Either grants /account access.
+// email-only tcc_customer cookie, but only one minted from the emailed
+// link (`ml`). An old typed-email cookie is signed out everywhere
+// (/api/account/me, /api/referral, /api/account/update), not just on
+// /account.
 export async function getCustomerSessionFromCookies(): Promise<{ email: string; name?: string; via: "email" | "google" } | null> {
   const cookieStore = await cookies();
   const admin = verifySession(cookieStore.get(COOKIE_NAME)?.value);
   if (admin) return { email: admin.email, name: admin.name, via: "google" };
   const cust = verifyCustomerSession(cookieStore.get(CUSTOMER_COOKIE_NAME)?.value);
-  if (cust) return { email: cust.email, name: cust.name, via: cust.via };
+  if (isVerifiedCustomerSession(cust)) return { email: cust.email, name: cust.name, via: cust.via };
   return null;
 }
 

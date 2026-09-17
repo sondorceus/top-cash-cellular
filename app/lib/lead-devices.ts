@@ -57,6 +57,17 @@ export function cleanField(s: unknown, max: number): string {
   return String(s ?? "").replace(/[\[\]\n\r\t]/g, " ").trim().slice(0, max);
 }
 
+// A customer-submitted post: a funnel lead ([NEW BUYBACK LEAD …]), a saved
+// quote, or a chat lead. Everything after its header is customer text, and
+// every staff/system action marker ([STATUS]/[LEAD], [COUNTER-OFFER],
+// [ITEM-UPDATE], [DELETED-LEAD], Payout-confirmation, [REFERRAL-*] …) is
+// always its OWN post — so marker readers skip these bodies outright instead
+// of trusting that every field was scrubbed. (A lead's own [OFFER-BONUS] is
+// still read from the lead body itself.)
+export function isCustomerLeadPost(body: string | undefined): boolean {
+  return !!body && /^\s*(?:\[HUMAN HANDOFF\]\s*)?\[(?:NEW BUYBACK LEAD|QUOTE SAVED|CHAT LEAD)/i.test(body);
+}
+
 // Escape a string for safe interpolation into a RegExp. leadId is
 // validated to [\w-]+ at every route boundary so nothing is special
 // today, but escaping keeps these matchers safe if that ever loosens.
@@ -71,7 +82,7 @@ export function latestStatus(messages: LeadMessage[], leadId: string): string {
   let status = "quote_requested";
   let at = "";
   for (const m of messages) {
-    if (!m.body) continue;
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const sm = m.body.match(re);
     if (!sm) continue;
     const s = sm[1].toLowerCase();
@@ -110,7 +121,7 @@ export function resolveCurrentDevices(
   let itemDevices: Record<string, unknown>[] | null = null;
   let itemUpdateAt = "";
   for (const m of messages) {
-    if (!m.body) continue;
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const iu = m.body.match(iuRe);
     if (iu && (!itemUpdateAt || m.timestamp > itemUpdateAt)) {
       try {

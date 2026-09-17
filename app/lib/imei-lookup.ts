@@ -129,6 +129,10 @@ export async function lookupImei(cleanImei: string): Promise<ImeiLookup> {
     else if (f.model && (!out.model || f.model.length > out.model.length)) out.model = f.model;
     Object.assign(out, { capacity: f.capacity, carrier: f.carrier, simLock: f.simLock, fmiRaw: f.fmiRaw, blacklistRaw: f.blacklistRaw, fmiOn: f.fmiOn, blacklisted: f.blacklisted });
   }
+  // `ok` means "we identified the device" — a sub-call can name it when the
+  // brand call didn't (the chat's check_imei read that as a failed lookup
+  // and dropped the Find My / blacklist flags).
+  if (!out.ok && out.model) out.ok = true;
   // Every sub-call that didn't succeed is named in the note and logged — a
   // silently dropped Apple call left the owner's own IMEI without its
   // Find My / SIM-lock flags on the first live run (2026-09-12).

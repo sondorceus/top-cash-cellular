@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, clientIp } from "../../lib/rate-limit";
 import { verifyTrackToken } from "../../lib/track-token";
 import { fetchCommsPaged } from "../../lib/mc-comms";
+import { isCustomerLeadPost } from "../../lib/lead-devices";
 
 const MC_KEY = process.env.MC_API_KEY || "";
 
@@ -124,7 +125,9 @@ export async function POST(req: NextRequest) {
   // cron's [FEDEX-EVENT: leadId state=X code=Y] description markers.
   const fedexEventByLead = new Map<string, { state: string; desc?: string; timestamp: string }>();
   for (const m of messages) {
-    if (!m.body) continue;
+    // Status/label/FedEx markers are their own posts — never read them out
+    // of a customer's lead body (see isCustomerLeadPost).
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const fm = m.body.match(/\[FEDEX-EVENT:\s*([\w-]+)\s+state=([a-z_]+)(?:\s+code=\S+)?\]\s*([^\n\r]*)/i);
     if (fm) {
       const leadId = fm[1];

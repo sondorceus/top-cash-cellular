@@ -9,7 +9,8 @@ import { useEffect, useState } from "react";
 //
 // Auth: any of
 //   1. tcc_session cookie (Google sign-in, granted via /api/auth/google)
-//   2. tcc_customer cookie (email-only, granted via /api/account/login)
+//   2. tcc_customer cookie (email-only, set when the customer opens the
+//      sign-in link /api/account/login emails them)
 // The /api/account/me endpoint accepts either. Logout clears whichever
 // one is set.
 
@@ -95,6 +96,8 @@ export default function AccountPage() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+  // Non-error notice under the sign-in form ("check your email …").
+  const [loginNotice, setLoginNotice] = useState("");
   // Side-nav section — starts on Trade-Ins since that's what most
   // returning customers come here for. Account Info is the
   // "I want to manage my settings" path, Addresses is read-only
@@ -152,6 +155,8 @@ export default function AccountPage() {
     try {
       const r = await fetch("/api/account/me", { cache: "no-store" });
       const d = await r.json();
+      // An older email sign-in (before emailed links) was just signed out.
+      if (d?.reverify) setLoginNotice("For your security, email sign-ins now use a secure link — enter your email to get one.");
       setData(d);
     } catch {
       setData({ authenticated: false });
@@ -160,6 +165,16 @@ export default function AccountPage() {
     }
   };
   useEffect(() => { refresh(); }, []);
+
+  // The emailed sign-in link lands on /api/account/login, which bounces an
+  // expired or invalid token back here with ?link=expired.
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get("link") === "expired") {
+        setLoginError("That sign-in link expired or isn't valid — enter your email and we'll send a new one.");
+      }
+    } catch { /* no URL access — nothing to show */ }
+  }, []);
 
   // Fetch referral data the first time the customer opens the tab.
   // Re-runs only if a prior fetch left us with no data (e.g. a
@@ -191,6 +206,7 @@ export default function AccountPage() {
     if (!loginEmail.trim()) return;
     setLoginLoading(true);
     setLoginError("");
+    setLoginNotice("");
     try {
       const r = await fetch("/api/account/login", {
         method: "POST",
@@ -198,6 +214,12 @@ export default function AccountPage() {
         body: JSON.stringify({ email: loginEmail.trim() }),
       });
       const d = await r.json();
+      // A typed email never signs in by itself — the server emails a
+      // secure link ({ sent: true }). That's good news, not an error.
+      if (r.ok && d.sent) {
+        setLoginNotice(d.message || "Check your email — we sent you a secure sign-in link.");
+        return;
+      }
       if (!r.ok || !d.ok) {
         setLoginError(d.error || "Couldn't sign you in.");
         return;
@@ -252,7 +274,7 @@ export default function AccountPage() {
         <div className="max-w-md mx-auto px-4 py-12">
           <a href="/" className="text-[#00c853] text-sm font-semibold mb-6 inline-block">← Back to Top Cash</a>
           <h1 className="text-2xl font-bold mb-2">Sign in to your account</h1>
-          <p className="text-[#bdbdbd] text-sm mb-6">Enter the email you used on a past trade — we&apos;ll pull up your history.</p>
+          <p className="text-[#bdbdbd] text-sm mb-6">Enter the email you used on a past trade — we&apos;ll email you a secure sign-in link to your history.</p>
           <form onSubmit={doLogin} className="space-y-3">
             <input
               type="email"
@@ -264,12 +286,13 @@ export default function AccountPage() {
               autoFocus
             />
             {loginError && <p className="text-[#ff5566] text-xs font-semibold">{loginError}</p>}
+            {loginNotice && <p role="status" className="text-[#00c853] text-xs font-semibold">{loginNotice}</p>}
             <button
               type="submit"
               disabled={loginLoading}
               className="w-full bg-[#00c853] text-[#0a0a0a] py-4 rounded-2xl text-base font-extrabold hover:bg-[#00e676] disabled:opacity-50 transition cursor-pointer"
             >
-              {loginLoading ? "Looking up…" : "Sign in with email"}
+              {loginLoading ? "Sending…" : "Email me a sign-in link"}
             </button>
           </form>
 
@@ -426,7 +449,11 @@ export default function AccountPage() {
                       type="tel"
                       value={editPhone}
                       onChange={(e) => {
-                        const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                        // Strip a leading US country code first — "+1 512…"
+                        // autofill otherwise kept the 1 and lost the last digit.
+                        let digits = e.target.value.replace(/\D/g, "");
+                        if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
+                        digits = digits.slice(0, 10);
                         if (digits.length > 6) setEditPhone(`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`);
                         else if (digits.length > 3) setEditPhone(`(${digits.slice(0,3)}) ${digits.slice(3)}`);
                         else setEditPhone(digits);

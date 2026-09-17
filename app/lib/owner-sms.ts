@@ -14,6 +14,10 @@ const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
+// Per-channel ceiling. notifyOwnerSms waits for all three channels, so one
+// hanging provider used to hold every caller (the /go lock route bounds its
+// alert at 12s and then reports failure even though a text went out).
+const CHANNEL_TIMEOUT_MS = 8_000;
 
 async function sendSms(body: string): Promise<boolean> {
   if (!TWILIO_SID || !TWILIO_AUTH || !TWILIO_FROM) return false;
@@ -25,6 +29,7 @@ async function sendSms(body: string): Promise<boolean> {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({ To: OWNER_PHONE, From: TWILIO_FROM, Body: body.slice(0, 1500) }),
+      signal: AbortSignal.timeout(CHANNEL_TIMEOUT_MS),
     });
     return res.ok;
   } catch {
@@ -113,7 +118,9 @@ async function sendEmailAlert(body: string): Promise<boolean> {
     const subject = textOnly.replace(/🤫.*$/,"").trim().slice(0, 90) || "TCC alert";
     const { Resend } = await import("resend");
     const resend = new Resend(key);
-    const r = await resend.emails.send({
+    // The Resend SDK takes no abort signal — race it against the ceiling (a
+    // late send may still land; it just stops holding the caller).
+    const send = resend.emails.send({
       from: "TCC Alerts <noreply@topcashcellular.com>",
       to,
       subject,
@@ -136,7 +143,12 @@ async function sendEmailAlert(body: string): Promise<boolean> {
       }),
       text: body,
     });
-    return !r.error;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const r = await Promise.race([
+      send,
+      new Promise<null>((resolve) => { timer = setTimeout(() => resolve(null), CHANNEL_TIMEOUT_MS); }),
+    ]).finally(() => clearTimeout(timer));
+    return !!r && !r.error;
   } catch {
     return false;
   }

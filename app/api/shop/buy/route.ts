@@ -37,7 +37,9 @@ function clean(v: unknown, maxLen = 200): string {
 }
 
 type ClaimFailure = "gone" | "sold" | "on_hold" | "unavailable";
-type Claim = { kind: "held"; listing: ShopListing; holdAt: string } | { kind: ClaimFailure };
+// maybeHeld: the store failed AFTER our hold write may have landed (lost
+// put response + unreadable read-back) — see ListingsUnavailableError.
+type Claim = { kind: "held"; listing: ShopListing; holdAt: string } | { kind: ClaimFailure; maybeHeld?: boolean };
 
 const CLAIM_FAILED: Record<ClaimFailure, [number, string]> = {
   gone: [404, "That listing is gone."],
@@ -66,7 +68,7 @@ async function claimUnit(listingId: string): Promise<Claim> {
       return { write: true, result: { kind: "held", listing: { ...l }, holdAt } };
     });
   } catch (e) {
-    if (e instanceof ListingsUnavailableError) return { kind: "unavailable" };
+    if (e instanceof ListingsUnavailableError) return { kind: "unavailable", maybeHeld: e.maybeWritten };
     throw e;
   }
 }
@@ -110,6 +112,35 @@ export async function POST(req: NextRequest) {
 
   const claim = await claimUnit(listingId);
   if (claim.kind !== "held") {
+    // Our hold may have landed even though we can't confirm it: the buyer's
+    // retry would then get "on hold" and the unit would sit claimed with no
+    // inquiry anywhere. Keep the lead — a person settles it from /admin/shop.
+    // The buyer still gets the honest "try again".
+    if (claim.maybeHeld) {
+      try {
+        await fetch(`${MC_API}/api/comms`, {
+          method: "POST",
+          headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: "topcash-web",
+            fromName: "Top Cash Cellular",
+            role: "system",
+            body: [
+              `[SHOP-INQUIRY: ${listingId}]`,
+              `Hold outcome unconfirmed — check /admin/shop (the buyer was told to try again; release the unit if it shows on hold with no other inquiry)`,
+              `Buyer: ${name}`,
+              `Email: ${emailRaw || "—"}`,
+              `Phone: ${phone || "—"}`,
+              `Fulfilment: ${fulfilment}`,
+              message ? `Message: ${message}` : "",
+            ].filter(Boolean).join("\n"),
+            tags: ["shop", "inquiry"],
+            priority: "urgent",
+          }),
+          signal: AbortSignal.timeout(15_000),
+        });
+      } catch {}
+    }
     const [status, error] = CLAIM_FAILED[claim.kind];
     return NextResponse.json({ ok: false, error }, { status });
   }

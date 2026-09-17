@@ -29,8 +29,10 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const SITE = "https://topcashcellular.com";
 
 // `ml: 1` marks a session minted from a verified magic link.
-// /api/account/me refuses tcc_customer cookies without it — the ones the
-// old raw-email login handed out stay signature-valid for 30 days.
+// getCustomerSessionFromCookies (so /api/account/me, /api/referral,
+// /api/account/update) and /api/auth/me refuse tcc_customer cookies without
+// it — the ones the old raw-email login handed out stay signature-valid for
+// 30 days.
 type MagicLinkSession = Parameters<typeof signCustomerSession>[0] & { ml: 1 };
 
 // Count past leads whose OWN parsed Email: field is this email, and take

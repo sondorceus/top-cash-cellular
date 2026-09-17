@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
+import { isCustomerLeadPost } from "../../../lib/lead-devices";
 
 // Referral bookkeeping for staff. The referral program has no database —
 // everything is MC "marker" messages:
@@ -61,7 +62,9 @@ export async function GET(req: NextRequest) {
   };
 
   for (const m of messages) {
-    if (!m.body) continue;
+    // Referral markers are their own system posts — a copy typed into a
+    // lead body must not show up as money owed.
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const cm = m.body.match(/\[REFERRAL-CODE:\s*code=(REF-[A-Z0-9]{6})\s+email=([^\s\]]+)/i);
     if (cm) {
       const r = ensure(cm[2].toLowerCase());

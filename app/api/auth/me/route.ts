@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getServerSession, isAdminEmail, verifyCustomerSession, CUSTOMER_COOKIE_NAME } from "../../../lib/auth";
+import { getServerSession, isAdminEmail, verifyCustomerSession, isVerifiedCustomerSession, CUSTOMER_COOKIE_NAME } from "../../../lib/auth";
 
 // GET /api/auth/me — returns the current user (or { authenticated: false })
 // for client UI that needs to render the user's name/picture or branch
@@ -27,7 +27,9 @@ export async function GET() {
   }
   const cookieStore = await cookies();
   const cust = verifyCustomerSession(cookieStore.get(CUSTOMER_COOKIE_NAME)?.value);
-  if (cust) {
+  // Only a cookie from the emailed sign-in link counts (same rule as
+  // /api/account/me) — an old typed-email cookie is signed out.
+  if (isVerifiedCustomerSession(cust)) {
     return NextResponse.json(
       {
         authenticated: true,

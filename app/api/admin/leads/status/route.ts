@@ -5,6 +5,7 @@ import { randomBytes } from "crypto";
 import { logComm } from "../../../../lib/comms-log";
 import { reportError } from "../../../../lib/error-report";
 import { REFERRAL_REFERRER_REWARD } from "../../../../lib/referral";
+import { isCustomerLeadPost } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -66,7 +67,7 @@ async function leadHasReviewToken(leadId: string): Promise<boolean> {
     const data = await r.json().catch(() => ({}));
     const messages: { body?: string }[] = Array.isArray(data.messages) ? data.messages : [];
     const re = new RegExp(`\\[REVIEW-TOKEN:\\s*${leadId}\\]`, "i");
-    return messages.some((m) => !!m.body && re.test(m.body));
+    return messages.some((m) => !!m.body && !isCustomerLeadPost(m.body) && re.test(m.body));
   } catch {
     return false;
   }
@@ -112,7 +113,9 @@ async function creditReferralIfAny(leadId: string): Promise<void> {
       if (m.id === leadId && m.body.includes("[NEW BUYBACK LEAD")) {
         leadBody = m.body;
       }
-      // Existing earned marker for this exact referee-lead → stop.
+      // Existing earned marker for this exact referee-lead → stop. Only a
+      // real system post counts; a copy inside a lead body is forged.
+      if (isCustomerLeadPost(m.body)) continue;
       const em = m.body.match(/\[REFERRAL-EARNED:[^\]]*referee-lead=([\w-]+)/i);
       if (em && em[1] === leadId) alreadyCredited = true;
     }
@@ -438,7 +441,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
             <tr><td style="padding:14px 18px">
               <div style="font-size:11px;color:#00c853;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px">Track your trade anytime</div>
               <div style="font-size:13px;color:#dcdcdc;line-height:1.55">See live status, FedEx tracking, payout method — bookmark this:</div>
-              <div style="margin-top:10px"><a href="https://topcashcellular.com/track?${ctx.phone ? `phone=${encodeURIComponent(ctx.phone)}` : `email=${encodeURIComponent(ctx.email || "")}`}" style="display:inline-block;padding:10px 22px;background:rgba(0,200,83,0.12);color:#00c853;border:1px solid rgba(0,200,83,0.35);border-radius:999px;text-decoration:none;font-weight:700;font-size:13px">📍 Track your trade →</a></div>
+              <div style="margin-top:10px"><a href="https://topcashcellular.com/track?${ctx.email ? `email=${encodeURIComponent(ctx.email)}` : `phone=${encodeURIComponent(ctx.phone || "")}`}" style="display:inline-block;padding:10px 22px;background:rgba(0,200,83,0.12);color:#00c853;border:1px solid rgba(0,200,83,0.35);border-radius:999px;text-decoration:none;font-weight:700;font-size:13px">📍 Track your trade →</a></div>
             </td></tr>
           </table>
         </td>

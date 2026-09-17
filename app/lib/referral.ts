@@ -21,6 +21,7 @@
 // the lead route, and the admin status route all agree.
 
 import crypto from "crypto";
+import { isCustomerLeadPost } from "./lead-devices";
 
 // --- Config constants — change here, applies everywhere ---------------
 // Dollars added to a NEW customer's payout when they redeem a referral
@@ -74,8 +75,10 @@ export function referralCodeMarker(code: string, email: string): string | null {
 }
 
 // True when `messages` already carry a [REFERRAL-CODE:] marker for `code`.
+// A copy inside a customer lead body doesn't count (/api/lead ignores it).
 export function hasReferralCodeMarker(messages: { body?: string }[], code: string): boolean {
   return messages.some((m) => {
+    if (isCustomerLeadPost(m.body)) return false;
     const cm = m.body?.match(REFERRAL_CODE_MARKER_RE);
     return !!cm && cm[1].toUpperCase() === code;
   });

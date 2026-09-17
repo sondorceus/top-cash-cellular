@@ -24,6 +24,7 @@ interface MinimalLead {
   condition?: string;
   carrier?: string;
   quote?: string;
+  offerBonus?: number;
   imei?: string;
   devices?: Array<{
     model?: string;
@@ -54,6 +55,19 @@ function parseInitialQuote(raw?: string): string {
   return Number.isFinite(n) && n > 0 ? String(Math.round(n)) : "";
 }
 
+// The correction saves a DEVICE price. A single-device lead's `quote` is the
+// customer's total with the coupon/referral bonus folded in, and every total
+// (offer page, admin) re-adds that bonus on top of the device price — so
+// seeding the total here counted the bonus twice after every correction.
+function initialDeviceQuote(lead: MinimalLead): string {
+  const seed = lead.devices?.[0];
+  if (seed?.quote) return String(seed.quote);
+  const total = Number(parseInitialQuote(lead.quote));
+  if (!total) return "";
+  const device = total - (lead.devices?.length ? 0 : (lead.offerBonus || 0));
+  return device > 0 ? String(device) : "";
+}
+
 export function DeviceCorrection({
   lead,
   token,
@@ -74,7 +88,7 @@ export function DeviceCorrection({
   const [storage, setStorage] = useState(seed?.storage || lead?.storage || "");
   const [condition, setCondition] = useState(seed?.condition || lead?.condition || "");
   const [carrier, setCarrier] = useState(seed?.carrier || lead?.carrier || "");
-  const [quote, setQuote] = useState(seed?.quote ? String(seed.quote) : parseInitialQuote(lead?.quote));
+  const [quote, setQuote] = useState(lead ? initialDeviceQuote(lead) : "");
   const [note, setNote] = useState("");
 
   const [lookup, setLookup] = useState<ImeiResult | null>(null);
@@ -91,7 +105,7 @@ export function DeviceCorrection({
     setStorage(seed?.storage || lead.storage || "");
     setCondition(seed?.condition || lead.condition || "");
     setCarrier(seed?.carrier || lead.carrier || "");
-    setQuote(seed?.quote ? String(seed.quote) : parseInitialQuote(lead.quote));
+    setQuote(initialDeviceQuote(lead));
     setNote("");
     setLookup(null);
     setError(null);
@@ -289,6 +303,9 @@ export function DeviceCorrection({
               placeholder="120"
               className="w-full bg-black/40 border border-white/15 rounded-lg px-3 py-2 text-sm"
             />
+            {!lead.devices?.length && (lead.offerBonus || 0) > 0 && (
+              <p className="text-[10px] text-[#a8a8a8] mt-1">Device price only — the customer&apos;s ${lead.offerBonus} coupon/referral bonus is added on top.</p>
+            )}
           </Labeled>
         </div>
 

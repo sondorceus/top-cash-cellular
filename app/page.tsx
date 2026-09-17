@@ -7845,13 +7845,15 @@ export default function Home() {
       {/* REFERRAL BANNER — shown calmly under the nav whenever a
           friend's ?ref= code is active for this session. Same restrained
           pill styling as the rest of the funnel's accent banners; the
-          actual $10 referee bonus is applied server-side in /api/lead. */}
+          actual $10 referee bonus is applied server-side in /api/lead,
+          which can still drop it (unknown code, self-referral, returning
+          customer) — so the copy promises a check, not a credit. */}
       {referralCode && page === "home" && (
         <div className="max-w-lg md:max-w-3xl lg:max-w-7xl mx-auto px-4 pt-3">
           <div className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-[#00c853]/[0.1] border border-[#00c853]/35">
             <svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
             <p className="text-[12px] text-white font-semibold leading-snug">
-              Referral applied — <span className="text-[#00c853] font-bold">$10 bonus</span> added to your offer.
+              Referral code saved — a <span className="text-[#00c853] font-bold">$10 bonus</span> is added when you submit, if this is your first trade with us.
             </p>
           </div>
         </div>
@@ -11824,7 +11826,7 @@ export default function Home() {
                   The actual $10 referee bonus is applied server-side in
                   /api/lead; this just reassures the customer it's on. */}
               {referralCode && (
-                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>Referral applied — $10 bonus added to your offer</p>
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>Referral +$10 — confirmed at submit (first trade)</p>
               )}
             </div>
             {!isManualQuote && !isPendingQuote && quantity > 1 && <p className="text-[#e6e6e6] text-sm mb-2">${quote} each × {quantity}</p>}
@@ -14564,7 +14566,7 @@ export default function Home() {
                     Look up your trade by phone or email anytime.
                   </p>
                   <a
-                    href={`/track?${phone ? `phone=${encodeURIComponent(phone.replace(/\D/g, ""))}` : `email=${encodeURIComponent(email || "")}`}`}
+                    href={`/track?${email ? `email=${encodeURIComponent(email)}` : `phone=${encodeURIComponent(phone.replace(/\D/g, ""))}`}`}
                     className="inline-flex items-center justify-center gap-2 w-full bg-white/5 hover:bg-white/10 border border-white/15 text-white font-extrabold text-sm px-4 py-3 rounded-full transition cursor-pointer"
                   >
                     Open my tracking page →

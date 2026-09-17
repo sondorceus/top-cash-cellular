@@ -35,6 +35,9 @@ export async function sendSellerSms(to: string, body: string): Promise<boolean> 
       method: "POST",
       headers: { "Content-Type": "application/json", "x-relay-token": token },
       body: JSON.stringify({ to: dest, body: body.slice(0, 480) }),
+      // A hung relay must not hold the caller (the owner alert fan-out and
+      // the /go lock route both wait on this).
+      signal: AbortSignal.timeout(8_000),
     });
     return res.ok;
   } catch {

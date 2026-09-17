@@ -17,6 +17,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
+import { isCustomerLeadPost } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -77,7 +78,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   let status = "quote_requested";
   let statusAt = "";
   for (const m of messages) {
-    if (!m.body) continue;
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
     if (sm) {
       if (!statusAt || m.timestamp > statusAt) {
@@ -98,7 +99,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   }
 
   // Already cancelled?
-  const alreadyCancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  const alreadyCancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
   if (alreadyCancelled) {
     return NextResponse.json({ ok: true, alreadyCancelled: true });
   }

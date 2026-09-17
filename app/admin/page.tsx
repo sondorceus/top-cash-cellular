@@ -19,8 +19,10 @@ interface Lead {
   condition?: string;
   carrier?: string;
   quote?: string;
+  offerBonus?: number;
   payout?: string;
   imei?: string;
+  sharedImei?: string;
   imeiWarnings?: string[];
   photos?: string[];
   brokenGlass?: "front" | "back" | "both" | null;
@@ -1688,8 +1690,11 @@ export default function AdminPage() {
     // Only pass shipAddress when the lead is a SHIPPING handoff AND
     // we're flipping it to "shipped". Local meetups never get a
     // FedEx label generated on status change. Skywalker 2026-05-17.
+    // A lead that already has a label never sends one either — flipping it
+    // to shipped must not ask FedEx for (and bill) a second label; the
+    // label route's fresh-label reuse is the server-side half of this.
     let shipAddressPayload: { street: string; unit?: string; city: string; state: string; zip: string } | undefined;
-    if (newStatus === "shipped" && lead.handoffMethod === "ship") {
+    if (newStatus === "shipped" && lead.handoffMethod === "ship" && !lead.fedexTracking) {
       const parsed = parseShipAddress(lead.shipAddress);
       if (parsed) shipAddressPayload = parsed;
     }
@@ -3572,6 +3577,12 @@ export default function AdminPage() {
                           ) : (
                             <div className="rounded border border-[#ffcf4d]/30 bg-[#ffcf4d]/[0.06] p-2 space-y-1.5">
                               <p className="text-[10px] text-[#ffcf4d] font-bold">No IMEI/serial on record — required before payout</p>
+                              {/* Hint only — a bundle's single checkout IMEI
+                                  doesn't say which device it is, so it never
+                                  counts as on file. */}
+                              {lead.sharedImei && (
+                                <p className="text-[10px] text-[#c5c5c5]">Customer entered one IMEI for the whole order: <span className="font-mono">{lead.sharedImei}</span> — confirm which device it belongs to.</p>
+                              )}
                               <input
                                 type="text"
                                 value={payoutImeiOverride ? "" : payoutImei}
@@ -3873,6 +3884,13 @@ export default function AdminPage() {
                     </div>
                   )}
                 </Section>
+
+                {/* Order-level IMEI on a bundle (device not specified) */}
+                {L.sharedImei && (
+                  <Section title="Shared IMEI (device not specified)">
+                    <p className="text-[#c5c5c5]">Customer entered one IMEI for the whole order: <span className="font-mono">{L.sharedImei}</span></p>
+                  </Section>
+                )}
 
                 {/* IMEI warnings */}
                 {L.imeiWarnings && L.imeiWarnings.length > 0 && (

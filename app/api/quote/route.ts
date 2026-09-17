@@ -81,7 +81,9 @@ export async function POST(req: NextRequest) {
     const results = await Promise.all(
       specs.map((s) =>
         isSpec(s)
-          ? quoteDevice(s, overrides)
+          // One malformed spec (e.g. a non-string field the engine trips on)
+          // must not 500 the whole batch — that item goes to manual review.
+          ? quoteDevice(s, overrides).catch(() => ({ ok: false, offer: null, manualReview: true, reason: "quote failed", source: "unmatched" as const, modelId: s.modelId }))
           : Promise.resolve({ ok: false, offer: null, manualReview: true, reason: "invalid spec (need modelId + condition)", source: "unmatched" as const, modelId: String((s as { modelId?: unknown })?.modelId ?? "") }),
       ),
     );

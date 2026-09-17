@@ -19,7 +19,11 @@ export async function POST(req: NextRequest) {
 
   const name = typeof payload.name === "string" ? payload.name.trim().slice(0, 60) : "";
   const phoneRaw = typeof payload.phone === "string" ? payload.phone : "";
-  const phoneDigits = phoneRaw.replace(/\D/g, "").slice(0, 10);
+  // Drop a leading US country code first ("+1 512 555 0123" kept the 1
+  // and lost the last digit).
+  let phoneDigits = phoneRaw.replace(/\D/g, "");
+  if (phoneDigits.length === 11 && phoneDigits.startsWith("1")) phoneDigits = phoneDigits.slice(1);
+  phoneDigits = phoneDigits.slice(0, 10);
 
   // Name is required (it's what shows on the account + lead). Phone is
   // optional but if present must be a full 10-digit US number.

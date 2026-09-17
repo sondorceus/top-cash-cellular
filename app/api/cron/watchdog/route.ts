@@ -109,8 +109,12 @@ export async function GET(req: NextRequest) {
   // (leadId|cat) -> latest watchdog-alert timestamp, for cooldown.
   const alertedAt = new Map<string, string>();
   // /go sessions whose seller already chose meet/ship (chips or MEET/SHIP
-  // text) — the [DELIVERY OPTION] comm carries the Session: line.
-  const handoffChosen = new Set<string>();
+  // text) — the [DELIVERY OPTION] comm carries the Session: line. Kept with
+  // each choice's time: one session can lock several devices, and device
+  // #1's choice must not mark device #2's later lead as worked.
+  const handoffChosen = new Map<string, number[]>();
+  // Clock slack between MC's timestamps and the chat store's.
+  const SKEW_MS = 60_000;
 
   for (const m of messages) {
     const body = m.body;
@@ -118,7 +122,7 @@ export async function GET(req: NextRequest) {
     if (/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(body)) leads.set(m.id, { ts: m.timestamp, body });
     if (/^\[DELIVERY OPTION\]/i.test(body)) {
       const sess = field(body, "Session");
-      if (sess) handoffChosen.add(sess);
+      if (sess) handoffChosen.set(sess, [...(handoffChosen.get(sess) || []), ms(m.timestamp)]);
     }
     const sm = body.match(/\[STATUS:\s*(\w+)\]\s*\[LEAD:\s*([\w-]+)\]/i);
     if (sm) {
@@ -167,7 +171,8 @@ export async function GET(req: NextRequest) {
     // lock is noise, not a signal (the first dry run flagged three of those).
     const goSession = field(lead.body, "Session");
     const goAge = now - ms(lead.ts);
-    if (/source=go\b/i.test(field(lead.body, "Source")) && goAge < 7 * D && !statusByLead.has(leadId) && !(goSession && handoffChosen.has(goSession))) {
+    const choseForThisLead = !!goSession && (handoffChosen.get(goSession) || []).some((t) => t >= ms(lead.ts) - SKEW_MS);
+    if (/source=go\b/i.test(field(lead.body, "Source")) && goAge < 7 * D && !statusByLead.has(leadId) && !choseForThisLead) {
       consider.push({ cat: "go_unworked", since: ms(lead.ts) });
     }
 
@@ -196,8 +201,16 @@ export async function GET(req: NextRequest) {
     if (!validGoSession(sess)) continue;
     checks++;
     const state = await readChat(sess, 0);
-    const notes = state.msgs.filter((x) => x.role === "note").map((x) => x.text);
-    if (state.lastOwnerTs > 0 || notes.some((t) => t.startsWith("HANDOFF-CHOICE:"))) flags.splice(i, 1);
+    const notes = state.msgs.filter((x) => x.role === "note");
+    // Only a choice made for THIS lead's lock counts (same per-lock rule as
+    // /api/go/label): from its LOCKED note (written just after the lead
+    // post) up to the next lock. No LOCKED note found → any choice counts.
+    const leadMs = ms(leads.get(f.leadId)?.ts);
+    const locks = notes.filter((x) => x.text.startsWith("LOCKED:")).map((x) => x.ts).sort((a, b) => a - b);
+    const lockTs = locks.find((t) => t >= leadMs - SKEW_MS);
+    const nextLock = lockTs == null ? Infinity : (locks.find((t) => t > lockTs) ?? Infinity);
+    const chose = notes.some((x) => x.text.startsWith("HANDOFF-CHOICE:") && (lockTs == null || (x.ts >= lockTs && x.ts < nextLock)));
+    if (state.lastOwnerTs > 0 || chose) flags.splice(i, 1);
   }
 
   // ---- /GO SILENCE (ads stopped) -------------------------------------------

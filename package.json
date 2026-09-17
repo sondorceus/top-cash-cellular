@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "tsx scripts/check-bot-parity.ts",
+    "check:sheet": "node scripts/check-buyer-sheet.mjs",
     "build": "next build",
     "start": "next start"
   },

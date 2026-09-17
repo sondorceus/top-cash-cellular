@@ -5,6 +5,7 @@ import { createReturnLabel, deviceKindFor, aggregateWeight, shouldBlockAutoShip 
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
 import { fetchCommsPaged } from "../../lib/mc-comms";
+import { isCustomerLeadPost } from "../../lib/lead-devices";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
 import { validateEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from "../../lib/email-validate";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
@@ -347,6 +348,27 @@ export async function POST(req: NextRequest) {
   // a separate /api/payout/verify-cashapp existence check, but that's
   // a fragile scrape — too slow and too prone to false negatives for
   // the submit path). Zelle / Cash skip this guard.
+  //
+  // A handle method sent with NO handle (a bare "Zelle", or "Zelle:" with
+  // nothing after it) can't be paid at all. The funnel blocks that before
+  // submit now, but a stale tab / restored session / crafted client still
+  // saved such leads. Only the exact method labels count: "Cash" (in
+  // person), "TBD" and the ship-coerced "Cash App (coerced …)" still pass.
+  // The wording names the method so the funnel routes it to the payout step.
+  if (typeof payout === "string") {
+    const bareMethod = payout.replace(/:\s*$/, "").trim().toLowerCase();
+    const handleName: Record<string, string> = {
+      "cash app": "Cash App $Cashtag", cashapp: "Cash App $Cashtag",
+      zelle: "Zelle email or phone number",
+      bitcoin: "Bitcoin wallet address", btc: "Bitcoin wallet address",
+    };
+    if (Object.prototype.hasOwnProperty.call(handleName, bareMethod)) {
+      return NextResponse.json(
+        { error: `Please enter your ${handleName[bareMethod]} on the payout step so we know where to send your money.` },
+        { status: 400 }
+      );
+    }
+  }
   if (typeof payout === "string" && payout.includes(":")) {
     const colonIdx = payout.indexOf(":");
     const methodPart = payout.slice(0, colonIdx).trim().toLowerCase();
@@ -477,7 +499,9 @@ export async function POST(req: NextRequest) {
         if (refMsgs.length > 0) {
           let referrerEmail: string | null = null;
           for (const m of refMsgs) {
-            if (!m.body) continue;
+            // A code marker is its own system post; a copy inside a lead
+            // body would redirect the referral to whoever typed it.
+            if (!m.body || isCustomerLeadPost(m.body)) continue;
             const cm = m.body.match(/\[REFERRAL-CODE:\s*code=(REF-[A-Z0-9]{6})\s+email=([^\s\]]+)/i);
             if (cm && cm[1].toUpperCase() === cleanRef) {
               referrerEmail = cm[2].toLowerCase().trim();

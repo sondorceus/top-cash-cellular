@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse, after } from "next/server";
 import { referralCodeForEmail, referralLinkForCode, referralCodeMarker, hasReferralCodeMarker } from "../../../lib/referral";
-import { field, DEVICE_LINE_RE, OFFER_STATUSES, parseOfferBonus } from "../../../lib/lead-devices";
+import { field, DEVICE_LINE_RE, OFFER_STATUSES, parseOfferBonus, isCustomerLeadPost } from "../../../lib/lead-devices";
 import { canonicalCarrier, carrierLockedFromText } from "../../../lib/quote-engine";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -74,7 +74,9 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   let payoutRef = "";
   let payoutAmount: number | null = null;
   for (const m of messages) {
-    if (!m.body) continue;
+    // Staff/system markers are their own posts; one inside a customer lead
+    // body (this lead's or another's) is forged — see isCustomerLeadPost.
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const cu = m.body.match(new RegExp(`\\[CONTACT-UPDATE:\\s*${leadId}\\][^\\n]*phone=([^\\n]+)`, "i"));
     if (cu && (!phoneOverrideAt || m.timestamp > phoneOverrideAt)) {
       phoneOverride = cu[1].trim();
@@ -203,7 +205,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   let bonus = parseOfferBonus(body);
 
   // Cancellation / deletion check — staff can soft-delete leads.
-  const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  const cancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
 
   // Apply a customer device edit (latest [ITEM-UPDATE]) as an override
   // of the parsed device list + total.

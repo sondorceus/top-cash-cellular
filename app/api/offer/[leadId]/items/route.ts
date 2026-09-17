@@ -26,7 +26,7 @@ import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import {
-  field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES, parseOfferBonus,
+  field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES, parseOfferBonus, isCustomerLeadPost,
 } from "../../../../lib/lead-devices";
 
 const SERVER_QUOTE_TOLERANCE = 5;
@@ -177,7 +177,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // force a manual staff re-quote instead of silently accepting it.
   const unverifiable = ceiling === 0 && total > 0;
 
-  const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  const cancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
   if (cancelled) {
     return NextResponse.json({ error: "This offer was cancelled." }, { status: 409 });
   }

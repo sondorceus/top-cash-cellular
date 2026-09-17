@@ -31,7 +31,7 @@ import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "
 import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
-import { parseOfferBonus } from "../../../../lib/lead-devices";
+import { parseOfferBonus, isCustomerLeadPost } from "../../../../lib/lead-devices";
 
 // Server-side quote ceiling per added device — mirrors /api/lead's anti-tamper
 // guard so a tampered offer link can't inflate the order total (which flows into
@@ -78,7 +78,7 @@ function resolveCurrentDevices(
   let itemUpdate: { devices?: unknown[] } | null = null;
   let itemUpdateAt = "";
   for (const m of messages) {
-    if (!m.body) continue;
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const iu = m.body.match(new RegExp(`\\[ITEM-UPDATE:\\s*${leadId}\\][^\\n]*?(\\{.*\\})`, "i"));
     if (iu && (!itemUpdateAt || m.timestamp > itemUpdateAt)) {
       try {
@@ -196,7 +196,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
   }
 
-  const cancelled = messages.some((m) => m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  const cancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
   if (cancelled) {
     return NextResponse.json({ error: "This offer was cancelled." }, { status: 409 });
   }
@@ -205,7 +205,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   let status = "quote_requested";
   let statusAt = "";
   for (const m of messages) {
-    if (!m.body) continue;
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
     const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
     if (sm && (!statusAt || m.timestamp > statusAt)) {
       status = sm[1].toLowerCase();

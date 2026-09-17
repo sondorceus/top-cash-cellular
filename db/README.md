@@ -7,10 +7,16 @@ for the full sell side so he can start posting. The live surface is:
 - `/admin/shop` — posting cockpit (model datalist, live price suggestion, photo upload)
 - `/api/shop`, `/api/shop/buy`, `/api/admin/shop` — feed / claim / CRUD
 - Persistence: **Vercel Blob** (`app/lib/shop-listings.ts`), NOT the Postgres
-  schema below. Random-suffixed pathname so costCents never sits at a guessable
-  public URL; the public API strips cost. v1 sells by **reservation** (claim →
-  on_hold → owner closes by cash/Zelle/Cash App), so there is no checkout race
-  for Blob to lose. Buyer PII goes to MC comms + owner email only, never the blob.
+  schema below. The listings doc lives in generation files
+  `shop-private/listings-g<N>-<tag>.json`. The tag is secret — random for the
+  first doc, then an HMAC (keyed with `BLOB_READ_WRITE_TOKEN`) of the previous
+  doc's pathname — so costCents never sits at a guessable public URL; the
+  public API strips cost. Writes are compare-and-swap via create-if-absent (of
+  two writers who read generation N, exactly one lands N+1), so a buyer's claim
+  is a write only one buyer can win. Pre-2026-09-16 `listings-doc-*` blobs read
+  as generation 0 and migrate on the first write. v1 sells by **reservation**
+  (claim → on_hold → owner closes by cash/Zelle/Cash App). Buyer PII goes to MC
+  comms + owner email only, never the blob.
 - Marking sold auto-writes the `[SALE: …]` profit-ledger message (Platform
   "TCC Shop"), format-verified against the parser — cost pre-filled from the
   listing. `saleLogged:false` in the PATCH response means the MC write did NOT
