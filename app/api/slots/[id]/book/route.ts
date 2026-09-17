@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clientIp, rateLimit, rateLimitResponse } from "../../../../lib/rate-limit";
+import { signSlotRelease } from "../../release-token";
 
 // PUBLIC slot booking — customer reserves a local-Austin handoff time.
 // Proxies to MC with the server-side MC_API_KEY, plus enforces:
@@ -10,6 +11,8 @@ import { clientIp, rateLimit, rateLimitResponse } from "../../../../lib/rate-lim
 //     strings — same defense in /api/lead, since MC comms parse marker
 //     brackets globally)
 // 2026-05-24.
+// The reply carries a release token for this booking so the same browser
+// can give the window back if its lead never saves (see ../release).
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -56,7 +59,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     sellerPhone: cleanField(body.sellerPhone, 30) || undefined,
     sellerEmail: cleanField(body.sellerEmail, 200) || undefined,
     deviceLabel: cleanField(body.deviceLabel, 120) || undefined,
-    leadRef: cleanField(body.leadRef, 64) || undefined,
+    // No caller-supplied leadRef: MC's /book now answers a repeated leadRef
+    // with the booking it already holds, so a public leadRef would let a
+    // stranger fetch someone else's booking (and a release token for it).
+    // The funnel never sent one.
   };
 
   try {
@@ -73,7 +79,17 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
       return NextResponse.json({ ok: false, error: `MC returned ${r.status}` }, { status: 502 });
     }
     const data = await r.json();
-    return NextResponse.json({ ok: true, booking: data.booking });
+    const bookingId: unknown = data?.booking?.id;
+    // Echo only what this caller sent, plus the id/time. Token only for a
+    // booking MC just made for this request (never an `existing` one).
+    let releaseToken: string | undefined;
+    if (typeof bookingId === "string" && data?.existing !== true) {
+      try { releaseToken = signSlotRelease(rawId, bookingId); } catch {}
+    }
+    return NextResponse.json({
+      ok: true,
+      booking: { ...payload, id: bookingId, bookedAt: data?.booking?.bookedAt, releaseToken },
+    });
   } catch (e) {
     return NextResponse.json(
       { ok: false, error: e instanceof Error ? e.message : "MC unreachable" },

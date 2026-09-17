@@ -4835,15 +4835,51 @@ export default function Home() {
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
   const [slotError, setSlotError] = useState<string | null>(null);
   // Slot this visit already booked on a submit whose lead POST then
-  // failed. There's no public un-book, so a retry that booked again got
-  // 409 from the customer's OWN hold ("That window was just taken").
-  // Reuse the hold instead; cleared once the lead is saved. slotChoices
-  // keeps it pickable after a refresh — the open-only list drops it once
-  // our booking fills it.
+  // failed. A retry that booked again got 409 from the customer's OWN hold
+  // ("That window was just taken"), so a retry reuses the hold; booking a
+  // different window, saving without it, or unloading the page gives it
+  // back (releaseSlotHold). Cleared once the lead is saved. slotChoices keeps it
+  // pickable after a refresh — the open-only list drops it once our
+  // booking fills it.
   const [heldSlot, setHeldSlot] = useState<Slot | null>(null);
   const slotChoices = heldSlot && !availableSlots.some((s) => s.id === heldSlot.id)
     ? [heldSlot, ...availableSlots].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
     : availableSlots;
+  // The MC booking behind heldSlot + the release token /api/slots/[id]/book
+  // minted for it (a ref so the pagehide listener reads the live value).
+  // `saving`: a lead POST using this booking is in flight (or got no answer
+  // at all — network error). `maybeSaved`: an earlier such POST ended 5xx /
+  // with no answer, so its lead may exist and name this window — sticky, a
+  // later 4xx retry doesn't undo it. Either one → never released.
+  const slotHoldRef = useRef<{ slotId: string; bookingId: string; token: string; saving: boolean; maybeSaved: boolean } | null>(null);
+  const releaseSlotHold = useCallback((viaBeacon = false) => {
+    const hold = slotHoldRef.current;
+    slotHoldRef.current = null;
+    setHeldSlot(null);
+    // No token (offline stub booking) or a possibly-saved lead → just stop
+    // tracking it; the booking stays.
+    if (!hold?.token || hold.saving || hold.maybeSaved) return;
+    const url = `/api/slots/${encodeURIComponent(hold.slotId)}/release`;
+    const body = JSON.stringify({ bookingId: hold.bookingId, token: hold.token });
+    // sendBeacon outlives the page; a string body goes out as text/plain,
+    // which the route parses itself.
+    try { if (viaBeacon && navigator.sendBeacon(url, body)) return; } catch {}
+    fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+  }, []);
+  // Tab closed / navigated away with a hold whose lead never saved → the
+  // window goes back on the calendar (U12/U17 stranded slots).
+  useEffect(() => {
+    const onPageHide = (e: PageTransitionEvent) => {
+      // persisted = entering the back/forward cache: this page (and its
+      // hold) may come back, and a retry there must reuse the booking, not
+      // 409 on it — only a real unload gives the window back.
+      const hold = slotHoldRef.current;
+      if (e.persisted || !hold || hold.saving || hold.maybeSaved) return;
+      releaseSlotHold(true);
+    };
+    window.addEventListener("pagehide", onPageHide);
+    return () => window.removeEventListener("pagehide", onPageHide);
+  }, [releaseSlotHold]);
   // Slot-loading effect was here originally — moved below the cart
   // derivations (cartNeedsLocal) so a mixed cart triggers slot load
   // even when the cart-level handoffMethod is "ship". See ~line 4730.
@@ -13145,8 +13181,9 @@ export default function Home() {
                 // half-submitted state.
                 let bookedSlotInfo: { id: string; date: string; time: string; label?: string } | undefined;
                 // Skip the book when an earlier failed submit already holds
-                // this exact window for us (see heldSlot).
-                if (cartNeedsLocal && selectedSlot && heldSlot?.id !== selectedSlot.id) {
+                // this exact window for us (see heldSlot / slotHoldRef).
+                const priorHold = slotHoldRef.current;
+                if (cartNeedsLocal && selectedSlot && priorHold?.slotId !== selectedSlot.id) {
                   const r = await bookSlot(selectedSlot.id, {
                     sellerName: name,
                     sellerPhone: phone || undefined,
@@ -13175,16 +13212,39 @@ export default function Home() {
                     setSubmittingLead(false);
                     return;
                   }
+                  // The new window is ours — give back the one an earlier
+                  // failed save still holds (had this book failed, that one
+                  // would still be there to go back to).
+                  if (priorHold) releaseSlotHold();
+                  const booked: { id: string; releaseToken?: string } = r.booking;
+                  slotHoldRef.current = { slotId: selectedSlot.id, bookingId: booked.id, token: booked.releaseToken ?? "", saving: false, maybeSaved: false };
                   setHeldSlot(selectedSlot);
                 }
                 if (cartNeedsLocal && selectedSlot) {
                   bookedSlotInfo = { id: selectedSlot.id, date: selectedSlot.date, time: selectedSlot.time, label: selectedSlot.label };
+                  // The lead below uses this booking — hands off until we
+                  // know it didn't save. Still `saving` from the last try =
+                  // that POST got no answer, so its lead may exist.
+                  const hold = slotHoldRef.current;
+                  if (hold) {
+                    if (hold.saving) hold.maybeSaved = true;
+                    hold.saving = true;
+                  }
                 }
                 // /api/lead's own reason (MX-failed email, rate limit, bad
                 // payout handle…) — the old `throw new Error("Failed")`
                 // replaced it with a generic alert the customer couldn't act
                 // on. Carried to the catch below.
                 const leadFailure = async (res: Response) => {
+                  // Only a POST that carried the hold settles it. A 4xx is
+                  // /api/lead refusing this try — nothing saved by it. A 5xx
+                  // is unknown: that lead may exist, so the booking stays for
+                  // good (a later 4xx retry doesn't clear maybeSaved).
+                  const hold = slotHoldRef.current;
+                  if (hold && hold.slotId === bookedSlotInfo?.id) {
+                    if (res.status >= 500) hold.maybeSaved = true;
+                    hold.saving = false;
+                  }
                   const d = await res.json().catch(() => ({})) as { error?: unknown; suggestion?: unknown };
                   return Object.assign(new Error("Failed"), {
                     userMessage: typeof d.error === "string" && d.error ? d.error : undefined,
@@ -13365,9 +13425,12 @@ export default function Home() {
                   if (d?.leadId) { setSubmittedLeadId(d.leadId); leadIdLocal = d.leadId; }
                 }
                 setSubmittedLabel(leadLabel);
-                // Lead saved — the slot hold is now this lead's booking. Also
-                // clear the IMEI so a second trade this visit doesn't carry
-                // the first device's number (and warnings) into its lead.
+                // Lead saved — the slot hold is now this lead's booking (a
+                // hold it didn't use, e.g. switched to shipping, goes back).
+                // Also clear the IMEI so a second trade this visit doesn't
+                // carry the first device's number (and warnings) into its lead.
+                if (slotHoldRef.current && slotHoldRef.current.slotId !== bookedSlotInfo?.id) releaseSlotHold();
+                slotHoldRef.current = null;
                 setHeldSlot(null);
                 setImeiInput(""); setImeiState("idle"); setImeiResult(null);
                 // Leave a returning-visitor marker so a future visit
