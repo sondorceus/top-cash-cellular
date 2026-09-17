@@ -146,7 +146,8 @@ export async function retryFedexLabel(leadId: string): Promise<RetryResult> {
   const deviceKind = modelParts.length
     ? deviceKindFor(field(body, "Model") || modelParts.join(" — "), deviceType)
     : deviceKindFor(String(model));
-  const deviceCountMatch = body.match(/^Devices:\s*(\d+)\s*$/m);
+  // \n-bounded, not /m — /m also starts lines at U+2028/U+2029 (lead-money).
+  const deviceCountMatch = body.match(/(?:^|\n)Devices:[ \t]*(\d+)[ \t]*(?=\r?\n|$)/);
   const deviceCount = deviceCountMatch ? parseInt(deviceCountMatch[1], 10) || 1 : 1;
   const refText = deviceCount > 1 ? `${deviceCount} devices` : String(model).slice(0, 30);
 

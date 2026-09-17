@@ -836,7 +836,8 @@ export async function GET(req: NextRequest) {
     let deviceCount: number | undefined = undefined;
     let totalPayout: number | undefined = undefined;
     let devices: AdminLead["devices"] = undefined;
-    const devicesHeaderMatch = m.body.match(/^Devices:\s*(\d+)\s*$/m);
+    // \n-bounded, not /m — /m also starts lines at U+2028/U+2029 (lead-money).
+    const devicesHeaderMatch = m.body.match(/(?:^|\n)Devices:[ \t]*(\d+)[ \t]*(?=\r?\n|$)/);
     if (devicesHeaderMatch) {
       deviceCount = parseInt(devicesHeaderMatch[1], 10);
       // Split the body into lines so we can walk each indented device

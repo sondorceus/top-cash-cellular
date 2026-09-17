@@ -169,7 +169,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   let devices: Array<{ model: string; storage?: string; condition?: string; quote?: number; quantity?: number }> | undefined;
   let deviceCount: number | undefined;
   let totalPayout: number | undefined;
-  const headerMatch = body.match(/^Devices:\s*(\d+)\s*$/m);
+  // \n-bounded, not /m — /m also starts lines at U+2028/U+2029 (lead-money).
+  const headerMatch = body.match(/(?:^|\n)Devices:[ \t]*(\d+)[ \t]*(?=\r?\n|$)/);
   if (headerMatch) {
     deviceCount = parseInt(headerMatch[1], 10) || undefined;
     const lines = body.split("\n");

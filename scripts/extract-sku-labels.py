@@ -12,6 +12,18 @@ m = re.search(r'export const PRICE_TABLE[^=]*=\s*\{(.*?)^\};', src, re.S | re.M)
 # Ids may contain underscores (mbp14_m5pmax_2026, dji_mini_4_pro, avp_m5) —
 # the old [a-z0-9]* pattern skipped all of them.
 pt_skus = re.findall(r'^  ([a-z][a-z0-9_]*): \{', m.group(1), re.M)
+# MacBooks the server prices from MACBOOK_SPECS (a processor carries an
+# `adj` — macIsAutoQuotable) need a label too, PRICE_TABLE row or not: the
+# M1 Air (mba13m1) has none, so its homepage label resolved only through the
+# /go board fallback and would lose its ceiling if the board label changed.
+# MACBOOK_SPECS is the file's last table and closes on `}, };`, hence the
+# open-ended match.
+ms = re.search(r'export const MACBOOK_SPECS[^=]*=\s*\{(.*)', src, re.S)
+chunks = re.split(r'^  ([a-z][a-z0-9_]*): \{', ms.group(1), flags=re.M)
+for sku, body in zip(chunks[1::2], chunks[2::2]):
+    procs = re.search(r'processors:\s*\[(.*?)\]', body, re.S)
+    if procs and re.search(r'\badj:\s*-?\d', procs.group(1)) and sku not in pt_skus:
+        pt_skus.append(sku)
 
 # Resolve TS string escapes: \" → "
 unescape = lambda s: s.replace('\\"', '"').replace("\\'", "'")

@@ -3,7 +3,7 @@ import { mailLogo, mailButton, mailDeviceImg } from "../../lib/email-shell";
 import { reportError } from "../../lib/error-report";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
-import { authoritativeLineCap } from "../../lib/server-quote-cap";
+import { authoritativeLineCap, macSpecUnclaimed } from "../../lib/server-quote-cap";
 import { validPromoCode, weeklyPromoTerms, widenUnitCap, promoRoom } from "../../lib/lead-promos";
 import { readPriceOverrides } from "../../lib/quote";
 import { field, parseOfferBonus } from "../../lib/lead-devices";
@@ -17,11 +17,13 @@ const MC_KEY = process.env.MC_API_KEY || "";
 // The only thank-you coupon value ever minted (/api/reviews → value: 25).
 const MAX_COUPON_BONUS = 25;
 
-// The [OFFER-BONUS] amount (0 when absent) on the lead this confirmation is
-// for, or null when that lead can't be read or isn't this customer's — the
-// caller then falls back. The funnel calls us right after /api/lead returns
-// the id, so the lead is among the newest comms.
-async function leadOfferBonus(leadId: unknown, email: unknown, phone: unknown): Promise<number | null> {
+// What the lead this confirmation is for recorded: its [OFFER-BONUS] amount
+// (0 when absent) and its Quote figure (bonus included); "foreign" when it
+// is a lead for a different contact; null when it can't be verified (MC
+// unreadable, no/garbled id, not a lead, or older than the newest 500 — the
+// funnel calls us right after /api/lead returns the id, so an honest lead is
+// always there; paging back would only let this public route drive MC reads).
+async function leadRecord(leadId: unknown, email: unknown, phone: unknown): Promise<{ bonus: number; quote: number } | "foreign" | null> {
   if (!MC_KEY || typeof leadId !== "string" || !/^[\w-]+$/.test(leadId)) return null;
   try {
     const r = await fetch(`${MC_API}/api/comms?limit=500`, {
@@ -35,11 +37,22 @@ async function leadOfferBonus(leadId: unknown, email: unknown, phone: unknown): 
     const b = msgs.find((m) => m.id === leadId)?.body || "";
     if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(b)) return null;
     // Must be THIS customer's lead — someone else's id can't lend its bonus.
-    const e = typeof email === "string" ? email.trim().toLowerCase() : "";
-    const p = typeof phone === "string" ? phone.replace(/\D/g, "").slice(-10) : "";
+    // Contact scrubbed the way /api/lead saved it (cleanField: [ ] and line
+    // breaks → space, 200/30 chars, trimmed) so an odd but valid address
+    // still matches its own lead.
+    const saved = (v: unknown, max: number) => typeof v === "string" ? v.replace(/[\[\]\n\r\t\u2028\u2029]/g, " ").slice(0, max).trim() : "";
+    const e = saved(email, 200).toLowerCase();
+    const p = saved(phone, 30).replace(/\D/g, "").slice(-10);
     const mine = (!!e && e === (field(b, "Email") || "").toLowerCase())
       || (p.length === 10 && p === (field(b, "Phone") || "").replace(/\D/g, "").slice(-10));
-    return mine ? parseOfferBonus(b) : null;
+    if (!mine) return "foreign";
+    // "$1,250", "$1250 (clamped from $5000)", "$300 so far = …" → the first
+    // figure, cents kept (the funnel's figures round-trip exactly). Every
+    // lead writer records "$N" or "TBD (custom)", so anything else is no
+    // figure at all: 0, and the email says a custom quote is coming.
+    const qm = (field(b, "Quote") || "").match(/^\$([0-9,]+(?:\.\d+)?)/);
+    const quote = qm ? parseFloat(qm[1].replace(/,/g, "")) : 0;
+    return { bonus: parseOfferBonus(b), quote: Number.isFinite(quote) ? quote : 0 };
   } catch {
     return null;
   }
@@ -99,7 +112,15 @@ export async function POST(req: NextRequest) {
   // If that lead can't be read, fall back to the client figure capped at
   // the only coupon value ever minted ($25, /api/reviews).
   const clientBonus = Number(body?.couponBonus) > 0 ? Math.min(MAX_COUPON_BONUS, Math.round(Number(body.couponBonus))) : 0;
-  const leadBonus = await leadOfferBonus(leadId, body?.email, body?.phone);
+  const lead = await leadRecord(leadId, body?.email, body?.phone);
+  // A real lead id with a contact that isn't that lead's: the funnel always
+  // confirms with the contact it just sent /api/lead, so this is a hand-made
+  // request borrowing a real offer number (and dodging the lead bound below
+  // with a +tag / dotted Gmail alias) — send nothing.
+  if (lead === "foreign") {
+    return NextResponse.json({ ok: false, error: "This offer belongs to a different contact." }, { status: 403 });
+  }
+  const leadBonus = lead ? lead.bonus : null;
   // Defense in depth: never promise more than the largest bonus /api/lead
   // can apply (one $25 coupon + the referee credit), whatever the lead says.
   const couponBonus = leadBonus != null ? Math.min(leadBonus, MAX_COUPON_BONUS + REFERRAL_REFEREE_BONUS) : clientBonus;
@@ -148,20 +169,28 @@ export async function POST(req: NextRequest) {
   // reach it — a pre-clamp (or hand-crafted) number became a WRITTEN
   // "your $X quote is locked" promise from TCC. Clamp per line via
   // quoteDevice + headroom (same guard as /api/lead); models we can't
-  // price server-side (MacBooks, customs) keep the funnel figure — the
-  // actual payout is still governed by the lead-route clamp + inspection.
+  // price server-side (customs) keep the funnel figure, and MacBooks get
+  // their top config — the saved lead's figure below bounds both (without
+  // a verified lead they state no figure). The actual payout is still
+  // governed by the lead-route clamp + inspection.
   const capOverrides = await readPriceOverrides();
   // Carrier is per-LINE with the top-level body.carrier as fallback — a
   // mixed cart submits one body.carrier, which capped every line against
   // that single carrier's ceiling (an unlocked line on an AT&T submission
   // clamped ~the carrier gap too low). Funnel carts carry carrier per
   // device row; older clients without it keep today's behavior.
+  // Set when a priced line has no ceiling for its exact config: no cap at
+  // all (customs), or a MacBook (this body never carries its chip/RAM, so
+  // its cap is the model's top config).
+  let unbounded = false;
   // A line's % code / weekly promo (the price the page and /api/lead carry
   // includes them) widens its ceiling exactly as /api/lead does — validated
   // against our own files, never past the cap/rule the page prices inside —
   // or the "locked in" email named less than the page and the lead.
   const clampLine = async (m: unknown, s: unknown, c: unknown, lineQuote: number, qty: unknown, lineCarrier: unknown, promoCode: unknown, weekly: ReturnType<typeof weeklyPromoTerms>[number]): Promise<number> => {
-    const cap = await authoritativeLineCap({ model: m, storage: s, condition: c, carrier: lineCarrier || body.carrier }, capOverrides);
+    const spec = { model: m, storage: s, condition: c, carrier: lineCarrier || body.carrier };
+    const cap = await authoritativeLineCap(spec, capOverrides);
+    if (cap == null || macSpecUnclaimed(spec)) unbounded = true;
     if (cap == null) return lineQuote;
     const unit = widenUnitCap(cap, validPromoCode(promoCode), weekly, promoRoom({ model: m, storage: s, condition: c }));
     const allowed = unit * Math.min(50, Math.max(1, Math.round(Number(qty)) || 1));
@@ -175,6 +204,30 @@ export async function POST(req: NextRequest) {
   if (deviceArr.length === 0 && (Number(quote) || 0) > 0) {
     const weekly = weeklyPromoTerms([{ model, quantity: body.quantity, weeklyPromo: body.weeklyPromo }])[0];
     quote = await clampLine(model, storage, condition, Number(quote), body.quantity ?? 1, undefined, body.promoCode, weekly);
+  }
+  // The saved lead is the offer of record, and /api/lead capped it with the
+  // chip/RAM the funnel sent. This body carries neither, so a MacBook line
+  // above was only bounded by its model's TOP config (a base Air could be
+  // confirmed at a Max price). Never email more than the lead's recorded
+  // device figure (its Quote minus the [OFFER-BONUS] folded into it; the
+  // bonus is added back below): lines keep their order and eat that budget.
+  // Honest carts send the lead's own figures, so nothing moves. In cents —
+  // the funnel's figures round-trip exactly.
+  if (lead) {
+    let leftCents = Math.max(0, Math.round((lead.quote - lead.bonus) * 100));
+    for (const d of deviceArr) {
+      const qCents = Math.max(0, Math.round((Number(d.quote) || 0) * 100));
+      if (qCents > leftCents) d.quote = leftCents / 100;
+      leftCents -= Math.min(qCents, leftCents);
+    }
+    if (deviceArr.length === 0 && Math.round((Number(quote) || 0) * 100) > leftCents) quote = leftCents / 100;
+  } else if (unbounded) {
+    // No verified lead to bound it (MC unreadable, lead not in the newest
+    // 500, or no leadId): a figure nothing server-side bounds is no locked
+    // offer. Send the "custom quote coming" email a manual quote gets —
+    // staff send the number from the saved lead.
+    for (const d of deviceArr) d.quote = 0;
+    quote = 0;
   }
   if (deviceArr.length >= 1) {
     // When a devices[] array is present the emailed total ALWAYS comes from
@@ -235,9 +288,10 @@ export async function POST(req: NextRequest) {
 
   if (email && process.env.RESEND_API_KEY) {
     // Offer number = the REAL lead id (canonical, matches the done screen
-    // + offer page + admin search). Falls back to a timestamp only if the
-    // funnel somehow didn't pass a leadId (e.g. MC was down at submit).
-    const offerNum = formatOfferNumber(typeof leadId === "string" ? leadId : "") || Date.now().toString(36).toUpperCase();
+    // + offer page + admin search) — only once that lead was read and is
+    // this contact's, so no unverified email carries a real offer number.
+    // Otherwise (no leadId, MC unreadable, lead not found) a timestamp.
+    const offerNum = formatOfferNumber(lead && typeof leadId === "string" ? leadId : "") || Date.now().toString(36).toUpperCase();
     const offerDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     // Digits-only phone for the /track URL query string. The button prefills
     // EMAIL (this message arrived by email, so the magic link /track sends

@@ -136,8 +136,9 @@ export function resolveCurrentDevices(
   }
   if (itemDevices) return itemDevices.map(normDevice);
 
-  // 2. Multi-device "Devices: N" block.
-  if (/^Devices:\s*\d+\s*$/m.test(body)) {
+  // 2. Multi-device "Devices: N" block. A real \n (or \r\n) bounds the
+  //    header: under /m, JS also starts lines at U+2028/U+2029.
+  if (/(?:^|\n)Devices:[ \t]*(\d+)[ \t]*(?=\r?\n|$)/.test(body)) {
     const out: ParsedDevice[] = [];
     for (const line of body.split("\n")) {
       const dm = line.match(DEVICE_LINE_RE);

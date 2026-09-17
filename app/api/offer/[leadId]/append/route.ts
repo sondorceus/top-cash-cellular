@@ -100,7 +100,8 @@ function resolveCurrentDevices(
 
   // 2. Multi-device "Devices: N" block. Same line shape the GET route +
   //    admin parser read: "  1. Model · Storage · Condition · $Quote …".
-  if (/^Devices:\s*\d+\s*$/m.test(body)) {
+  //    \n-bounded, not /m — /m also starts lines at U+2028/U+2029.
+  if (/(?:^|\n)Devices:[ \t]*(\d+)[ \t]*(?=\r?\n|$)/.test(body)) {
     // Storage/Condition groups exclude `$` so a sparse line's price isn't
     // swallowed into them (→ $0 device); money group accepts cents.
     const re = /^\s{2,4}(\d+)\.\s+([^·\n]+?)(?:\s·\s+([^·\n$]+?))?(?:\s·\s+([^·\n$]+?))?(?:\s·\s+\$([0-9,]+(?:\.\d+)?)(?:\s+total)?)?(?:\s+\(×(\d+)\))?(?:\s·\s+.*)?$/;
