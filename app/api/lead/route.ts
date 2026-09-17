@@ -190,6 +190,7 @@ async function isDuplicateMC(email: string, contact: string, device: string, mod
 // no brokenGlass deduction — which silently clamped legit quotes down and
 // false-flagged them as tampered. Always import; never re-fork.)
 import { authoritativeLineCap, macSpecUnclaimed, resolveModelIdFromLabel, type LeadLineSpec } from "../../lib/server-quote-cap";
+import { validPromoCode, weeklyPromoTerms, widenUnitCap, promoRoom, describeWeeklyPromo, type PromoCode, type PromoTerms, type PromoRoom } from "../../lib/lead-promos";
 import { readPriceOverrides } from "../../lib/quote";
 import { MANUAL_REVIEW_DEVICES } from "../../data/prices";
 
@@ -273,11 +274,12 @@ export async function POST(req: NextRequest) {
     const d0 = data.devices[0] as Record<string, unknown>;
     for (const k of ["storage", "quantity", "carrier", "connectivity", "processor", "memory", "graphics",
       "displayResolution", "displayGlass", "batteryHealth", "charger", "extras",
-      "brokenGlass", "brokenFunctional", "brokenFaceId", "imei", "imeiWarnings", "photos"] as const) {
+      "brokenGlass", "brokenFunctional", "brokenFaceId", "imei", "imeiWarnings", "photos",
+      "promoCode", "weeklyPromo", "accessoryBonus"] as const) {
       if ((data as Record<string, unknown>)[k] == null && d0[k] != null) (data as Record<string, unknown>)[k] = d0[k];
     }
   }
-  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, brokenFaceId, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, referralCode, attestation } = data;
+  const { name, phone, email, device, model, storage, condition, carrier, carrierLock, accessoriesIncluded, quote, quantity, photos, imei, imeiWarnings, handoff, brokenGlass, brokenFunctional, brokenFaceId, processor, memory, graphics, displayResolution, displayGlass, batteryHealth, charger, connectivity, extras, paidOff, devices, bestContact, notes, smsOptIn, attribution, couponCode, promoCode, weeklyPromo, accessoryBonus, referralCode, attestation } = data;
   // Compliance attestation (18+ & legal ownership). The funnel makes the
   // customer tick a required box affirming both before submit. We record
   // the disposition + IP + timestamp in the immutable MC lead record as
@@ -569,11 +571,28 @@ export async function POST(req: NextRequest) {
   const lineCap = async (line: LeadLineSpec): Promise<number | null> =>
     (await authoritativeLineCap(line, capOverrides)) ?? legacyCap(line.model, line.condition, line.brokenGlass);
   const sanitizeQty = (q: unknown) => Math.min(50, Math.max(1, Math.round(Number(q) || 1)));
+  // Quote-step bonuses (lib/lead-promos): the funnel folds a % code
+  // (coupons.json) and the weekly promo (promo.json) into a line's price only
+  // where they fit under our cap, and tags the line only when they added
+  // money. Re-validate each tag against those files — never a client-sent
+  // percent, amount or device type — and widen THAT line's ceiling by what
+  // the file allows; otherwise a legit bonus quote trips the tamper clamp
+  // (lost bonus + fraud flag). A forged/stale code or claim widens nothing,
+  // and no widening passes the cap/rule the page prices inside (promoRoom).
+  // Multi-device carts validate per line, the same way.
+  let promoApplied: PromoCode | null = null;
+  let weeklyApplied: PromoTerms | null = null;
+  let roomApplied: PromoRoom | null = null;
+  const linePromos = new Map<object, { code: PromoCode | null; weekly: PromoTerms | null; room: PromoRoom }>();
   let serverQuoteCap: number | null;
   if (isMultiDeviceCart) {
     // Each cart line carries its own chip/RAM labels (processor/memory) —
     // the MacBook cap prices that config.
-    const devs = (data as { devices: { model?: string; storage?: string; condition?: string; carrier?: string; quantity?: number; quote?: number; brokenGlass?: unknown; processor?: unknown; memory?: unknown }[] }).devices;
+    const devs = (data as { devices: { model?: string; storage?: string; condition?: string; carrier?: string; quantity?: number; quote?: number; brokenGlass?: unknown; processor?: unknown; memory?: unknown; promoCode?: unknown; weeklyPromo?: unknown }[] }).devices;
+    const weeklyByLine = weeklyPromoTerms(devs);
+    devs.forEach((d, i) => {
+      if (d && typeof d === "object") linePromos.set(d, { code: validPromoCode(d.promoCode), weekly: weeklyByLine[i], room: promoRoom(d) });
+    });
     let acc = 0;
     let anyKnown = false;
     let allKnown = true;
@@ -581,7 +600,8 @@ export async function POST(req: NextRequest) {
       const cap = await lineCap(d);
       if (cap != null) {
         anyKnown = true;
-        const lineAllowed = cap * sanitizeQty(d.quantity);
+        const bonus = linePromos.get(d);
+        const lineAllowed = widenUnitCap(cap, bonus?.code ?? null, bonus?.weekly ?? null, bonus?.room) * sanitizeQty(d.quantity);
         acc += lineAllowed;
         // Per-LINE clamp (deferred #4): the rendered per-device dollar was
         // never validated, so one inflated line hid inside an honest total.
@@ -603,7 +623,10 @@ export async function POST(req: NextRequest) {
     // multiplied by quantity, so every honest ×2+ submission was falsely
     // "tamper"-clamped to a one-unit payout wherever a resell cap existed.
     const cap = await lineCap({ model, storage, condition, carrier, carrierLock, brokenGlass, processor, memory });
-    serverQuoteCap = cap != null ? cap * sanitizeQty(quantity) : null;
+    promoApplied = validPromoCode(promoCode);
+    weeklyApplied = weeklyPromoTerms([{ model, quantity, weeklyPromo }])[0];
+    roomApplied = promoRoom({ model, storage, condition, brokenGlass });
+    serverQuoteCap = cap != null ? widenUnitCap(cap, promoApplied, weeklyApplied, roomApplied) * sanitizeQty(quantity) : null;
   }
   // A priced MacBook line with no recognizable chip/RAM was capped at the
   // model's TOP config — the funnel always sends both, so a line without
@@ -611,33 +634,6 @@ export async function POST(req: NextRequest) {
   const macSpecMissing = isMultiDeviceCart
     ? (data as { devices: (LeadLineSpec & { quote?: unknown })[] }).devices.some((d) => !!d && (Number(d.quote) || 0) > 0 && macSpecUnclaimed(d))
     : submittedQuoteNum > 0 && macSpecUnclaimed({ model, processor, memory });
-  // Quote-step promo coupons (/coupons.json) apply a PERCENT bonus that the
-  // client folds into the submitted quote. The server MUST re-validate the code
-  // against the same source (never trust a client-claimed percent) and raise the
-  // cap by that percent — otherwise a legit promo quote trips the tamper clamp,
-  // silently dropping the customer's discount AND logging them as a fraudster.
-  // Single-device only: the cap is one device's ceiling, so a validated percent
-  // maps cleanly. Multi-device carts snapshot per-item prices under possibly
-  // different promo states, so raising the summed cap there would be a small
-  // fraud vector — left for a deliberate fix. (bug fix)
-  let promoApplied: { code: string; percent: number } | null = null;
-  if (typeof promoCode === "string" && promoCode.trim() && !isMultiDeviceCart && serverQuoteCap != null) {
-    const cleanPromo = promoCode.trim().toUpperCase();
-    try {
-      const origin = new URL(req.url).origin;
-      const pr = await fetch(`${origin}/coupons.json`, { cache: "no-store" });
-      if (pr.ok) {
-        const promos = (await pr.json().catch(() => ({}))) as Record<string, { percent?: number; active?: boolean }>;
-        const p = promos[cleanPromo];
-        const pct = Number(p?.percent);
-        if (p?.active && Number.isFinite(pct) && pct > 0) {
-          const safePct = Math.min(pct, 50); // hard ceiling, defense-in-depth
-          promoApplied = { code: cleanPromo, percent: safePct };
-          serverQuoteCap = Math.round(serverQuoteCap * (1 + safePct / 100));
-        }
-      }
-    } catch { /* non-fatal — fall through to the un-raised cap */ }
-  }
   let quoteTampered = false;
   let baseQuoteNum = submittedQuoteNum;
   if (serverQuoteCap != null && submittedQuoteNum > serverQuoteCap + SERVER_QUOTE_TOLERANCE) {
@@ -695,11 +691,35 @@ export async function POST(req: NextRequest) {
     imeiWarnings?: string[];
     carrierLock?: string;
     accessoriesIncluded?: boolean;
+    accessoryBonus?: unknown;
+    promoCode?: unknown;
+    weeklyPromo?: unknown;
     // Per-item handoff (ship | local) for mixed-cart orders so staff
     // know which devices to expect in the FedEx box vs at the meetup.
     handoff?: "ship" | "local";
     // Funnel device type of THIS item ("lenovo") — label package kind only.
     deviceType?: string;
+  };
+  // "(bonus applied)" was written even when the offer was already at our top
+  // price and the answer added nothing — say what it really added (the
+  // funnel's accessoryBonus; callers without it keep the old wording).
+  const accessoriesNote = (v: unknown): string => {
+    if (typeof v !== "number" || !Number.isFinite(v)) return " (bonus applied)";
+    const n = Math.min(100, Math.max(0, Math.round(v)));
+    return n > 0 ? ` (+$${n} bonus in the quote)` : " (no bonus — quote was already at our top price)";
+  };
+  // Staff-facing record of the validated % code / weekly promo in a quote.
+  const promoNotes = (code: PromoCode | null, rawCode: unknown, weekly: PromoTerms | null, claimed: unknown, where: string, room: PromoRoom | null | undefined): string[] => {
+    const out: string[] = [];
+    // The funnel adds these only up to our top price, so the dollars in the
+    // quote can be less than the stated terms. A code the funnel never
+    // applies to this device (no cap/rule to fit under) isn't "applied".
+    if (code && room && !room.codeFits) out.push(`Promo code not applied: ${code.code} (adds nothing on this device — already at our top price; cap not raised)`);
+    else if (code) out.push(`Promo applied: ${code.code} (+${code.percent}% up to our top price — included in ${where})`);
+    else if (typeof rawCode === "string" && rawCode.trim()) out.push(`Promo code ignored: ${cleanField(rawCode, 40).toUpperCase()} (not an active code — cap not raised)`);
+    if (weekly) out.push(`Weekly promo applied: ${describeWeeklyPromo(weekly)} up to our top price — included in ${where}`);
+    else if (claimed === true) out.push("Weekly promo claim ignored (no active promo for this device — cap not raised)");
+    return out;
   };
   const deviceList = Array.isArray(devices) ? (devices as DeviceEntry[]).filter((d) => d && (d.model || d.condition)) : [];
   const isMulti = deviceList.length > 1;
@@ -729,8 +749,10 @@ export async function POST(req: NextRequest) {
       if (d.carrier)           specBits.push(`Carrier: ${cleanField(d.carrier, 40)}`);
       // Same lock / accessories lines as the single-device specLines.
       if (d.carrierLock)       specBits.push(`Carrier lock: ${cleanField(d.carrierLock, 40)}`);
-      if (d.accessoriesIncluded === true) specBits.push("Accessories: ✅ all original accessories included (bonus applied)");
+      if (d.accessoriesIncluded === true) specBits.push(`Accessories: ✅ all original accessories included${accessoriesNote(d.accessoryBonus)}`);
       else if (d.accessoriesIncluded === false) specBits.push("Accessories: none included");
+      const dPromo = linePromos.get(d);
+      specBits.push(...promoNotes(dPromo?.code ?? null, d.promoCode, dPromo?.weekly ?? null, d.weeklyPromo, "this device's quote", dPromo?.room));
       if (d.connectivity)      specBits.push(`Connectivity: ${cleanField(d.connectivity, 40)}`);
       if (d.imei)              specBits.push(`IMEI: ${cleanField(d.imei, 20).replace(/[^0-9]/g, "")}`);
       if (Array.isArray(d.imeiWarnings) && d.imeiWarnings.length > 0) specBits.push(`[IMEI WARNINGS] ${(d.imeiWarnings as unknown[]).map((x) => cleanField(x, 100)).filter(Boolean).join(" | ")}`);
@@ -807,7 +829,7 @@ export async function POST(req: NextRequest) {
   // +$10–30 accessory bonus) but weren't surfaced to staff. Without them
   // the admin can't reconcile the quote against the device on arrival.
   if (carrierLock) specLines.push(`Carrier lock: ${cleanField(carrierLock, 40)}`);
-  if (accessoriesIncluded === true) specLines.push("Accessories: ✅ all original accessories included (bonus applied)");
+  if (accessoriesIncluded === true) specLines.push(`Accessories: ✅ all original accessories included${accessoriesNote(accessoryBonus)}`);
   else if (accessoriesIncluded === false) specLines.push("Accessories: none included");
 
   const imeiLines: string[] = [];
@@ -838,11 +860,10 @@ export async function POST(req: NextRequest) {
     // upper-casing doesn't defuse it).
     couponLines.push(`Coupon attempt: ${cleanField(couponCode, 64).toUpperCase()} · failed: ${couponError.slice(0, 200)}`);
   }
-  // Promo (percent) coupon audit — the discount is already inside the quote;
-  // this line records that the cap was raised so the offer wasn't clamped.
-  if (promoApplied) {
-    couponLines.push(`Promo applied: ${promoApplied.code} (+${promoApplied.percent}% — included in quote)`);
-  }
+  // Promo (percent code / weekly promo) audit — the bonus is already inside
+  // the quote; these lines record that the cap was raised for it (or that a
+  // code/claim was ignored). Multi-device carts write them per device.
+  if (!isMultiDeviceCart) couponLines.push(...promoNotes(promoApplied, promoCode, weeklyApplied, weeklyPromo, "quote", roomApplied));
 
   // Referral outcome — written into the lead body so (a) admin sees the
   // referral on the lead row, and (b) the admin status route can read

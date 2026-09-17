@@ -4,6 +4,7 @@ import { reportError } from "../../lib/error-report";
 import { formatOfferNumber } from "../../lib/offer-number";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { authoritativeLineCap } from "../../lib/server-quote-cap";
+import { validPromoCode, weeklyPromoTerms, widenUnitCap, promoRoom } from "../../lib/lead-promos";
 import { readPriceOverrides } from "../../lib/quote";
 import { field, parseOfferBonus } from "../../lib/lead-devices";
 import { REFERRAL_REFEREE_BONUS } from "../../lib/referral";
@@ -139,7 +140,7 @@ export async function POST(req: NextRequest) {
   // row (the headline) and override the offer total. Skywalker 2026-05-17:
   // "when I submit it only shows 1 device on both the page confirmation
   // and on email it should reflect multiple".
-  const deviceArr: Array<{ model?: string; storage?: string; condition?: string; carrier?: string; quote?: number; quantity?: number }> =
+  const deviceArr: Array<{ model?: string; storage?: string; condition?: string; carrier?: string; quote?: number; quantity?: number; promoCode?: unknown; weeklyPromo?: unknown }> =
     Array.isArray(devices) ? devices : [];
   const isMulti = deviceArr.length > 1;
   // Never email a dollar figure above the device's authoritative ceiling.
@@ -155,18 +156,25 @@ export async function POST(req: NextRequest) {
   // that single carrier's ceiling (an unlocked line on an AT&T submission
   // clamped ~the carrier gap too low). Funnel carts carry carrier per
   // device row; older clients without it keep today's behavior.
-  const clampLine = async (m: unknown, s: unknown, c: unknown, lineQuote: number, qty: unknown, lineCarrier?: unknown): Promise<number> => {
+  // A line's % code / weekly promo (the price the page and /api/lead carry
+  // includes them) widens its ceiling exactly as /api/lead does — validated
+  // against our own files, never past the cap/rule the page prices inside —
+  // or the "locked in" email named less than the page and the lead.
+  const clampLine = async (m: unknown, s: unknown, c: unknown, lineQuote: number, qty: unknown, lineCarrier: unknown, promoCode: unknown, weekly: ReturnType<typeof weeklyPromoTerms>[number]): Promise<number> => {
     const cap = await authoritativeLineCap({ model: m, storage: s, condition: c, carrier: lineCarrier || body.carrier }, capOverrides);
     if (cap == null) return lineQuote;
-    const allowed = cap * Math.min(50, Math.max(1, Math.round(Number(qty)) || 1));
+    const unit = widenUnitCap(cap, validPromoCode(promoCode), weekly, promoRoom({ model: m, storage: s, condition: c }));
+    const allowed = unit * Math.min(50, Math.max(1, Math.round(Number(qty)) || 1));
     return lineQuote > allowed + 5 ? allowed : lineQuote;
   };
-  for (const d of deviceArr) {
+  const weeklyByLine = weeklyPromoTerms(deviceArr);
+  for (const [i, d] of deviceArr.entries()) {
     const q = Number(d.quote) || 0;
-    if (q > 0) d.quote = await clampLine(d.model, d.storage, d.condition, q, d.quantity ?? 1, d.carrier);
+    if (q > 0) d.quote = await clampLine(d.model, d.storage, d.condition, q, d.quantity ?? 1, d.carrier, d.promoCode, weeklyByLine[i]);
   }
   if (deviceArr.length === 0 && (Number(quote) || 0) > 0) {
-    quote = await clampLine(model, storage, condition, Number(quote), body.quantity ?? 1);
+    const weekly = weeklyPromoTerms([{ model, quantity: body.quantity, weeklyPromo: body.weeklyPromo }])[0];
+    quote = await clampLine(model, storage, condition, Number(quote), body.quantity ?? 1, undefined, body.promoCode, weekly);
   }
   if (deviceArr.length >= 1) {
     // When a devices[] array is present the emailed total ALWAYS comes from

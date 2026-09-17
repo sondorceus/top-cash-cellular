@@ -5229,6 +5229,19 @@ export default function Home() {
     // the quote, and staff need them to reconcile it at inspection.
     carrierLock?: string;
     accessoriesIncluded?: boolean;
+    // Dollars the accessories answer added to `price` (0 = none: the offer
+    // was already at our top price) — staff reconcile it at inspection.
+    accessoryBonus?: number;
+    // Quote-step bonuses inside `price`: the % code and the weekly promo,
+    // set only when they added money. /api/lead re-validates both per line
+    // against public/coupons.json / promo.json.
+    promoCode?: string;
+    weeklyPromo?: boolean;
+    // The code's % and the dollars it added to `price` when carted — a cart
+    // waits up to 7 days, so checkout re-checks the code and takes exactly
+    // those dollars back out if it has since ended or dropped.
+    promoCodePercent?: number;
+    promoCodeAdded?: number;
     // Per-item handoff — captured at add-to-cart time so a mixed cart
     // (some items local, others shipped) preserves each customer's intent
     // instead of last-write-wins on a cart-level handoffMethod. Optional
@@ -6059,7 +6072,9 @@ export default function Home() {
   const [couponPercent, setCouponPercent] = useState(0);
   const [couponLabel, setCouponLabel] = useState("");
   const [couponError, setCouponError] = useState("");
-  const couponMultiplier = 1 + (couponPercent / 100);
+  // Not on add-to-order: the append route can't validate a code, so a
+  // coupon-inflated line would be clamped there (the box is hidden too).
+  const couponMultiplier = addToOrderId ? 1 : 1 + (couponPercent / 100);
   const applyCoupon = async () => {
     setCouponError("");
     const code = couponCode.trim().toUpperCase();
@@ -6168,86 +6183,94 @@ export default function Home() {
     const o = opt as ExtraOption | undefined;
     return acc * ((o?.adj != null) ? 1 : (o?.multiplier ?? 1));
   }, 1);
-  const nonCarrierMultiplier = connectivityMultiplier * promoMultiplier
-    * couponMultiplier * processorMultiplier * memoryMultiplier * displayGlassMultiplier
-    * batteryHealthMultiplier * chargerMultiplier * extrasMultOnly;
-  const promoOnly = promoMultiplier * couponMultiplier * (useAdditive ? extrasMultOnly : extrasMultiplier);
-  // Promo flat bonus only sweetens a quote that already exists. Added
-  // outside the zero-clamp it resurrected $0-authored cells (the owner's
-  // "don't auto-quote this config" signal) into firm offers: a live $20
-  // iPhone promo turned iPhone 11 Pro fair (authored 0) into $20, which
-  // then also unlocked the +$25 popular bonus → $45 auto-offer with no
-  // server backstop. Zero must stay zero → manual review. 2026-07-25.
-  const withPromoFlat = (pre: number) => (pre > 0 ? pre + promoFlatBonus : pre);
-  const baseQuote = useAdditive
-    ? (() => {
-        const chip = procAdj;
-        const ram = (memory as MacSpecOption | null)?.adj ?? 0;
-        const stor = (storage as MacSpecOption | null)?.adj ?? 0;
-        const gpu = (graphics as MacSpecOption | null)?.adj ?? 0;
-        const disp = (displayResolution as MacSpecOption | null)?.adj ?? 0;
-        // Prefer per-model condition adjustments from the IWM scrape;
-        // fall back to MacBook-calibrated MCOND for MacBook variants and
-        // any spec entry without scraped condition_adj data.
-        // verygood retained as a fallback only for legacy admin overrides
-        // saved before the 2026-05-19 Mint/VG collapse. Live funnel can't
-        // produce verygood any more — the picker only emits sealed/mint/
-        // good/fair/broken.
-        const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -110, good: -110, fair: -220 };
-        const specCondAdj = model ? getMacSpec(model.id)?.condition_adj : undefined;
-        const condId = condition?.id ?? "mint";
-        // Admin override layer: /admin/prices conditionAdj edits override
-        // the bundled scrape values per (model, condition). Falls through
-        // to the bundled spec, then to MCOND for legacy MacBooks without
-        // scraped data. Skywalker 2026-05-18 self-serve editor.
-        const overrideCondAdj = model ? priceOverrides?.conditionAdj?.[model.id]?.[condId] : undefined;
-        const cond = overrideCondAdj !== undefined
-          ? overrideCondAdj
-          : specCondAdj && (condId in specCondAdj)
-            ? (specCondAdj[condId] ?? 0)
-            : (MCOND[condId] ?? 0);
-        const nano = displayGlass?.id === "nano" ? 50 : 0;
-        // Prefer per-model IWM battery/charger adj when scraped; fall
-        // back to MacBook-calibrated defaults for MacBooks and any spec
-        // without IWM data.
-        const specBatt = model ? getMacSpec(model.id)?.battery_adj : undefined;
-        const specChrg = model ? getMacSpec(model.id)?.charger_adj : undefined;
-        const batt = specBatt && batteryHealth?.id
-          ? (specBatt[batteryHealth.id] ?? specBatt["poor"] ?? 0)
-          : (batteryHealth?.id === "poor" ? -80 : 0);
-        const chrg = specChrg && charger?.id
-          ? (specChrg[charger.id] ?? specChrg["no"] ?? 0)
-          : (charger?.id === "no" ? -50 : 0);
-        const iwm = chip + ram + stor + gpu + disp + cond + nano + batt + chrg + extrasAdjSum;
-        return withPromoFlat(Math.max(0, Math.round(iwm * 0.90 * promoOnly)));
-      })()
-    : useDirectPricing
-      ? withPromoFlat(Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier + extrasAdjSum)))
-      : (() => {
-          // model.base via admin override (baseOverrides[id]) if present —
-          // covers VR, drones, Garmin, any other simple-base device. Falls
-          // back to the bundled model.base. Skywalker 2026-05-18 self-serve
-          // price editor.
-          const effBase = (model && (priceOverrides?.baseOverrides?.[model.id] ?? model.base)) || 0;
-          return model && condition && effBase
-            ? withPromoFlat(Math.max(0, Math.round(effBase * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)))
-            : 0;
-        })();
-  // Popular-device bonus: phones + cellular iPads get +$25 over IWM
-  // so we beat IWM on the categories with the most inbound volume.
-  // Skywalker directive 2026-05-16.
-  const popularDeviceBonus = (isPhoneFlow || isIpadCellular) && baseQuote > 0 ? 25 : 0;
-  // Both-glass penalty: when a phone has BOTH front display + back
-  // glass cracked, deduct an extra $30 on top of the broken-tier
-  // price. Front-only or back-only damage stays at the regular
-  // broken-tier value. Skywalker directive 2026-05-17.
-  const bothGlassPenalty = (isPhoneFlow && condition?.id === "broken" && brokenGlass === "both" && baseQuote > 0) ? -30 : 0;
-  // Dead Face ID / Touch ID on a broken iPhone — flat deduction from the
-  // buyer-sheet schedule (app/data/deductions.ts). Only asked on the broken
-  // path; working-condition quotes carry it as a stated assumption instead.
-  const faceIdPenalty = (deviceType === "iphone" && condition?.id === "broken" && brokenFaceId === "no" && baseQuote > 0)
-    ? -deductionAmount(model?.id, "faceid") : 0;
-  const rawQuote = Math.max(0, baseQuote + accessoryBonus + popularDeviceBonus + bothGlassPenalty + faceIdPenalty);
+  // Quote-step extras: the weekly promo, the % coupon and the accessory
+  // bonus. They stay INSIDE the margin cap and IWM rule (owner 2026-09-16:
+  // no paying above the rule), so they often add less than face value, or
+  // nothing. The pricing path is one function of them, so the page can price
+  // with and without each and only claim what it really added.
+  type QuoteExtras = { promoMult: number; promoFlat: number; couponMult: number; accessory: number };
+  const rawQuoteWith = ({ promoMult, promoFlat, couponMult, accessory }: QuoteExtras): number => {
+    const nonCarrierMultiplier = connectivityMultiplier * promoMult
+      * couponMult * processorMultiplier * memoryMultiplier * displayGlassMultiplier
+      * batteryHealthMultiplier * chargerMultiplier * extrasMultOnly;
+    const promoOnly = promoMult * couponMult * (useAdditive ? extrasMultOnly : extrasMultiplier);
+    // Promo flat bonus only sweetens a quote that already exists. Added
+    // outside the zero-clamp it resurrected $0-authored cells (the owner's
+    // "don't auto-quote this config" signal) into firm offers: a live $20
+    // iPhone promo turned iPhone 11 Pro fair (authored 0) into $20, which
+    // then also unlocked the +$25 popular bonus → $45 auto-offer with no
+    // server backstop. Zero must stay zero → manual review. 2026-07-25.
+    const withPromoFlat = (pre: number) => (pre > 0 ? pre + promoFlat : pre);
+    const baseQuote = useAdditive
+      ? (() => {
+          const chip = procAdj;
+          const ram = (memory as MacSpecOption | null)?.adj ?? 0;
+          const stor = (storage as MacSpecOption | null)?.adj ?? 0;
+          const gpu = (graphics as MacSpecOption | null)?.adj ?? 0;
+          const disp = (displayResolution as MacSpecOption | null)?.adj ?? 0;
+          // Prefer per-model condition adjustments from the IWM scrape;
+          // fall back to MacBook-calibrated MCOND for MacBook variants and
+          // any spec entry without scraped condition_adj data.
+          // verygood retained as a fallback only for legacy admin overrides
+          // saved before the 2026-05-19 Mint/VG collapse. Live funnel can't
+          // produce verygood any more — the picker only emits sealed/mint/
+          // good/fair/broken.
+          const MCOND: Record<string, number> = { sealed: 50, mint: 0, verygood: -110, good: -110, fair: -220 };
+          const specCondAdj = model ? getMacSpec(model.id)?.condition_adj : undefined;
+          const condId = condition?.id ?? "mint";
+          // Admin override layer: /admin/prices conditionAdj edits override
+          // the bundled scrape values per (model, condition). Falls through
+          // to the bundled spec, then to MCOND for legacy MacBooks without
+          // scraped data. Skywalker 2026-05-18 self-serve editor.
+          const overrideCondAdj = model ? priceOverrides?.conditionAdj?.[model.id]?.[condId] : undefined;
+          const cond = overrideCondAdj !== undefined
+            ? overrideCondAdj
+            : specCondAdj && (condId in specCondAdj)
+              ? (specCondAdj[condId] ?? 0)
+              : (MCOND[condId] ?? 0);
+          const nano = displayGlass?.id === "nano" ? 50 : 0;
+          // Prefer per-model IWM battery/charger adj when scraped; fall
+          // back to MacBook-calibrated defaults for MacBooks and any spec
+          // without IWM data.
+          const specBatt = model ? getMacSpec(model.id)?.battery_adj : undefined;
+          const specChrg = model ? getMacSpec(model.id)?.charger_adj : undefined;
+          const batt = specBatt && batteryHealth?.id
+            ? (specBatt[batteryHealth.id] ?? specBatt["poor"] ?? 0)
+            : (batteryHealth?.id === "poor" ? -80 : 0);
+          const chrg = specChrg && charger?.id
+            ? (specChrg[charger.id] ?? specChrg["no"] ?? 0)
+            : (charger?.id === "no" ? -50 : 0);
+          const iwm = chip + ram + stor + gpu + disp + cond + nano + batt + chrg + extrasAdjSum;
+          return withPromoFlat(Math.max(0, Math.round(iwm * 0.90 * promoOnly)));
+        })()
+      : useDirectPricing
+        ? withPromoFlat(Math.max(0, Math.round((lookupPrice - totalCarrierDeduction) * nonCarrierMultiplier + extrasAdjSum)))
+        : (() => {
+            // model.base via admin override (baseOverrides[id]) if present —
+            // covers VR, drones, Garmin, any other simple-base device. Falls
+            // back to the bundled model.base. Skywalker 2026-05-18 self-serve
+            // price editor.
+            const effBase = (model && (priceOverrides?.baseOverrides?.[model.id] ?? model.base)) || 0;
+            return model && condition && effBase
+              ? withPromoFlat(Math.max(0, Math.round(effBase * storageMultiplier * condition.multiplier * carrierMultiplier * nonCarrierMultiplier + extrasAdjSum)))
+              : 0;
+          })();
+    // Popular-device bonus: phones + cellular iPads get +$25 over IWM
+    // so we beat IWM on the categories with the most inbound volume.
+    // Skywalker directive 2026-05-16.
+    const popularDeviceBonus = (isPhoneFlow || isIpadCellular) && baseQuote > 0 ? 25 : 0;
+    // Both-glass penalty: when a phone has BOTH front display + back
+    // glass cracked, deduct an extra $30 on top of the broken-tier
+    // price. Front-only or back-only damage stays at the regular
+    // broken-tier value. Skywalker directive 2026-05-17.
+    const bothGlassPenalty = (isPhoneFlow && condition?.id === "broken" && brokenGlass === "both" && baseQuote > 0) ? -30 : 0;
+    // Dead Face ID / Touch ID on a broken iPhone — flat deduction from the
+    // buyer-sheet schedule (app/data/deductions.ts). Only asked on the broken
+    // path; working-condition quotes carry it as a stated assumption instead.
+    const faceIdPenalty = (deviceType === "iphone" && condition?.id === "broken" && brokenFaceId === "no" && baseQuote > 0)
+      ? -deductionAmount(model?.id, "faceid") : 0;
+    return Math.max(0, baseQuote + accessory + popularDeviceBonus + bothGlassPenalty + faceIdPenalty);
+  };
 
   // MARGIN GUARDRAIL — never quote more than 25% under resell value.
   // Catches cases like a broken iPhone 17 Pro Max that the IWM-derived
@@ -6274,8 +6297,6 @@ export default function Home() {
     storage: storage?.id,
     carrierDeduction: totalCarrierDeduction,
   }) : null;
-  // Apply cap silently if base quote exceeds it.
-  const quoteAfterCap = (marginCap != null && rawQuote > marginCap) ? marginCap : rawQuote;
   // Force manual review ONLY when we have a resell comp AND that comp's
   // 75% cap would push the quote below MIN_OFFER. The cap-only path
   // (resell known, baseQuote stays above MIN_OFFER) lets the cap apply
@@ -6285,13 +6306,45 @@ export default function Home() {
   // after the prior `workingResell == null` trigger was flagging
   // basically every non-iPhone device for manual review.
   const needsMarginReview = marginCap != null && marginCap < MIN_OFFER;
-  // Galaxy S23+ blanket −$75 (Atlas doesn't really buy Galaxy). Applied after
-  // the cap so it lands on the live offer. Monotone floor 2026-07-13: see
-  // applyGalaxyDrop — a better config must never quote below a worse one.
-  const quoteAfterDrop = applyGalaxyDrop(quoteAfterCap, model?.id);
   // THE RULE (IWM × 0.90) lands last — identical call to the server engine.
   const ruleCeiling = model ? iwmRuleCeiling({ modelId: model.id, storage: storage?.id, condition: condition?.id }) : null;
-  const quote = ruleCeiling != null ? Math.min(quoteAfterDrop, ruleCeiling) : quoteAfterDrop;
+  const priceWith = (x: QuoteExtras): number => {
+    const rawQuote = rawQuoteWith(x);
+    // Apply cap silently if base quote exceeds it.
+    const quoteAfterCap = (marginCap != null && rawQuote > marginCap) ? marginCap : rawQuote;
+    // Galaxy S23+ blanket −$75 (Atlas doesn't really buy Galaxy). Applied after
+    // the cap so it lands on the live offer. Monotone floor 2026-07-13: see
+    // applyGalaxyDrop — a better config must never quote below a worse one.
+    const quoteAfterDrop = applyGalaxyDrop(quoteAfterCap, model?.id);
+    return ruleCeiling != null ? Math.min(quoteAfterDrop, ruleCeiling) : quoteAfterDrop;
+  };
+  const noExtras: QuoteExtras = { promoMult: 1, promoFlat: 0, couponMult: 1, accessory: 0 };
+  // The % code only lifts a quote up to a ceiling we already enforce — the
+  // margin cap or the IWM rule (owner 2026-09-16: no paying above the rule).
+  // The additive MacBook/PC formula IS the rule (IWM × 0.90), and a quote no
+  // ceiling bounds (iPads, drones, watches…) has none to stay under, so the
+  // code adds $0 there until the owner approves paying it. /api/lead widens
+  // its ceiling the same way (lib/lead-promos promoRoom).
+  const couponFits = !useAdditive && (marginCap != null || ruleCeiling != null);
+  const liveExtras = { promoMult: promoMultiplier, promoFlat: promoFlatBonus, couponMult: couponFits ? couponMultiplier : 1 };
+  const quote = priceWith({ ...liveExtras, accessory: accessoryBonus });
+  // What each extra REALLY added to `quote`, layered accessories (a fact
+  // about the device) → weekly promo → coupon, so the amounts sum to the
+  // number shown. 0 = valid but the offer was already at our top price. The
+  // lock-in sends a promo/coupon to /api/lead only when it added money, so
+  // the server validates exactly what the price contains (O2/O3, 2026-09-16).
+  const quoteWithAccessory = priceWith({ ...noExtras, accessory: accessoryBonus });
+  const quoteWithPromo = priceWith({ ...liveExtras, couponMult: 1, accessory: accessoryBonus });
+  const promoAdded = promoApplies ? Math.max(0, quoteWithPromo - quoteWithAccessory) : 0;
+  const couponAdded = liveExtras.couponMult > 1 ? Math.max(0, quote - quoteWithPromo) : 0;
+  // What ticking "accessories included" changes on THIS quote — priced with
+  // the live promo + code, so the badge never promises dollars the headline
+  // won't show. Staff get the accessories-first share (accessoryAdded), the
+  // one that sums with the promo/code chips to the shown number.
+  const accessoryWorth = showAccessoryQuestion && accessoryBonusAmount > 0
+    ? Math.max(0, priceWith({ ...liveExtras, accessory: accessoryBonusAmount }) - priceWith({ ...liveExtras, accessory: 0 }))
+    : 0;
+  const accessoryAdded = Math.max(0, quoteWithAccessory - priceWith(noExtras));
   // Minimum offer threshold — below this we lose money on shipping +
   // processing. Show "Manual quote" instead of a dollar amount.
   // User can still add to cart; we review manually before paying out.
@@ -11934,11 +11987,14 @@ export default function Home() {
               </div>
             )}
             <div className="flex items-center justify-center lg:justify-start flex-wrap gap-1 mb-2">
-              {promoApplies && promo && (
-                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>{promo.flatBonus ? `+$${promo.flatBonus} bonus applied` : `+${promo.percent}% promo applied`}</p>
+              {/* Promo / coupon chips name the dollars they REALLY added to
+                  this firm quote (they sit under our cap, so often less than
+                  face value) — never "applied" when the number didn't move. */}
+              {promoApplies && promo && !isManualQuote && !isPendingQuote && (
+                <p className={`text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-bold ${promoAdded > 0 ? "bg-[#00c853]/15 text-[#00c853]" : "bg-white/10 text-[#c8c8c8]"}`}><svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>{promoAdded > 0 ? `+$${promoAdded}${quantity > 1 ? " each" : ""} ${promo.flatBonus ? "bonus" : "promo"} applied` : "This week's bonus is on, but this offer is already at our top price"}</p>
               )}
-              {couponPercent > 0 && (
-                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>{couponLabel} +{couponPercent}%</p>
+              {couponLabel && couponAdded > 0 && !isManualQuote && !isPendingQuote && (
+                <p className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#00c853]/15 text-[#00c853] font-bold"><svg className="w-3.5 h-3.5 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>{couponLabel} +${couponAdded}{quantity > 1 ? " each" : ""}</p>
               )}
               {/* Referral chip — shows when a friend's ?ref= code is
                   active. Same calm pill style as the promo/coupon chips.
@@ -12001,7 +12057,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* Accessory bonus — only when it actually moves price and not manual quote */}
+            {/* Accessory question — records what the seller includes; the
+                bonus badge only shows when it really moves this quote. */}
             {!isManualQuote && !isPendingQuote && showAccessoryQuestion && accessoryBonusAmount > 0 && (
               <div className="max-w-md mx-auto mb-4">
                 <button
@@ -12013,8 +12070,13 @@ export default function Home() {
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-white">All original accessories included</p>
                     <p className="text-[11px] text-[#e6e6e6]">{deviceType === "macbook" ? "Original brick, USB-C cable, box" : `Charger, cable, original box${condition?.id === "sealed" ? ", manuals" : ""}`}</p>
+                    {accessoryWorth === 0 && (
+                      <p className="text-[10px] text-[#9a9a9a] mt-0.5">This offer is already at our top price, so it doesn&apos;t change the number.</p>
+                    )}
                   </div>
-                  <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+${accessoryBonusAmount}</span>
+                  {accessoryWorth > 0 && (
+                    <span className="text-[#00c853] font-bold text-sm whitespace-nowrap">+${accessoryWorth}</span>
+                  )}
                 </button>
               </div>
             )}
@@ -12101,19 +12163,22 @@ export default function Home() {
               );
             })()}
 
-            {/* Coupon code — promo (%) coupons apply to a single-device
-                checkout only (the server validates the code + raises the cap on
-                that path). Once the cart has items the order is multi-device,
-                where the promo can't be honored safely, so hide the input. (bug fix)
-                Also hidden on manual/pending (parts, below-min, custom, recycle)
-                quotes — there's no firm payout for a +% coupon to apply to, so a
-                code box there is meaningless and misleading. */}
-            {cartItems.length === 0 && !isManualQuote && !isPendingQuote && (
+            {/* Coupon code — the % code rides with THIS device into the cart
+                (CartItem.promoCode) and /api/lead validates it per line, on
+                single- and multi-device orders alike. Hidden on add-to-order
+                (the append route can't validate it) and on manual/pending
+                (parts, below-min, custom, recycle) quotes — there's no firm
+                payout for a +% coupon to apply to there. */}
+            {!isAddToOrder && !isManualQuote && !isPendingQuote && (
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 text-left">
               <p className="text-xs font-semibold text-[#e6e6e6] uppercase tracking-wider mb-2">Have a coupon code?</p>
               {couponLabel ? (
                 <div className="flex items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 text-[#00c853] text-xs font-bold"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>{couponLabel} · +{couponPercent}% applied</span>
+                  {couponAdded > 0 ? (
+                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 text-[#00c853] text-xs font-bold"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>{couponLabel} · +${couponAdded}{quantity > 1 ? " each" : ""} applied</span>
+                  ) : (
+                    <span className="text-xs text-[#c8c8c8] leading-snug">{couponLabel} is valid, but this offer is already at our top price.</span>
+                  )}
                   <button onClick={() => { setCouponPercent(0); setCouponLabel(""); setCouponCode(""); }} className="text-[#e6e6e6] hover:text-white text-xs underline cursor-pointer">Remove</button>
                 </div>
               ) : (
@@ -12175,14 +12240,15 @@ export default function Home() {
                       // checkout don't lie about value. The backend lead
                       // body still includes condition + specs so staff
                       // can quote it manually post-arrival.
-                      // Strip the quote-step PROMO multiplier (couponMultiplier)
-                      // from the cart-stored price: the multi-device submit path
-                      // doesn't send promoCode, so a promo-inflated cart price
-                      // would trip the server's tamper clamp (lost discount +
-                      // false fraud flag). Promo only applies to the single-
-                      // device checkout, where the live quote + promoCode are
-                      // server-validated. couponMultiplier is always ≥ 1. (bug fix)
-                      price: isManualQuote ? 0 : Math.round(quote / couponMultiplier),
+                      // Exactly the price on screen, coupon and promo included —
+                      // dividing the coupon back out underpaid capped quotes it
+                      // never raised. The code / promo ride along only when
+                      // they added money, and /api/lead validates them per line.
+                      price: isManualQuote ? 0 : quote,
+                      promoCode: !isManualQuote && couponAdded > 0 ? couponLabel : undefined,
+                      promoCodePercent: !isManualQuote && couponAdded > 0 ? couponPercent : undefined,
+                      promoCodeAdded: !isManualQuote && couponAdded > 0 ? couponAdded : undefined,
+                      weeklyPromo: !isManualQuote && promoAdded > 0 ? true : undefined,
                       quantity: 1,
                       image: model.image,
                       carrier: carrier?.label,
@@ -12207,6 +12273,7 @@ export default function Home() {
                       // the toggle was actually on screen for this quote.
                       carrierLock: carrierLock?.label,
                       accessoriesIncluded: (!isManualQuote && !isPendingQuote && showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined,
+                      accessoryBonus: (!isManualQuote && !isPendingQuote && showAccessoryQuestion && accessoryBonusAmount > 0 && accessoriesIncluded) ? accessoryAdded : undefined,
                       // Snapshot the handoff method as the user chose it for
                       // THIS item. Falls back to "local" if they somehow
                       // reached add-to-cart without picking — but the funnel
@@ -13033,6 +13100,34 @@ export default function Home() {
                 ? (payoutHandle.trim() ? `${payout.label}: ${payoutHandle.trim()}` : payout.label)
                 : undefined;
               try {
+                // A carted % code can end (or drop) before checkout — the
+                // cart lives 7 days. /api/lead would then clamp that line
+                // and flag it as tampering, so take the code's dollars back
+                // out here, show the new cart, and let the customer submit
+                // again. Can't reach the file → submit as-is (the server
+                // still validates).
+                if (cartItems.some((it) => it.promoCode)) {
+                  const codes = await fetch("/coupons.json", { cache: "no-store" })
+                    .then((r) => (r.ok ? r.json() : null)).catch(() => null) as Record<string, { percent?: unknown; active?: unknown } | undefined> | null;
+                  if (codes) {
+                    const ended: string[] = [];
+                    const repriced = cartItems.map((it) => {
+                      if (!it.promoCode) return it;
+                      const row = Object.prototype.hasOwnProperty.call(codes, it.promoCode) ? codes[it.promoCode] : undefined;
+                      const pct = Number(row?.percent);
+                      if (row?.active === true && Number.isFinite(pct) && pct >= (it.promoCodePercent ?? 0) && pct > 0) return it;
+                      const price = Math.max(0, it.price - (it.promoCodeAdded ?? 0));
+                      ended.push(`${it.model}: $${(price * it.quantity).toLocaleString()} (was $${(it.price * it.quantity).toLocaleString()})`);
+                      return { ...it, price, promoCode: undefined, promoCodePercent: undefined, promoCodeAdded: undefined };
+                    });
+                    if (ended.length) {
+                      setCartItems(repriced);
+                      throw Object.assign(new Error("Promo ended"), {
+                        userMessage: `A coupon in your cart has ended or changed, so we updated your offer — ${ended.join("; ")}. Please review your cart and submit again.`,
+                      });
+                    }
+                  }
+                }
                 // Book the chosen local slot before creating the lead.
                 // If the slot was taken between page-load and submit
                 // (someone else picked it), bookSlot returns ok:false
@@ -13186,6 +13281,11 @@ export default function Home() {
                       imeiWarnings: singleItem ? liveImeiWarnings : it.imeiWarnings,
                       carrierLock: it.carrierLock,
                       accessoriesIncluded: it.accessoriesIncluded,
+                      accessoryBonus: it.accessoryBonus,
+                      // The % code / weekly promo inside THIS line's quote —
+                      // /api/lead validates them and widens this line's cap.
+                      promoCode: it.promoCode,
+                      weeklyPromo: it.weeklyPromo,
                       // Per-item handoff so the backend can split mixed
                       // carts into ship vs local fulfillment groups.
                       handoff: it.handoff ?? "local",
@@ -13215,6 +13315,9 @@ export default function Home() {
                       carrier: singleItem ? cartItems[0].carrier : carrier?.label,
                       carrierLock: singleItem ? cartItems[0].carrierLock : undefined,
                       accessoriesIncluded: singleItem ? cartItems[0].accessoriesIncluded : undefined,
+                      accessoryBonus: singleItem ? cartItems[0].accessoryBonus : undefined,
+                      promoCode: singleItem ? cartItems[0].promoCode : undefined,
+                      weeklyPromo: singleItem ? cartItems[0].weeklyPromo : undefined,
                       // Multi-item cart: the shared contact-step IMEI goes on
                       // the order (single-item carts carry it on devices[0]).
                       imei: singleItem ? undefined : liveImei,
@@ -13244,7 +13347,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponLabel || undefined, referralCode: referralCode || undefined, attestation: complianceAttested }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, accessoryBonus: (showAccessoryQuestion && accessoryBonusAmount > 0 && accessoriesIncluded) ? accessoryAdded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponAdded > 0 ? couponLabel : undefined, weeklyPromo: promoAdded > 0 ? true : undefined, referralCode: referralCode || undefined, attestation: complianceAttested }),
                   });
                   if (!res.ok) throw await leadFailure(res);
                   const d = await res.json().catch(() => ({}));
@@ -13347,8 +13450,8 @@ export default function Home() {
                     ? "mixed"
                     : cartNeedsShip ? "ship" : "local";
                   const confirmBody = submitViaCart
-                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local" })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined }
-                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined };
+                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local", promoCode: it.promoCode, weeklyPromo: it.weeklyPromo })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined }
+                    : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, promoCode: couponAdded > 0 ? couponLabel : undefined, weeklyPromo: promoAdded > 0 ? true : undefined, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined };
                   fetch("/api/confirm", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

@@ -118,6 +118,16 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // downgrades on cap-bound models whose raw cell exceeds the ceiling.
   const leadCarrier = field(leadMsg.body, "Carrier");
   const capOverrides = await readPriceOverrides();
+  // The page re-sends EVERY line on an edit. A priced line the customer
+  // didn't touch (same model / storage / condition / qty, quote not raised,
+  // not already under review) keeps the number on the order — /api/lead or
+  // an earlier edit clamped it, allowing a % code / weekly promo this route
+  // can't re-check; re-capping it cut an untouched coupon line and flagged
+  // the order "customer marked a device broken". Each order line vouches
+  // for one submitted line at most.
+  const current = resolveCurrentDevices(leadMsg.body, messages, leadId);
+  const unmatched = [...current];
+  const sameText = (a: string | undefined, b: string | undefined) => (a ?? "") === (b ?? "");
   for (const d of devices) {
     if (d.needsReview || d.quote <= 0) continue;
     const cap = await authoritativeLineCap(
@@ -130,6 +140,9 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
       d.needsReview = true;
       continue;
     }
+    const k = unmatched.findIndex((c) => !c.needsReview && c.model === d.model && sameText(c.storage, d.storage)
+      && sameText(c.condition, d.condition) && c.quantity === d.quantity && c.quote > 0 && d.quote <= c.quote);
+    if (k >= 0) { unmatched.splice(k, 1); continue; }
     const lineAllowed = cap * d.quantity;
     if (d.quote > lineAllowed + SERVER_QUOTE_TOLERANCE) {
       console.warn(`[offer-items] Line over ceiling: ${d.model.slice(0, 60)} submitted=$${d.quote} lineCap=$${lineAllowed} — clamped.`);
@@ -155,7 +168,6 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // multi-device leads whose only price is in the per-device lines. Take
   // the max across resolved current devices + the body footer/Quote so we
   // never under-estimate the ceiling and falsely reject a lowering edit.
-  const current = resolveCurrentDevices(leadMsg.body, messages, leadId);
   // The body's Quote / Total-payout figures INCLUDE the coupon/referral
   // bonus, but the [ITEM-UPDATE] marker stores the device SUBTOTAL and the
   // offer GET re-adds the bonus on top — so a ceiling that includes the
