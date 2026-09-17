@@ -45,11 +45,12 @@ function toDevice(row: DeviceRow): Device {
 // brand-direct trade-in program. If a slug isn't in the map (or the OEM
 // JSON doesn't list the model id), the per-slug page WILL NOT make any
 // "we pay more than {OEM}" claim — keeps the marketing honest when the
-// OEM either doesn't accept the device or pays more than us.
+// OEM either doesn't accept the device or pays more than us. The "won't
+// take it" claim needs the id in the JSON's notAccepted list.
 export const OEM_SLUG_TO_MODEL: Record<string, { oem: "apple" | "samsung" | "google"; modelId: string }> = {
   // iPhones — Apple Trade-In
-  // Apple's trade-in JSON has no ip18* values yet, so getOemComparison()
-  // returns "wont-trade" and the page makes no claim — honest by design.
+  // Apple's estimator doesn't list ip18* / ipduo / ip17e (checked
+  // 2026-09-16), so they sit in the JSON's notAccepted -> "wont-trade".
   "iphone-18-pro-max": { oem: "apple", modelId: "ip18pm" },
   "iphone-duo": { oem: "apple", modelId: "ipduo" },
   "galaxy-z-fold-8-ultra": { oem: "samsung", modelId: "gzfold8u" },
@@ -203,21 +204,32 @@ export type OemComparison =
   | { kind: "wont-trade"; oem: "Apple" | "Samsung" | "Google" }
   | { kind: "none" };
 
-export function getOemComparison(slug: string, devicePrice: number): OemComparison {
+// ourFloor = the LEAST we pay for a good-condition unit of this model (every
+// storage and carrier, real quote engine — goodConditionFloor() in
+// app/sell/[slug]/page.tsx), or null when we can't auto-quote all of them.
+// NOT the headline: that is the engine's best config (top storage, sealed,
+// unlocked), and the OEM pays its number for any good unit, so "$540+ more than Apple" on the 17 Pro Max page
+// was really $138 LESS for a used 256 GB one.
+export function getOemComparison(slug: string, ourFloor: number | null): OemComparison {
   const entry = OEM_SLUG_TO_MODEL[slug];
   if (!entry) return { kind: "none" };
   const oemPretty = (entry.oem.charAt(0).toUpperCase() + entry.oem.slice(1)) as "Apple" | "Samsung" | "Google";
-  const values =
-    entry.oem === "apple" ? (appleTradeIn as { values: Record<string, number> }).values :
-    entry.oem === "samsung" ? (samsungTradeIn as { values: Record<string, number> }).values :
-    (googleTradeIn as { values: Record<string, number> }).values;
-  const oemValue = values[entry.modelId];
-  // OEM doesn't list the model -> they don't accept it on trade-in.
-  // Strong marketing angle: "they won't take it, we will".
-  if (typeof oemValue !== "number") return { kind: "wont-trade", oem: oemPretty };
-  // OEM lists it AND we beat them at our headline price -> "we pay more".
-  if (devicePrice > oemValue) return { kind: "we-beat", oem: oemPretty, diff: devicePrice - oemValue };
-  // OEM pays as much or more than our headline. Don't claim anything.
+  type OemComps = { values: Record<string, number>; notAccepted?: string[] };
+  const comps =
+    entry.oem === "apple" ? (appleTradeIn as OemComps) :
+    entry.oem === "samsung" ? (samsungTradeIn as OemComps) :
+    (googleTradeIn as OemComps);
+  const oemValue = comps.values[entry.modelId];
+  // No value -> claim "they won't take it, we will" ONLY for a model a manual
+  // check put in notAccepted. A value we merely lack is not proof: "missing =
+  // won't trade" kept that claim on the iPhone 17 / S26 / Pixel 10 pages
+  // months after the OEMs started taking them (verified 2026-09-16).
+  if (typeof oemValue !== "number") {
+    return comps.notAccepted?.includes(entry.modelId) ? { kind: "wont-trade", oem: oemPretty } : { kind: "none" };
+  }
+  // OEM lists it AND even our lowest good-condition offer beats it -> "we pay more".
+  if (ourFloor != null && ourFloor > oemValue) return { kind: "we-beat", oem: oemPretty, diff: ourFloor - oemValue };
+  // OEM pays as much or more for some good unit (or we can't tell). No claim.
   return { kind: "none" };
 }
 

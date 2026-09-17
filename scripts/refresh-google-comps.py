@@ -34,29 +34,32 @@ UA = (
 #
 # CONVENTION (added 2026-05-24): only list a model when Google actually
 # accepts it. When Google doesn't accept a current-gen model yet, leave
-# it out — frontend renders a "Google won't trade this — we will" badge
-# instead of fabricating a fallback number.
+# it out instead of fabricating a fallback number. The /sell "Google won't
+# take this" claim only shows for ids in the JSON's notAccepted (2026-09-16).
 GOOGLE_MODEL_LABELS: Dict[str, str] = {
-    # Pixel 10 family intentionally omitted: Google doesn't trade-in
-    # their current-gen Pixel on the Google Store yet (verified
-    # 2026-05-24). Re-add as Google starts accepting them.
+    # Pixel 10 family accepted (Pixel 11 trade-in lists, 2026-08-12 / 08-28).
+    # Pixel 9a / 7a / 5a left out: Google's published lists skip them, and the
+    # old 2026-05-24 values (7a $10, 5a $30, 9a $135) sat under what Google
+    # pays for an older 4a/6a ($100) or 8a ($180). Re-add once a Google value
+    # is confirmed (2026-09-16).
+    "px10pfold": "Pixel 10 Pro Fold",
+    "px10pxl":   "Pixel 10 Pro XL",
+    "px10p":     "Pixel 10 Pro",
+    "px10":      "Pixel 10",
     "px9pxl":    "Pixel 9 Pro XL",
     "px9p":      "Pixel 9 Pro",
     "px9pfold":  "Pixel 9 Pro Fold",
     "px9":       "Pixel 9",
-    "px9a":      "Pixel 9a",
     "px8p":      "Pixel 8 Pro",
     "px8":       "Pixel 8",
     "px8a":      "Pixel 8a",
     "pxfold":    "Pixel Fold",
     "px7p":      "Pixel 7 Pro",
     "px7":       "Pixel 7",
-    "px7a":      "Pixel 7a",
     "px6p":      "Pixel 6 Pro",
     "px6":       "Pixel 6",
     "px6a":      "Pixel 6a",
     "px5":       "Pixel 5",
-    "px5a":      "Pixel 5a",
     "pw3":       "Pixel Watch 3",
     "pw2":       "Pixel Watch 2",
     "pw1":       "Pixel Watch",

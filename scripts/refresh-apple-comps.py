@@ -50,16 +50,22 @@ UA = (
 #   apple.com/shop/trade-in surfaces it. Current-generation flagships
 #   (within ~6 months of launch) are usually NOT accepted by Apple at
 #   release. Leave them OUT of this map — the snapshot JSON will then
-#   omit them and the frontend renders an "Apple won't trade this — we
-#   will" badge instead of fabricating a number.
+#   omit them instead of fabricating a number. The /sell "Apple won't take
+#   this" claim only shows for ids listed in the JSON's notAccepted
+#   (2026-09-16); a missing value alone makes no claim.
 #
 #   To re-add a model after Apple starts accepting it: confirm by hand
 #   on apple.com/shop/trade-in, then add the (id, label) pair here. The
 #   next CI run will scrape and populate the value.
 APPLE_MODEL_LABELS: Dict[str, str] = {
     # iPhones — the labels are what appears in Apple's calculator dropdown.
-    # iPhone 17 family intentionally omitted: Apple doesn't accept these
-    # on trade-in yet (verified 2026-05-24). Re-add when they do.
+    # iPhone 17 / 17 Pro / 17 Pro Max / Air accepted (verified 2026-09-16).
+    # iPhone 17e, 18 Pro, 18 Pro Max and Duo are NOT in Apple's list — they
+    # live in the JSON's notAccepted instead. Re-add when Apple lists them.
+    "ip17pm":   "iPhone 17 Pro Max",
+    "ip17p":    "iPhone 17 Pro",
+    "ip17air":  "iPhone Air",
+    "ip17":     "iPhone 17",
     "ip16pm":   "iPhone 16 Pro Max",
     "ip16p":    "iPhone 16 Pro",
     "ip16plus": "iPhone 16 Plus",
@@ -87,8 +93,8 @@ APPLE_MODEL_LABELS: Dict[str, str] = {
     "ip11p":    "iPhone 11 Pro",
     "ip11":     "iPhone 11",
     # MacBooks
-    # 2026 M5 Pro/Max + M5 Air intentionally omitted: Apple doesn't
-    # trade-in their current-gen Macs (verified 2026-05-24).
+    # 2026 M5 Pro/Max + M5 Air omitted: not verified per model (Apple's
+    # estimator wants a serial number for Macs; 2026-09-16).
     "mbp14_m5_2025":     "MacBook Pro 14-inch (2025)",
     "mbp16m4":           "MacBook Pro 16-inch (2024)",
     "mbp14m4":           "MacBook Pro 14-inch (2024)",
@@ -103,8 +109,8 @@ APPLE_MODEL_LABELS: Dict[str, str] = {
     "mba13m2":           "MacBook Air 13-inch (2022)",
     "mba13m1":           "MacBook Air 13-inch (2020)",
     # iPads
-    # M5 iPad Pros intentionally omitted: current-gen, Apple doesn't
-    # accept on trade-in yet (verified 2026-05-24).
+    # M5 iPad Pros + M4 iPad Airs omitted: not verified per model (Apple's
+    # estimator wants a serial number for iPads; 2026-09-16).
     "ipadair13m3":  "iPad Air 13-inch (M3)",
     "ipadair11m3":  "iPad Air 11-inch (M3)",
     "ipadmini7":    "iPad mini (7th gen)",
@@ -113,8 +119,8 @@ APPLE_MODEL_LABELS: Dict[str, str] = {
     "ipadair13m2":  "iPad Air 13-inch (M2)",
     "ipadair11m2":  "iPad Air 11-inch (M2)",
     # Apple Watches
-    # Ultra 3 + Series 11 intentionally omitted: current-gen, Apple
-    # doesn't accept on trade-in yet (verified 2026-05-24).
+    # Ultra 3 accepted (Apple's trade-in page lists it, 2026-09-16).
+    "aw_ultra3": "Apple Watch Ultra 3",
     "aw_ultra2": "Apple Watch Ultra 2",
     "aw_ultra":  "Apple Watch Ultra",
     "aw_s10":    "Apple Watch Series 10",

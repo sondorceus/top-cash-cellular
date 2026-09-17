@@ -32,14 +32,15 @@ UA = (
 #
 # CONVENTION (added 2026-05-24 after iPhone 17 Pro Max bug):
 #   Only list a model when Samsung's actual trade-in calculator at
-#   samsung.com/us/shop/mobile/trade-in surfaces it. Current-generation
-#   flagships (S26 family, Z Fold 7, Z Flip 7, Z TriFold at time of
-#   writing) are NOT accepted by Samsung — leave them OUT of this map.
-#   The frontend renders a "Samsung won't trade this — we will" badge
-#   in their place. Re-add a model after confirming Samsung accepts it.
+#   samsung.com/us/shop/mobile/trade-in surfaces it. Models Samsung doesn't
+#   take stay OUT of this map; the /sell "Samsung won't take this" claim
+#   only shows for ids in the JSON's notAccepted (2026-09-16). Re-add a
+#   model after confirming Samsung accepts it.
 SAMSUNG_MODEL_LABELS: Dict[str, str] = {
-    # S26 family intentionally omitted: Samsung doesn't trade-in their
-    # newest flagships (verified 2026-05-24). Re-add when they do.
+    # S26 family accepted (Fold 8 trade-in lists, 2026-07-22 / 09-04).
+    "gs26u": "Galaxy S26 Ultra",
+    "gs26p": "Galaxy S26+",
+    "gs26":  "Galaxy S26",
     "gs25u": "Galaxy S25 Ultra",
     "gs24u": "Galaxy S24 Ultra",
     "gs23u": "Galaxy S23 Ultra",
@@ -64,12 +65,16 @@ SAMSUNG_MODEL_LABELS: Dict[str, str] = {
     "gs23fe": "Galaxy S23 FE",
     "gs21fe": "Galaxy S21 FE",
     "gs20fe": "Galaxy S20 FE",
-    # Z TriFold + Z Fold 7 + Z Flip 7 intentionally omitted — Samsung
-    # doesn't trade these in yet (verified 2026-05-24).
+    # Z Fold 7 + Z Flip 7 accepted (2026-09-04). Z TriFold, Z Fold 8 /
+    # 8 Ultra, Z Flip 8: not verified either way (2026-09-16). Z Flip 7 FE
+    # is taken ($280 toward a Flip 8, SamMobile 2026-08-19) but has no
+    # verified max yet.
+    "gzfold7":   "Galaxy Z Fold 7",
     "gzfold6":   "Galaxy Z Fold 6",
     "gzfold5":   "Galaxy Z Fold 5",
     "gzfold4":   "Galaxy Z Fold 4",
     "gzfold3":   "Galaxy Z Fold 3",
+    "gzflip7":   "Galaxy Z Flip 7",
     "gzflip6":   "Galaxy Z Flip 6",
     "gzflip5":   "Galaxy Z Flip 5",
     "gzflip4":   "Galaxy Z Flip 4",

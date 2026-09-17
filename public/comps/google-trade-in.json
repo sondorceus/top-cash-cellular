@@ -1,29 +1,37 @@
 {
-  "_doc": "Google Store Trade-In max published values per model id. Refreshed weekly by scripts/refresh-google-comps.py via .github/workflows/refresh-comps.yml. Frontend reads this at runtime when device is in the Google family (pixel / pixelwatch / google_tab). CONVENTION: only include a model when Google's actual trade-in calculator lists it. Current-generation flagships (within ~6 months of launch) are usually NOT accepted yet — leave them out and the frontend renders a 'Google won't trade this — we will' badge instead. Adding an entry implies the value was actually scraped from store.google.com/us/buy/trade-in.",
-  "source": "https://store.google.com/us/buy/trade-in",
-  "updatedAt": "2026-05-24T00:00:00Z",
+  "_doc": "Google Store Trade-In max published values per model id (Google's values are promotional credits toward a new Pixel). Refreshed weekly by scripts/refresh-google-comps.py via .github/workflows/refresh-comps.yml (its old URL now 404s, see _verification). Frontend reads this at runtime when device is in the Google family (pixel / pixelwatch / google_tab). CONVENTION: only include a value Google actually lists. notAccepted = model ids a manual check confirmed Google does NOT take; only those get the 'Google won't take this on trade-in' claim. A model with no value and not in notAccepted makes no claim either way.",
+  "source": "https://store.google.com/us/magazine/trade_in?hl=en-US",
+  "updatedAt": "2026-09-17T02:04:12Z",
+  "_verification": {
+    "2026-09-16": "Manual check (Powerhouse). The Google Store publishes no value table (the estimate lives inside checkout), so values come from the post-launch Pixel 11 Pro (256 GB) trade-in list reported by 9to5google on 2026-08-28: Pixel 10 Pro Fold $850, 10 Pro XL $650, 10 Pro $550, 10 $460, 9 Pro Fold $630, 9 Pro XL $500, 9 Pro $480, 9 $350, 8 Pro $420, 8 $350, 8a $180, Fold $450, 7 Pro $340, 7 $280, 6 Pro $300, 6 $230, 6a $100, 5 $150. Google accepts the Pixel 10 family (9to5google 2026-08-12 and 2026-08-28).",
+    "removed": "px9a (was 135), px7a (was 10) and px5a (was 30) are in neither Google list (9to5google 2026-08-12 and 2026-08-28), and Google pays $100 for the older 4a and 6a and $180 for the 8a, so those snapshot values look wrong, not just stale. Removed from values and from GOOGLE_MODEL_LABELS; with no value the /sell pages make no claim. For scale, Samsung's own table (tradeInJson, 2026-09-16) credits $150 / $103 / $45 for them.",
+    "unverified": "pw3, pw2, pw1 and gpixeltab are not in Google's list either; their values are still the 2026-05-24 snapshot (no /sell page uses them; the homepage comparison panel does)."
+  },
+  "notAccepted": [],
   "values": {
-    "px9pxl": 375,
-    "px9p": 305,
-    "px9pfold": 575,
-    "px9": 185,
-    "px9a": 135,
+    "px10pfold": 850,
+    "px10pxl": 650,
+    "px10p": 550,
+    "px10": 460,
 
-    "px8p": 240,
-    "px8": 120,
-    "px8a": 90,
-    "pxfold": 280,
+    "px9pxl": 500,
+    "px9p": 480,
+    "px9pfold": 630,
+    "px9": 350,
 
-    "px7p": 85,
-    "px7": 45,
-    "px7a": 10,
+    "px8p": 420,
+    "px8": 350,
+    "px8a": 180,
+    "pxfold": 450,
 
-    "px6p": 50,
-    "px6": 40,
-    "px6a": 30,
+    "px7p": 340,
+    "px7": 280,
 
-    "px5": 50,
-    "px5a": 30,
+    "px6p": 300,
+    "px6": 230,
+    "px6a": 100,
+
+    "px5": 150,
 
     "pw3": 130,
     "pw2": 80,

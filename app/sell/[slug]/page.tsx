@@ -3,7 +3,38 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SlideOnScrollNav } from "../../components/SlideOnScrollNav";
 import { HeaderSearch } from "../../components/HeaderSearch";
-import { DEVICES, getOemComparison, getDevice } from "../../data/sell-catalog";
+import { DEVICES, OEM_SLUG_TO_MODEL, getOemComparison, getDevice, type Device } from "../../data/sell-catalog";
+import { PRICE_TABLE } from "../../data/prices";
+import { quoteDeviceSync, EMPTY_OVERRIDES } from "../../lib/quote-engine";
+
+// The least the quote engine pays for a GOOD-condition unit of this phone:
+// every storage row and carrier (locked Verizon included). Apple/Samsung/
+// Google pay their one number for any good unit of any storage, so a
+// "$X+ more" claim is only true at our lowest cell. null = no claim.
+// Phones only: MacBook rows are partial (256/512 GB price via the additive
+// path), watches have no rows, and Apple's per-model iPad/Mac values are
+// 2026-06-22 snapshots (its estimator wants a serial) that Apple has raised
+// twice since (MacRumors 2026-08-06, 2026-09-15).
+const FLOOR_CARRIERS: [string, boolean][] = [["unlocked", false], ["att", false], ["tmobile", false], ["verizon", true], ["other", false]];
+function goodConditionFloor(device: Device): number | null {
+  if (device.category !== "iPhone" && device.category !== "Samsung" && device.category !== "Pixel") return null;
+  const modelId = OEM_SLUG_TO_MODEL[device.slug]?.modelId;
+  const row = modelId ? PRICE_TABLE[modelId] : undefined;
+  if (!modelId || !row) return null;
+  let floor: number | null = null;
+  for (const storage of Object.keys(row)) {
+    for (const [carrier, carrierLocked] of FLOOR_CARRIERS) {
+      const { offer } = quoteDeviceSync(
+        { modelId, modelLabel: device.name, storage, condition: "good", carrier, carrierLocked, isPhone: true },
+        EMPTY_OVERRIDES,
+      );
+      // A cell we can't auto-quote is a cell we can't promise anything for.
+      if (offer == null) return null;
+      floor = floor == null ? offer : Math.min(floor, offer);
+    }
+  }
+  return floor;
+}
 
 export function generateStaticParams() {
   return DEVICES.map((d) => ({ slug: d.slug }));
@@ -29,15 +60,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
   // Only make the comparison claim in the meta description when it's
-  // actually true at this device's headline price. iPhone 17 Pro Max
+  // actually true. iPhone 17 Pro Max
   // sat at ~$767 with Apple Trade-In showing $700 in the JSON — but
   // when Apple removed it from their site, our old static text still
-  // promised "more than Apple". Now it's checked per-slug.
-  const cmp = getOemComparison(slug, device.price);
-  // Both numbers are best-config ceilings, so the gap is an "up to" too —
-  // "$3,020+" would promise it to every seller of a top-spec headline model.
+  // promised "more than Apple". Now it's checked per-slug, against our
+  // lowest good-condition offer (not the best-config headline) — a floor,
+  // so "$X+" holds for every good unit.
+  const cmp = getOemComparison(slug, goodConditionFloor(device));
   const tail =
-    cmp.kind === "we-beat" ? ` Beat ${cmp.oem} Trade-In by up to $${cmp.diff}.` :
+    cmp.kind === "we-beat" ? ` Beat ${cmp.oem} Trade-In by $${cmp.diff}+ in good condition.` :
     cmp.kind === "wont-trade" ? ` ${cmp.oem} won't take this on trade-in — we will.` :
     "";
   return {
@@ -66,9 +97,9 @@ export default async function SellDevicePage({ params }: { params: Promise<{ slu
   const related = DEVICES.filter((d) => d.category === device.category && d.slug !== device.slug).slice(0, 4);
   // Inquiry-only model: every price slot below says "custom quote" instead.
   const custom = !!device.customQuote;
-  const cmp = getOemComparison(slug, device.price);
+  const cmp = getOemComparison(slug, goodConditionFloor(device));
   const oemBullet =
-    cmp.kind === "we-beat" ? `We pay up to $${cmp.diff} more than ${cmp.oem} Trade-In` :
+    cmp.kind === "we-beat" ? `We pay $${cmp.diff}+ more than ${cmp.oem} Trade-In (good condition)` :
     cmp.kind === "wont-trade" ? `${cmp.oem} won't take this on trade-in — we will` :
     "Same-day cash for any condition";
 
