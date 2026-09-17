@@ -85,6 +85,7 @@ APPLE_MODEL_LABELS: Dict[str, str] = {
     "ip13pm":   "iPhone 13 Pro Max",
     "ip13p":    "iPhone 13 Pro",
     "ip13":     "iPhone 13",
+    "ip13mini": "iPhone 13 mini",  # Apple lists it ($145, MacRumors 2026-09-15)
     "ip12pm":   "iPhone 12 Pro Max",
     "ip12p":    "iPhone 12 Pro",
     "ip12":     "iPhone 12",
@@ -123,10 +124,12 @@ APPLE_MODEL_LABELS: Dict[str, str] = {
     "aw_ultra3": "Apple Watch Ultra 3",
     "aw_ultra2": "Apple Watch Ultra 2",
     "aw_ultra":  "Apple Watch Ultra",
+    "aw_s11":    "Apple Watch Series 11",  # $200, MacRumors 2026-09-15
     "aw_s10":    "Apple Watch Series 10",
     "aw_s9":     "Apple Watch Series 9",
     "aw_s8":     "Apple Watch Series 8",
     "aw_s7":     "Apple Watch Series 7",
+    "aw_se3":    "Apple Watch SE (3rd generation)",  # $115, MacRumors 2026-09-15
     "aw_se2024": "Apple Watch SE (2nd generation, 2024)",
     "aw_se2022": "Apple Watch SE (2nd generation, 2022)",
 }

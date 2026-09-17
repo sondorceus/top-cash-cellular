@@ -73,23 +73,6 @@ const LINK_EXPIRED = "That sign-in link expired or isn't valid — enter your em
 const LINK_RETRY = "We couldn't finish signing you in just now — tap the link in your email again in a minute (it works for 30 minutes).";
 const LINK_NOTRADE = "We don't see a past trade for that email — try Guest Checkout instead.";
 
-// The email a sign-in link is for, read from the token itself (base64url
-// JSON {c, e} before the ".", see app/lib/track-token.ts) — never from a
-// separate URL param, which a forged link could set to anything. A
-// tampered payload fails the server's signature check on Continue, so the
-// prompt always names the account Continue would sign into. Expiry is left
-// to the server (a skewed phone clock shouldn't reject a good link).
-function linkEmail(token: string): string | null {
-  try {
-    const p = token.split(".")[0].replace(/-/g, "+").replace(/_/g, "/");
-    const bin = atob(p + "=".repeat((4 - (p.length % 4)) % 4));
-    const { c } = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (ch) => ch.charCodeAt(0))));
-    return typeof c === "string" && c.includes("@") ? c : null;
-  } catch {
-    return null;
-  }
-}
-
 // `emoji` holds an SVG path `d` string (Heroicons-style outline),
 // wrapped in <svg> at the render site. Renamed from literal emoji
 // glyphs as part of the emoji-free pass.
@@ -124,8 +107,11 @@ export default function AccountPage() {
   const [loginError, setLoginError] = useState("");
   // Non-error notice under the sign-in form ("check your email …").
   const [loginNotice, setLoginNotice] = useState("");
-  // Pending "Sign in as …?" prompt from an emailed link (?confirm=TOKEN).
-  const [linkPrompt, setLinkPrompt] = useState<{ token: string; email: string } | null>(null);
+  // Pending "Sign in as …?" prompt from an emailed link (?confirm=1). The
+  // token itself stays in an httpOnly cookie; `email` is the address the
+  // server verified for it. `linkChecking` = asking the server which one.
+  const [linkPrompt, setLinkPrompt] = useState<{ email: string } | null>(null);
+  const [linkChecking, setLinkChecking] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmError, setConfirmError] = useState("");
   // Continue only counts a deliberate press (DoubleClickjacking, see
@@ -201,9 +187,11 @@ export default function AccountPage() {
   useEffect(() => { refresh(); }, []);
 
   // The emailed sign-in link lands on /api/account/login, which bounces a
-  // link it couldn't use back here with ?link=<why>, and a valid one with
-  // ?confirm=<token>. The link never signs in by itself (login CSRF, R9):
-  // the customer sees which account and presses Continue.
+  // link it couldn't use back here with ?link=<why>, and parks a valid one
+  // in an httpOnly cookie and sends ?confirm=1. The link never signs in by
+  // itself (login CSRF, R9): the customer sees which account — as the
+  // server read it from the parked token, never text from the URL — and
+  // presses Continue.
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -215,16 +203,20 @@ export default function AccountPage() {
       } else if (why === "notrade") {
         setLoginError(LINK_NOTRADE);
       }
-      const token = params.get("confirm");
-      if (token) {
-        const email = linkEmail(token);
-        if (email) setLinkPrompt({ token, email });
-        else setLoginError(LINK_EXPIRED);
-        // Keep the token in state only — out of the address bar, history
-        // and anything copied from it.
+      if (params.has("confirm")) {
+        // A reload shouldn't re-ask; the parked link waits in its cookie.
         params.delete("confirm");
         const qs = params.toString();
         window.history.replaceState(null, "", `${window.location.pathname}${qs ? `?${qs}` : ""}${window.location.hash}`);
+        setLinkChecking(true);
+        fetch("/api/account/login?peek=1", { cache: "no-store" })
+          .then(async (r) => {
+            const d = await r.json().catch(() => ({}));
+            if (r.ok && typeof d.email === "string" && d.email) setLinkPrompt({ email: d.email });
+            else setLoginError(r.status === 401 ? LINK_EXPIRED : LINK_RETRY);
+          })
+          .catch(() => setLoginError(LINK_RETRY))
+          .finally(() => setLinkChecking(false));
       }
     } catch { /* no URL access — nothing to show */ }
   }, []);
@@ -241,7 +233,7 @@ export default function AccountPage() {
       const r = await fetch("/api/account/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: linkPrompt.token }),
+        body: JSON.stringify({ confirm: true, email: linkPrompt.email }),
       });
       const d = await r.json().catch(() => ({}));
       if (r.ok && d.ok) {
@@ -379,7 +371,11 @@ export default function AccountPage() {
           </button>
           <button
             type="button"
-            onClick={() => { setLinkPrompt(null); setConfirmError(""); setArmHint(false); }}
+            onClick={() => {
+              setLinkPrompt(null); setConfirmError(""); setArmHint(false);
+              // Drop the parked link too (best effort — it expires anyway).
+              fetch("/api/account/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ cancel: true }) }).catch(() => {});
+            }}
             disabled={confirmLoading}
             className="w-full mt-3 bg-white/10 text-white py-3.5 rounded-2xl text-base font-semibold hover:bg-white/15 disabled:opacity-50 transition cursor-pointer"
           >
@@ -394,10 +390,10 @@ export default function AccountPage() {
     );
   }
 
-  if (loading) {
+  if (loading || linkChecking) {
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
-        <p className="text-[#888] text-sm">Loading your account…</p>
+        <p className="text-[#888] text-sm">{linkChecking ? "Checking your sign-in link…" : "Loading your account…"}</p>
       </main>
     );
   }

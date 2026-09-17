@@ -9,7 +9,7 @@
 // and lead ids, so it is only ever served to a verified owner.
 // Skywalker 2026-05-19.
 
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import {
   getCustomerSessionFromCookies, getProfileFromCookies,
@@ -17,6 +17,7 @@ import {
 } from "../../../lib/auth";
 import { isCustomerLeadPost } from "../../../lib/lead-devices";
 import { fetchCommsRead } from "../../../lib/mc-comms";
+import { rateLimit, clientIp } from "../../../lib/rate-limit";
 
 const MC_KEY = process.env.MC_API_KEY || "";
 
@@ -49,7 +50,7 @@ function parseField(body: string, key: string): string | undefined {
   return m[1].trim() || undefined;
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   // getCustomerSessionFromCookies only accepts a Google tcc_session or a
   // tcc_customer cookie with the magic-link mark (`ml`, set by
   // /api/account/login). Cookies from the old login minted a session from a
@@ -84,22 +85,31 @@ export async function GET() {
   // "unavailable", not "no trades" (the feed is never empty): keep the
   // customer signed in and say so (tradesUnavailable) instead of a short or
   // empty history, or the old { error } body that /account read as signed out.
+  const unavailable = (status: number, headers: Record<string, string> = {}) => NextResponse.json({
+    authenticated: true,
+    email: session.email,
+    name: displayName,
+    phone: profile?.phone,
+    via: session.via,
+    tradesUnavailable: true,
+    trades: [],
+    summary: { total: 0, paid: 0, openCount: 0 },
+  }, { status, headers: { "Cache-Control": "no-store", ...headers } });
+  // Each call is up to 6 × 5000-message archive reads on the shared MC, and
+  // any Google account gets a session — throttle per IP and per account
+  // (a session works from many IPs). /account calls this on load, after
+  // Continue and from "Try again"; a throttled customer stays signed in
+  // and sees the "try again in a minute" state.
+  const rl = rateLimit(`account-me:${clientIp(req)}`, 10, 60_000);
+  const rlEmail = rl.ok ? rateLimit(`account-me:${email}`, 10, 60_000) : rl;
+  if (!rlEmail.ok) {
+    return unavailable(429, { "Retry-After": String(Math.max(1, Math.ceil(rlEmail.retryAfterMs / 1000))) });
+  }
   const read = MC_KEY
     ? await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 })
     : { messages: [], complete: false };
   const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
-  if (!read.complete || messages.length === 0) {
-    return NextResponse.json({
-      authenticated: true,
-      email: session.email,
-      name: displayName,
-      phone: profile?.phone,
-      via: session.via,
-      tradesUnavailable: true,
-      trades: [],
-      summary: { total: 0, paid: 0, openCount: 0 },
-    }, { status: 503, headers: { "Cache-Control": "no-store" } });
-  }
+  if (!read.complete || messages.length === 0) return unavailable(503);
 
   // Pass 1: collect lead messages whose body mentions this customer's
   // email (case-insensitive). Pass 2: pick the most-recent status per

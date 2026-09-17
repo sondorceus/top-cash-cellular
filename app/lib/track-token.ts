@@ -26,14 +26,21 @@ export function normalizeContact(raw: string): string {
   return s.replace(/\D/g, "").replace(/^1/, ""); // 10-digit US, no country code
 }
 
-export function makeTrackToken(contact: string): string {
-  const payload = JSON.stringify({ c: normalizeContact(contact), e: Date.now() + TTL_MS });
+// "login" tokens (the /account sign-in link) open a customer session;
+// "track" tokens only show /track. A /track?t= token sits in a page URL,
+// where the analytics tags can read it, so it must never sign anyone in.
+// Track tokens carry no marker (the links already sent keep working).
+export type TokenPurpose = "track" | "login";
+
+export function makeTrackToken(contact: string, purpose: TokenPurpose = "track"): string {
+  const payload = JSON.stringify({ c: normalizeContact(contact), e: Date.now() + TTL_MS, ...(purpose === "login" ? { p: "login" } : {}) });
   const p = Buffer.from(payload).toString("base64url");
   return `${p}.${sign(p)}`;
 }
 
-// Returns the normalized contact if the token is valid + unexpired, else null.
-export function verifyTrackToken(token: string): string | null {
+// Returns the normalized contact if the token is valid + unexpired and was
+// minted for `purpose`, else null.
+export function verifyTrackToken(token: string, purpose: TokenPurpose = "track"): string | null {
   const [p, sig] = (token || "").split(".");
   if (!p || !sig) return null;
   const expected = sign(p);
@@ -42,8 +49,9 @@ export function verifyTrackToken(token: string): string | null {
   const b = Buffer.from(expected);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
   try {
-    const { c, e } = JSON.parse(Buffer.from(p, "base64url").toString());
+    const { c, e, p: kind } = JSON.parse(Buffer.from(p, "base64url").toString());
     if (!c || typeof e !== "number" || Date.now() > e) return null;
+    if ((kind === "login" ? "login" : "track") !== purpose) return null;
     return c as string;
   } catch {
     return null;

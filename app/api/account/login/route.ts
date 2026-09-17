@@ -3,11 +3,22 @@
 //
 //   POST { email }  → if the email matches a past lead, EMAIL a signed
 //                     sign-in link to it. Never sets a cookie.
-//   GET  ?t=TOKEN   → the link itself: verify the token and bounce to
-//                     /account?confirm=TOKEN. Never sets a cookie.
-//   POST { token }  → the "Sign in as <full email>?" Continue button on
-//                     /account: verify the token, set the cookie; returns
-//                     { ok: true, name, leadCount }.
+//   GET  ?t=TOKEN   → the link itself: verify the token, park it in the
+//                     tcc_link cookie (httpOnly, this route's path only)
+//                     and bounce to /account?confirm=1. No session cookie.
+//   GET  ?peek=1    → /account's prompt: { email } the parked link is for.
+//   POST { confirm: true, email }
+//                   → the "Sign in as <full email>?" Continue button on
+//                     /account: verify the parked token (its email must be
+//                     the one the prompt showed), set the session cookie;
+//                     returns { ok: true, name, leadCount }.
+//   POST { cancel: true } → the prompt's Cancel: drop the parked link.
+//
+// The token never sits in an HTML page's URL: the layout queues gtag (and
+// Clarity for consented visitors) before /account's code runs, and those
+// report the page URL — a live 30-minute sign-in token for the account.
+// The prompt shows only an address this route verified, never text read
+// from an unverified link.
 //
 // Why the confirm step (R9, login CSRF): the link used to sign in whichever
 // browser opened it. An attacker could request a link for THEIR OWN email
@@ -79,10 +90,37 @@ async function findLeads(email: string): Promise<{ name?: string; leadCount: num
 
 // The email a token proves, or null. Email tokens only: a lead's Phone and
 // Email lines are both typed by whoever submitted it, so owning a phone
-// doesn't prove owning the email this session would be keyed on.
+// doesn't prove owning the email this session would be keyed on. Sign-in
+// tokens only, too: a /track?t= link's token sits in a page URL.
 function emailFromToken(token: string): string | null {
-  const contact = verifyTrackToken(token);
+  const contact = verifyTrackToken(token, "login");
   return contact && contact.includes("@") ? contact : null;
+}
+
+// A verified link token between the link and Continue. Scoped to this
+// route's path, so no page (or page script) ever sees it; Lax so the
+// top-level GET from a mail app still sets it.
+const LINK_COOKIE = "tcc_link";
+function setLinkCookie(res: NextResponse, token: string) {
+  res.cookies.set(LINK_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/api/account/login",
+    maxAge: 30 * 60, // the token's own TTL (app/lib/track-token.ts)
+  });
+}
+function clearLinkCookie(res: NextResponse) {
+  res.cookies.set(LINK_COOKIE, "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/api/account/login",
+    maxAge: 0,
+  });
+}
+function parkedEmail(req: NextRequest): string | null {
+  return emailFromToken(req.cookies.get(LINK_COOKIE)?.value || "");
 }
 
 function setSessionCookie(res: NextResponse, email: string, name?: string) {
@@ -113,19 +151,29 @@ function isSameOriginPost(req: NextRequest): boolean {
 }
 
 // Magic-link landing. Always redirects to /account and never sets the
-// cookie: a valid token goes to the confirm prompt (?confirm=TOKEN, which
-// /account moves out of the address bar), anything else says why
-// (?link=…) instead of silently showing the form again. The trade lookup
-// (retry / notrade) runs on Continue, so a scanner's pre-fetch costs no
-// MC read.
+// session cookie: a valid token is parked in tcc_link and goes to the
+// confirm prompt (?confirm=1), anything else says why (?link=…) instead of
+// silently showing the form again. The trade lookup (retry / notrade) runs
+// on Continue, so a scanner's pre-fetch costs no MC read.
 export async function GET(req: NextRequest) {
-  const account = `${req.nextUrl.origin}/account`;
   const noStore = { headers: { "Cache-Control": "no-store" } };
+  // The prompt's question: which account is the parked link for? Only a
+  // signature-checked address comes back (an HMAC check, no MC read).
+  if (req.nextUrl.searchParams.has("peek")) {
+    const email = parkedEmail(req);
+    if (email) return NextResponse.json({ email }, noStore);
+    const res = NextResponse.json({ expired: true }, { status: 401, ...noStore });
+    clearLinkCookie(res);
+    return res;
+  }
+  const account = `${req.nextUrl.origin}/account`;
   const rl = rateLimit(`login:${clientIp(req)}`, 8, 60_000);
   if (!rl.ok) return NextResponse.redirect(`${account}?link=retry`, noStore);
   const token = req.nextUrl.searchParams.get("t") || "";
   if (!emailFromToken(token)) return NextResponse.redirect(`${account}?link=expired`, noStore);
-  return NextResponse.redirect(`${account}?confirm=${encodeURIComponent(token)}`, noStore);
+  const res = NextResponse.redirect(`${account}?confirm=1`, noStore);
+  setLinkCookie(res, token);
+  return res;
 }
 
 export async function POST(req: NextRequest) {
@@ -139,26 +187,37 @@ export async function POST(req: NextRequest) {
   if (!rl.ok) {
     return NextResponse.json({ error: "Too many attempts — please wait a moment and try again." }, { status: 429 });
   }
-  let payload: { email?: unknown; token?: unknown };
+  let payload: { email?: unknown; confirm?: unknown; cancel?: unknown };
   try { payload = await req.json(); } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  // The confirm prompt's Continue — the only path that sets the cookie.
-  const token = typeof payload.token === "string" ? payload.token : "";
-  if (token) {
-    const email = emailFromToken(token);
-    const claimed = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
-    if (!email || (claimed && claimed !== email)) {
-      return NextResponse.json({ error: "This sign-in link is invalid or expired. Request a new one.", expired: true }, { status: 401 });
+  // The prompt's Cancel — forget the parked link.
+  if (payload.cancel === true) {
+    const res = NextResponse.json({ ok: true });
+    clearLinkCookie(res);
+    return res;
+  }
+
+  // The confirm prompt's Continue — the only path that sets the session
+  // cookie. `email` must be the address the prompt showed: a link parked
+  // after the peek (another tab, another link) can't sign in unseen.
+  if (payload.confirm === true) {
+    const email = parkedEmail(req);
+    const shown = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
+    if (!email || shown !== email) {
+      const res = NextResponse.json({ error: "This sign-in link is invalid or expired. Request a new one.", expired: true }, { status: 401 });
+      clearLinkCookie(res);
+      return res;
     }
+    // Lookup down: keep the parked link so Continue can be pressed again.
     const { name, leadCount, failed } = await findLeads(email);
     if (failed) return NextResponse.json({ error: LOOKUP_DOWN }, { status: 503 });
-    if (leadCount === 0) {
-      return NextResponse.json({ found: false, error: "We don't see a past trade for that email — try Guest Checkout instead." }, { status: 404 });
-    }
-    const res = NextResponse.json({ ok: true, email, name, leadCount });
-    setSessionCookie(res, email, name);
+    const res = leadCount === 0
+      ? NextResponse.json({ found: false, error: "We don't see a past trade for that email — try Guest Checkout instead." }, { status: 404 })
+      : NextResponse.json({ ok: true, email, name, leadCount });
+    if (leadCount > 0) setSessionCookie(res, email, name);
+    clearLinkCookie(res);
     return res;
   }
 
@@ -188,7 +247,7 @@ export async function POST(req: NextRequest) {
   if (!sendRl.ok) {
     return NextResponse.json({ error: "Too many sign-in links requested — please wait a bit and try again." }, { status: 429 });
   }
-  const link = `${SITE}/api/account/login?t=${encodeURIComponent(makeTrackToken(email))}`;
+  const link = `${SITE}/api/account/login?t=${encodeURIComponent(makeTrackToken(email, "login"))}`;
   const html = `
     <div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:480px;margin:0 auto;padding:24px;color:#111">
       <p style="font-size:16px;font-weight:700;margin:0 0 8px">Sign in to your Top Cash Cellular account</p>

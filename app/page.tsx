@@ -1681,6 +1681,15 @@ const APPLEWATCH_MODELS = [
   { id: "awse1", label: "Apple Watch SE (1st Gen)", base: 0, inquiryOnly: true, image: "/devices/apple-watch-se-1.webp" },
 ];
 
+// Card id -> key in public/comps/apple-trade-in.json, which uses /sell's
+// watch ids (app/data/sell-catalog.ts). Without it the comparison panel
+// never found a watch value.
+const APPLE_WATCH_COMP_ID: Record<string, string> = {
+  awu3: "aw_ultra3", awu2: "aw_ultra2", awu1: "aw_ultra",
+  aws11: "aw_s11", aws10: "aw_s10", aws9: "aw_s9", aws8: "aw_s8", aws7: "aw_s7",
+  awse3: "aw_se3", awse2: "aw_se2022",
+};
+
 // Per-model Apple Watch adjustments — flat dollars, IWM Flawless × 0.85
 // (watches run at 85%). The base price (aluminum / GPS / smallest size)
 // lives in PRICE_TABLE; these are the ADDS for premium material, larger
@@ -6075,19 +6084,28 @@ export default function Home() {
   const [googleComps, setGoogleComps] = useState<Record<string, number> | null>(null);
   const [samsungComps, setSamsungComps] = useState<Record<string, number> | null>(null);
   const [decluttrComps, setDecluttrComps] = useState<Record<string, number> | null>(null);
+  // Each OEM JSON's notAccepted: ids a manual check confirmed the OEM does
+  // NOT list — the only models the panel says "doesn't publish" for (the
+  // JSONs' convention; a value we merely lack makes no claim).
+  const [oemNotAccepted, setOemNotAccepted] = useState<string[]>([]);
   const [, setPcSpecsVersion] = useState(0);
   useEffect(() => {
+    type OemJson = { values?: Record<string, number>; notAccepted?: unknown } | null;
+    const addNotAccepted = (d: OemJson) => {
+      const ids = Array.isArray(d?.notAccepted) ? d.notAccepted.filter((x): x is string => typeof x === "string") : [];
+      if (ids.length) setOemNotAccepted(prev => [...prev, ...ids]);
+    };
     fetch("/comps/apple-trade-in.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
-      .then((d: { values?: Record<string, number> } | null) => setAppleComps(d?.values || null))
+      .then((d: OemJson) => { setAppleComps(d?.values || null); addNotAccepted(d); })
       .catch(() => setAppleComps(null));
     fetch("/comps/google-trade-in.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
-      .then((d: { values?: Record<string, number> } | null) => setGoogleComps(d?.values || null))
+      .then((d: OemJson) => { setGoogleComps(d?.values || null); addNotAccepted(d); })
       .catch(() => setGoogleComps(null));
     fetch("/comps/samsung-trade-in.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
-      .then((d: { values?: Record<string, number> } | null) => setSamsungComps(d?.values || null))
+      .then((d: OemJson) => { setSamsungComps(d?.values || null); addNotAccepted(d); })
       .catch(() => setSamsungComps(null));
     fetch("/comps/decluttr.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
@@ -12140,11 +12158,13 @@ export default function Home() {
               const isDecluttr = deviceType === "lg_pc";
               const isOemBrand = isApple || isGoogle || isSamsung;
               const oemName = isApple ? "Apple" : isGoogle ? "Google" : isSamsung ? "Samsung" : "";
+              // Apple Watch comps are keyed by /sell's ids (aw_ultra3 …).
+              const compId = model ? (APPLE_WATCH_COMP_ID[model.id] ?? model.id) : "";
               const real =
-                (isApple && model && appleComps ? appleComps[model.id] : undefined) ??
-                (isGoogle && model && googleComps ? googleComps[model.id] : undefined) ??
-                (isSamsung && model && samsungComps ? samsungComps[model.id] : undefined) ??
-                (isDecluttr && model && decluttrComps ? decluttrComps[model.id] : undefined);
+                (isApple && model && appleComps ? appleComps[compId] : undefined) ??
+                (isGoogle && model && googleComps ? googleComps[compId] : undefined) ??
+                (isSamsung && model && samsungComps ? samsungComps[compId] : undefined) ??
+                (isDecluttr && model && decluttrComps ? decluttrComps[compId] : undefined);
               const comp = getCompSource(deviceType);
               // For OEM-brand devices (Apple/Samsung/Google) we ONLY trust
               // a real scraped value. No percentage fallback — if the OEM
@@ -12159,9 +12179,11 @@ export default function Home() {
               const compValue = compPer * quantity;
               const savings = (quote - compPer) * quantity;
               const weBeatThem = savings > 0;
-              // OEM device with no published value -> show the
-              // "won't trade this" badge instead of the comparison rows.
-              const showOemNoTradeBadge = isOemBrand && !hasComp;
+              // OEM device a manual check found missing from the OEM's own
+              // list -> "doesn't publish" badge. No value otherwise = no OEM
+              // claim: "missing = doesn't publish" told 13 mini sellers Apple
+              // lists no price while Apple paid $145.
+              const showOemNoTradeBadge = isOemBrand && !hasComp && oemNotAccepted.includes(compId);
               // We have a comp but THEY pay more -> hide rows entirely
               // (don't volunteer info that hurts us; the customer can
               // still price-match via the pill below).
@@ -13521,8 +13543,12 @@ export default function Home() {
                   const cartHandoffMode: "ship" | "local" | "mixed" = cartIsMixed
                     ? "mixed"
                     : cartNeedsShip ? "ship" : "local";
+                  // Each cart line carries the carrier it was quoted under (as
+                  // the lead body does) — /api/confirm caps every line against
+                  // it, and the funnel's current carrier clamped an unlocked
+                  // line to the locked ceiling in the email.
                   const confirmBody = submitViaCart
-                    ? { name, phone, email, carrier: carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local", promoCode: it.promoCode, weeklyPromo: it.weeklyPromo })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined }
+                    ? { name, phone, email, carrier: cartItems.length === 1 ? cartItems[0].carrier : carrier?.label, payout: payoutValue, devices: cartItems.map((it) => ({ model: it.model, storage: it.storage, condition: it.condition, carrier: it.carrier, quote: it.price * it.quantity, quantity: it.quantity, handoff: it.handoff ?? "local", promoCode: it.promoCode, weeklyPromo: it.weeklyPromo })), handoffMethod: cartHandoffMode, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined }
                     : { name, phone, email, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, quote: quote * quantity, payout: payoutValue, quantity, promoCode: couponAdded > 0 ? couponLabel : undefined, weeklyPromo: promoAdded > 0 ? true : undefined, handoffMethod, fedexLabel: leadLabel, couponBonus: couponValid?.value, leadId: leadIdLocal ?? undefined };
                   fetch("/api/confirm", {
                     method: "POST",
