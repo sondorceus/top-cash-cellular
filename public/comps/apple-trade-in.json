@@ -1,7 +1,7 @@
 {
   "_doc": "Apple Trade-In max published values per model id. Refreshed weekly by scripts/refresh-apple-comps.py via .github/workflows/refresh-comps.yml (the scraper currently reads nothing useful, see _verification). Frontend reads this at runtime when device is in the Apple family. CONVENTION: only include a value Apple's own trade-in estimator actually shows. notAccepted = model ids a manual check confirmed Apple's estimator does NOT list; only those get the 'Apple won't take this on trade-in' claim. A model with no value and not in notAccepted makes no claim either way.",
   "source": "https://www.apple.com/shop/trade-in",
-  "updatedAt": "2026-09-17T02:04:12Z",
+  "updatedAt": "2026-09-21T11:22:05Z",
   "_verification": {
     "2026-09-16": "Manual check (Powerhouse). iPhone values = maxValue per model from Apple's public estimator (www.apple.com/shop/tradein-module, Smartphone > Apple); ip17air uses the landing-page table's 'iPhone Air Up to $585' (the estimator said $560; the higher number keeps 'we pay more' claims true). aw_ultra3 and aw_s10 = the landing-page Apple Watch table rows (Ultra 3 $430, Series 10 $150). iPhone 17e, iPhone 18 Pro, iPhone 18 Pro Max and iPhone Duo are not in the estimator's model list -> notAccepted. PR #4's ip16pm/ip16p = 720 was the scraper reading one page-wide 'Up to $720'; the estimator shows 610/510.",
     "watches": "aw_ultra2 265, aw_ultra 190, aw_s9 115, aw_s8 90, aw_s7 65 (and aw_ultra3 430, aw_s10 150, aw_se2022 60 unchanged) = Apple's per-model maxima in MacRumors' 2026-09-15 trade-in table, whose iPhone rows match the estimator values above exactly.",
@@ -16,7 +16,7 @@
   ],
   "values": {
     "ip17pm": 885,
-    "ip17p": 785,
+    "ip17p": 885,
     "ip17air": 585,
     "ip17": 585,
     "ip16pm": 610,
