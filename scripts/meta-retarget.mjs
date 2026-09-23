@@ -17,6 +17,13 @@
 // Env (all optional but the token): META_PAGE_ID (discovered via /me/accounts
 // when exactly one page is visible), META_AD_ACCOUNT (act_692790242391713),
 // META_PIXEL_ID (1111162571586544), RETARGET_DAILY_USD (5), RETARGET_DAYS (30).
+//
+// 2026-09-23: the UI build (Sonny's Chrome) created the same shape by hand —
+// audience "GO visitors or quoted - no lead (30d)", campaign
+// 120253453374960577, ad set 120253453374980577 (drafts). The quote-viewer-
+// only pool (ViewContent/InitiateCheckout) was ~30 people and Meta flagged it
+// too small to deliver, so the pool is everyone who OPENED /go (URL rule) or
+// saw a quote anywhere (InitiateCheckout), minus Lead.
 // Created ids are written to scripts/ad-assets/out/retarget-launch.json.
 import { readFileSync, writeFileSync } from "fs";
 import path from "path";
@@ -37,10 +44,11 @@ const IMAGE = path.join(here, "ad-assets/out/retarget-square.png");
 const STATUS = ACTIVE ? "ACTIVE" : "PAUSED";
 
 // Copy — seller language, Sonny's voice (i/we, cash, no hype).
+// Truthful for EVERY visitor in the pool (most never saw a number).
 const PRIMARY =
-  "still got that phone? your number's saved on our page — tap back in and it's right where you left it. " +
+  "still got that phone? tap back in and pick up right where you left off — your number's one tap away. " +
   "cash in hand in austin, or a free fedex label anywhere in the US. even cracked.";
-const HEADLINE = "your quote's saved — pick it back up";
+const HEADLINE = "still selling it? pick up where you left off";
 const DESCRIPTION = "cash in austin · free label anywhere in the US";
 
 if (!DRY && !TOKEN) {
@@ -99,13 +107,18 @@ try {
     retention_seconds: DAYS * 86400,
     filter: { operator: "and", filters: [{ field: "event", operator: "eq", value: event }] },
   });
+  const goVisit = {
+    event_sources: [{ id: PIXEL, type: "pixel" }],
+    retention_seconds: DAYS * 86400,
+    filter: { operator: "and", filters: [{ field: "url", operator: "i_contains", value: "topcashcellular.com/go" }] },
+  };
   const audience = await graph("POST", `${ACT}/customaudiences`, {
-    name: `GO — tapped or quoted, no contact (${DAYS}d)`,
+    name: `GO visitors or quoted - no lead (${DAYS}d)`,
     subtype: "WEBSITE",
-    description: "pixel TCC Web: ViewContent or InitiateCheckout, excluding Lead — the retargeting pool for /go?src=fbrt",
+    description: "opened /go or saw a quote, never left contact - retarget pool for /go?src=fbrt",
     prefill: true,
     rule: {
-      inclusions: { operator: "or", rules: [pixelRule("InitiateCheckout"), pixelRule("ViewContent")] },
+      inclusions: { operator: "or", rules: [goVisit, pixelRule("InitiateCheckout")] },
       exclusions: { operator: "or", rules: [pixelRule("Lead")] },
     },
   });
@@ -143,8 +156,8 @@ try {
       age_min: 18,
       custom_audiences: [{ id: audience.id }],
       publisher_platforms: ["facebook", "instagram"],
-      facebook_positions: ["feed", "story"],
-      instagram_positions: ["stream", "story"],
+      facebook_positions: ["feed", "profile_feed", "story"],
+      instagram_positions: ["stream", "profile_feed", "story"],
       targeting_automation: { advantage_audience: 0 },
     },
   });

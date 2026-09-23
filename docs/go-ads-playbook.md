@@ -68,9 +68,13 @@ Everything below exists in the repo; the only missing piece is a way to act on t
 account (the CAPI token on Vercel carries `read_ads_dataset_quality` only, and Claude
 in Chrome has to be signed in on Sonny's Chrome).
 
-- **Audience:** Website → pixel "TCC Web" `InitiateCheckout` OR `ViewContent`, last 30
-  days, EXCLUDE `Lead` last 30 days = tapped a model or saw a quote, never left contact
-  (the only people this set exists for; ~50–100 at today's volume).
+- **Audience (exists, 2026-09-23):** `GO visitors or quoted - no lead (30d)` = pixel
+  "TCC Web", URL contains `topcashcellular.com/go` OR `InitiateCheckout`, last 30 days,
+  EXCLUDE `Lead` last 30 days. The quote-viewer-only version (the Aug 20
+  `GO engaged - no lead (30d)`, ViewContent only) is ~30 people and Meta flags it too
+  small to deliver; this one is everyone who opened /go from the ad (~150 in 30 days).
+  Only about a fifth of located sellers are in the Austin metro, so an Austin-only
+  location on this set shrinks it below what Meta delivers to — Sonny's call.
 - **Campaign:** its own — `TCC GO — Retarget (quoted, no contact)`, Awareness/Reach. A
   second ad set inside the Lead campaign would have to optimize for Lead, which never
   exits learning on a ~100-person pool. Reach + a frequency cap (3 per 7 days) shows the
@@ -82,14 +86,26 @@ in Chrome has to be signed in on Sonny's Chrome).
   rendered by `npx tsx scripts/ad-assets/gen-retarget.mjs` with the live 17 Pro Max
   ceiling. Copies land in `~/Downloads/tcc-ads/`. Primary text:
 
-  > still got that phone? your number's saved on our page — tap back in and it's right
-  > where you left it. cash in hand in austin, or a free fedex label anywhere in the US.
-  > even cracked.
+  > still got that phone? tap back in and pick up right where you left off — your
+  > number's one tap away. cash in hand in austin, or a free fedex label anywhere in
+  > the US. even cracked.
 
-  Headline `your quote's saved — pick it back up` · description `cash in austin · free
-  label anywhere in the US` · CTA "Get quote" · URL
+  Headline `still selling it? pick up where you left off` · description `cash in austin ·
+  free label anywhere in the US` · CTA "Get quote" · URL
   `https://topcashcellular.com/go?src=fbrt` (the page shows "your chat is saved — pick
   up where you left off" to a returning browser).
+
+**Draft state (2026-09-23, built in Sonny's Chrome):** campaign
+`TCC GO - Retarget (visited or quoted, no contact)` (120253453374960577, Awareness, ad
+set budget) → ad set `Retarget - /go visited or quoted, no contact - reach`
+(120253453374980577: Maximize reach, cap 3 per 7 days, $5/day from Sep 23, no end, US
+18+, the audience above with Advantage+ audience OFF, placements Facebook + Instagram
+feeds/profile feeds + FB/IG Stories only) → ad `New Awareness Ad` (120253453374970577) —
+still EMPTY (no media/text). Finishing it: open the draft, name it, Identity = Top Cash
+Cellular (+ Instagram), Set up creative → upload `retarget-square.png` (feeds) and
+`retarget-story.png` (stories), the copy above, Website URL, turn OFF translations /
+Advantage+ creative enhancements / text variations, then publish ONLY this campaign
+(the account also holds 2 older drafts in "Review and publish" — never bulk-publish).
 
 **Launch, path A (API, one command):** in Business Settings → Users → System users →
 generate a token with `ads_management` for ad account 692790242391713 + the TCC Page +
