@@ -216,7 +216,7 @@ const TURN_BUDGET_MS = 45_000;
 // it finishes in the background and its owner note still lands.
 const IMEI_WAIT_MS = 10_000;
 // Same neutral wording runImeiCheck gives the model when Sickw can't answer.
-const IMEI_NEUTRAL_REASON = "the lookup couldn't run right now — keep going; say only that the team will confirm the model on their end (never 'not clean', 'flagged' or anything that sounds like a lock or blacklist), and don't ask for the IMEI again";
+const IMEI_NEUTRAL_REASON = "the lookup couldn't run right now — keep going; say only that the team will confirm the model on their end (never 'not clean', 'flagged' or anything that sounds like a lock or blacklist), and don't ask for the IMEI again; you have NO result, so never say what the IMEI 'comes back as' or name a model or brand from it — not even the one the seller mentioned";
 
 // Every phone with a price row, by family, newest generation first — built
 // once at module load from PRICE_TABLE (see INSTANT-PRICE CATALOG fact).

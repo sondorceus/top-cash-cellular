@@ -255,7 +255,7 @@ export async function runImeiCheck(input: { imei?: string }): Promise<Record<str
     // Keep the IMEI for the owner even when Sickw fails (low balance, outage)
     // — and give the model neutral wording: a customer read "isn't pulling up
     // clean" as a blacklist hint (2026-09-12 test).
-    return { ok: false, reason: "the lookup couldn't run right now — keep going; say only that the team will confirm the model on their end (never 'not clean', 'flagged' or anything that sounds like a lock or blacklist), and don't ask for the IMEI again", ownerNote: r.ownerNote };
+    return { ok: false, reason: "the lookup couldn't run right now — keep going; say only that the team will confirm the model on their end (never 'not clean', 'flagged' or anything that sounds like a lock or blacklist), and don't ask for the IMEI again; you have NO result, so never say what the IMEI 'comes back as' or name a model or brand from it — not even the one the seller mentioned", ownerNote: r.ownerNote };
   }
   if (r.blacklisted || r.fmiOn) {
     const flags = [r.blacklisted ? "BLACKLISTED" : "", r.fmiOn ? "Find My ON" : ""].filter(Boolean).join(" + ");
