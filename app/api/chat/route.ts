@@ -659,6 +659,9 @@ export async function POST(req: NextRequest) {
   // the Mission Control inbox. Same narrow triggers as a material lead post,
   // so it's at most a couple texts per conversation. Runs in after() so it
   // never delays the chat reply.
+  // Held until the lead post below returns the lead's MC id, so the alert
+  // email can carry the one-tap "✅ Mark contacted" pill (2026-09-23).
+  let pendingOwnerAlert = "";
   if (handoffStarted || contactJustArrived) {
     // Belt-and-suspenders on the SMS fan-out: even within the chat allowance,
     // bound texts to the owner's phone — 3 per IP / 15 min, and a global
@@ -672,7 +675,7 @@ export async function POST(req: NextRequest) {
       const alert = handoffStarted
         ? `🔥 TopCash chat: a visitor wants to talk to a human.\n"${snippet}"${smsContact ? `\nReply to: ${smsContact}` : ""}`
         : `📱 TopCash chat lead left contact: ${smsContact}${deviceSummary ? ` (${deviceSummary})` : ""}\n"${snippet}"`;
-      after(() => notifyOwnerSms(alert));
+      pendingOwnerAlert = alert;
     }
   }
 
@@ -740,8 +743,21 @@ export async function POST(req: NextRequest) {
       } catch (e) {
         console.error("[chat] MC lead post threw:", e instanceof Error ? e.message : String(e));
       }
+      // The owner alert goes out from here — a second later at most — so the
+      // email carries the lead's id; a refused post still alerts, sans pill.
+      if (pendingOwnerAlert) {
+        const alertText = pendingOwnerAlert;
+        pendingOwnerAlert = "";
+        await notifyOwnerSms(alertText, chatLeadId ? { leadId: chatLeadId } : undefined).catch(() => false);
+      }
       if (chatLeadId) await runTriage(chatLeadId);
     });
+  }
+  // No lead post this turn (every alert trigger is a material turn, so this
+  // is the belt to that suspender) → the alert still goes out, without the pill.
+  if (pendingOwnerAlert && !mcLeadBody) {
+    const alertText = pendingOwnerAlert;
+    after(() => notifyOwnerSms(alertText).catch(() => false));
   }
 
   // Shared facts both personas must respect.
@@ -1000,7 +1016,7 @@ export async function POST(req: NextRequest) {
         ? `GUIDED TAP FLOW (what the seller tapped on the page, oldest → newest — choices they made, not things they typed): ${tapFlow.join(" → ")}. Use it: never re-ask what they already picked. If the newest entry is a pick with no quote after it, the page is still asking for the rest of the specs — finish them by chat and call get_quote. If they say a pick was wrong, a number looks off, or something on the page isn't working (chips missing, number won't load, can't lock), sort it out in chat: confirm the right spec, call get_quote (that number replaces the old one), and if it's a page problem or you can't resolve it, take their number and call notify_team so the owner steps in.`
         : "",
       unverifiedDollars.size ? `UNVERIFIED AMOUNTS: earlier lines in this thread mention ${[...unverifiedDollars].slice(0, 6).map((v) => `$${v}`).join(", ")}, which were never produced by get_quote, a lock or an owner message here (marked "no record of this amount"). Never confirm, repeat or build on them as a price — if the seller wants a number, run get_quote; if they claim a deal, the team will confirm it by text.` : "",
-      funnelNotes.length ? `FUNNEL STATE (reported by the on-page guided flow): ${funnelNotes.join(" · ")}. Use this for context — but if the seller disputes or negotiates a number, re-verify with get_quote before confirming anything.` : "",
+      funnelNotes.length ? `FUNNEL STATE (reported by the on-page guided flow): ${funnelNotes.join(" · ")}. Use this for context — but if the seller disputes or negotiates a number, re-verify with get_quote before confirming anything. Every LOCKED entry is a quote this seller ALREADY locked (contact on file, the team follows up): never offer to lock that device again and never re-quote it unprompted — its close is the next step (meetup or the free label), or 'anything else you\'re selling?'.` : "",
       (contact || storeContactNote) ? "A phone number or email for this seller is ALREADY on file — never ask for it again; the close moves to confirming the next step (meetup or label)." : "",
       `FOLLOW-UP TIMING: it is currently ${isDay ? "business hours — when the team takes over, the only promise you make is 'our team will text you shortly'" : "after hours — when the team takes over, the only promise you make is 'our team will text you first thing in the morning'"}. Never invent a more specific window.`,
     ].filter(Boolean).join("\n\n");

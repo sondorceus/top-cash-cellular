@@ -2,7 +2,8 @@
 // computes these server-side per request; every other page loads them lazily
 // through here when the chat button is first used). One 60s in-memory
 // snapshot per lambda — the board is ~100 engine cells.
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { clientGeo } from "../../../lib/geo";
 import { computeBoard, type BoardRow } from "../../../go/board";
 import { fetchReviews } from "../../../go/reviews";
 import type { GoReviews } from "../../../go/go-client";
@@ -10,10 +11,17 @@ import type { GoReviews } from "../../../go/go-client";
 export const dynamic = "force-dynamic";
 let snap: { rows: BoardRow[]; reviews: GoReviews; at: number } | null = null;
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   if (!snap || Date.now() - snap.at > 60_000) {
     const [rows, reviews] = await Promise.all([computeBoard(), fetchReviews()]);
     snap = { rows, reviews, at: Date.now() };
   }
-  return NextResponse.json({ rows: snap.rows, reviews: snap.reviews }, { headers: { "Cache-Control": "public, max-age=60" } });
+  // area: the visitor's Vercel geo, so the site-wide widget's handoff chips
+  // match the /go page's (label first outside Austin, no meetup outside TX —
+  // review 2026-09-23). Per visitor, hence private (the browser still keeps
+  // its own copy for a minute; the 60s snapshot above covers the server).
+  return NextResponse.json(
+    { rows: snap.rows, reviews: snap.reviews, area: clientGeo(req).area },
+    { headers: { "Cache-Control": "private, max-age=60" } },
+  );
 }

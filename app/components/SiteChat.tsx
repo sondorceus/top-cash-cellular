@@ -15,6 +15,8 @@ import type { BoardRow } from "../go/board";
 
 const OFF = /^\/(go|admin|shop|account|offer|thank-you|track|api)(\/|$)/;
 type Group = "ip" | "gs" | "ipad" | "console" | "macbook";
+type Area = "metro" | "tx" | "us" | "intl" | "unknown";
+const AREAS = new Set<string>(["metro", "tx", "us", "intl", "unknown"]);
 function groupFor(path: string): Group | null {
   if (/sell-macbook/.test(path)) return "macbook";
   if (/sell-ipad/.test(path)) return "ipad";
@@ -45,6 +47,7 @@ export default function SiteChat() {
   const [rows, setRows] = useState<BoardRow[]>([]);
   const [reviews, setReviews] = useState<GoReviews>({ avg: 0, count: 0, top: [] });
   const [src, setSrc] = useState("site");
+  const [area, setArea] = useState<Area>("unknown");
   const [ready, setReady] = useState(false);
   useEffect(() => {
     setSrc(detectSrc());
@@ -53,7 +56,10 @@ export default function SiteChat() {
     const load = () => {
       fetch("/api/go/board", { cache: "force-cache" })
         .then((r) => (r.ok ? r.json() : null))
-        .then((d) => { if (d?.rows) { setRows(d.rows); setReviews(d.reviews || { avg: 0, count: 0, top: [] }); } })
+        .then((d) => {
+          if (d?.rows) { setRows(d.rows); setReviews(d.reviews || { avg: 0, count: 0, top: [] }); }
+          if (typeof d?.area === "string" && AREAS.has(d.area)) setArea(d.area as Area);
+        })
         .catch(() => {})
         .finally(() => setReady(true));
     };
@@ -62,5 +68,5 @@ export default function SiteChat() {
   }, []);
   if (OFF.test(pathname)) return null;
   if (!ready) return null;
-  return <GoClient rows={rows} src={src} reviews={reviews} mode="widget" initialGroup={groupFor(pathname)} landed={pathname} />;
+  return <GoClient rows={rows} src={src} reviews={reviews} mode="widget" initialGroup={groupFor(pathname)} landed={pathname} visitorArea={area} />;
 }

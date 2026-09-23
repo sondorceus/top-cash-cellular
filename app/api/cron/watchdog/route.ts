@@ -18,6 +18,9 @@ import { listChatSessions, readChat, validGoSession } from "../../../lib/gochat-
 //                          in the last 24h: the ads stopped (paused, out of
 //                          budget, payment failed). Fires on the TRANSITION
 //                          only, so deliberately-off ads don't nag forever.
+//   • sms_relay_down (site) — seller texts failing with no success in 3 days:
+//                          the Telnyx relay is down (2026-09-23: a silent week,
+//                          0 of 13 lock confirmations delivered).
 //
 // Ports the notary watchdog's re-alert-suppression idea to TCC's MC model:
 // each alert writes a [WATCHDOG-ALERT: leadId] cat=… marker, and we re-nag a
@@ -106,6 +109,8 @@ export async function GET(req: NextRequest) {
   const counterAtByLead = new Map<string, string>();
   const counterRespByLead = new Map<string, string>();
   const deleted = new Set<string>();
+  // Leads the owner marked "contacted" from the alert email (one-tap link).
+  const contactedByLead = new Set<string>();
   // (leadId|cat) -> latest watchdog-alert timestamp, for cooldown.
   const alertedAt = new Map<string, string>();
   // /go sessions whose seller already chose meet/ship (chips or MEET/SHIP
@@ -138,6 +143,8 @@ export async function GET(req: NextRequest) {
     if (cr && m.timestamp > (counterRespByLead.get(cr[1]) || "")) counterRespByLead.set(cr[1], m.timestamp);
     const del = body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
     if (del) deleted.add(del[1]);
+    const lc = body.match(/\[LEAD-CONTACTED:\s*([\w-]+)\]/i);
+    if (lc) contactedByLead.add(lc[1]);
     const wa = body.match(/\[WATCHDOG-ALERT:\s*([\w-]+)\][^\n]*cat=(\w+)/i);
     if (wa) {
       const k = `${wa[1]}|${wa[2]}`;
@@ -172,7 +179,7 @@ export async function GET(req: NextRequest) {
     const goSession = field(lead.body, "Session");
     const goAge = now - ms(lead.ts);
     const choseForThisLead = !!goSession && (handoffChosen.get(goSession) || []).some((t) => t >= ms(lead.ts) - SKEW_MS);
-    if (/source=go\b/i.test(field(lead.body, "Source")) && goAge < 7 * D && !statusByLead.has(leadId) && !choseForThisLead) {
+    if (/source=go\b/i.test(field(lead.body, "Source")) && goAge < 7 * D && !statusByLead.has(leadId) && !choseForThisLead && !contactedByLead.has(leadId)) {
       consider.push({ cat: "go_unworked", since: ms(lead.ts) });
     }
 
@@ -219,8 +226,9 @@ export async function GET(req: NextRequest) {
   // signal that delivery stopped — days before the lead-silence alarm below.
   let goActive24 = 0;
   let goActivePriorWeek = 0;
+  let sessions: { sid: string; lastTs: number; count: number }[] = [];
   try {
-    const sessions = await listChatSessions();
+    sessions = await listChatSessions();
     for (const s of sessions) {
       if (!/^go-/i.test(s.sid)) continue;
       if (s.lastTs >= now - D) goActive24++;
@@ -248,6 +256,60 @@ export async function GET(req: NextRequest) {
     }).catch(() => {});
   }
 
+  // ---- SMS RELAY DOWN (seller texts silently failing) -----------------------
+  // The text channel fails QUIETLY: the lock route notes "SMS FAILED …" in
+  // the thread and the page falls back to email, but nothing told the owner
+  // (2026-09-23 review: a week of relay refusals, 0 of 13 lock texts
+  // delivered, reminders and owner texts dead with them). Recent /go threads
+  // are the record — failures with no success in the window mean the relay
+  // is down, not a one-off timeout. Bounded blob reads, newest threads first.
+  const RELAY_WINDOW_MS = 3 * D;
+  const RELAY_COOLDOWN_MS = 1 * D;
+  let relaySent = 0;
+  let relayFailed = 0;
+  let relayLastReason = "";
+  try {
+    const recent = sessions
+      .filter((s) => /^go-/i.test(s.sid) && s.lastTs >= now - RELAY_WINDOW_MS)
+      .sort((a, b) => b.lastTs - a.lastTs)
+      .slice(0, 30);
+    for (const s of recent) {
+      const st = await readChat(s.sid, 0);
+      for (const m of st.msgs) {
+        if (m.role !== "note" || m.ts < now - RELAY_WINDOW_MS) continue;
+        if (/^SMS sent to /.test(m.text)) relaySent++;
+        else if (/^SMS FAILED to /.test(m.text)) {
+          relayFailed++;
+          relayLastReason = m.text.match(/ — ([^)]+)\)\s*$/)?.[1] || relayLastReason;
+        }
+      }
+    }
+  } catch { /* store unavailable — skip this alarm rather than misfire */ }
+  const lastRelayAlert = ms(alertedAt.get("SITE|sms_relay_down"));
+  const smsRelayDown =
+    relayFailed >= 2 && relaySent === 0 &&
+    !(lastRelayAlert && now - lastRelayAlert < RELAY_COOLDOWN_MS);
+  if (smsRelayDown && !dryRun) {
+    const msg =
+      `📵 TCC texts are NOT going out: 0 of ${relayFailed} seller texts delivered in the last 3 days` +
+      `${relayLastReason ? ` (last error: ${relayLastReason})` : ""}. Lock confirmations, reminders and your owner texts all ride this line — ` +
+      `sellers only get email until it's back. Fund / check the Telnyx relay (notary account).`;
+    await notifyOwnerSms(msg);
+    await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "tcc-admin",
+        fromName: "TCC Admin",
+        role: "system",
+        body: `[WATCHDOG-ALERT: SITE] cat=sms_relay_down failed=${relayFailed} at=${new Date(now).toISOString()}\n${msg}`,
+        tags: ["watchdog", "sms_relay_down", "urgent"],
+        priority: "high",
+      }),
+    }).catch(() => {});
+  }
+  const smsRelay = { sent: relaySent, failed: relayFailed, down: relayFailed >= 2 && relaySent === 0, alerted: smsRelayDown && !dryRun };
+
   // ---- THE SILENCE ALARM ---------------------------------------------------
   // Every other category here watches a trade that already exists. Nothing
   // watched for the funnel producing no trades at all, which is the more
@@ -264,7 +326,7 @@ export async function GET(req: NextRequest) {
   const silentDays = Math.floor(silentForMs / D);
 
   if (flags.length === 0 && !noLeadsAlarm && !goSilentAlarm) {
-    return NextResponse.json({ ok: true, flagged: 0, lastLeadAt: lastLeadTs || null, silentDays, goActive24, goActivePriorWeek });
+    return NextResponse.json({ ok: true, flagged: 0, lastLeadAt: lastLeadTs || null, silentDays, goActive24, goActivePriorWeek, smsRelay });
   }
 
   if (noLeadsAlarm && !dryRun) {
@@ -289,7 +351,7 @@ export async function GET(req: NextRequest) {
   }
 
   if (flags.length === 0) {
-    return NextResponse.json({ ok: true, flagged: 0, noLeadsAlarm, goSilentAlarm, goActive24, goActivePriorWeek, silentDays, dryRun });
+    return NextResponse.json({ ok: true, flagged: 0, noLeadsAlarm, goSilentAlarm, goActive24, goActivePriorWeek, silentDays, smsRelay, dryRun });
   }
 
   // Build the digest, grouped by category (urgent first).
@@ -314,6 +376,7 @@ export async function GET(req: NextRequest) {
       wouldSms: flags.filter((f) => RULES[f.cat].urgent).length > 0,
       noLeadsAlarm,
       goSilentAlarm,
+      smsRelay,
       goActive24,
       goActivePriorWeek,
       silentDays,

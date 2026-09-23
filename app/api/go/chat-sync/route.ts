@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
   // would let a stranger's label marker land on someone else's lead.
   // "price moved at lock" is written by the lock route now (the page no
   // longer posts it) — a forged one would show the console a fake repricing.
-  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|price moved|SMS|LEAD-ID|LABEL|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
+  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|price moved|SMS|Email sent|Email FAILED|LEAD-ID|LABEL|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
   await appendChatMsg(sid, "note", text);
   return NextResponse.json({ ok: true });
 }

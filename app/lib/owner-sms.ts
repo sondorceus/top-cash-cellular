@@ -9,6 +9,7 @@
 // ~dozen call sites.
 import { mailShell, esc, MAIL } from "./email-shell";
 import { sendSellerSms } from "./seller-sms";
+import { contactedLink } from "./lead-token";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -64,7 +65,7 @@ function isTrustedAlertUrl(u: string): boolean {
 // Email alert via Resend — the channel that actually reaches Sonny. The first
 // trusted URL in the message (the 🤫 takeover/mute link when present) becomes
 // a real button; the rest renders as the alert text.
-async function sendEmailAlert(body: string): Promise<boolean> {
+async function sendEmailAlert(body: string, leadId?: string): Promise<boolean> {
   const to = process.env.OWNER_EMAIL || "";
   const key = process.env.RESEND_API_KEY || "";
   if (!to || !key) return false;
@@ -96,14 +97,23 @@ async function sendEmailAlert(body: string): Promise<boolean> {
       : `Hi, this is Top Cash Cellular about ${device ? `your ${device}` : "the device you quoted with us"} — `);
     const who = isShopClaim ? "buyer" : "seller";
     const mailSubject = isShopClaim ? "Your Top Cash Cellular shop reservation" : "Your Top Cash Cellular offer";
+    // "I reached out" in one tap (2026-09-23 review: 26 leads, one status
+    // flip): a signed GET that writes a [LEAD-CONTACTED] marker on MC, so the
+    // watchdog stops nagging about this lead. Only alerts that carry the
+    // lead's MC id (lock, chat lead, email fallback) get the pill.
+    const contactedUrl = leadId ? contactedLink(leadId) : null;
     const pill = (href: string, label: string) => `<a href="${href}" style="display:inline-block;margin:4px 6px 0 0;padding:9px 14px;border-radius:999px;background:#1a1a1a;border:1px solid #2a2a2a;color:#ffffff;font-size:13px;font-weight:600;text-decoration:none;">${label}</a>`;
     const actions = [
       sellerPhone && sellerPhone !== OWNER_PHONE.replace(/\D/g, "").slice(-10) ? pill(`sms:+1${sellerPhone}?&body=${opener}`, `💬 Text the ${who}`) : "",
       sellerPhone && sellerPhone !== OWNER_PHONE.replace(/\D/g, "").slice(-10) ? pill(`tel:+1${sellerPhone}`, "📞 Call") : "",
       sellerEmail && !/topcashcellular\.com$/i.test(sellerEmail) ? pill(`mailto:${sellerEmail}?subject=${encodeURIComponent(mailSubject)}&body=${opener}`, `✉️ Email the ${who}`) : "",
       consoleUrl && consoleUrl !== url ? pill(consoleUrl, "Open the chat") : "",
+      contactedUrl ? pill(contactedUrl, "✅ Mark contacted") : "",
     ].filter(Boolean).join("");
-    const actionsHtml = actions ? `<div style="text-align:center;margin-top:14px;">${actions}</div>` : "";
+    const actionsHtml = actions
+      ? `<div style="text-align:center;margin-top:14px;">${actions}</div>` +
+        (contactedUrl ? `<div style="color:${MAIL.muted};font-size:12px;text-align:center;margin-top:8px;">Mark contacted = you reached out, so the watchdog stops nagging. It doesn't change the lead's status.</div>` : "")
+      : "";
     const noUrl = url ? body.replace(url, "") : body;
     // Multi-line alerts render organized: line 1 = subject + title, every
     // other line its own row. The 🤫 link-label line is dropped — the button
@@ -163,8 +173,8 @@ async function sendRelaySms(body: string): Promise<boolean> {
   return sendSellerSms(OWNER_PHONE, body.replace(/[ \t]+/g, " ").trim().slice(0, 460));
 }
 
-export async function notifyOwnerSms(body: string): Promise<boolean> {
-  const [sms, mail, relay] = await Promise.allSettled([sendSms(body), sendEmailAlert(body), sendRelaySms(body)]);
+export async function notifyOwnerSms(body: string, opts?: { leadId?: string }): Promise<boolean> {
+  const [sms, mail, relay] = await Promise.allSettled([sendSms(body), sendEmailAlert(body, opts?.leadId), sendRelaySms(body)]);
   return (
     (sms.status === "fulfilled" && sms.value) ||
     (mail.status === "fulfilled" && mail.value) ||

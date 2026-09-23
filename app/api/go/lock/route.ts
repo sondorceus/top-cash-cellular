@@ -42,9 +42,8 @@ import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { appendChatMsg, readChat, validSession, validGoSession, rememberPhoneSession } from "../../../lib/gochat-store";
 import { sendCapiLead } from "../../../lib/meta-capi";
 import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
-import { sidToken } from "../../../lib/go-sid-token";
-import { mailShell, esc, MAIL } from "../../../lib/email-shell";
 import { after } from "next/server";
+import { sendLockConfirmationEmail, goChatLink, lockDateLabel, LOCK_DAYS } from "../../../lib/lock-confirmation";
 import { resolveGoSpec, goQuote, type GoSpec } from "../../../go/spec";
 import { leadSourceLine } from "../../../lib/lead-source";
 import { clientGeo, AREA_WORDS } from "../../../lib/geo";
@@ -52,9 +51,6 @@ import { MANUAL_REVIEW_DEVICES } from "../../../data/prices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
-const RESEND_KEY = process.env.RESEND_API_KEY || "";
-// The published promise: every quoted number holds 14 days.
-const LOCK_DAYS = 14;
 
 // Same scrub as /api/lead's cleanField: brackets (the admin parser keys on
 // [STATUS:]/[LEAD:] markers anywhere in a comm body) AND newlines/tabs —
@@ -70,9 +66,6 @@ function sanitize(s: string): string {
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
 const PHONE_RE = /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
 
-function lockDateLabel(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" });
-}
 
 // The seller-facing confirmation. One text or one email, about THIS quote
 // only — the number they typed into "your number — we text you the quote".
@@ -81,8 +74,7 @@ async function sendConfirmation(opts: {
   lockUntil: string; sessionId: string;
 }): Promise<{ sent: boolean; channel: "sms" | "email" | "none"; reason?: string }> {
   const { contact, isEmail, spec, offer, lockUntil, sessionId } = opts;
-  const tok = validGoSession(sessionId) ? sidToken(sessionId) : "";
-  const link = `https://topcashcellular.com/go${tok ? `?sid=${sessionId}&k=${tok}` : ""}`;
+  const link = goChatLink(sessionId);
   const dev = spec.storage === "base" && !spec.entry.storageLabels ? spec.entry.label : `${spec.entry.label} ${spec.display.storage}`;
   const until = lockDateLabel(lockUntil);
   if (!isEmail) {
@@ -101,35 +93,8 @@ async function sendConfirmation(opts: {
       : `Top Cash Cellular: we're pricing your ${dev} by hand — we'll text you a real offer shortly. Reply MEET if you're in the Austin area or SHIP for a free FedEx label. Your chat: ${link} — Reply STOP to opt out.`;
     return { sent: await sendSellerSms(contact, body), channel: "sms" };
   }
-  if (!RESEND_KEY) return { sent: false, channel: "email", reason: "no resend key" };
-  try {
-    const { Resend } = await import("resend");
-    const resend = new Resend(RESEND_KEY);
-    const title = offer != null ? `Locked in — $${offer} for your ${esc(dev)}` : `We're pricing your ${esc(dev)} by hand`;
-    const intro = offer != null
-      ? `That number holds until <strong style="color:${MAIL.ink}">${esc(until)}</strong> if the device matches what you told us. Meet up in the Austin area for cash on the spot, or we send a free FedEx label — your pick. Reply to this email with <strong style="color:${MAIL.ink}">MEET</strong> or <strong style="color:${MAIL.ink}">SHIP</strong>, or pick it back up in your chat.`
-      : `We'll send you a real offer shortly. Reply to this email with <strong style="color:${MAIL.ink}">MEET</strong> if you're in the Austin area or <strong style="color:${MAIL.ink}">SHIP</strong> for a free FedEx label, or pick it back up in your chat.`;
-    const r = await resend.emails.send({
-      from: "Top Cash Cellular <noreply@topcashcellular.com>",
-      replyTo: "support@topcashcellular.com",
-      to: contact,
-      subject: offer != null ? `Your ${dev} offer is locked — $${offer} until ${until}` : `Your ${dev} — we're pricing it by hand`,
-      html: mailShell({
-        preheader: offer != null ? `$${offer} locked until ${until}` : "a real offer is on the way",
-        eyebrow: "Your offer",
-        title,
-        introHtml: `<span style="color:${MAIL.body}">${intro}</span>`,
-        buttonHref: link,
-        buttonLabel: "Open my chat",
-      }),
-      text: offer != null
-        ? `Your ${dev} offer is locked at $${offer} until ${until}. Reply MEET for a cash meetup in the Austin area or SHIP for a free FedEx label. Your chat: ${link}`
-        : `We're pricing your ${dev} by hand and will send a real offer shortly. Reply MEET if you're in the Austin area or SHIP for a free FedEx label. Your chat: ${link}`,
-    });
-    return { sent: !r.error, channel: "email", reason: r.error ? String(r.error.message || "resend error") : undefined };
-  } catch (e) {
-    return { sent: false, channel: "email", reason: e instanceof Error ? e.message : "threw" };
-  }
+  const r = await sendLockConfirmationEmail({ to: contact, dev, offer, lockUntil, sessionId });
+  return { sent: r.sent, channel: "email", reason: r.reason };
 }
 
 export async function POST(req: NextRequest) {
@@ -311,6 +276,9 @@ export async function POST(req: NextRequest) {
   // seller's retap then wrote a second lead and a second alert.
   const alertP = notifyOwnerSms(
     `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\n📍 ${geo.label}${geo.area === "metro" ? "" : ` (${AREA_WORDS[geo.area]})`}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}`,
+    // The lead's MC id rides along → the alert email gets the one-tap
+    // "✅ Mark contacted" pill (app/lib/lead-token.ts).
+    leadId ? { leadId } : undefined,
   ).catch((e) => {
     console.error("[go/lock] owner alert threw:", e);
     return false;

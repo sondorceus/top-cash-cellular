@@ -233,7 +233,8 @@ type Msg =
   | { from: "bot"; kind: "numberform"; done?: boolean }
   // until: ISO lock deadline from /api/go/lock — rendered as "holds until <date>"
   // confirmed: sms/email = delivered before the response; pending = still sending; failed = channel refused
-  | { from: "bot"; kind: "locked"; offer: number | null; until?: string; confirmed?: "sms" | "email" | "pending" | "failed" }
+  // contact: what they locked with — a phone whose text failed gets the email fallback form under the card
+  | { from: "bot"; kind: "locked"; offer: number | null; until?: string; confirmed?: "sms" | "email" | "pending" | "failed"; contact?: string }
   // Shipping handoff: address form → FedEx label minted on the spot.
   | { from: "bot"; kind: "shipform"; done?: boolean }
   | { from: "bot"; kind: "label"; tracking: string; url: string }
@@ -1130,6 +1131,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             offer: offer != null && !manualFlavor ? offer : null,
             until: typeof d.lockUntil === "string" ? d.lockUntil : undefined,
             confirmed: d.confirmed === "sms" || d.confirmed === "email" || d.confirmed === "failed" ? d.confirmed : "pending",
+            contact: c,
           },
           {
             from: "bot",
@@ -1662,7 +1664,15 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                       <span className="text-white/60 font-normal"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}.</span>
                     )}
                   </div>
-                  <div className="text-[14px] text-white/70 mt-1">{m.confirmed === "sms" ? "we just texted you the details. " : m.confirmed === "email" ? "we just emailed you the details. " : m.confirmed === "pending" ? "we\u2019ll text you the details shortly. " : ""}{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                  <div className="text-[14px] text-white/70 mt-1">{m.confirmed === "sms" ? "we just texted you the details. " : m.confirmed === "email" ? "we just emailed you the details. " : m.confirmed === "pending" ? "we\u2019ll text you the details shortly. " : m.confirmed === "failed" && m.contact && !m.contact.includes("@") ? "our texts aren\u2019t going through right now \u2014 drop an email below and we\u2019ll send the details there. " : ""}{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                  {/* The text failed (relay down / opted out): one email field,
+                      newest lock only, and the card flips to "emailed" on success. */}
+                  {m.confirmed === "failed" && m.contact && !m.contact.includes("@") && i === lastLockedIdx(msgs) && (
+                    <EmailFallbackForm
+                      sessionId={sessionId}
+                      onDone={() => setMsgs((cur) => cur.map((x, j) => (j === i && "kind" in x && x.kind === "locked" ? { ...x, confirmed: "email" as const } : x)))}
+                    />
+                  )}
                 </div>
               </div>
             );
@@ -2094,6 +2104,67 @@ function ModelPicker({ rows, line, onLine, onPick, onOther, busy }: {
 // The opt-in phone field behind the "leave my number" chip. Goes through
 // send() as a plain message, so the server's contact detection, lead post,
 // owner alert and pixel all fire exactly as for a typed number.
+function lastLockedIdx(list: Msg[]): number {
+  for (let j = list.length - 1; j >= 0; j--) {
+    const x = list[j];
+    if ("kind" in x && x.kind === "locked") return j;
+  }
+  return -1;
+}
+
+// Under a locked card whose confirmation TEXT failed (2026-09-23: the relay
+// was down for a week and the card had promised a text): one email field →
+// /api/go/confirm-email sends the same confirmation by email and parks the
+// address for the team. Phone contacts only — an email contact already got it.
+function EmailFallbackForm({ sessionId, onDone }: { sessionId: string; onDone: () => void }) {
+  const [v, setV] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+  return (
+    <form
+      className="mt-2 flex flex-col gap-2"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        if (!ok || busy) return;
+        setBusy(true);
+        setErr("");
+        try {
+          const r = await fetch("/api/go/confirm-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId, email: v.trim() }),
+          });
+          const d = await r.json().catch(() => ({}));
+          if (r.ok && d?.ok) onDone();
+          else setErr(typeof d?.error === "string" ? d.error : "couldn\u2019t send that \u2014 try once more");
+        } catch {
+          setErr("couldn\u2019t send that \u2014 try once more");
+        }
+        setBusy(false);
+      }}
+    >
+      <div className="flex gap-2">
+        <input
+          value={v}
+          onChange={(e) => setV(e.target.value)}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder="your email"
+          aria-label="your email"
+          disabled={busy}
+          className="flex-1 min-w-0 px-4 py-[10px] rounded-full bg-white/[0.06] border border-white/15 text-[16px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+        />
+        <button type="submit" disabled={busy || !ok} className="tcc-button-primary px-4 py-[10px] rounded-full text-[15px] font-bold shrink-0 disabled:opacity-40">
+          {busy ? "\u2026" : "send"}
+        </button>
+      </div>
+      {err && <div className="text-[13px] text-[#ff8a80]">{err}</div>}
+    </form>
+  );
+}
+
 function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: string) => void }) {
   const [v, setV] = useState("");
   const ok = v.replace(/\D/g, "").length >= 10 || v.includes("@");
