@@ -147,9 +147,40 @@ Chrome and say "launch the retarget"; the agent builds the audience (Audiences �
 → Website, rules as above), the campaign/ad set/ad with the settings above, and uploads
 the PNG with the media-picker patch from `.claude/skills/make-ads/SKILL.md`.
 
+## 3b. Reels video ad — LIVE 2026-09-23 (in Meta review)
+
+Built by hand in Ads Manager (Sonny: "we have to make video, you take full control").
+Ad `payout board — reels video` (120253455870570577) sits in the main Austin ad set
+(120252918721740577, $35/day) next to the two image ads, so it competes for the same
+budget and Meta will shift spend toward whichever creative wins.
+
+- **Creative:** `scripts/ad-assets/out/reel-9x16.mp4` from `gen-reel.mjs` +
+  `encode-frames.swift` (12 s, 1080×1920, silent; live prices $1,425 / $600 / $371,
+  final card "get paid today"). No Meta music was added — add it later if the Reels
+  placement wants audio (Opportunity-score item "Reels video with audio").
+- **Text:** same primary text and headline as the image ads (`Tap What You Got — Cash
+  Today`), description empty, CTA **Get quote**.
+- **Destination:** `https://topcashcellular.com/go?src=fb1`, display link
+  `topcashcellular.com/go`, browser add-on **None** (default was Messenger),
+  multi-advertiser ads **off**, pixel TCC Web.
+- **Every Meta AI extra is off:** video touch-ups, text improvements, add details to ad
+  layout, website summaries, website highlights, site links, enhance CTA, show
+  spotlights, add video effects, "reveal details over time". Only "relevant comments"
+  stays on. Entering the website URL silently turns several of these back on — recheck
+  Creative setup (should read 0/3) and Essential enhancements (1/4) after any URL edit.
+- Expected warning: "won't deliver to Facebook right column" (desktop-only, image-only).
+- Published alone ("1 ad was published"); the retarget campaign's 3 drafts and
+  "July run - Copy" are still unpublished.
+
+**What to watch (first 7 days):** in the Ads tab with Breakdown → Placement, compare
+cost per Website Lead of the video vs the two image ads. Before this ad, FB Reels
+was 3 leads / $16.32 in 30 days on image creative; the video should take more of
+the Reels/Stories delivery. If the video's cost per lead is >2× the image ads after
+~$100 of spend, pause it rather than let Meta keep testing it.
+
 ## 4. Budget guardrails
 
-- Keep one main ad set at $20/day; do not add a second cold ad set until the first has 7
+- Keep one main ad set at $35/day (raised from $20 on 2026-09-23); do not add a second cold ad set until the first has 7
   continuous delivering days.
 - If the account balance is what stops delivery, set a balance alert in Meta Billing
   and keep a card with headroom on file. The `go_silent` watchdog text is the backstop,
