@@ -26,6 +26,22 @@ or the /go page itself) — the table moves.
   chat that asked for a phone number before showing a number. All three now quote
   instantly like phones (the ad copy can say "phones, iPads, MacBooks, consoles" honestly).
 
+## 0. The Austin leak — found 2026-09-23 (not yet fixed on the live set)
+
+The live ad set `Austin broad — /go — Lead` (120252918721740577) targets Austin, TX +25 mi,
+but its location control has **"Reach more people likely to respond to your ads — also
+show ads to people who are interested in or near this location"** switched ON (Meta's
+default). That is why Dallas / Houston / San Antonio / out-of-state sellers keep
+messaging: Meta is allowed to serve the Austin ad to anyone "interested in" Austin.
+Fix = Edit the ad set → Audience → Locations (pencil) → uncheck that box → Publish.
+It's a targeting edit on a live set, so it restarts the learning phase. Meta's Review tab
+does not show this box; open the Locations editor to see it.
+
+Gotcha seen while building the retarget set: unchecking the box right after picking a
+new location silently reverted the location to "United States" (twice). Pick the
+location, wait for "All edits saved", reload and confirm it in the Review tab, THEN
+uncheck the box, and reload/confirm again.
+
 ## 1. Primary text (replace the current one)
 
 Current: "got a phone you're done with? tap what you got — real number in 30 seconds. no
@@ -98,9 +114,12 @@ in Chrome has to be signed in on Sonny's Chrome).
 **Draft state (2026-09-23, built in Sonny's Chrome):** campaign
 `TCC GO - Retarget (visited or quoted, no contact)` (120253453374960577, Awareness, ad
 set budget) → ad set `Retarget - /go visited or quoted, no contact - reach`
-(120253453374980577: Maximize reach, cap 3 per 7 days, $5/day from Sep 23, no end, US
-18+, the audience above with Advantage+ audience OFF, placements Facebook + Instagram
-feeds/profile feeds + FB/IG Stories only) → ad `New Awareness Ad` (120253453374970577) —
+(120253453374980577: Maximize reach, cap 3 per 7 days, $5/day from Sep 23, no end,
+Austin, TX +25 mi 18+ with the "interested in or near" expansion OFF (Sonny 2026-09-23:
+"austin only"), the audience above with Advantage+ audience OFF, placements Facebook +
+Instagram feeds/profile feeds + FB/IG Stories only). Campaign score 42: the missing
+points are Meta's own widen-the-audience suggestions (Advantage+ placements +46,
+reach outside the location +12), both deliberately declined) → ad `New Awareness Ad` (120253453374970577) —
 still EMPTY (no media/text). Finishing it: open the draft, name it, Identity = Top Cash
 Cellular (+ Instagram), Set up creative → upload `retarget-square.png` (feeds) and
 `retarget-story.png` (stories), the copy above, Website URL, turn OFF translations /
