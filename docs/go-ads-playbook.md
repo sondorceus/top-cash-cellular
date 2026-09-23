@@ -26,16 +26,21 @@ or the /go page itself) — the table moves.
   chat that asked for a phone number before showing a number. All three now quote
   instantly like phones (the ad copy can say "phones, iPads, MacBooks, consoles" honestly).
 
-## 0. The Austin leak — found 2026-09-23 (not yet fixed on the live set)
+## 0. The Austin leak — found and FIXED 2026-09-23
 
 The live ad set `Austin broad — /go — Lead` (120252918721740577) targets Austin, TX +25 mi,
 but its location control has **"Reach more people likely to respond to your ads — also
 show ads to people who are interested in or near this location"** switched ON (Meta's
 default). That is why Dallas / Houston / San Antonio / out-of-state sellers keep
 messaging: Meta is allowed to serve the Austin ad to anyone "interested in" Austin.
-Fix = Edit the ad set → Audience → Locations (pencil) → uncheck that box → Publish.
-It's a targeting edit on a live set, so it restarts the learning phase. Meta's Review tab
-does not show this box; open the Locations editor to see it.
+FIXED 2026-09-23 (Sonny: "fix the leak"): the box is unchecked and published; the
+estimated audience went from 9.7–11.4M to 3.0–3.5M. Learning restarted. Meta's Review
+tab does not show this box; open the Locations editor to see it. Same day: budget
+$20 → $35/day (Sonny), "Conversions API with Meta" connected (Meta-hosted server copy
+of pixel events, dedups on event_id with our own CAPI), and the card hold that had
+stopped delivery was funded. Placement breakdown (30d, before the fix): Facebook Feed
+in-app 12 leads / $74.89, FB Reels 3 / $16.32, Marketplace 1 / $2.94, Instagram ≈9 leads
+/ ≈$39, everything else under $3 — no placement worth cutting.
 
 Gotcha seen while building the retarget set: unchecking the box right after picking a
 new location silently reverted the location to "United States" (twice). Pick the
