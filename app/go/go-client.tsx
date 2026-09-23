@@ -1136,11 +1136,26 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             kind: "chips",
             q: "how do you want to get paid?",
             dim: "handoff",
-            options: [
-              { key: "meet", label: "meet in austin — cash on the spot" },
-              { key: "ship", label: "ship it — free label" },
-              { key: "later", label: "not sure yet" },
-            ],
+            // Out-of-area sellers (most of the ad traffic, review 2026-09-23:
+            // Dallas / Houston / San Antonio / Phoenix / CA) get the label
+            // first; outside Texas the meetup isn't offered at all.
+            options:
+              visitorArea === "us" || visitorArea === "intl"
+                ? [
+                    { key: "ship", label: "ship it — free label, paid the day it lands" },
+                    { key: "later", label: "not sure yet" },
+                  ]
+                : visitorArea === "tx"
+                  ? [
+                      { key: "ship", label: "ship it — free label, paid the day it lands" },
+                      { key: "meet", label: "I can drive to austin — cash on the spot" },
+                      { key: "later", label: "not sure yet" },
+                    ]
+                  : [
+                      { key: "meet", label: "meet in austin — cash on the spot" },
+                      { key: "ship", label: "ship it — free label" },
+                      { key: "later", label: "not sure yet" },
+                    ],
           },
         );
         return null;
@@ -1230,11 +1245,28 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         // The server decides when a typed "i wanna ship" opens the address
         // form (locked quote, no label yet) or re-shows an issued label —
         // it is the only side that can read the session's own notes.
+        // A chat-path engine quote on a phone the board knows gets the same
+        // quote card + lock form the chip flow shows (review 2026-09-23: chat-
+        // quoted sellers — $955 17 Pro Max, $440 15 Pro Max — had no way to
+        // lock, so no confirmation and no label).
+        const qs = d?.quoteSpec as { model?: string; storage?: string; condition?: string; carrier?: string; offer?: number } | undefined;
+        const qRow = qs && typeof qs.offer === "number" && !lastLockRef.current ? rows.find((x) => x.id === qs.model && x.cat === "phone") : undefined;
+        if (qRow && qs) {
+          setGRow(qRow);
+          setGSpec({ storage: qs.storage, condition: qs.condition, carrier: qs.carrier });
+        }
+        const lockExtra: Msg[] = qRow && qs
+          ? [{ from: "bot", kind: "quote", label: quoteLabel(qRow, String(qs.storage || qRow.storages[0] || "")), offer: qs.offer as number }, { from: "bot", kind: "lockform", manual: false }]
+          : [];
+        // "xbox series x" / "ipad" / "macbook" typed on this page: the server
+        // says which tile picker to open under the reply.
+        const catGroup = d?.widget === "category" ? CATEGORIES.find((c) => c.deterministic === d?.group) : undefined;
+        if (catGroup) setTimeout(() => categoryTap(catGroup), 0);
         const extra: Msg[] =
           d?.widget === "shipform" ? [{ from: "bot", kind: "shipform" }]
           : d?.widget === "label" && d?.label?.tracking && d?.label?.url ? [{ from: "bot", kind: "label", tracking: String(d.label.tracking), url: String(d.label.url) }]
           : [];
-        setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }, ...extra]);
+        setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }, ...lockExtra, ...extra]);
       }
     } catch {
       // kind:"err" keeps this local-only bubble OUT of the history sent to

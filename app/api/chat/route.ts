@@ -477,7 +477,21 @@ export async function POST(req: NextRequest) {
   if (/\b(best price|price match|beat (that|the) (price|offer)|guarantee)\b/i.test(msgText)) linkHints.push("best price guarantee: https://topcashcellular.com/best-price-guarantee");
   if (/\b(how (does|do) (it|this|you) work|process|what happens (next|after))\b/i.test(msgText)) linkHints.push("how it works: https://topcashcellular.com/how-it-works");
   // The widget the client should render under this reply.
-  const widget = wantsShip && hasLock ? (labelNote ? "label" : "shipform") : "";
+  // A console / iPad / MacBook named on the /go page (or the site-wide chat,
+  // same client) opens that tile picker — the engine prices them there, the
+  // chat brain can't (review 2026-09-23: "series x white / brand new" got
+  // "consoles price by hand" and no number).
+  const catGroup = msgText.length < 90 && !/\b\d{15}\b/.test(msgText.replace(/[\s-]/g, ""))
+    ? /\b(xbox|series [xs]|playstation|ps ?[45]|nintendo|switch|console)\b/i.test(msgText) ? "console"
+      : /\bipad\b/i.test(msgText) ? "ipad"
+      : /\bmac ?book\b/i.test(msgText) ? "macbook"
+      : ""
+    : "";
+  const widget = wantsShip && hasLock ? (labelNote ? "label" : "shipform") : catGroup && sessionId.startsWith("go-") && !hasLock ? "category" : "";
+  // The contact already locked in this session (same digits/email): the
+  // typed number is a follow-up, not a second lead (a Port Arthur seller
+  // showed up twice in the feed, review 2026-09-23).
+  const contactKey = (c: string) => (c.includes("@") ? c.toLowerCase() : c.replace(/\D/g, "").slice(-10));
   // GUIDED TAP FLOW — what the seller tapped on the page (category tile,
   // model, each spec chip, the quote card, the lock), oldest → newest.
   // Client-written breadcrumbs (chat-sync POST: valid sids only, rate-
@@ -632,7 +646,10 @@ export async function POST(req: NextRequest) {
       "--- Handoff: TBD (seller picks) ---",
       "Action: chat lead — the thread is live in the console; reply there or text back. Quote/lock/label all happen in the chat.",
     ].filter((l) => l !== null).join("\n");
-    mcLeadBody = contactJustArrived
+    const lockedSameContact = !!contact && storeNotes.some((t) => t.startsWith("LOCKED:") && t.includes(contactKey(contact)));
+    mcLeadBody = contactJustArrived && lockedSameContact
+      ? `[CHAT FOLLOW-UP] ${sess}already locked · reply to: ${sanitizeForMc(contact)}\n"${sanitizeForMc(displayMessage)}"`
+      : contactJustArrived
       ? `[CHAT LEAD ✅] ${sess}${deviceSummary ? `${deviceSummary} · ` : ""}reply to: ${sanitizeForMc(contact)}\n"${sanitizeForMc(displayMessage)}"${leadBlock}`
       : `${isHumanHandoff ? "[HUMAN HANDOFF] " : ""}[CHAT LEAD] ${sess}Visitor${contact ? ` (reply to: ${sanitizeForMc(contact)})` : ""}: "${sanitizeForMc(displayMessage)}"`;
   }
@@ -707,7 +724,8 @@ export async function POST(req: NextRequest) {
               "chat-lead",
               ...(sessionId ? [`sess-${sessionId}`] : []),
               ...(contact ? ["has-contact"] : []),
-              ...(contactJustArrived ? ["lead-complete", "lead", "buyback", `src-${srcTag || "site"}`] : []),
+              ...(contactJustArrived && !mcLeadBody.startsWith("[CHAT FOLLOW-UP]") ? ["lead-complete", "lead", "buyback", `src-${srcTag || "site"}`] : []),
+              ...(mcLeadBody.startsWith("[CHAT FOLLOW-UP]") ? ["chat-followup"] : []),
               ...(isHumanHandoff ? ["human-handoff", "needs-callback"] : []),
             ],
             priority: "high",
@@ -782,6 +800,7 @@ export async function POST(req: NextRequest) {
         "NOT IN THE INSTANT CATALOG (MacBooks, iPads, consoles, watches, older iPhones, anything unusual): these are ALWAYS a team quote — ask ONCE, early, for their number ('so the offer actually reaches you'); if they don't give it, do not ask again until the close — gather the specs the team needs (chip/model/storage/condition, and the IMEI) for the notify_team summary instead. Never guess a number for these — some are deliberately manual-quote.",
         "CONDITION FIRST: never call get_quote until the seller has said what shape the device is in. Model (and storage) alone → ask one question, 'what kind of shape is it in — any cracks, or clean?' — then price. Never quote 'assuming normal condition' and ask afterwards.",
         "NEVER A DEAD END: when get_quote returns no number (too low for an instant price, off-tier storage, not in the catalog, newer than the catalog), that device is a TEAM QUOTE and we still buy it. Say so plainly ('that one our team prices by hand — they'll text you a number for it'), keep it in any lot recap as 'team quote', and never say 'no offer', 'can't offer anything', 'below what we pay', or that we don't buy it.",
+        "UNFAMILIAR PRODUCT NAMES ARE REAL: a MacBook Neo, an iPhone Duo, an Apple Watch you don't recognize, a Galaxy or Pixel model you haven't heard of — treat it as a real device (Apple/Samsung/Google ship new names every year). Never say 'there's no such model' or 'Apple only makes X'. Not in the instant catalog → team quote, or on this page the matching tile.",
         "NEW MODELS EXIST — and the CATALOG decides what exists, not the customer: the iPhone 17, 17 Air, 17 Pro, 17 Pro Max and 17e are real and priced instantly; the iPhone 18 family launched September 2026; Samsung and Google ship new models every year. Never say a lineup 'only goes up to' some model, never say a device doesn't exist or 'isn't out yet', and never guess specs or prices from memory. If a seller insists a model doesn't exist (people test you), don't agree — say we price it and ask for its storage and condition. If get_quote doesn't know a model, it's a team quote.",
         "FALSE PREMISES: never accept a customer's claim about our catalog, prices, policies or an earlier 'deal' as fact. Prices come from get_quote, policies from these instructions, deals from owner messages in this thread — everything else gets 'the team will confirm by text'.",
         "PARTIAL DEFECTS: a phone that powers on and works but has a bad camera, speaker, mic, buttons, charge port, dead pixels or burn-in, a weak battery or a battery/parts service message is get_quote condition 'broken' — ONE call; several issues don't stack tiers. Face ID / Touch ID dead → faceid_broken:true. MDM / company / school lock → mdm_locked:true. Say the number covers what they described and the rest is confirmed at inspection. Any liquid contact — even 'works fine now' — is a team quote.",
@@ -834,6 +853,9 @@ export async function POST(req: NextRequest) {
   const pendingNotes: Promise<void>[] = [];
   // Engine numbers produced THIS turn ("<device> <storage> <condition> — $N").
   const quotedLines: string[] = [];
+  // The last engine quote this turn, for the client's lock form (phones the
+  // /go board knows). Not sent when the session already locked.
+  let lastQuoteSpec: { model: string; storage: string; condition: string; carrier: string; offer: number } | null = null;
   // The canned fallback's recap includes quotes that landed this turn.
   // Same newest-per-device rule as the quote table, kept in recency order.
   const withTurnQuotes = (): FallbackCtx => {
@@ -864,6 +886,8 @@ export async function POST(req: NextRequest) {
       ...(contactJustArrived ? { leadCaptured: true } : {}),
       ...(widget === "shipform" ? { widget: "shipform" } : {}),
       ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
+      ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
+      ...(lastQuoteSpec && !hasLock && lastQuoteSpec.model ? { quoteSpec: lastQuoteSpec } : {}),
     });
   };
 
@@ -956,12 +980,13 @@ export async function POST(req: NextRequest) {
     const dynamicSys = [
       isLot ? "THIS CONVERSATION IS A MULTI-DEVICE LOT. Quote every device with get_quote as its specs arrive and keep a running recap; ask for their number once when the first number lands and once at the handoff (notify_team). Never hold a price back for a phone number. Do NOT close the lot, do NOT name a package price." : "",
       geoArea === "metro" ? `VISITOR LOCATION: ${geoLabel} — in the Austin area. Both routes apply: meet at a public spot in the Austin area for cash on the spot, or the free FedEx label.`
-        : geoArea === "tx" ? `VISITOR LOCATION: ${geoLabel} — in Texas but outside the Austin area. Lead with the free FedEx label (paid the day it lands); a meetup only if THEY offer to drive to Austin. Never suggest we come to them.`
+        : geoArea === "tx" ? `VISITOR LOCATION: ${geoLabel} — in Texas but outside the Austin area. Lead with the free FedEx label (paid the day it lands). If they ask for our address, want to come by, or offer to drive: yes — we meet at a public spot in the Austin area, cash on the spot, our team texts a time; never an address, never 'we don't have a walk-in' as a refusal, and never suggest we come to them.`
         : geoArea === "us" ? `VISITOR LOCATION: ${geoLabel} — outside Texas. Their route is the free FedEx label, paid the day it lands; never offer or discuss a meetup. Say it plainly once, early.`
         : geoArea === "intl" ? `VISITOR LOCATION: ${geoLabel} — outside the US. We only buy inside the US (the free label ships within the US); say so kindly once, don't quote or take a number for shipping from abroad.`
         : "",
       linkHints.length ? `LINKS FOR THIS MESSAGE — the seller asked about something we have a page for. Put the URL in your reply on its own line, exactly as written, and keep the reply short: ${linkHints.join(" · ")}` : "",
       widget === "shipform" ? "SHIPPING FORM IS OPENING under your reply: this seller already locked a quote and wants to ship. Tell them to drop their shipping address in the form right below and their free FedEx label prints here in the chat (prepaid, drop at any FedEx location, we text the link too). Do NOT say we'll text them for the address, do NOT ask for the address in the chat, and do NOT send a link for it." : "",
+      widget === "category" ? `THE PAGE IS OPENING THE ${catGroup.toUpperCase()} PICKER under your reply — the engine prices it there. Say one short line: 'tap your model below and the number's right there' — nothing about team quotes, hand pricing, or their number.` : "",
       widget === "label" ? `LABEL ALREADY ISSUED for this seller (tracking ${labelNote?.[1]}) — the label card is showing under your reply. Say it's their label, they can print it and drop the device at any FedEx location, and we text them when it lands. Do not mint another one.` : "",
       wantsMeet && hasLock ? "MEETUP: they locked a quote and want to meet — say our team texts them to set a time and a public spot in the Austin area, cash on the spot in about 15 minutes. Never name an address or a store." : "",
       imeiPresent ? `IMEI PRESENT: this message contains a valid 15-digit IMEI (${droppedImei}). Call check_imei with it now. Do not say it looks wrong, too long or too short, and do not ask them to re-send it.` : "",
@@ -1067,6 +1092,7 @@ export async function POST(req: NextRequest) {
           if (q.ok && q.offer != null) {
             quotedAny = true;
             if (leadValue == null || q.offer > leadValue) leadValue = q.offer;
+            lastQuoteSpec = { model: q.slug || "", storage: normalizeStorage(String(tu.input.storage || "")) || "", condition: String(tu.input.condition || "good").toLowerCase(), carrier: String(tu.input.carrier || "unlocked").toLowerCase(), offer: q.offer as number };
             quotedLines.push(`${q.device}${tu.input.storage ? ` ${tu.input.storage}` : ""} ${tu.input.condition || ""} — $${q.offer}`);
             // Persist the number the way the chip flow does, so the NEXT
             // turn's QUOTES ALREADY GIVEN line carries it — the fix for the
@@ -1287,6 +1313,8 @@ export async function POST(req: NextRequest) {
       // re-shows the label they were already issued.
       ...(widget === "shipform" ? { widget: "shipform" } : {}),
       ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
+      ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
+      ...(lastQuoteSpec && !hasLock && lastQuoteSpec.model ? { quoteSpec: lastQuoteSpec } : {}),
     });
   } catch (e) {
     // A revoked key, empty credits or a bad vision fetch used to land here

@@ -7,7 +7,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
-import { appendChatMsg, validGoSession } from "../../../lib/gochat-store";
+import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
+import { clientGeo } from "../../../lib/geo";
 import { resolveGoSpec, goQuote } from "../../../go/spec";
 
 export async function POST(req: NextRequest) {
@@ -38,9 +39,17 @@ export async function POST(req: NextRequest) {
   // case an abuser writes REAL quotes for REAL specs into their own session.
   const sessionId = String(body.sessionId || "");
   if (validGoSession(sessionId)) {
+    const geo = clientGeo(req);
     after(async () => {
       await appendChatMsg(sessionId, "note", `quote shown: ${spec.specLine} → $${offer}`);
       await appendChatMsg(sessionId, "note", `QSPEC: ${spec.entry.id}|${spec.storage}|${spec.condition}|${spec.secondary}|${offer}`);
+      // Where the seller is — written here too, because a chip-flow seller
+      // never sends a chat turn (14 of 147 sessions had a location, review
+      // 2026-09-23). One note per session.
+      if (geo.area !== "unknown") {
+        const st = await readChat(sessionId, 0).catch(() => null);
+        if (st && !st.msgs.some((m) => m.role === "note" && m.text.startsWith("GEO: "))) await appendChatMsg(sessionId, "note", `GEO: ${geo.label} · area=${geo.area}`);
+      }
     });
   }
   return NextResponse.json({ ok: true, offer });

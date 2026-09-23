@@ -225,8 +225,13 @@ export async function POST(req: NextRequest) {
   // IMEI lookups the chat already ran for this thread — the accurate
   // identification rides on the lead whatever the chips said.
   let imeiFacts: string[] = [];
+  let hasGeoNote = true;
   if (validSession(sessionId)) {
-    try { imeiFacts = (await readChat(sessionId, 0)).msgs.filter((m) => m.role === "note" && m.text.startsWith("IMEI: ")).map((m) => m.text).slice(-3); } catch { /* no notes */ }
+    try {
+      const notes = (await readChat(sessionId, 0)).msgs.filter((m) => m.role === "note");
+      imeiFacts = notes.filter((m) => m.text.startsWith("IMEI: ")).map((m) => m.text).slice(-3);
+      hasGeoNote = notes.some((m) => m.text.startsWith("GEO: "));
+    } catch { /* no notes */ }
   }
 
   // Standard single-device lead body — field-for-field the /api/lead
@@ -337,6 +342,7 @@ export async function POST(req: NextRequest) {
   if (validSession(sessionId)) {
     await Promise.all([
       appendChatMsg(sessionId, "note", `CONTACT: ${contact}`),
+      ...(!hasGeoNote && geo.area !== "unknown" ? [appendChatMsg(sessionId, "note", `GEO: ${geo.label} · area=${geo.area}`)] : []),
       appendChatMsg(sessionId, "note", `LOCKED: ${specLine}${offer != null ? ` $${offer}` : " (manual)"} — ${contact.slice(0, 60)}`),
       ...(leadId ? [appendChatMsg(sessionId, "note", `LEAD-ID: ${leadId}`)] : []),
       rememberPhoneSession(contact, sessionId),
