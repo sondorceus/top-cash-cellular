@@ -40,7 +40,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { appendChatMsg, readChat, validSession, validGoSession, rememberPhoneSession } from "../../../lib/gochat-store";
-import { sendCapiLead } from "../../../lib/meta-capi";
+import { sendCapiLead, isTestConversion } from "../../../lib/meta-capi";
 import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
 import { after } from "next/server";
 import { sendLockConfirmationEmail, goChatLink, lockDateLabel, LOCK_DAYS } from "../../../lib/lock-confirmation";
@@ -350,6 +350,8 @@ export async function POST(req: NextRequest) {
     // POST also attempted the pixel, so a server copy WITHOUT the shared id
     // (stale pre-deploy bundle) would double-count, not backfill.
     if (!eventId) return;
+    // Verification runs and the owner's own number are not conversions.
+    if (isTestConversion({ src, sessionId, contact })) return;
     await sendCapiLead({
       eventId,
       sourceUrl: `https://topcashcellular.com/go${src ? `?src=${src}` : ""}`,
@@ -360,6 +362,13 @@ export async function POST(req: NextRequest) {
       contentName: specLine.slice(0, 90),
       fbp: typeof body.fbp === "string" ? body.fbp : null,
       fbc: typeof body.fbc === "string" ? body.fbc : null,
+      // Extra match keys (EMQ 7.2 → the documented next keys).
+      name: name || null,
+      city: geo.city || null,
+      region: geo.region || null,
+      country: geo.country || null,
+      zip: req.headers.get("x-vercel-ip-postal-code"),
+      externalId: validSession(sessionId) ? sessionId : null,
     });
   });
 

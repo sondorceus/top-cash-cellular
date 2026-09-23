@@ -9,7 +9,7 @@ import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
 import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk, slugToDisplay, luhnValid } from "../../lib/sell-tools";
 import { appendChatMsg, readChat, takeoverStale, validSession, rememberPhoneSession } from "../../lib/gochat-store";
-import { sendCapiLead } from "../../lib/meta-capi";
+import { sendCapiLead, isTestConversion } from "../../lib/meta-capi";
 import { normalizeStorage } from "../../lib/quote";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -581,7 +581,7 @@ export async function POST(req: NextRequest) {
   // event id → Meta dedupes; if the in-app webview ate the browser event,
   // this copy still trains the campaign). Once per session by construction —
   // contactJustArrived only fires the turn a contact first appears.
-  if (contactJustArrived && contact && sessionId) {
+  if (contactJustArrived && contact && sessionId && !isTestConversion({ src: typeof payload.src === "string" ? payload.src : "", sessionId, contact })) {
     const capiIp = ip;
     const capiUa = req.headers.get("user-agent");
     const capiFbp = typeof payload.fbp === "string" ? payload.fbp : null;
@@ -598,6 +598,11 @@ export async function POST(req: NextRequest) {
       contentName: "chat",
       fbp: capiFbp,
       fbc: capiFbc,
+      city: geo.city || null,
+      region: geo.region || null,
+      country: geo.country || null,
+      zip: req.headers.get("x-vercel-ip-postal-code"),
+      externalId: sessionId,
     }));
   }
   const isOpener = history.length === 0;

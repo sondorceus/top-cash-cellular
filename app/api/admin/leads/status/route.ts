@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
+import { sendCapiEvent, isTestConversion } from "../../../../lib/meta-capi";
 import { mailLogo, mailButton } from "../../../../lib/email-shell";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { randomBytes } from "crypto";
@@ -640,6 +641,32 @@ export async function POST(req: NextRequest) {
     if (!(await leadHasReviewToken(leadId))) {
       reviewToken = mintReviewToken();
       await postReviewTokenMarker(leadId, reviewToken, name, device);
+      // The trade is DONE — tell Meta, once (same first-completion gate as
+      // the review token). Until 2026-09-23 the only "Purchase" Meta ever saw
+      // was a $0 event fired when a FedEx label printed, which Events Manager
+      // flagged twice (no valid value; every Purchase the same price). A
+      // completed trade is the real outcome: value = what we paid for the
+      // device (not revenue — "Purchase ROAS" here reads as device dollars
+      // bought per ad dollar). Matched on the seller's hashed phone/email +
+      // name so Meta can tie it to the ad click behind the lead. Test and
+      // owner contacts never go out.
+      const payoutUsd = Number((String(payout || "").match(/\$?\s*([\d,]+(?:\.\d{1,2})?)/)?.[1] || String(quote || "").match(/\$?\s*([\d,]+(?:\.\d{1,2})?)/)?.[1] || "").replace(/,/g, ""));
+      const tradeContact = String(phone || email || "");
+      if (tradeContact && !isTestConversion({ contact: tradeContact }) && !isTestConversion({ contact: String(email || "") })) {
+        after(() => sendCapiEvent({
+          eventName: "Purchase",
+          eventId: `trade-${leadId}`,
+          actionSource: status === "met" ? "physical_store" : "system_generated",
+          value: Number.isFinite(payoutUsd) && payoutUsd > 0 ? payoutUsd : null,
+          contentName: String(device || "").slice(0, 90) || null,
+          contentCategory: "trade-in",
+          user: {
+            phone: typeof phone === "string" ? phone : null,
+            email: typeof email === "string" ? email : null,
+            name: typeof name === "string" ? name : null,
+          },
+        }).catch(() => false));
+      }
     }
     // Credit the referrer (if this lead carries a "Referred-by:" line).
     // Best-effort + idempotent — see creditReferralIfAny. A re-flip to

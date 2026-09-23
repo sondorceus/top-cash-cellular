@@ -14,7 +14,7 @@
 // client never invents or caches a price.
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { BoardRow, GoStep } from "./board";
-import { pixelTrack, fbCookies } from "../components/MetaPixel";
+import { pixelTrack, pixelTrackCustom, fbCookies } from "../components/MetaPixel";
 
 export type GoReviews = {
   avg: number;
@@ -1053,7 +1053,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   function shipDone(r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string }) {
     setMsgs((cur) => cur.map((m) => ("kind" in m && m.kind === "shipform" && !m.done ? { ...m, done: true } : m)));
     if (r.ok && r.tracking && r.url) {
-      pixelTrack("Purchase", { content_name: "fedex-label", value: 0, currency: "USD" });
+      // A printed label is a strong intent milestone, NOT a purchase: the $0
+      // "Purchase" this used to fire was the only Purchase Meta saw and it
+      // flagged the dataset for it (2026-09-23). Completed trades now reach
+      // Meta server-side as the real Purchase (admin status → paid / met).
+      pixelTrackCustom("ShipLabel", { content_name: "fedex-label" });
       pushMsgs({ from: "bot", kind: "label", tracking: r.tracking, url: r.url }, anotherChips());
     } else {
       pushMsgs({ from: "bot", text: r.hint || "couldn\u2019t print the label right now \u2014 your quote is saved and we\u2019ll text you the label shortly." }, anotherChips());
