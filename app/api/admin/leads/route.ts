@@ -983,6 +983,10 @@ export async function GET(req: NextRequest) {
     let handoffMethod: AdminLead["handoffMethod"] = undefined;
     if (/--- Handoff:\s*SHIPPING/i.test(m.body)) handoffMethod = "ship";
     else if (/--- Handoff:\s*LOCAL MEETUP/i.test(m.body)) handoffMethod = "local";
+    // /go leads say "Handoff: TBD (seller picks)" and the seller picks SHIP
+    // afterwards — the FedEx label is the proof. Without this a shipped /go
+    // trade rendered as handoff-unknown: no ship border, no Received button.
+    else if (labelByLead.get(m.id)?.tracking) handoffMethod = "ship";
     const shipAddress = parseField(m.body, "Address");
     const shipPackaging = parseField(m.body, "Packaging");
     const localArea = parseField(m.body, "Area");

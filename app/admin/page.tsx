@@ -282,6 +282,11 @@ export default function AdminPage() {
   const [pendingStatus, setPendingStatus] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [savedFlash, setSavedFlash] = useState<Record<string, { sms: boolean; email: boolean } | null>>({});
+  // Final receipts from this session's Mark Paid / Met — kept on screen until
+  // dismissed (a paid lead leaves the default Active list the moment it's
+  // saved) so staff see whether the text/email went out and, if the text
+  // didn't, can send the same receipt from their own phone.
+  const [receipts, setReceipts] = useState<Array<{ leadId: string; name: string; phone: string; text: string; sms: boolean; email: boolean; hasEmail: boolean }>>([]);
   const [rejectingId, setRejectingId] = useState<string | null>(null);
   // Payout-confirmation capture — gated by status flip to paid/met.
   // Skywalker 2026-05-18 "did we actually pay them, and how?".
@@ -1719,6 +1724,10 @@ export default function AdminPage() {
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const d = await r.json();
+      if (typeof d.receiptText === "string" && d.receiptText) {
+        const rc = { leadId: lead.id, name: lead.name || "Seller", phone: (lead.phone || "").replace(/[^0-9+]/g, ""), text: d.receiptText, sms: !!d.smsSent, email: !!d.emailSent, hasEmail: !!lead.email };
+        setReceipts((cur) => [rc, ...cur.filter((x) => x.leadId !== lead.id)]);
+      }
       setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, status: newStatus, statusUpdatedAt: new Date().toISOString() } : l)));
       setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; });
       setSavedFlash((s) => ({ ...s, [lead.id]: { sms: !!d.smsSent, email: !!d.emailSent } }));
@@ -1728,6 +1737,45 @@ export default function AdminPage() {
     } finally {
       setSavingId(null);
     }
+  };
+
+  // Opens the payout panel for a lead. The status dropdown's Paid/Met choice
+  // and the one-tap "Complete & send receipt" button both land here; marking
+  // it records what was actually paid and sends the seller their final
+  // receipt (text + email, whichever is on file).
+  const startPayout = (lead: Lead, v: "paid" | "met") => {
+    setPayingId(lead.id);
+    setPayingStatus(v);
+    // Sensible defaults: cash for in-person met, pre-fill method from the
+    // customer's payout choice for paid (e.g. "Cash App", "Zelle").
+    const p = (lead.payout || "").toLowerCase();
+    const defaultMethod = v === "met" ? "cash"
+      : p.includes("zelle") ? "zelle"
+      : p.includes("venmo") ? "venmo"
+      : p.includes("cash app") ? "cashapp"
+      : p.includes("paypal") ? "paypal"
+      : p.includes("bitcoin") || p.includes("btc") ? "btc"
+      : "";
+    setPayoutMethod(defaultMethod);
+    setPayoutReference("");
+    setPayoutNote("");
+    setPayoutImei("");
+    setPayoutImeiOverride(false);
+    // Default amount to the latest agreed quote — operator overrides if the
+    // in-person inspection lowered it. Empty when no quote on the lead.
+    // parseDollarAmount handles comma-grouped quotes ($1,250) that the old
+    // /\d+/ regex collapsed to $1 — that was why Nick's $570 mark-paid ended
+    // up logged as $1 cash.
+    const seedAmount =
+      (lead.totalPayout && lead.totalPayout > 0)
+        ? String(lead.totalPayout)
+        : (() => {
+            const n = parseDollarAmount(lead.quote);
+            return n > 0 ? String(n) : "";
+          })();
+    setPayoutAmount(seedAmount);
+    setPayoutAlsoLogResale(true);
+    setPendingStatus((prev) => ({ ...prev, [lead.id]: v }));
   };
 
   // Token gate. proxy.ts now bounces unauthorized users to Google sign-in
@@ -1980,6 +2028,30 @@ export default function AdminPage() {
         )}
 
         {error && <div className="bg-[#ef5350]/10 border border-[#ef5350]/30 rounded-xl p-4 mb-4 text-sm text-[#ef5350]">{error}</div>}
+
+        {receipts.map((rc) => (
+          <div key={rc.leadId} className="bg-[#00c853]/[0.07] border border-[#00c853]/35 rounded-xl p-4 mb-4 text-sm">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-bold text-white">🧾 Final receipt · {rc.name}</p>
+                <p className="text-xs text-[#c5c5c5] mt-0.5">
+                  Text {rc.sms ? "✓ sent" : rc.phone ? "✗ didn't go out — send it from your phone below" : "— no phone on file"}
+                  {" · "}Email {rc.email ? "✓ sent" : rc.hasEmail ? "✗ didn't go out" : "— none on file"}
+                </p>
+              </div>
+              <button type="button" onClick={() => setReceipts((cur) => cur.filter((x) => x.leadId !== rc.leadId))} aria-label="Dismiss receipt" className="shrink-0 text-[#888] hover:text-white cursor-pointer">✕</button>
+            </div>
+            <pre className="mt-2 whitespace-pre-wrap break-words text-[12px] leading-relaxed text-[#dcdcdc] bg-black/30 border border-white/10 rounded-lg p-2.5 font-sans">{rc.text}</pre>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {rc.phone && (
+                <a href={`sms:${rc.phone}?&body=${encodeURIComponent(rc.text)}`} className={`text-xs font-bold px-3 py-1.5 rounded-lg no-underline ${rc.sms ? "bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10" : "bg-[#00c853] text-[#0a0a0a] hover:bg-[#00e676]"}`}>
+                  📱 {rc.sms ? "Send again from my phone" : "Text it from my phone"}
+                </a>
+              )}
+              <button type="button" onClick={() => { void navigator.clipboard?.writeText(rc.text); }} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 cursor-pointer">📋 Copy receipt</button>
+            </div>
+          </div>
+        ))}
 
         {/* Command center — value-priority queue. Splits the firehose into
             "what needs action" so the operator sees in 3 seconds who makes
@@ -3296,41 +3368,7 @@ export default function AdminPage() {
                           // BEFORE persisting the status. Skywalker
                           // 2026-05-18 audit trail.
                           if ((v === "paid" || v === "met") && lead.status !== v) {
-                            setPayingId(lead.id);
-                            setPayingStatus(v);
-                            // Sensible defaults: cash for in-person met,
-                            // pre-fill method from the customer's payout
-                            // choice for paid (e.g. "Cash App", "Zelle").
-                            const defaultMethod = v === "met" ? "cash"
-                              : (lead.payout || "").toLowerCase().includes("zelle") ? "zelle"
-                              : (lead.payout || "").toLowerCase().includes("venmo") ? "venmo"
-                              : (lead.payout || "").toLowerCase().includes("cash app") ? "cashapp"
-                              : (lead.payout || "").toLowerCase().includes("paypal") ? "paypal"
-                              : (lead.payout || "").toLowerCase().includes("bitcoin") || (lead.payout || "").toLowerCase().includes("btc") ? "btc"
-                              : "";
-                            setPayoutMethod(defaultMethod);
-                            setPayoutReference("");
-                            setPayoutNote("");
-                            setPayoutImei("");
-                            setPayoutImeiOverride(false);
-                            // Default amount to the latest agreed quote —
-                            // operator overrides if the in-person
-                            // inspection lowered it. Empty when no quote
-                            // on the lead. parseDollarAmount handles
-                            // comma-grouped quotes ($1,250) that the old
-                            // /\d+/ regex collapsed to $1 — that was
-                            // why Nick's $570 mark-paid ended up logged
-                            // as $1 cash.
-                            const seedAmount =
-                              (lead.totalPayout && lead.totalPayout > 0)
-                                ? String(lead.totalPayout)
-                                : (() => {
-                                    const n = parseDollarAmount(lead.quote);
-                                    return n > 0 ? String(n) : "";
-                                  })();
-                            setPayoutAmount(seedAmount);
-                            setPayoutAlsoLogResale(true);
-                            setPendingStatus((p) => ({ ...p, [lead.id]: v }));
+                            startPayout(lead, v);
                             return;
                           }
                           setPendingStatus((p) => ({ ...p, [lead.id]: v }));
@@ -3352,13 +3390,12 @@ export default function AdminPage() {
                           cron auto-flips these in the background, but
                           staff often hears from the customer first so
                           we expose a manual override. */}
-                      {savingId !== lead.id && lead.status !== "paid" && lead.status !== "met" && lead.status !== "rejected" && (() => {
+                      {savingId !== lead.id && payingId !== lead.id && lead.status !== "paid" && lead.status !== "met" && lead.status !== "rejected" && (() => {
                         const isShip = lead.handoffMethod === "ship";
                         const isLocal = lead.handoffMethod === "local";
                         const showDroppedOff = isShip && lead.status === "quote_requested";
                         const showReceived = isShip && lead.status === "shipped";
                         const showMet = isLocal && (lead.status === "quote_requested" || lead.status === "shipped");
-                        if (!showDroppedOff && !showReceived && !showMet) return null;
                         return (
                           <div className="mt-1.5 flex flex-wrap gap-1.5">
                             {showDroppedOff && (
@@ -3401,6 +3438,18 @@ export default function AdminPage() {
                                 </button>
                               </>
                             )}
+                            {/* One tap from any open stage to done: record the
+                                payout and send the seller their final receipt,
+                                without walking the lead through Shipped →
+                                Received → Inspected first. */}
+                            <button
+                              type="button"
+                              onClick={() => startPayout(lead, isLocal ? "met" : "paid")}
+                              className="text-[10px] font-bold text-[#7be8a8] hover:text-white bg-[#00c853]/15 hover:bg-[#00c853]/25 border border-[#00c853]/40 rounded px-2 py-1 cursor-pointer transition"
+                              title="Record what you paid and text/email the seller their final receipt"
+                            >
+                              💵 Complete & send receipt
+                            </button>
                           </div>
                         );
                       })()}
@@ -3503,7 +3552,14 @@ export default function AdminPage() {
                       )}
                       {payingId === lead.id && (
                         <div className="mt-2 p-2.5 bg-[#00c853]/8 border border-[#00c853]/30 rounded-lg space-y-2 max-w-[320px]">
-                          <p className="text-[10px] text-[#7be8a8] font-bold uppercase tracking-wider">💰 Confirm payout · {payingStatus === "met" ? "in person" : "digital"}</p>
+                          <p className="text-[10px] text-[#7be8a8] font-bold uppercase tracking-wider">💰 Complete trade · {payingStatus === "met" ? "paid in person" : "paid digitally"}</p>
+                          {/* Where the final receipt goes — so staff knows
+                              before tapping what the seller will get. */}
+                          <p className="text-[10px] text-[#c5c5c5] leading-snug">
+                            {lead.phone || lead.email
+                              ? <>Receipt goes to {[lead.phone && `📱 text ${lead.phone}`, lead.email && `✉️ ${lead.email}`].filter(Boolean).join(" · ")}</>
+                              : "No phone or email on file — nothing will be sent"}
+                          </p>
                           {/* Actual amount paid — defaults to the latest
                               agreed quote; operator overrides when the
                               in-person inspection lowered it (Rudy:
@@ -3668,7 +3724,7 @@ export default function AdminPage() {
                               }}
                               className="flex-1 px-2 py-1.5 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                             >
-                              {payingStatus === "met" ? "Mark Met & Thanked" : "Mark Paid"}
+                              {payingStatus === "met" ? "Mark Met" : "Mark Paid"}{lead.phone || lead.email ? " & Send Receipt" : ""}
                             </button>
                             <button
                               type="button"

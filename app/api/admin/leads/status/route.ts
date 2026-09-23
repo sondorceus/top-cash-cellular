@@ -7,6 +7,7 @@ import { logComm } from "../../../../lib/comms-log";
 import { reportError } from "../../../../lib/error-report";
 import { REFERRAL_REFERRER_REWARD } from "../../../../lib/referral";
 import { isCustomerLeadPost } from "../../../../lib/lead-devices";
+import { formatOfferNumber } from "../../../../lib/offer-number";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -231,12 +232,75 @@ async function sendSms(to: string, body: string): Promise<boolean> {
   } catch { return false; }
 }
 
-type TemplateCtx = { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string; reviewToken?: string; phone?: string; email?: string };
+// The seller's final receipt — built only when staff record the payout in
+// the admin payout panel (what was actually paid, how, and the reference).
+type Receipt = { number: string; url: string; date: string; amount?: number; method?: string; reference?: string };
+
+type TemplateCtx = { name?: string; device?: string; quote?: string; payout?: string; rejectionReason?: string; reviewToken?: string; phone?: string; email?: string; receipt?: Receipt };
 
 // Escape customer-controlled ctx fields (name/device/quote/payout) before they
 // enter the status email HTML — they come straight from the lead row. SMS +
 // subject lines stay raw (not HTML). (bug fix)
 const esc = (s: unknown): string => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+// The lead's own payout choice, or "" when the seller never picked one —
+// /go leads carry "Payout: TBD", which must never reach a customer as
+// "sent via TBD".
+function knownPayout(p?: string): string {
+  const s = (p || "").trim();
+  return !s || /^tbd\b/i.test(s) || /^(n\/?a|none|[—-]+)$/i.test(s) ? "" : s;
+}
+
+// Customer-facing name for a payout-panel method key ("cashapp" → "Cash
+// App"); same labels as the receipt on the /offer page.
+function payoutMethodLabel(m?: string): string {
+  const k = (m || "").toLowerCase().trim();
+  const map: Record<string, string> = {
+    cashapp: "Cash App", "cash app": "Cash App", cash: "cash",
+    zelle: "Zelle", venmo: "Venmo", paypal: "PayPal",
+    btc: "Bitcoin", bitcoin: "Bitcoin", ach: "ACH", check: "check", other: "",
+  };
+  return k in map ? map[k] : (m || "").trim();
+}
+
+const money = (n: number): string =>
+  `$${n.toLocaleString("en-US", { minimumFractionDigits: Number.isInteger(n) ? 0 : 2, maximumFractionDigits: 2 })}`;
+
+// "Paid $700 via Zelle (ref 12345) on Sep 23, 2026" — the one line every
+// copy of the receipt (text, email, plain-text part) is built around.
+function paidLine(r: Receipt): string {
+  const how = r.method === "cash" ? " in cash" : r.method ? ` via ${r.method}` : "";
+  return `${r.amount != null ? `Paid ${money(r.amount)}` : "Payment sent"}${how}${r.reference ? ` (ref ${r.reference})` : ""} on ${r.date}`;
+}
+
+// Receipt text message. Plain ASCII (no emoji or em dashes) keeps it in
+// the GSM-7 SMS alphabet — fewer segments, no mangled characters.
+function receiptSms(r: Receipt, dev: string, closing: string, reviewLink: string): string {
+  return [
+    `Top Cash Cellular - Receipt #${r.number}`,
+    `${paidLine(r)} for your ${dev}.`,
+    closing,
+    `Receipt: ${r.url}`,
+    reviewLink ? `Mind leaving a 30-sec review? ${reviewLink}` : "",
+  ].filter(Boolean).join("\n");
+}
+
+// Receipt block for the paid/met email, in place of the "Your trade" box.
+function receiptHtml(r: Receipt, device?: string): string {
+  const row = (k: string, v: string) =>
+    `<tr><td style="padding:5px 0;font-size:13px;color:#9a9a9a">${k}</td><td style="padding:5px 0;font-size:13px;color:#ffffff;font-weight:600;text-align:right">${v}</td></tr>`;
+  return `
+                <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:8px">Final receipt</div>
+                ${device ? `<div style="font-size:16px;color:#fff;font-weight:700;margin-bottom:10px">${esc(device)}</div>` : ""}
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  ${row("Receipt #", esc(r.number))}
+                  ${row("Date", esc(r.date))}
+                  ${r.amount != null ? row("Amount paid", `<span style="color:#00c853">${esc(money(r.amount))}</span>`) : ""}
+                  ${r.method ? row("Paid via", esc(r.method === "cash" ? "Cash" : r.method)) : ""}
+                  ${r.reference ? row("Reference", esc(r.reference)) : ""}
+                </table>
+                <div style="margin-top:12px"><a href="${esc(r.url)}" style="color:#00c853;text-decoration:none;font-weight:700;font-size:13px">View your receipt online &rarr;</a></div>`;
+}
 
 function smsTemplate(status: string, ctx: TemplateCtx): string {
   const dev = ctx.device || "your device";
@@ -257,10 +321,12 @@ function smsTemplate(status: string, ctx: TemplateCtx): string {
     case "received":
       return `Top Cash: We got ${dev}, ${first}! Testing now — payout within 24 hrs. Track: ${trackLink}`;
     case "tested":
-      return `Top Cash: ${dev} passed inspection ✅ Finalizing your ${ctx.quote || "payout"} via ${ctx.payout || "your chosen method"} now. Track: ${trackLink}`;
+      return `Top Cash: ${dev} passed inspection ✅ Finalizing your ${ctx.quote || "payout"} via ${knownPayout(ctx.payout) || "your chosen method"} now. Track: ${trackLink}`;
     case "paid":
-      return `Top Cash: ${ctx.quote || "Payment"} sent via ${ctx.payout || "your method"}! Thanks for selling with us, ${first}.${reviewLink ? ` Mind leaving a 30-sec review? ${reviewLink}` : ""}`;
+      if (ctx.receipt) return receiptSms(ctx.receipt, dev, `Trade complete - thanks for selling with us, ${first}!`, reviewLink);
+      return `Top Cash: ${ctx.quote || "Payment"} sent${knownPayout(ctx.payout) ? ` via ${knownPayout(ctx.payout)}` : ""}! Thanks for selling with us, ${first}.${reviewLink ? ` Mind leaving a 30-sec review? ${reviewLink}` : ""}`;
     case "met":
+      if (ctx.receipt) return receiptSms(ctx.receipt, dev, `Thanks for meeting up, ${first}!`, reviewLink);
       return `Top Cash: Thanks for meeting up, ${first}! Hope you're happy with the trade.${reviewLink ? ` If you had a smooth experience, mind leaving a quick review? ${reviewLink}` : ""}`;
     case "rejected":
       if (ctx.rejectionReason) {
@@ -298,7 +364,9 @@ function emailBodyHtml(status: string, ctx: TemplateCtx): string {
     // read Austin-only text on review they won't review".
     return `
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
-  Your trade is wrapped — payment for <strong style="color:#fff">${dev}</strong>${ctx.payout ? ` is on its way via <strong style="color:#fff">${esc(ctx.payout)}</strong>` : " is on its way"}. Thanks for trusting a small business with it. We genuinely don&apos;t take it lightly.
+  ${ctx.receipt
+    ? `Your trade is complete — we sent ${ctx.receipt.amount != null ? `<strong style="color:#fff">${esc(money(ctx.receipt.amount))}</strong>` : "your payment"} for ${ctx.device ? `your <strong style="color:#fff">${dev}</strong>` : "your device"}${ctx.receipt.method === "cash" ? " in cash" : ctx.receipt.method ? ` via <strong style="color:#fff">${esc(ctx.receipt.method)}</strong>` : ""}. Your receipt is below.`
+    : `Your trade is wrapped — payment for <strong style="color:#fff">${dev}</strong>${knownPayout(ctx.payout) ? ` is on its way via <strong style="color:#fff">${esc(knownPayout(ctx.payout))}</strong>` : " is on its way"}.`} Thanks for trusting a small business with it. We genuinely don&apos;t take it lightly.
 </p>
 <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#e6e6e6">
   One small favor — if your experience was a good one, would you drop a 30-second review? The link below is yours alone, single-use, expires in 60 days. Every honest review helps the next person find us instead of getting lowballed by a faceless website.
@@ -341,7 +409,13 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
     met: `Thanks for meeting up today, ${first} — quick favor?`,
     rejected: `Issue with ${dev}`,
   };
-  const subject = subjectMap[status] || `Status update on your trade-in`;
+  // A recorded payout makes the paid/met email the seller's final
+  // receipt — say so in the subject so it's findable later.
+  const isFinal = !!ctx.receipt && (status === "paid" || status === "met");
+  const subject = isFinal && ctx.receipt
+    ? `Your receipt #${ctx.receipt.number}: ${ctx.receipt.amount != null ? `${money(ctx.receipt.amount)} paid` : "payment sent"} for ${ctx.device ? `your ${ctx.device}` : "your device"}`
+    : subjectMap[status] || `Status update on your trade-in`;
+  const pay = knownPayout(ctx.payout);
   const body = smsTemplate(status, ctx);
   try {
     const { Resend } = await import("resend");
@@ -355,7 +429,7 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
         met: "Thanks for the trade",
         rejected: "Action needed",
       };
-      return map[status] || "Status update";
+      return isFinal ? "Final receipt" : map[status] || "Status update";
     })();
     // On the two terminal statuses (paid / met) swap the default "Reply
     // to email" CTA for a one-click review button. Links to /reviews/new
@@ -403,13 +477,14 @@ async function emailStatus(to: string, status: string, ctx: TemplateCtx) {
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.10);border-radius:14px">
             <tr>
               <td style="padding:18px 20px">
+                ${isFinal && ctx.receipt ? receiptHtml(ctx.receipt, ctx.device) : `
                 <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:8px">Your trade</div>
                 ${ctx.device ? `<div style="font-size:16px;color:#fff;font-weight:700;margin-bottom:4px">${esc(ctx.device)}</div>` : ""}
                 <div style="font-size:13px;color:#b8b8b8">
                   ${ctx.quote ? `Quote: <span style="color:#00c853;font-weight:700">${esc(ctx.quote)}</span>` : ""}
-                  ${ctx.quote && ctx.payout ? "  ·  " : ""}
-                  ${ctx.payout ? `Payout: <span style="color:#e6e6e6;font-weight:600">${esc(ctx.payout)}</span>` : ""}
-                </div>
+                  ${ctx.quote && pay ? "  ·  " : ""}
+                  ${pay ? `Payout: <span style="color:#e6e6e6;font-weight:600">${esc(pay)}</span>` : ""}
+                </div>`}
               </td>
             </tr>
           </table>
@@ -576,26 +651,29 @@ export async function POST(req: NextRequest) {
   // "cashapp:$skywalker", "btc:txhash", "cash:in-person-handoff").
   // Cleaned + 200-char capped server-side. Skywalker 2026-05-18 audit
   // trail — no more "did we actually pay them?" bookkeeping holes.
-  const payoutConfLine = (status === "paid" || status === "met") && payoutConfirmation && typeof payoutConfirmation === "object"
+  const conf = (status === "paid" || status === "met") && payoutConfirmation && typeof payoutConfirmation === "object"
     ? (() => {
         const pc = payoutConfirmation as { method?: string; reference?: string; note?: string; amount?: number };
-        const m = (pc.method || "").toString().slice(0, 40).replace(/[\r\n]+/g, " ").trim();
-        const r = (pc.reference || "").toString().slice(0, 120).replace(/[\r\n]+/g, " ").trim();
-        const n = (pc.note || "").toString().slice(0, 200).replace(/[\r\n]+/g, " ").trim();
         // Amount actually paid out — often less than the original
         // quote when an in-person inspection downgrades the device.
         // Clamped to 0..100k so a bad client (or bracket-injection
         // attempt) can't post nonsense. Skywalker 2026-05-24.
         const rawAmt = Number(pc.amount);
-        const a = Number.isFinite(rawAmt) && rawAmt >= 0 && rawAmt <= 100000 ? Math.round(rawAmt * 100) / 100 : null;
-        if (!m && !r && !n && a === null) return "";
-        const bits: string[] = [];
-        if (m) bits.push(`method=${m}`);
-        if (r) bits.push(`ref=${r}`);
-        if (a !== null) bits.push(`amount=${a}`);
-        if (n) bits.push(`note=${n}`);
-        return `\nPayout-confirmation: ${bits.join(" · ")}`;
+        return {
+          method: (pc.method || "").toString().slice(0, 40).replace(/[\r\n]+/g, " ").trim(),
+          reference: (pc.reference || "").toString().slice(0, 120).replace(/[\r\n]+/g, " ").trim(),
+          note: (pc.note || "").toString().slice(0, 200).replace(/[\r\n]+/g, " ").trim(),
+          amount: Number.isFinite(rawAmt) && rawAmt >= 0 && rawAmt <= 100000 ? Math.round(rawAmt * 100) / 100 : null,
+        };
       })()
+    : null;
+  const payoutConfLine = conf && (conf.method || conf.reference || conf.note || conf.amount !== null)
+    ? `\nPayout-confirmation: ${[
+        conf.method && `method=${conf.method}`,
+        conf.reference && `ref=${conf.reference}`,
+        conf.amount !== null && `amount=${conf.amount}`,
+        conf.note && `note=${conf.note}`,
+      ].filter(Boolean).join(" · ")}`
     : "";
   // Strip brackets + collapse newlines from each interpolated field so
   // an admin (or attacker with admin token) can't inject a fake
@@ -678,14 +756,32 @@ export async function POST(req: NextRequest) {
   // phone/email feed the personalized "Track your trade" link in both the SMS
   // and the email CTA block (smsTemplate + emailBodyHtml branch on ctx.phone/
   // ctx.email). Omitting them left the email CTA unrendered and SMS links bare. (bug fix)
-  const ctx: TemplateCtx = { name, device, quote, payout, rejectionReason, reviewToken, phone, email };
+  // Final receipt — only when staff recorded the payout (the panel's
+  // amount/method). The one-tap "Met them" flip carries no payout details,
+  // so it keeps the plain thank-you instead of a receipt that guesses.
+  // The customer-safe fields match the receipt on /offer/<leadId>; the
+  // staff note never goes out.
+  const receipt: Receipt | undefined = conf && ((conf.amount !== null && conf.amount > 0) || !!conf.method)
+    ? {
+        number: formatOfferNumber(leadId),
+        url: `https://topcashcellular.com/offer/${leadId}`,
+        date: new Date().toLocaleDateString("en-US", { timeZone: "America/Chicago", month: "short", day: "numeric", year: "numeric" }),
+        amount: conf.amount !== null && conf.amount > 0 ? conf.amount : undefined,
+        method: payoutMethodLabel(conf.method) || knownPayout(payout) || undefined,
+        reference: conf.reference || undefined,
+      }
+    : undefined;
+  const ctx: TemplateCtx = { name, device, quote, payout, rejectionReason, reviewToken, phone, email, receipt };
+  const smsBody = smsTemplate(status, ctx);
   const [smsSent, emailSent] = await Promise.all([
-    phone ? sendSms(phone, smsTemplate(status, ctx)) : Promise.resolve(false),
+    phone ? sendSms(phone, smsBody) : Promise.resolve(false),
     email ? emailStatus(email, status, ctx) : Promise.resolve(false),
   ]);
   // Audit-trail markers — best-effort, don't block the response.
   if (smsSent && phone) logComm({ leadId, channel: "sms", kind: "status", to: phone, subject: `status=${status}` });
   if (emailSent && email) logComm({ leadId, channel: "email", kind: "status", to: email, subject: `status=${status}` });
 
-  return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, status, label: labelResult });
+  // receiptText lets the admin offer "text it from my phone" when the
+  // automatic text didn't go out (seller texting has had outages).
+  return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, ...(receipt ? { receiptText: smsBody } : {}), status, label: labelResult });
 }
