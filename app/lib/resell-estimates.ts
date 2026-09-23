@@ -7,7 +7,7 @@
 // common storage tier. Condition multipliers scale them down for
 // damaged devices; brokenGlass adds extra deductions on broken phones.
 
-import { IWM_PAYOUTS, IWM_RULE_MULT } from "../data/iwm-payouts";
+import { IWM_PAYOUTS, IWM_RULE_MULT, IWM_RULE_MULT_BY_MODEL } from "../data/iwm-payouts";
 import { MIN_OFFER, PRICE_TABLE } from "../data/prices";
 
 export const RESELL_ESTIMATES: Record<string, number> = {
@@ -439,7 +439,7 @@ export function iwmCeiling(modelId: string, storage?: string | null, condition?:
     const v = perCond(c);
     if (v != null) best = Math.max(best, v);
   }
-  return Math.round(best * IWM_RULE_MULT);
+  return Math.round(best * (IWM_RULE_MULT_BY_MODEL[modelId] ?? IWM_RULE_MULT));
 }
 const IWM_LADDER = ["broken", "fair", "good", "mint", "sealed"] as const;
 /**

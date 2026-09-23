@@ -9,6 +9,11 @@
 // were capping 14 models $85–$240 under this rule.
 export const IWM_SCRAPED = "2026-09-14"; // 18 Pro / 18 Pro Max added 2026-09-14; the rest 2026-09-11
 export const IWM_RULE_MULT = 0.90;
+// Per-model override of the rule. Sonny 2026-09-23: "we are paying way too
+// low for the 18 series, let's pay higher" → the 18 Pro / 18 Pro Max sit at
+// IWM PARITY (1.00) until he sets his own numbers (TEMPORARY, like their
+// price rows). Every other model keeps IWM_RULE_MULT.
+export const IWM_RULE_MULT_BY_MODEL: Record<string, number> = { ip18pm: 1.0, ip18p: 1.0 };
 export type IwmCond = "sealed" | "mint" | "good" | "fair" | "broken";
 export const IWM_PAYOUTS: Record<string, Record<string, Partial<Record<IwmCond, number>>>> = {
  "gnote10": {

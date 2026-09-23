@@ -198,12 +198,12 @@ export const CARRIER_GAPS_BY_COND: Record<string, CondCarrierGaps> = {
   ip18pm: {
     used: { att: 155, tmobile: 80, other: 500 },
     broken: { att: 135, tmobile: 50, other: 250 },
-    sealedLocked: { "256": 106, "512": 151, "1tb": 151, "2tb": 106 },
+    sealedLocked: { "256": 110, "512": 160, "1tb": 160, "2tb": 110 },
   },
   ip18p: {
     used: { att: 185, tmobile: 50, other: 450 },
     broken: { att: 85, tmobile: 50, other: 250 },
-    sealedLocked: { "256": 85, "512": 130, "1tb": 175, "2tb": 175 },
+    sealedLocked: { "256": 90, "512": 140, "1tb": 190, "2tb": 190 },
   },
   ip17pm: {
     used: { att: 155, tmobile: 80, other: 500 },
@@ -521,21 +521,21 @@ export const PRICE_TABLE: Record<string, Record<string, Record<string, number>>>
     "128": { broken: 20, fair: 187, good: 227, mint: 268, sealed: 304 },
     "256": { broken: 29, fair: 200, good: 241, mint: 281, sealed: 326 } },
   ip18pm: {
-    // TEMPORARY (Sonny 2026-09-14): cells = IWM × 0.90 − 25 (the popular bonus),
-    // i.e. the offer lands exactly on the rule; Sonny replaces these with his
-    // numbers. IWM grid scraped 2026-09-14 (app/data/iwm-payouts.ts).
-    "256": { broken: 335, fair: 605, good: 691, mint: 772, sealed: 808 },
-    "512": { broken: 380, fair: 695, good: 781, mint: 862, sealed: 943 },
-    "1tb": { broken: 403, fair: 785, good: 871, mint: 952, sealed: 1033 },
-    "2tb": { broken: 470, fair: 965, good: 1051, mint: 1132, sealed: 1168 } },
+    // TEMPORARY (Sonny 2026-09-23 "paying way too low for the 18 series, pay
+    // higher"): cells = IWM × 1.00 − 25 (the popular bonus) → offers land at IWM
+    // PARITY (IWM_RULE_MULT_BY_MODEL). He replaces these with his numbers.
+    "256": { broken: 375, fair: 675, good: 770, mint: 860, sealed: 900 },
+    "512": { broken: 425, fair: 775, good: 870, mint: 960, sealed: 1050 },
+    "1tb": { broken: 450, fair: 875, good: 970, mint: 1060, sealed: 1150 },
+    "2tb": { broken: 525, fair: 1075, good: 1170, mint: 1260, sealed: 1300 } },
   ip18p: {
-    // TEMPORARY (Sonny 2026-09-14): cells = IWM × 0.90 − 25 (the popular bonus),
-    // i.e. the offer lands exactly on the rule; Sonny replaces these with his
-    // numbers. IWM grid scraped 2026-09-14 (app/data/iwm-payouts.ts).
-    "256": { broken: 313, fair: 551, good: 628, mint: 695, sealed: 740 },
-    "512": { broken: 380, fair: 641, good: 718, mint: 785, sealed: 875 },
-    "1tb": { broken: 425, fair: 686, good: 763, mint: 830, sealed: 965 },
-    "2tb": { broken: 493, fair: 776, good: 853, mint: 920, sealed: 1055 } },
+    // TEMPORARY (Sonny 2026-09-23 "paying way too low for the 18 series, pay
+    // higher"): cells = IWM × 1.00 − 25 (the popular bonus) → offers land at IWM
+    // PARITY (IWM_RULE_MULT_BY_MODEL). He replaces these with his numbers.
+    "256": { broken: 350, fair: 615, good: 700, mint: 775, sealed: 825 },
+    "512": { broken: 425, fair: 715, good: 800, mint: 875, sealed: 975 },
+    "1tb": { broken: 475, fair: 765, good: 850, mint: 925, sealed: 1075 },
+    "2tb": { broken: 550, fair: 865, good: 950, mint: 1025, sealed: 1175 } },
   // === SAMSUNG S SERIES (10% below IWM) ===
   gs24: {
     "128": { broken: 25, fair: 117, good: 162, mint: 189, sealed: 216 },
