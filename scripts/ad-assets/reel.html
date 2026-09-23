@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Cabinet"; src: url("CabinetGrotesk-Variable.woff2") format("woff2"); font-weight: 100 900; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; background: #0a0a0a; overflow: hidden; }
+  body { font-family: "Cabinet", sans-serif; color: #fff; -webkit-font-smoothing: antialiased; position: relative; }
+  /* Reels safe zone: keep everything between ~14% from the top and ~35%
+     from the bottom (Meta's UI covers the rest). Content band: 280–1240px. */
+  .mark { position: absolute; top: 290px; left: 0; right: 0; text-align: center; font-size: 46px; font-weight: 650; letter-spacing: -0.01em;
+          animation: fadeIn 0.5s ease-out both; }
+  .mark b { color: #00c853; font-weight: 650; }
+  .card { position: absolute; left: 90px; right: 90px; top: 400px; height: 820px; display: flex; flex-direction: column; justify-content: center; opacity: 0; }
+  .A { animation: cardA 12s linear both; }
+  .B { animation: cardB 12s linear both; }
+  .C { animation: cardC 12s linear both; }
+  .D { animation: cardD 12s linear both; align-items: center; text-align: center; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  @keyframes cardA { 0% { opacity: 0; transform: translateY(50px); } 3.5% { opacity: 1; transform: none; } 22.5% { opacity: 1; transform: none; } 25% { opacity: 0; transform: translateY(-40px); } 100% { opacity: 0; } }
+  @keyframes cardB { 0%, 25% { opacity: 0; transform: translateY(50px); } 28.5% { opacity: 1; transform: none; } 66.5% { opacity: 1; transform: none; } 69% { opacity: 0; transform: translateY(-40px); } 100% { opacity: 0; } }
+  @keyframes cardC { 0%, 69% { opacity: 0; transform: translateY(50px); } 72.5% { opacity: 1; transform: none; } 86.5% { opacity: 1; transform: none; } 88.5% { opacity: 0; transform: translateY(-40px); } 100% { opacity: 0; } }
+  @keyframes cardD { 0%, 88.5% { opacity: 0; transform: translateY(50px); } 92% { opacity: 1; transform: none; } 100% { opacity: 1; transform: none; } }
+  h1 { font-weight: 800; letter-spacing: -0.025em; line-height: 1.0; font-size: 150px; }
+  h1 .g { color: #00c853; }
+  .kicker { font-size: 44px; color: rgba(255,255,255,0.6); font-weight: 600; margin-bottom: 34px; }
+  .row { display: flex; align-items: center; gap: 34px; padding: 26px 30px; margin-bottom: 26px; border-radius: 40px;
+         background: rgba(15,15,15,0.42); border: 2px solid rgba(0,200,83,0.40); animation: rowIn 0.45s ease-out both; }
+  .r1 { animation-delay: 3.25s; } .r2 { animation-delay: 3.65s; } .r3 { animation-delay: 4.05s; }
+  @keyframes rowIn { from { opacity: 0; transform: translateX(70px); } to { opacity: 1; transform: none; } }
+  .tile { width: 170px; height: 170px; border-radius: 26px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .tile img { width: 150px; height: 150px; object-fit: contain; }
+  .model { font-size: 42px; font-weight: 700; color: rgba(255,255,255,0.88); }
+  .price { font-size: 88px; font-weight: 800; color: #00c853; letter-spacing: -0.02em; line-height: 1.05; }
+  .price small { font-size: 36px; color: rgba(255,255,255,0.55); font-weight: 600; letter-spacing: 0; margin-right: 10px; }
+  .chip { font-size: 76px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.12; margin: 18px 0; animation: chipIn 0.4s ease-out both; }
+  .chip .g { color: #00c853; }
+  .c1 { animation-delay: 8.45s; } .c2 { animation-delay: 8.85s; } .c3 { animation-delay: 9.25s; }
+  @keyframes chipIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: none; } }
+  .cta { margin-top: 10px; background: linear-gradient(90deg, #00e676, #00a039); color: #04140a; font-weight: 800; font-size: 76px; letter-spacing: -0.01em;
+         border-radius: 999px; padding: 44px 70px; animation: pulse 1.2s ease-in-out 10.8s 2 both; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.035); } }
+  .url { margin-top: 44px; font-size: 44px; color: rgba(255,255,255,0.72); font-weight: 650; }
+  .sub { margin-top: 18px; font-size: 38px; color: rgba(255,255,255,0.5); font-weight: 550; }
+  .headline { font-size: 150px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.02; margin-bottom: 40px; }
+</style>
+</head>
+<body>
+  <div class="mark">top cash <b>cellular</b></div>
+
+  <div class="card A">
+    <h1>got a phone<br>you're <span class="g">done</span><br>with?</h1>
+  </div>
+
+  <div class="card B">
+    <div class="kicker">we pay up to</div>
+    <div class="row r1"><div class="tile"><img src="iphone-17-pro-max.webp" alt=""></div><div><div class="model">iPhone 17 Pro Max</div><div class="price"><small>up to</small>{{PRICE:ip17pm}}</div></div></div>
+    <div class="row r2"><div class="tile"><img src="iphone-16-pro-max.webp" alt=""></div><div><div class="model">iPhone 16 Pro Max</div><div class="price"><small>up to</small>{{PRICE:ip16pm}}</div></div></div>
+    <div class="row r3"><div class="tile"><img src="../../public/devices/gs25u.webp" alt=""></div><div><div class="model">Galaxy S25 Ultra</div><div class="price"><small>up to</small>{{PRICE:gs25u}}</div></div></div>
+  </div>
+
+  <div class="card C">
+    <div class="chip c1"><span class="g">cash</span> in hand<br>in austin</div>
+    <div class="chip c2">or a <span class="g">free</span> fedex label</div>
+    <div class="chip c3">even <span class="g">cracked</span></div>
+  </div>
+
+  <div class="card D">
+    <div class="headline">get paid<br><span style="color:#00c853">today</span></div>
+    <div class="cta">get my number →</div>
+    <div class="url">topcashcellular.com</div>
+    <div class="sub">quotes live 24/7</div>
+  </div>
+</body>
+</html>
