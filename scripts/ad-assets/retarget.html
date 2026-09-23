@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: "Cabinet";
+    src: url("CabinetGrotesk-Variable.woff2") format("woff2");
+    font-weight: 100 900;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #333; font-family: "Cabinet", sans-serif; -webkit-font-smoothing: antialiased; }
+  .board { position: relative; background: #0a0a0a; color: #fff; overflow: hidden; display: flex; flex-direction: column; }
+  .sq  { width: 1080px; height: 1080px; padding: 72px; }
+  .st  { width: 1080px; height: 1920px; padding: 88px 72px; }
+  .mark { font-size: 40px; font-weight: 650; letter-spacing: -0.01em; }
+  .mark b { color: #00c853; font-weight: 650; }
+  .tag { font-size: 30px; color: rgba(255,255,255,0.5); font-weight: 500; }
+  .topline { display: flex; justify-content: space-between; align-items: baseline; }
+  h1 { font-weight: 800; letter-spacing: -0.022em; line-height: 1.02; }
+  .sq h1 { font-size: 118px; margin-top: 40px; }
+  .st h1 { font-size: 150px; margin-top: 110px; }
+  .sub { color: rgba(255,255,255,0.62); font-weight: 500; line-height: 1.2; }
+  .sq .sub { font-size: 40px; margin-top: 22px; max-width: 900px; }
+  .st .sub { font-size: 50px; margin-top: 34px; }
+  /* the saved-quote card — the /go quote card, same frame formula */
+  .card {
+    background: rgba(15,15,15,0.42);
+    border: 2px solid rgba(0,200,83,0.45);
+    border-radius: 40px;
+    padding: 34px 44px;
+    box-shadow: inset 2px 2px 0 rgba(255,255,255,0.07), inset 0 0 0 2px rgba(0,0,0,0.25);
+    display: flex; align-items: center; gap: 36px;
+  }
+  .sq .card { margin-top: 44px; }
+  .st .card { margin-top: 90px; padding: 44px 48px; }
+  .tile { width: 200px; height: 200px; border-radius: 28px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .tile img { width: 176px; height: 176px; object-fit: contain; }
+  .st .tile { width: 260px; height: 260px; }
+  .st .tile img { width: 230px; height: 230px; }
+  .card .model { font-size: 38px; font-weight: 700; color: rgba(255,255,255,0.85); }
+  .st .card .model { font-size: 46px; }
+  .card .price { font-size: 84px; font-weight: 800; color: #00c853; letter-spacing: -0.02em; line-height: 1.05; margin-top: 6px; }
+  .st .card .price { font-size: 104px; }
+  .card .price small { font-size: 34px; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 0; margin-right: 10px; }
+  .st .card .price small { font-size: 42px; }
+  .card .hold { font-size: 30px; color: rgba(255,255,255,0.55); font-weight: 500; margin-top: 8px; }
+  .st .card .hold { font-size: 38px; }
+  .cta {
+    margin-top: auto;
+    background: linear-gradient(90deg, #00e676, #00a039);
+    color: #04140a; font-weight: 800; text-align: center;
+    border-radius: 999px; letter-spacing: -0.01em;
+  }
+  .sq .cta { font-size: 46px; padding: 30px; }
+  .st .cta { font-size: 58px; padding: 40px; }
+  .foot { display: flex; justify-content: space-between; color: rgba(255,255,255,0.5); font-weight: 600; }
+  .sq .foot { font-size: 27px; margin-top: 26px; }
+  .st .foot { font-size: 34px; margin-top: 40px; }
+  .foot b { color: rgba(255,255,255,0.8); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="board sq">
+  <div class="topline"><div class="mark">top cash <b>cellular</b></div><div class="tag">quotes live 24/7</div></div>
+  <h1>still selling it?</h1>
+  <div class="sub">your number's saved on our page — tap back in and it's right where you left it.</div>
+  <div class="card">
+    <div class="tile"><img src="iphone-17-pro-max.webp" alt=""></div>
+    <div>
+      <div class="model">iPhone 17 Pro Max</div>
+      <div class="price"><small>up to</small>{{PRICE:ip17pm}}</div>
+      <div class="hold">every quote holds 14 days once you lock it</div>
+    </div>
+  </div>
+  <div class="cta">pick up my quote →</div>
+  <div class="foot"><span><b>cash in austin</b> · same day</span><span><b>free label</b> anywhere in the US</span><span>even cracked</span></div>
+</div>
+
+<div class="board st">
+  <div class="topline"><div class="mark">top cash <b>cellular</b></div><div class="tag">quotes live 24/7</div></div>
+  <h1>still selling it?</h1>
+  <div class="sub">your number's saved on our page — tap back in and it's right where you left it.</div>
+  <div class="card">
+    <div class="tile"><img src="iphone-17-pro-max.webp" alt=""></div>
+    <div>
+      <div class="model">iPhone 17 Pro Max</div>
+      <div class="price"><small>up to</small>{{PRICE:ip17pm}}</div>
+      <div class="hold">every quote holds 14 days once you lock it</div>
+    </div>
+  </div>
+  <div class="cta">pick up my quote →</div>
+  <div class="foot"><span><b>cash in austin</b> · same day</span><span><b>free label</b> anywhere in the US</span></div>
+</div>
+
+</body>
+</html>

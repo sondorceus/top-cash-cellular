@@ -62,20 +62,50 @@ Both events come from the same pixel ("TCC Web", 1111162571586544) and now carry
 `fbp`/`fbc`, so Events Manager should show match quality climbing within a day of the
 deploy. Verify in Test Events by setting `META_TEST_EVENT_CODE` on Vercel for one session.
 
-## 3. Retargeting ad set (~$5/day)
+## 3. Retargeting ad set (~$5/day) — BUILT 2026-09-23, one action from launch
 
-- Audience: Website → pixel `InitiateCheckout`, last 14 days, EXCLUDE `Lead` last 14 days.
-- Creative: the same board image; primary text:
+Everything below exists in the repo; the only missing piece is a way to act on the ad
+account (the CAPI token on Vercel carries `read_ads_dataset_quality` only, and Claude
+in Chrome has to be signed in on Sonny's Chrome).
 
-  > your number's still good — every quote on our page holds 14 days. tap back in and
-  > it's right where you left it.
+- **Audience:** Website → pixel "TCC Web" `InitiateCheckout` OR `ViewContent`, last 30
+  days, EXCLUDE `Lead` last 30 days = tapped a model or saw a quote, never left contact
+  (the only people this set exists for; ~50–100 at today's volume).
+- **Campaign:** its own — `TCC GO — Retarget (quoted, no contact)`, Awareness/Reach. A
+  second ad set inside the Lead campaign would have to optimize for Lead, which never
+  exits learning on a ~100-person pool. Reach + a frequency cap (3 per 7 days) shows the
+  card to everyone a few times a week and then stops spending — the cap is the budget.
+- **Ad set:** $5/day, US, the audience only, Advantage+ audience OFF (expansion would
+  turn it back into a cold set), Facebook + Instagram feed and story, Audience Network
+  off.
+- **Creative:** `scripts/ad-assets/out/retarget-square.png` (+ `retarget-story.png`),
+  rendered by `npx tsx scripts/ad-assets/gen-retarget.mjs` with the live 17 Pro Max
+  ceiling. Copies land in `~/Downloads/tcc-ads/`. Primary text:
 
-- URL: `https://topcashcellular.com/go?src=fbrt` (an 8-char-max tag; the page rehydrates
-  the seller's un-locked quote card on return).
-- Placement: Facebook + Instagram feeds and stories only, Audience Network off (same as
-  the main set).
+  > still got that phone? your number's saved on our page — tap back in and it's right
+  > where you left it. cash in hand in austin, or a free fedex label anywhere in the US.
+  > even cracked.
 
-This is the only way to reach the quote-viewers who left no contact.
+  Headline `your quote's saved — pick it back up` · description `cash in austin · free
+  label anywhere in the US` · CTA "Get quote" · URL
+  `https://topcashcellular.com/go?src=fbrt` (the page shows "your chat is saved — pick
+  up where you left off" to a returning browser).
+
+**Launch, path A (API, one command):** in Business Settings → Users → System users →
+generate a token with `ads_management` for ad account 692790242391713 + the TCC Page +
+the pixel, then:
+
+```bash
+META_ADS_TOKEN=<token> node scripts/meta-retarget.mjs --live --active
+```
+
+(`--dry` prints every payload and creates nothing; `--live` without `--active` creates
+it all PAUSED.) The created ids are written to `scripts/ad-assets/out/retarget-launch.json`.
+
+**Launch, path B (Ads Manager, Claude in Chrome):** sign in to the Claude side panel in
+Chrome and say "launch the retarget"; the agent builds the audience (Audiences → Create
+→ Website, rules as above), the campaign/ad set/ad with the settings above, and uploads
+the PNG with the media-picker patch from `.claude/skills/make-ads/SKILL.md`.
 
 ## 4. Budget guardrails
 
