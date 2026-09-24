@@ -1643,7 +1643,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           if (m.kind === "lockform") {
             return (
               <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
-                <LockForm manual={m.manual} disabled={!!m.done} onLock={(c, n) => guidedLock(c, m.manual, n)} />
+                <LockForm manual={m.manual} disabled={!!m.done} onLock={(c, n) => guidedLock(c, m.manual, n)} defaultContact={lastLockRef.current?.contact || ""} defaultName={lastLockRef.current?.name || ""} />
               </div>
             );
           }
@@ -2288,9 +2288,11 @@ function ShipForm({ sessionId, defaultName, defaultPhone, disabled, onDone }: {
   );
 }
 
-function LockForm({ manual, disabled, onLock }: { manual: boolean; disabled: boolean; onLock: (c: string, name: string) => Promise<string | null> }) {
-  const [c, setC] = useState("");
-  const [name, setName] = useState("");
+function LockForm({ manual, disabled, onLock, defaultContact = "", defaultName = "" }: { manual: boolean; disabled: boolean; onLock: (c: string, name: string) => Promise<string | null>; defaultContact?: string; defaultName?: string }) {
+  // A second device in the same visit starts with the contact + name they
+  // already gave for the first — one tap, not a retype (test run 2026-09-24).
+  const [c, setC] = useState(defaultContact);
+  const [name, setName] = useState(defaultName);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const submit = async () => {
