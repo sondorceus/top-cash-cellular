@@ -503,6 +503,14 @@ export async function GET(req: NextRequest) {
   // Latest FedEx label per lead. We keep only the most recent so
   // regenerating overrides the prior label on the UI.
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
+  // /go sellers pick meet-or-ship AFTER their lead posts — the pay chips, the
+  // MEET/SHIP text reply, the label form — as [DELIVERY OPTION] comms keyed
+  // by chat session, while the lead body only says "Handoff: TBD (seller
+  // picks)". Picks + lead times per session let each lead take the pick
+  // made for it (Sonny 2026-09-24: "separate the shipping leads from the
+  // local ones on the backend").
+  const picksBySession = new Map<string, { method: "ship" | "local"; timestamp: string }[]>();
+  const leadTimesBySession = new Map<string, string[]>();
   const labelErrorByLead = new Map<string, { kind: string; reason: string; timestamp: string }>();
   // Customer device edits — the latest [ITEM-UPDATE: leadId] marker per
   // lead (posted by the offer-page editor). Most recent wins.
@@ -529,9 +537,18 @@ export async function GET(req: NextRequest) {
   const restoredAtByLead = new Map<string, string>(); // most-recent restore timestamp
   for (const m of messages) {
     if (!m.body) continue;
+    if (/\[NEW BUYBACK LEAD/i.test(m.body)) {
+      const sess = parseField(m.body, "Session");
+      if (sess) leadTimesBySession.set(sess, [...(leadTimesBySession.get(sess) || []), m.timestamp]);
+    }
     // Every marker below is its own staff/system post — one found inside a
     // customer's lead body is forged, whatever field it slipped through.
     if (isCustomerLeadPost(m.body)) continue;
+    const dOpt = m.body.match(/^\[DELIVERY OPTION\]\s*(LOCAL|SHIPPING)\b/i);
+    if (dOpt) {
+      const sess = parseField(m.body, "Session");
+      if (sess) picksBySession.set(sess, [...(picksBySession.get(sess) || []), { method: dOpt[1].toUpperCase() === "LOCAL" ? "local" : "ship", timestamp: m.timestamp }]);
+    }
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
     if (dm) {
       const id = dm[1];
@@ -991,6 +1008,19 @@ export async function GET(req: NextRequest) {
     // afterwards — the FedEx label is the proof. Without this a shipped /go
     // trade rendered as handoff-unknown: no ship border, no Received button.
     else if (labelByLead.get(m.id)?.tracking) handoffMethod = "ship";
+    else {
+      // The seller's pick for THIS lead: the newest one made before the
+      // session's next lead; if none, the first one after (they locked a
+      // second device before choosing, and one choice covers both).
+      const sess = parseField(m.body, "Session");
+      const picks = sess ? [...(picksBySession.get(sess) || [])].sort((a, b) => a.timestamp.localeCompare(b.timestamp)) : [];
+      if (sess && picks.length) {
+        const nextLead = [...(leadTimesBySession.get(sess) || [])].sort().find((t) => t > m.timestamp);
+        const inWindow = picks.filter((pk) => pk.timestamp >= m.timestamp && (!nextLead || pk.timestamp < nextLead));
+        const pick = inWindow.length ? inWindow[inWindow.length - 1] : picks.find((pk) => pk.timestamp >= m.timestamp);
+        if (pick) handoffMethod = pick.method;
+      }
+    }
     const shipAddress = parseField(m.body, "Address");
     const shipPackaging = parseField(m.body, "Packaging");
     const localArea = parseField(m.body, "Area");

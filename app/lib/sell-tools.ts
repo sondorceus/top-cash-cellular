@@ -304,7 +304,7 @@ export const SELL_TOOLS = [
   {
     name: "notify_team",
     description:
-      "Alert a real Top Cash Cellular teammate to follow up. Call when the customer wants to proceed/lock in, asks for a human, gives contact info, has a device/bulk lot that needs a manual quote, or is a wholesale buyer/vendor pitching to buy FROM us (include their price sheet details).",
+      "Alert a real Top Cash Cellular teammate to follow up. Call when the customer wants to proceed/lock in, asks for a human, gives contact info, pushes back on a quote and names the price they want (their price goes in the summary — the owner decides), has a device/bulk lot that needs a manual quote, or is a wholesale buyer/vendor pitching to buy FROM us (include their price sheet details).",
     input_schema: {
       type: "object" as const,
       properties: {

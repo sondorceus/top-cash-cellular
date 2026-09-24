@@ -237,7 +237,7 @@ type Msg =
   | { from: "bot"; kind: "locked"; offer: number | null; until?: string; confirmed?: "sms" | "email" | "pending" | "failed"; contact?: string }
   // Shipping handoff: address form → FedEx label minted on the spot.
   | { from: "bot"; kind: "shipform"; done?: boolean }
-  | { from: "bot"; kind: "label"; tracking: string; url: string }
+  | { from: "bot"; kind: "label"; tracking: string; url: string; texted?: boolean; emailed?: boolean; devices?: number }
   | { from: "bot"; kind: "msgr" };
 
 // FB Page handle for the "keep this chat on Messenger" affordance (m.me deep
@@ -475,6 +475,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // What the seller just locked — the handoff chips POST it to /api/delivery
   // after the lock form (and its contact) is gone.
   const lastLockRef = useRef<{ model: string; contact: string; offer: number | null; name: string } | null>(null);
+  // Every device locked since the seller last chose meet-or-ship. "+ i have
+  // another one" lets them lock #2 before choosing, and that one choice then
+  // covers all of them: one meetup, one box, one label (Sonny 2026-09-24:
+  // "make it easy for people in the chat to sell multiple phones").
+  const pendingLocksRef = useRef<{ model: string; contact: string; offer: number | null; name: string }[]>([]);
   // Business-hours status. Client-only (Date at render would mismatch the
   // server HTML), and both strings are TRUE at all hours — quotes run 24/7.
   const [status, setStatus] = useState("");
@@ -758,11 +763,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // (category grid, "i got a few phones" chip) is gated on an empty thread,
   // so without this the locked card is a dead end and a 3-device seller
   // silently becomes a 1-device seller.
-  function anotherChips(): Msg {
+  function anotherChips(q = "got another one?"): Msg {
     return {
       from: "bot",
       kind: "chips",
-      q: "got another one?",
+      q,
       dim: "another",
       options: [
         { key: "ip", label: "another iPhone" },
@@ -773,6 +778,31 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         { key: "other", label: "something else" },
         { key: "no", label: "that’s it for now" },
       ],
+    };
+  }
+
+  // "how do you want to get paid?" — asked right after each lock. The last
+  // chip is the "anything else?" ask at the moment of the lock: half the
+  // sellers who locked never tapped a pay method, so the "got another one?"
+  // row that follows it never reached them (review 2026-09-24, 7 of 14).
+  function payChips(): Msg {
+    const ship = { key: "ship", label: "ship it — free label, paid the day it lands" };
+    const later = { key: "later", label: "not sure yet" };
+    const another = { key: "another", label: "+ i have another one" };
+    return {
+      from: "bot",
+      kind: "chips",
+      q: "how do you want to get paid?",
+      dim: "handoff",
+      // Out-of-area sellers (most of the ad traffic, review 2026-09-23:
+      // Dallas / Houston / San Antonio / Phoenix / CA) get the label
+      // first; outside Texas the meetup isn't offered at all.
+      options:
+        visitorArea === "us" || visitorArea === "intl"
+          ? [ship, later, another]
+          : visitorArea === "tx"
+            ? [ship, { key: "meet", label: "I can drive to austin — cash on the spot" }, later, another]
+            : [{ key: "meet", label: "meet in austin — cash on the spot" }, { key: "ship", label: "ship it — free label" }, later, another],
     };
   }
 
@@ -958,6 +988,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     // Each device locks as its own lead, threaded to the same session id.
     if (dim === "another") {
       if (key === "no") {
+        // Tapped "+ i have another one", then changed their mind: the locked
+        // devices still need a meet-or-ship answer.
+        if (pendingLocksRef.current.length) {
+          pushMsgs({ from: "user", text: label, tap: true }, payChips());
+          return;
+        }
         pushMsgs(
           { from: "user", text: label, tap: true },
           { from: "bot", text: isDay ? "sounds good — we’ll reach out shortly to set it up." : "sounds good — we’ll reach out first thing in the morning to set it up." },
@@ -983,9 +1019,17 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     // just to learn which. Posts the same [DELIVERY OPTION] comm the homepage
     // funnel writes; the seller's own MEET/SHIP text reply does the same.
     if (dim === "handoff") {
+      if (key === "another") {
+        pushMsgs({ from: "user", text: label, tap: true }, anotherChips("nice — what else you got?"));
+        return;
+      }
       const lk = lastLockRef.current;
       pushMsgs({ from: "user", text: label, tap: true });
       if (key === "later" || !lk) {
+        // "not sure yet" IS their answer for what's locked so far (the team
+        // sorts it out by text) — clearing it keeps "that's it for now" from
+        // asking the pay question a second time.
+        pendingLocksRef.current = [];
         pushMsgs({ from: "bot", text: "no problem — we’ll text you and sort it out." }, anotherChips());
         return;
       }
@@ -1000,6 +1044,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         );
         return;
       }
+      // One meetup for everything locked since the last choice.
+      const batch = pendingLocksRef.current.length ? pendingLocksRef.current : [lk];
+      const batchTotal = batch.every((b) => b.offer != null) ? batch.reduce((sum, b) => sum + (b.offer ?? 0), 0) : null;
+      pendingLocksRef.current = [];
       void fetch("/api/delivery", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1007,8 +1055,8 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           method: "local",
           name: lk.name,
           ...(lk.contact.includes("@") ? { email: lk.contact } : { phone: lk.contact }),
-          model: lk.model,
-          quote: lk.offer != null ? String(lk.offer) : "",
+          model: batch.map((b) => b.model).join(" + "),
+          quote: batchTotal != null ? String(batchTotal) : "",
           area: "Austin area (chosen on /go)",
           session: sessionId,
         }),
@@ -1050,7 +1098,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
 
   // Address form result → label card (or an honest fallback). The route
   // already posted the delivery comm, the notes and the seller's text.
-  function shipDone(r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string }) {
+  function shipDone(r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string; texted?: boolean; emailed?: boolean; devices?: number }) {
     setMsgs((cur) => cur.map((m) => ("kind" in m && m.kind === "shipform" && !m.done ? { ...m, done: true } : m)));
     if (r.ok && r.tracking && r.url) {
       // A printed label is a strong intent milestone, NOT a purchase: the $0
@@ -1058,7 +1106,9 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       // flagged the dataset for it (2026-09-23). Completed trades now reach
       // Meta server-side as the real Purchase (admin status → paid / met).
       pixelTrackCustom("ShipLabel", { content_name: "fedex-label" });
-      pushMsgs({ from: "bot", kind: "label", tracking: r.tracking, url: r.url }, anotherChips());
+      // The label covers every device locked since the last choice.
+      pendingLocksRef.current = [];
+      pushMsgs({ from: "bot", kind: "label", tracking: r.tracking, url: r.url, texted: r.texted, emailed: r.emailed, devices: r.devices }, anotherChips());
     } else {
       pushMsgs({ from: "bot", text: r.hint || "couldn\u2019t print the label right now \u2014 your quote is saved and we\u2019ll text you the label shortly." }, anotherChips());
     }
@@ -1123,11 +1173,13 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       if (d?.ok) {
         const offer: number | null = typeof d.offer === "number" ? d.offer : null;
         lastLockRef.current = { model: quoteLabel(gRow, gSpec.storage ?? gRow.storages[0]), contact: c, offer, name: gName.trim() };
+        pendingLocksRef.current = [...pendingLocksRef.current, lastLockRef.current];
         pixelTrack("Lead", { content_name: gRow.label, value: offer ?? 0, currency: "USD" }, lockEventId);
         // (the LOCKED breadcrumb + the confirmation text are server-side)
         // Peak trust: they just saw a real number and handed over a way to
-        // reach them. Ask how they want to get paid HERE, then the second
-        // device (anotherChips, after the handoff choice).
+        // reach them. Ask how they want to get paid HERE — the same row
+        // carries "+ i have another one", and "got another one?" follows
+        // whichever pay method they pick.
         pushMsgs(
           {
             from: "bot",
@@ -1137,32 +1189,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             confirmed: d.confirmed === "sms" || d.confirmed === "email" || d.confirmed === "failed" ? d.confirmed : "pending",
             contact: c,
           },
-          {
-            from: "bot",
-            kind: "chips",
-            q: "how do you want to get paid?",
-            dim: "handoff",
-            // Out-of-area sellers (most of the ad traffic, review 2026-09-23:
-            // Dallas / Houston / San Antonio / Phoenix / CA) get the label
-            // first; outside Texas the meetup isn't offered at all.
-            options:
-              visitorArea === "us" || visitorArea === "intl"
-                ? [
-                    { key: "ship", label: "ship it — free label, paid the day it lands" },
-                    { key: "later", label: "not sure yet" },
-                  ]
-                : visitorArea === "tx"
-                  ? [
-                      { key: "ship", label: "ship it — free label, paid the day it lands" },
-                      { key: "meet", label: "I can drive to austin — cash on the spot" },
-                      { key: "later", label: "not sure yet" },
-                    ]
-                  : [
-                      { key: "meet", label: "meet in austin — cash on the spot" },
-                      { key: "ship", label: "ship it — free label" },
-                      { key: "later", label: "not sure yet" },
-                    ],
-          },
+          payChips(),
         );
         return null;
       }
@@ -1256,7 +1283,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         // quoted sellers — $955 17 Pro Max, $440 15 Pro Max — had no way to
         // lock, so no confirmation and no label).
         const qs = d?.quoteSpec as { model?: string; storage?: string; condition?: string; carrier?: string; offer?: number } | undefined;
-        const qRow = qs && typeof qs.offer === "number" && !lastLockRef.current ? rows.find((x) => x.id === qs.model && x.cat === "phone") : undefined;
+        // The server only sends quoteSpec for a device not already locked in
+        // this session, so device #2 priced in chat after a lock gets its own
+        // card + lock form while re-asking about #1 doesn't re-offer it.
+        const qRow = qs && typeof qs.offer === "number" ? rows.find((x) => x.id === qs.model && x.cat === "phone") : undefined;
         if (qRow && qs) {
           setGRow(qRow);
           setGSpec({ storage: qs.storage, condition: qs.condition, carrier: qs.carrier });
@@ -1632,7 +1662,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   <div className="text-[15px] font-bold text-white">your FedEx label is ready</div>
                   <div className="text-[13px] text-white/70 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
                   <a href={m.url} target="_blank" rel="noopener noreferrer" className="tcc-button-primary mt-3 inline-block py-2.5 px-5 text-[15px] font-bold rounded-2xl">open my label</a>
-                  <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the device, drop it at any FedEx location. we text you the moment it lands and pay within 24 hours of inspection. we texted you this link too.</div>
+                  <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the {m.devices && m.devices > 1 ? `${m.devices} devices together` : "device"}, drop it at any FedEx location. we text you the moment it lands and pay within 24 hours of inspection. {m.texted ? "we texted you this link too." : m.emailed ? "we emailed you this link too." : "this link stays right here in the chat."}</div>
                 </div>
               </div>
             );
@@ -2204,7 +2234,7 @@ function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: strin
 // name pre-fills from the lock when they gave one).
 function ShipForm({ sessionId, defaultName, defaultPhone, disabled, onDone }: {
   sessionId: string; defaultName: string; defaultPhone: string; disabled: boolean;
-  onDone: (r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string }) => void;
+  onDone: (r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string; texted?: boolean; emailed?: boolean; devices?: number }) => void;
 }) {
   const [f, setF] = useState({ name: defaultName, phone: defaultPhone, street: "", unit: "", city: "", state: "", zip: "" });
   const [err, setErr] = useState("");
@@ -2219,7 +2249,7 @@ function ShipForm({ sessionId, defaultName, defaultPhone, disabled, onDone }: {
     try {
       const res = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: sessionId, ...f, state: f.state.trim().toUpperCase() }) });
       const d = await res.json().catch(() => ({}));
-      if (d?.ok) onDone({ ok: true, tracking: String(d.tracking), url: String(d.url) });
+      if (d?.ok) onDone({ ok: true, tracking: String(d.tracking), url: String(d.url), texted: d.texted === true, emailed: d.emailed === true, devices: typeof d.devices === "number" ? d.devices : undefined });
       else if (d?.kind === "ADDRESS_INVALID") setErr(String(d.hint || "check the address and try again"));
       else onDone({ ok: false, kind: String(d?.kind || "SERVICE_UNAVAILABLE"), hint: typeof d?.hint === "string" ? d.hint : undefined });
     } catch {

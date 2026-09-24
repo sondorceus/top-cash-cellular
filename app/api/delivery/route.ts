@@ -38,7 +38,9 @@ export async function POST(req: NextRequest) {
   const name = clean(data.name, 100);
   const phone = clean(data.phone, 30);
   const email = clean(data.email, 200);
-  const model = clean(data.model, 100);
+  // Several devices in one meetup ("+ i have another one" on /go) arrive as
+  // one " + "-joined line.
+  const model = clean(data.model, 240);
   const quote = clean(data.quote, 20);
   const payout = clean(data.payout, 80);
   const address = (typeof data.address === "object" && data.address) ? data.address as Record<string, unknown> : null;

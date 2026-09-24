@@ -1156,6 +1156,11 @@ export default function AdminPage() {
     }
   };
   const [statusFilter, setStatusFilter] = useState<string>("active");
+  // Local meetups vs shipping (Sonny 2026-09-24: "separate the shipping
+  // leads from the local ones"). "none" = the seller hasn't picked yet.
+  // Not persisted on purpose: a filter left on "shipping" must never make
+  // new local leads look missing on the next visit.
+  const [handoffFilter, setHandoffFilter] = useState<"all" | "local" | "ship" | "none">("all");
   // Command-center value bucket filter (null = show all). Set by the priority
   // bar; intersects with the status chips on the list below.
   const [bucketFilter, setBucketFilter] = useState<PriorityBucket | null>(null);
@@ -1513,7 +1518,10 @@ export default function AdminPage() {
   };
 
   const dedupedLeads = dedupeLeads(leads);
-  const filteredLeads = dedupedLeads.filter((l) => matchesSearch(l, searchQuery));
+  const searchedLeads = dedupedLeads.filter((l) => matchesSearch(l, searchQuery));
+  const matchesHandoff = (l: Lead) =>
+    handoffFilter === "all" || (handoffFilter === "none" ? !l.handoffMethod : l.handoffMethod === handoffFilter);
+  const filteredLeads = searchedLeads.filter(matchesHandoff);
 
   // "Needs review" filter — leads that staff should look at right now.
   // Three triggers:
@@ -2138,6 +2146,50 @@ export default function AdminPage() {
                   );
                 })}
               </div>
+            </div>
+          );
+        })()}
+
+        {leads.length > 0 && (() => {
+          // Handoff split: counts follow the status chip below, so the
+          // numbers match what the list shows.
+          const statusMatch = (l: Lead) =>
+            statusFilter === "all" ? true
+              : statusFilter === "active" ? !isPaid(l.status) && l.status !== "rejected"
+                : statusFilter === "completed" ? isPaid(l.status) || l.status === "rejected"
+                  : statusFilter === "stale" ? isStale(l)
+                    : l.status === statusFilter;
+          const pool = searchedLeads.filter(statusMatch);
+          const n = {
+            all: pool.length,
+            local: pool.filter((l) => l.handoffMethod === "local").length,
+            ship: pool.filter((l) => l.handoffMethod === "ship").length,
+            none: pool.filter((l) => !l.handoffMethod).length,
+          };
+          const opts = [
+            { key: "all", label: "All" },
+            { key: "local", label: "🤝 Local meetups" },
+            { key: "ship", label: "📦 Shipping" },
+            { key: "none", label: "❓ Not picked yet" },
+          ] as const;
+          return (
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="text-[10px] uppercase tracking-[0.18em] font-bold text-[#8b93a3] mr-1">Handoff</span>
+              {opts.map((o) => {
+                const on = handoffFilter === o.key;
+                const onStyle = o.key === "ship" ? "bg-sky-400 text-[#0a0a0a] border-sky-400" : o.key === "local" ? "bg-emerald-400 text-[#0a0a0a] border-emerald-400" : "bg-[#00c853] text-[#0a0a0a] border-[#00c853]";
+                return (
+                  <button
+                    key={o.key}
+                    onClick={() => setHandoffFilter(o.key)}
+                    aria-pressed={on}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition flex items-center gap-1.5 cursor-pointer ${on ? onStyle : "bg-white/5 text-[#d4d4d4] border-white/10 hover:bg-white/10"}`}
+                  >
+                    <span>{o.label}</span>
+                    <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${on ? "bg-black/15" : "bg-white/10"}`}>{n[o.key]}</span>
+                  </button>
+                );
+              })}
             </div>
           );
         })()}

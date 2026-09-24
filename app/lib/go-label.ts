@@ -23,6 +23,12 @@ export type GoLabelInput = {
   zip: string;
   deviceLabel: string; // "iPhone 17 Pro 256 good unlocked" — kind + reference come from this
   declaredValueUsd?: number;
+  // One box, several locked devices (a seller who tapped "+ i have another
+  // one" before choosing to ship): the package is sized for the heaviest
+  // device, and every lead in the box gets the same [LABEL:] marker so each
+  // admin row shows the tracking and its Received button.
+  kindLabel?: string;
+  alsoLeadIds?: string[];
 };
 export type GoLabelResult =
   | { ok: true; tracking: string; url: string; service: string; cost?: number }
@@ -40,7 +46,7 @@ async function mcPost(body: string, tags: string[], priority: "low" | "normal" |
 }
 
 export async function mintGoLabel(input: GoLabelInput): Promise<GoLabelResult> {
-  const kind = deviceKindFromString(input.deviceLabel);
+  const kind = deviceKindFromString(input.kindLabel || input.deviceLabel);
   const blocked = shouldBlockAutoShip(kind);
   if (blocked) {
     if (input.leadId) await mcPost(`[LABEL-WITHHELD: ${input.leadId}] reason=${blocked}`, ["fedex-label", "blocked"]);
@@ -71,6 +77,10 @@ export async function mintGoLabel(input: GoLabelInput): Promise<GoLabelResult> {
         ["fedex-label", "auto-generated"],
         "low",
       );
+    }
+    // Box-mates: same tracking, no cost (it was paid once, above).
+    for (const id of (input.alsoLeadIds || []).filter((x) => x && x !== input.leadId)) {
+      await mcPost(`[LABEL: ${id}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType} source=go box=${input.leadId || "go"}`, ["fedex-label", "auto-generated"], "low");
     }
     return { ok: true, tracking: label.trackingNumber, url: blob.url, service: label.serviceType, cost: label.cost };
   } catch (err) {

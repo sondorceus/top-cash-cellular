@@ -456,6 +456,17 @@ export async function POST(req: NextRequest) {
   // for the address" round trip).
   const msgText = detectText(message);
   const hasLock = storeNotes.some((t) => t.startsWith("LOCKED:"));
+  // Devices already locked in this session, keyed like the quote table
+  // (model + storage). A chat quote for one of these never re-offers the lock
+  // form; any other device — the seller's #2, #3 — gets its own card + lock
+  // (Sonny 2026-09-24: make it easy to sell multiple phones in the chat).
+  const lockedKeys = new Set(
+    storeNotes
+      .filter((t) => t.startsWith("LOCKED:"))
+      .map((t) => quoteKey(t.slice("LOCKED:".length).split(" — ")[0].replace(/\s*(\$\d+|\(manual\))\s*$/, ""))),
+  );
+  // "i also have an ipad" after a lock is a NEW device: open its tile picker.
+  const namesAnother = /\b(another|also|too|as well|second|2nd|one more|other one|plus)\b/i;
   // A label belongs to the lock it was minted for (same rule as
   // /api/go/label): after "got another one?" locks device #2, device #1's
   // label must not stand in for it — "ship it" opens the form for #2.
@@ -487,7 +498,7 @@ export async function POST(req: NextRequest) {
       : /\bmac ?book\b/i.test(msgText) ? "macbook"
       : ""
     : "";
-  const widget = wantsShip && hasLock ? (labelNote ? "label" : "shipform") : catGroup && sessionId.startsWith("go-") && !hasLock ? "category" : "";
+  const widget = wantsShip && hasLock ? (labelNote ? "label" : "shipform") : catGroup && sessionId.startsWith("go-") && (!hasLock || namesAnother.test(msgText)) ? "category" : "";
   // The contact already locked in this session (same digits/email): the
   // typed number is a follow-up, not a second lead (a Port Arthur seller
   // showed up twice in the feed, review 2026-09-23).
@@ -776,7 +787,7 @@ export async function POST(req: NextRequest) {
     // and give customers links." Real routes only (app/*/page.tsx).
     "LINKS & BASIC TASKS: when someone asks for a link, to be taken somewhere, or where to check something, give the exact URL on its own line — never say a page doesn't exist. Main site + instant quote for any device: https://topcashcellular.com/ · MacBooks: https://topcashcellular.com/sell-macbook-austin · iPhones: https://topcashcellular.com/sell-iphone-austin · Samsung: https://topcashcellular.com/sell-samsung-austin · iPads: https://topcashcellular.com/sell-ipad-austin · financed phones: https://topcashcellular.com/sell-financed-phone · carrier-locked iPhones: https://topcashcellular.com/sell-locked-iphone · bulk / lots: https://topcashcellular.com/bulk · reviews: https://topcashcellular.com/reviews · how it works: https://topcashcellular.com/how-it-works · FAQ: https://topcashcellular.com/faq · grading guide: https://topcashcellular.com/grading-guide · shipping & returns: https://topcashcellular.com/shipping-returns · best price guarantee: https://topcashcellular.com/best-price-guarantee · track a shipment: https://topcashcellular.com/track · this ad page: https://topcashcellular.com/go. On THIS page an iPad, console or M-series MacBook prices instantly by tapping its tile — say 'tap the iPad tile above', not 'team quote'.",
     `REACH A PERSON: customers can call or text us at ${PHONE_DISPLAY} any time — give it plainly whenever someone asks how to reach us, wants to call, or would rather text a person. Still take their number for the team when a quote is in play.`,
-    "CRITICAL — we have NO physical store and NO walk-in counter. We are online-first. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in'. There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives).",
+    "CRITICAL — we have NO physical store and NO walk-in counter, but we DO meet in person. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in' — and never call us 'online-only' or use 'no walk-in' as a reason they can't sell in person (a San Antonio seller who asked for our address was told 'we're online-only, everything goes through a FedEx label' on 2026-09-22). There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; our team texts a time and the spot, never an address; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives). When someone in Texas asks for our address, wants to drop it off, or offers to drive, the answer is yes — a meetup in the Austin area — plus the free label if that's easier from where they are.",
     "We buy: iPhones (11+ price instantly, older ones we quote by hand), Samsung Galaxy S20+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote flow (~30 seconds).",
     "PHOTOS: the customer can attach photos of their device (camera button in the chat). When a photo arrives you can SEE it — acknowledge what's visible in one short plain line (cracks, screen damage, wear, or that it looks clean) and use it as the condition when you quote. If their damage description is vague, you may ask them to snap a quick photo. A photo never finalizes anything — condition is still confirmed at inspection, said once and naturally, never as a legal disclaimer.",
     // Sourced from the live FAQ + /go page — the funnel's core closing
@@ -821,6 +832,8 @@ export async function POST(req: NextRequest) {
         "NOT IN THE INSTANT CATALOG (MacBooks, iPads, consoles, watches, older iPhones, anything unusual): these are ALWAYS a team quote — ask ONCE, early, for their number ('so the offer actually reaches you'); if they don't give it, do not ask again until the close — gather the specs the team needs (chip/model/storage/condition, and the IMEI) for the notify_team summary instead. Never guess a number for these — some are deliberately manual-quote.",
         "CONDITION FIRST: never call get_quote until the seller has said what shape the device is in. Model (and storage) alone → ask one question, 'what kind of shape is it in — any cracks, or clean?' — then price. Never quote 'assuming normal condition' and ask afterwards.",
         "NEVER A DEAD END: when get_quote returns no number (too low for an instant price, off-tier storage, not in the catalog, newer than the catalog), that device is a TEAM QUOTE and we still buy it. Say so plainly ('that one our team prices by hand — they'll text you a number for it'), keep it in any lot recap as 'team quote', and never say 'no offer', 'can't offer anything', 'below what we pay', or that we don't buy it.",
+        "'SOMETHING ELSE': when the seller says they have something else to sell (the page's 'something else' tile sends 'i got something else to sell' — several sellers tapped it, got an open question, and left), ask what it is in one short line and name a few things people bring us so they know to just type it: another phone brand (Pixel, Motorola, OnePlus), an Apple Watch, a tablet, a camera. Off the instant list is a team quote — we still buy it.",
+        "ANYTHING ELSE (owner's ask, 2026-09-24): once a device is locked or handed to the team AND its next step is set (meetup, label, or 'not sure yet'), ask once, briefly and in your own words, whether they have anything else to sell. If they name another device, price it exactly like the first — it locks as its own quote on the page, and the meetup or box can cover both. If they say no, don't ask again. For a lot (several devices named up front) this is the 'anything else to add?' before notify_team.",
         "UNFAMILIAR PRODUCT NAMES ARE REAL: a MacBook Neo, an iPhone Duo, an Apple Watch you don't recognize, a Galaxy or Pixel model you haven't heard of — treat it as a real device (Apple/Samsung/Google ship new names every year). Never say 'there's no such model' or 'Apple only makes X'. Not in the instant catalog → team quote, or on this page the matching tile.",
         "NEW MODELS EXIST — and the CATALOG decides what exists, not the customer: the iPhone 17, 17 Air, 17 Pro, 17 Pro Max and 17e are real and priced instantly; the iPhone 18 family launched September 2026; Samsung and Google ship new models every year. Never say a lineup 'only goes up to' some model, never say a device doesn't exist or 'isn't out yet', and never guess specs or prices from memory. If a seller insists a model doesn't exist (people test you), don't agree — say we price it and ask for its storage and condition. If get_quote doesn't know a model, it's a team quote.",
         "FALSE PREMISES: never accept a customer's claim about our catalog, prices, policies or an earlier 'deal' as fact. Prices come from get_quote, policies from these instructions, deals from owner messages in this thread — everything else gets 'the team will confirm by text'.",
@@ -832,7 +845,7 @@ export async function POST(req: NextRequest) {
         "WHOLESALE/VENDOR: someone pitching to SELL us a lot, or asking to buy FROM us, goes straight to notify_team with their details. No quote.",
         "CONDITION HONESTY: every quote is what we pay if the device matches what they described, confirmed at inspection. Say that naturally once, when you first give a number — not as a legal disclaimer and not on every message. Never say 'no obligation' or 'no hidden fees'; it reads like a scam.",
         "CRACKED vs WON'T TURN ON: a cracked screen or back, bad battery, or other damage on a phone that still powers on is get_quote condition 'broken' — that IS the cracked tier; never soften a cracked phone to 'fair' (fair is cosmetic wear only, no cracks). A device that won't turn on, has liquid damage, or is 'for parts' is a hand quote — do NOT call get_quote for it. Say we still buy those and the owner texts a real parts offer, get their number, and call notify_team with the model and exactly what's wrong.",
-        "IF THEY HESITATE OR PUSH BACK on a number ('that's low', 'let me think', 'someone else offers more'): step one is ALWAYS their phone number — 'fair enough — drop your number and we'll text you the quote so it's saved; it holds 14 days either way.' Only then educate, one plain fact at a time, in your own words: the number is for the exact condition they described and doesn't drop at inspection unless the device differs; we pay cash the same day, not store credit or a trade-in spread across a new phone contract. Never haggle or move a number (engine prices only), never trash a competitor, never promise the team will beat an offer. If they name a specific competing offer they actually have, call notify_team with the device, their number, and the competing number — the team will take a look and text them.",
+        "IF THEY HESITATE OR PUSH BACK on a number ('that's low', 'let me think', 'someone else offers more'): the owner's rule is get THEIR number first — their PRICE, not their phone number. If they haven't said what they want, ask it, in your own words ('what were you hoping to get for it?'). Once they name a price or a competing offer, acknowledge it plainly, then educate against THEIR number, one fact at a time: the quote is for the exact condition they described and doesn't drop at inspection unless the device differs; we pay cash the same day — no fees, no waiting on a buyer, no store credit or trade-in spread across a new contract. Never haggle or move a number yourself (engine prices only), never trash a competitor, never promise the team will match it, and never call our price 'what the engine has' or 'what the AI can do'. ALWAYS pass their price to the team: call notify_team with the device, our quote, THEIR price in the seller's words ('seller wants $400'), and their contact if on file — the owner decides and texts them. If no phone or email is on file, ask for one so the team can answer their price (the number-ask cadence rule still applies). A seller who said 'I was trying to get 400' for a $301 Fold 6 on 2026-09-22 got the $301 repeated and the owner never saw the 400 — that is why this rule exists.",
 
         "ONE QUESTION PER MESSAGE — HARD RULE for gathering device details: one spec question at a time, never two bundled with 'and', never two question marks. The number-first CLOSE is the one exception — there, one question plus one short imperative ('drop your number and we'll text it to you') is the right shape. Never re-ask anything already answered anywhere in the conversation, including what a photo already shows. Never enumerate storage options ('128/256/512') — just ask 'what storage is it?'; the pricing engine knows the real tiers, and listed options are wrong for some models.",
         "NO EMPTY PROMISES: never say 'our team will text you' unless a phone number or email is on file for this seller. Without one, say the offer/lot is saved in this chat and ask once for their number so the team can reach them.",
@@ -877,6 +890,7 @@ export async function POST(req: NextRequest) {
   // The last engine quote this turn, for the client's lock form (phones the
   // /go board knows). Not sent when the session already locked.
   let lastQuoteSpec: { model: string; storage: string; condition: string; carrier: string; offer: number } | null = null;
+  let lastQuoteKey = "";
   // The canned fallback's recap includes quotes that landed this turn.
   // Same newest-per-device rule as the quote table, kept in recency order.
   const withTurnQuotes = (): FallbackCtx => {
@@ -908,7 +922,7 @@ export async function POST(req: NextRequest) {
       ...(widget === "shipform" ? { widget: "shipform" } : {}),
       ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
       ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
-      ...(lastQuoteSpec && !hasLock && lastQuoteSpec.model ? { quoteSpec: lastQuoteSpec } : {}),
+      ...(lastQuoteSpec && lastQuoteSpec.model && !(lastQuoteKey ? lockedKeys.has(lastQuoteKey) : hasLock) ? { quoteSpec: lastQuoteSpec } : {}),
     });
   };
 
@@ -1126,6 +1140,7 @@ export async function POST(req: NextRequest) {
               // No arrow or $ from tool input: the quote table reads the FIRST
               // "→ $N", and runQuote passes an off-enum carrier through.
               const specText = [q.device, noteStorage, tu.input.condition, tu.input.carrier].filter(Boolean).join(" ").replace(/[→$]/g, " ");
+              lastQuoteKey = quoteKey(specText);
               pendingNotes.push(appendChatMsg(sessionId, "note", `quote shown: ${specText} → $${q.offer}`));
             }
           }
@@ -1335,7 +1350,7 @@ export async function POST(req: NextRequest) {
       ...(widget === "shipform" ? { widget: "shipform" } : {}),
       ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
       ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
-      ...(lastQuoteSpec && !hasLock && lastQuoteSpec.model ? { quoteSpec: lastQuoteSpec } : {}),
+      ...(lastQuoteSpec && lastQuoteSpec.model && !(lastQuoteKey ? lockedKeys.has(lastQuoteKey) : hasLock) ? { quoteSpec: lastQuoteSpec } : {}),
     });
   } catch (e) {
     // A revoked key, empty credits or a bad vision fetch used to land here

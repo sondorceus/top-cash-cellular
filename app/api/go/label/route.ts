@@ -2,7 +2,7 @@
 // prints right there — no "we'll text you for the address" round trip.
 //
 // POST { session, name, phone?, street, unit?, city, state, zip }
-//   → { ok:true, tracking, url, service }
+//   → { ok:true, tracking, url, service, texted, emailed, devices }
 //   → { ok:false, kind:"ADDRESS_INVALID"|"SERVICE_UNAVAILABLE", hint }
 //
 // Gated on the session's own server-written notes: a LOCKED note (a real
@@ -10,11 +10,14 @@
 // the lock route writes, so the [LABEL:] marker lands on the right lead row.
 // Idempotent per lock: a lock that already has a label gets it back, no
 // re-mint; a second device locked in the same thread gets its own label.
+// Several devices locked before the seller chose to ship ("+ i have another
+// one") go in ONE box on ONE label: every lead in it gets the tracking.
 // Labels cost money, so this is rate-limited harder than the chat.
 import { NextRequest, NextResponse } from "next/server";
 import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { mintGoLabel } from "../../../lib/go-label";
+import { deviceKindFromString } from "../../../lib/fedex";
 import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { mailShell, MAIL } from "../../../lib/email-shell";
@@ -69,6 +72,27 @@ export async function POST(req: NextRequest) {
   const lockBody = locked.slice("LOCKED:".length).split(" — ")[0].trim();
   const offer = Number(lockBody.match(/\$(\d+)/)?.[1] || 0) || undefined;
   const deviceLabel = lockBody.replace(/\s*\$\d+.*$/, "").replace(/\s*\(manual\)\s*$/, "").trim() || "device";
+  // The box: every device locked since the seller last settled a handoff (a
+  // label, or a meet/ship pick). The newest lock is always in it. A device
+  // they already chose to MEET for, or one already labeled, is not.
+  const lastDecisionTs = noteMsgs.reduce((t, m) => (/^(LABEL: |HANDOFF-CHOICE:)/.test(m.text) && m.ts > t ? m.ts : t), 0);
+  const box = noteMsgs
+    .filter((m) => m.text.startsWith("LOCKED:") && (m.ts > lastDecisionTs || m === lockedNote))
+    .map((m) => {
+      const b = m.text.slice("LOCKED:".length).split(" — ")[0].trim();
+      return { device: b.replace(/\s*\$\d+.*$/, "").replace(/\s*\(manual\)\s*$/, "").trim() || "device", offer: Number(b.match(/\$(\d+)/)?.[1] || 0) || 0 };
+    });
+  const multi = box.length > 1;
+  const boxLeadIds = multi
+    ? noteMsgs.filter((m) => m.text.startsWith("LEAD-ID: ") && m.ts > lastDecisionTs).map((m) => m.text.slice("LEAD-ID: ".length).trim()).filter(Boolean)
+    : [];
+  const boxLabel = multi ? box.map((b) => b.device).join(" + ") : deviceLabel;
+  const boxValue = multi ? box.reduce((sum, b) => sum + b.offer, 0) || undefined : offer;
+  // Size the package for the heaviest thing in it (the kind check stops at
+  // the first match, so "iPhone 16 + PS5" alone would read as a phone).
+  const KIND_RANK: Record<string, number> = { desktop: 5, console: 4, laptop: 3, tablet: 2, phone: 1 };
+  const kindLabel = multi ? [...box].sort((a, b) => (KIND_RANK[deviceKindFromString(b.device) || ""] || 0) - (KIND_RANK[deviceKindFromString(a.device) || ""] || 0))[0].device : undefined;
+  const boxNoun = multi ? `${box.length} devices` : deviceLabel.split(" ").slice(0, 3).join(" ");
 
   const name = clean(body.name, 80);
   const phoneDigits = (clean(body.phone, 30) || (looksLikePhone(contact) ? contact : "")).replace(/\D/g, "").replace(/^1(\d{10})$/, "$1");
@@ -92,7 +116,7 @@ export async function POST(req: NextRequest) {
           from: "topcash-web", fromName: "Top Cash Cellular", role: "system",
           body: [
             "[DELIVERY OPTION] SHIPPING", `Name: ${name}`, `Phone: ${phoneDigits}`, isEmail ? `Email: ${contact}` : null,
-            `Device: ${deviceLabel}`, offer ? `Quote: $${offer}` : null, `Session: ${sid}`,
+            `Device: ${boxLabel}`, boxValue ? `Quote: $${boxValue}` : null, multi ? `Box: ${box.length} devices on one label` : null, `Session: ${sid}`,
             `Chat: https://topcashcellular.com/admin/chats?session=${sid}`,
             "--- Shipping Address ---", `${street}${unit ? `, ${unit}` : ""}`, `${city}, ${stateCode} ${zip}`,
             "Action: FedEx label minted from /go at address entry (see [LABEL:] marker); regenerate via /admin if needed.",
@@ -104,40 +128,44 @@ export async function POST(req: NextRequest) {
   }
   if (!sinceLock.some((t) => t.startsWith("HANDOFF-CHOICE:"))) await appendChatMsg(sid, "note", "HANDOFF-CHOICE: ship (free label) — address entered on /go");
 
-  const result = await mintGoLabel({ leadId, name, phoneDigits, street, unit: unit || undefined, city, state: stateCode, zip, deviceLabel, declaredValueUsd: offer });
+  const result = await mintGoLabel({ leadId, name, phoneDigits, street, unit: unit || undefined, city, state: stateCode, zip, deviceLabel: boxLabel, declaredValueUsd: boxValue, kindLabel, alsoLeadIds: boxLeadIds });
   const link = `https://topcashcellular.com/admin/chats?session=${sid}`;
   if (!result.ok) {
     await appendChatMsg(sid, "note", `LABEL-FAILED: ${result.kind} — ${name}, ${city} ${stateCode} ${zip}`);
     if (result.kind === "SERVICE_UNAVAILABLE") {
-      await notifyOwnerSms(`⚠️ GO label FAILED for ${deviceLabel} (${name}, ${phoneDigits}) — ${result.hint}\n${link}`).catch(() => {});
+      await notifyOwnerSms(`⚠️ GO label FAILED for ${boxLabel} (${name}, ${phoneDigits}) — ${result.hint}\n${link}`).catch(() => {});
     }
     return NextResponse.json(result, { status: result.kind === "ADDRESS_INVALID" ? 400 : 502 });
   }
-  await appendChatMsg(sid, "note", `LABEL: tracking=${result.tracking} url=${result.url}${leadId ? ` lead=${leadId}` : ""} — ${name}, ${city} ${stateCode} ${zip}`);
+  await appendChatMsg(sid, "note", `LABEL: tracking=${result.tracking} url=${result.url}${leadId ? ` lead=${leadId}` : ""}${multi ? ` box=${box.length}` : ""} — ${name}, ${city} ${stateCode} ${zip}`);
 
   // Deliver the label to the seller — text (relay) and/or email. The card on
   // the page shows it too, so a failed text is not a dead end.
-  let sent = false;
+  // texted / emailed go back to the page: the label card only says "we
+  // texted you this link" when a text actually went out (the relay has been
+  // down for days at a time).
+  let texted = false;
+  let emailed = false;
   if (!notesHaveOptOut(notes) && phoneDigits.length === 10) {
-    sent = await sendSellerSms(phoneDigits, `Top Cash Cellular: your free FedEx label is ready — ${result.url}\nTracking ${result.tracking}. Box the ${deviceLabel.split(" ").slice(0, 3).join(" ")}, drop it at any FedEx location, and we text you the moment it lands. Reply STOP to opt out.`).catch(() => false);
+    texted = await sendSellerSms(phoneDigits, `Top Cash Cellular: your free FedEx label is ready — ${result.url}\nTracking ${result.tracking}. Box the ${boxNoun}, drop it at any FedEx location, and we text you the moment it lands. Reply STOP to opt out.`).catch(() => false);
   }
   if (isEmail && RESEND_KEY) {
     try {
       const { Resend } = await import("resend");
       const r = await new Resend(RESEND_KEY).emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>", replyTo: "support@topcashcellular.com", to: contact,
-        subject: `Your free FedEx label for the ${deviceLabel.split(" ").slice(0, 3).join(" ")}`,
+        subject: `Your free FedEx label for the ${boxNoun}`,
         html: mailShell({
           preheader: `Tracking ${result.tracking}`, eyebrow: "Your label", title: "Your FedEx label is ready",
-          introHtml: `<span style="color:${MAIL.body}">Print it, box the device, and drop it at any FedEx location. We text you the moment it lands and pay within 24 hours of inspection. Tracking <strong style="color:${MAIL.ink}">${esc(result.tracking)}</strong>.</span>`,
+          introHtml: `<span style="color:${MAIL.body}">Print it, box the ${multi ? esc(boxNoun) : "device"}, and drop it at any FedEx location. We text you the moment it lands and pay within 24 hours of inspection. Tracking <strong style="color:${MAIL.ink}">${esc(result.tracking)}</strong>.</span>`,
           buttonHref: result.url, buttonLabel: "Open my label",
         }),
         text: `Your FedEx label: ${result.url}\nTracking ${result.tracking}. Drop it at any FedEx location; we text you when it lands.`,
       });
-      sent = sent || !r.error;
+      emailed = !r.error;
     } catch { /* the page card still shows the label */ }
   }
-  await appendChatMsg(sid, "note", sent ? `SMS/email sent (label)` : `label delivery FAILED (page card only)`);
-  await notifyOwnerSms(`📦 GO seller shipping: ${deviceLabel}${offer ? ` $${offer}` : ""} — label minted, ${result.tracking} · ${name} ${phoneDigits}\n${link}`).catch(() => {});
-  return NextResponse.json({ ok: true, tracking: result.tracking, url: result.url, service: result.service });
+  await appendChatMsg(sid, "note", texted || emailed ? `SMS/email sent (label)` : `label delivery FAILED (page card only)`);
+  await notifyOwnerSms(`📦 GO seller shipping: ${boxLabel}${boxValue ? ` $${boxValue}` : ""}${multi ? ` (${box.length} devices, one box)` : ""} — label minted, ${result.tracking} · ${name} ${phoneDigits}\n${link}`).catch(() => {});
+  return NextResponse.json({ ok: true, tracking: result.tracking, url: result.url, service: result.service, texted, emailed, devices: box.length });
 }
