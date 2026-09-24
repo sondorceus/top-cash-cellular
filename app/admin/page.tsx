@@ -71,6 +71,8 @@ interface Lead {
   noteCount?: number;
   duplicateCount?: number;
   duplicateIds?: string[];
+  // Server-flagged re-submission (lib/lead-dupes): the real trade's lead id.
+  duplicateOf?: string;
   resellEstimate?: number;
   grossMargin?: number;
   marginPercent?: number;
@@ -202,10 +204,11 @@ function priorityBucket(l: Lead): PriorityBucket | null {
 
 // The single most-important next step for a lead — drives the one bold "Next:"
 // line + primary button on the v2 card. kind: how the primary button acts —
-// "sms" texts the seller, "received" flips status, "detail" opens the full
-// modal (used for anything that needs confirmation: quoting, risk, label,
-// payout — keeping money/label actions deliberate, per the label-protection rule).
-type NextAction = { label: string; cta: string; kind: "sms" | "received" | "detail"; color: string };
+// "sms" texts the seller, "received" flips status, "pay" opens the payout
+// panel (its own deliberate confirm step), "detail" opens the full modal
+// (anything else that needs confirmation: quoting, risk, label — keeping
+// money/label actions deliberate, per the label-protection rule).
+type NextAction = { label: string; cta: string; kind: "sms" | "received" | "pay" | "detail"; color: string };
 function nextAction(l: Lead): NextAction {
   const b = priorityBucket(l);
   const s = (l.status || "quote_requested").toLowerCase();
@@ -214,8 +217,8 @@ function nextAction(l: Lead): NextAction {
   if (b === "quote") return { label: "Manual quote needed — price it", cta: "Open & quote", kind: "detail", color: blue };
   if (b === "shipping") {
     if (s === "shipped") return { label: "In transit — mark received on arrival", cta: "Mark received", kind: "received", color: violet };
-    if (s === "received") return { label: "Inspect, then send the payout", cta: "Inspect & pay", kind: "detail", color: violet };
-    if (s === "tested") return { label: "Tested — send the payout", cta: "Pay out", kind: "detail", color: violet };
+    if (s === "received") return { label: "Inspect, then pay + send the receipt", cta: "Complete & send receipt", kind: "pay", color: violet };
+    if (s === "tested") return { label: "Tested — pay + send the receipt", cta: "Complete & send receipt", kind: "pay", color: violet };
     return { label: "Label created — nudge seller to ship", cta: "Text seller", kind: "sms", color: violet };
   }
   if (b === "stale") return { label: "Old lead — follow up or trash", cta: "Text seller", kind: "sms", color: grey };
@@ -1454,7 +1457,17 @@ export default function AdminPage() {
   // the "model" field is free-text from the customer and varies between submits.
   // Regular instant-quote flows use the full model name.
   const dedupeLeads = (list: Lead[]): Lead[] => {
-    const sorted = [...list].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    // Server-flagged re-submissions (a seller's second post for a trade
+    // that's open or finished since — lib/lead-dupes) fold into the real
+    // trade's row first, however far apart the posts are.
+    const present = new Set(list.map((l) => l.id));
+    const foldInto = new Map<string, string[]>();
+    const rest = list.filter((l) => {
+      if (!l.duplicateOf || !present.has(l.duplicateOf)) return true;
+      foldInto.set(l.duplicateOf, [...(foldInto.get(l.duplicateOf) || []), l.id]);
+      return false;
+    });
+    const sorted = [...rest].sort((a, b) => b.timestamp.localeCompare(a.timestamp));
     const dayMs = 24 * 3600 * 1000;
     const groups = new Map<string, Lead & { duplicateCount?: number; duplicateIds?: string[] }>();
     const normalizeContact = (lead: Lead): string => {
@@ -1488,7 +1501,15 @@ export default function AdminPage() {
         groups.set(`${key}|${lead.id}`, { ...lead });
       }
     }
-    return Array.from(groups.values()).sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    const out = Array.from(groups.values());
+    for (const g of out) {
+      // Also collect folds aimed at a post the 24h pass merged into g.
+      const extra = [g.id, ...(g.duplicateIds || [])].flatMap((id) => foldInto.get(id) || []);
+      if (extra.length === 0) continue;
+      g.duplicateCount = (g.duplicateCount || 0) + extra.length;
+      g.duplicateIds = [...(g.duplicateIds || []), ...extra];
+    }
+    return out.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
   };
 
   const dedupedLeads = dedupeLeads(leads);
@@ -1544,6 +1565,7 @@ export default function AdminPage() {
     let payoutLatencyN = 0;
     const payoutTally: Record<string, number> = {};
     for (const l of list) {
+      if (l.duplicateOf) continue; // a re-submission isn't a second trade
       const ts = new Date(l.timestamp).getTime();
       if (ts >= weekAgo) thisWeek++;
       if (ts >= monthAgo) thisMonth++;
@@ -2247,7 +2269,10 @@ export default function AdminPage() {
                 // Compact 5-zone summary + one clear next action. The dense
                 // classic row (below) is the default; the rich per-lead
                 // controls all still live in the detail modal ("More ▾").
-                if (previewCard) {
+                // While its payout panel is open a card renders as the classic
+                // row below — the panel (amount, method, IMEI gate, receipt)
+                // lives there, so card view gets the same Mark Paid path.
+                if (previewCard && payingId !== lead.id) {
                   const na = nextAction(lead);
                   const b = priorityBucket(lead);
                   const ACC: Record<string, string> = { money: "#00c853", quote: "#38bdf8", risk: "#ff5566", shipping: "#a78bfa", stale: "#9aa0a6" };
@@ -2303,8 +2328,15 @@ export default function AdminPage() {
                             <a href={`sms:${phone}`} className="flex-1 text-center rounded-lg py-2 px-3 font-extrabold text-[12.5px] cursor-pointer" style={{ background: na.color, color: CTA_INK }}>{na.cta}</a>
                           ) : na.kind === "received" ? (
                             <button onClick={() => saveStatus(lead, "received")} className="flex-1 rounded-lg py-2 px-3 font-extrabold text-[12.5px] cursor-pointer" style={{ background: na.color, color: CTA_INK }}>{na.cta}</button>
+                          ) : na.kind === "pay" ? (
+                            <button onClick={() => startPayout(lead, lead.handoffMethod === "local" ? "met" : "paid")} className="flex-1 rounded-lg py-2 px-3 font-extrabold text-[12.5px] cursor-pointer" style={{ background: na.color, color: CTA_INK }}>{na.cta}</button>
                           ) : (
                             <button onClick={() => setDetailLead(lead)} className="flex-1 rounded-lg py-2 px-3 font-extrabold text-[12.5px] cursor-pointer" style={{ background: na.color, color: CTA_INK }}>{na.cta}</button>
+                          )}
+                          {/* Mark Paid from any open stage — a package can
+                              arrive before tracking ever says so. */}
+                          {na.kind !== "pay" && !["paid", "met", "rejected"].includes(lead.status) && (
+                            <button onClick={() => startPayout(lead, lead.handoffMethod === "local" ? "met" : "paid")} title="Complete & send receipt" aria-label="Complete & send receipt" className="rounded-lg py-2 px-2.5 font-bold text-[12.5px] bg-[#00c853]/15 border border-[#00c853]/40 text-[#7be8a8] hover:bg-[#00c853]/25 cursor-pointer">💵</button>
                           )}
                           <button onClick={() => setDetailLead(lead)} className="rounded-lg py-2 px-3 font-bold text-[12.5px] bg-white/[0.06] border border-white/10 text-[#aab0c2] hover:bg-white/10 cursor-pointer">More ▾</button>
                         </div>
@@ -2358,7 +2390,7 @@ export default function AdminPage() {
                           );
                         })()}
                         {lead.duplicateCount && lead.duplicateCount > 0 && (
-                          <span title={`${lead.duplicateCount} earlier submission${lead.duplicateCount === 1 ? "" : "s"} merged into this row`} className="px-1.5 py-0.5 rounded text-[9px] bg-white/10 text-[#dcdcdc] border border-white/10 font-bold cursor-help">+{lead.duplicateCount} dupe{lead.duplicateCount === 1 ? "" : "s"}</span>
+                          <span title={`${lead.duplicateCount} other submission${lead.duplicateCount === 1 ? "" : "s"} of this trade merged into this row`} className="px-1.5 py-0.5 rounded text-[9px] bg-white/10 text-[#dcdcdc] border border-white/10 font-bold cursor-help">+{lead.duplicateCount} dupe{lead.duplicateCount === 1 ? "" : "s"}</span>
                         )}
                       </p>
                       <p className="text-[#c5c5c5] text-xs">{timeAgo(lead.timestamp)}</p>
@@ -3896,7 +3928,23 @@ export default function AdminPage() {
                   </h2>
                   <p className="text-xs text-[#c5c5c5] mt-0.5">{new Date(L.timestamp).toLocaleString()} · Offer <span className="font-mono">#{formatOfferNumber(L.id)}</span></p>
                 </div>
-                <button onClick={() => setDetailLead(null)} aria-label="Close" className="shrink-0 w-8 h-8 rounded-full bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 hover:text-white cursor-pointer transition">✕</button>
+                <div className="shrink-0 flex items-center gap-2">
+                  {/* Straight from the details to Mark Paid: closes this and
+                      opens the lead's payout panel in the list. */}
+                  {!["paid", "met", "rejected"].includes(L.status) && (
+                    <button
+                      onClick={() => {
+                        setDetailLead(null);
+                        startPayout(L, L.handoffMethod === "local" ? "met" : "paid");
+                        setTimeout(() => document.querySelector(`[data-lead-id="${L.id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+                      }}
+                      className="rounded-lg py-1.5 px-3 text-xs font-extrabold bg-[#00c853] text-[#0a0f1a] hover:bg-[#00e676] cursor-pointer"
+                    >
+                      💵 Complete & send receipt
+                    </button>
+                  )}
+                  <button onClick={() => setDetailLead(null)} aria-label="Close" className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-[#dcdcdc] hover:bg-white/10 hover:text-white cursor-pointer transition">✕</button>
+                </div>
               </div>
 
               <div className="p-5 space-y-4 text-sm">

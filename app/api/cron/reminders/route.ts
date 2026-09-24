@@ -5,6 +5,7 @@ import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { sendSellerSms, optedOutIn, looksLikePhone } from "../../../lib/seller-sms";
 import { sidToken } from "../../../lib/go-sid-token";
 import { readChat, validGoSession, phoneKey } from "../../../lib/gochat-store";
+import { duplicatesFromComms } from "../../../lib/lead-dupes";
 
 // Hourly reminder cron — Skywalker 2026-05-18 "remind 24hr after they
 // get quote to meet/respond/ship, make custom depending on shipping
@@ -376,6 +377,11 @@ export async function GET(req: NextRequest) {
   const reviewCandidates: { lead: LeadShape; statusTs: string }[] = [];
   const chatCandidates: ChatLead[] = [];
 
+  // A seller's re-submission of a trade that's already open (or finished
+  // since) is the same trade — no reminder or lock-expiry text about it
+  // (lib/lead-dupes).
+  const dupes = duplicatesFromComms(messages);
+
   const isDeleted = (id: string) => {
     const lastDel = messages.filter((mm) => mm.body && new RegExp(`\\[DELETED-LEAD:\\s*${id}\\]`, "i").test(mm.body)).map((mm) => mm.timestamp).sort().pop();
     if (!lastDel) return false;
@@ -402,6 +408,7 @@ export async function GET(req: NextRequest) {
     if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
     // Deleted leads (soft-trashed) → skip. They re-surface only on restore.
     if (isDeleted(m.id)) continue;
+    if (dupes.has(m.id)) continue;
     const name = parseField(m.body, "Name");
     const phone = parseField(m.body, "Phone");
     const email = parseField(m.body, "Email");

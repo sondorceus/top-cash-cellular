@@ -7,6 +7,7 @@ import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import { parseDollarAmount } from "../../../lib/lead-money";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { parseOfferBonus, isCustomerLeadPost, ITEM_UPDATE_BONUS_EXCLUDED } from "../../../lib/lead-devices";
+import { findDuplicates } from "../../../lib/lead-dupes";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -275,6 +276,9 @@ interface AdminLead {
   // Skywalker 2026-05-17: "next time save my quotes for 24hr".
   deletedAt?: string;
   hoursToAutoPurge?: number | null;
+  // Set when this post is a seller's re-submission of a trade that's open
+  // or finished since (lib/lead-dupes) — the id of the real trade's lead.
+  duplicateOf?: string;
   status: string;
   statusUpdatedAt?: string;
   latestNote?: string;
@@ -1294,6 +1298,27 @@ export async function GET(req: NextRequest) {
     const m = String(q).match(/(\d[\d,]*)/);
     return m ? parseInt(m[1].replace(/,/g, ""), 10) || 0 : 0;
   }
+  // One trade, several posts: tag a seller's re-submission with the real
+  // trade it belongs to (lib/lead-dupes). The admin folds it into that row;
+  // trashed posts don't count either way.
+  const dupeOf = findDuplicates(
+    leads.filter((l) => !l.deletedAt).map((l) => ({
+      id: l.id,
+      ts: l.timestamp,
+      phone: l.phone,
+      email: l.email,
+      device: l.model || l.device,
+      status: l.status,
+      statusTs: l.statusUpdatedAt,
+      hasLabel: !!l.fedexTracking,
+      multi: (l.deviceCount || 0) > 1 || (l.devices?.length || 0) > 1,
+    })),
+  );
+  for (const l of leads) {
+    const into = dupeOf.get(l.id);
+    if (into) l.duplicateOf = into;
+  }
+
   const customerIndex = new Map<string, Array<{ ts: string; spend: number }>>();
   const pushIdx = (key: string | undefined, ts: string, spend: number) => {
     if (!key) return;

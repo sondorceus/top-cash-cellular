@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { listChatSessions, readChat, validGoSession } from "../../../lib/gochat-store";
+import { duplicatesFromComms } from "../../../lib/lead-dupes";
 
 // Operational watchdog — catches the SILENT, money/trust-losing failures the
 // customer reminder cron can't, because they happen on the OPS side after a
@@ -152,9 +153,14 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // A seller's re-submission of a trade that's already open (or finished
+  // since) is the same trade — never chase it (lib/lead-dupes).
+  const dupes = duplicatesFromComms(messages);
+
   const flags: Flag[] = [];
   for (const [leadId, lead] of leads) {
     if (deleted.has(leadId)) continue;
+    if (dupes.has(leadId)) continue;
     if (INTERNAL_EMAILS.includes(field(lead.body, "Email").toLowerCase())) continue;
 
     const status = statusByLead.get(leadId)?.status || "quote_requested";
