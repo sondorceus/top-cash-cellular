@@ -480,6 +480,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // covers all of them: one meetup, one box, one label (Sonny 2026-09-24:
   // "make it easy for people in the chat to sell multiple phones").
   const pendingLocksRef = useRef<{ model: string; contact: string; offer: number | null; name: string }[]>([]);
+  // "not sure yet" answered the pay question for what's locked so far: don't
+  // ask it again on "that's it for now", but keep those devices pending so a
+  // later meetup / box still covers them. Reset by the next lock.
+  const payDeferredRef = useRef(false);
   // Business-hours status. Client-only (Date at render would mismatch the
   // server HTML), and both strings are TRUE at all hours — quotes run 24/7.
   const [status, setStatus] = useState("");
@@ -989,8 +993,9 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     if (dim === "another") {
       if (key === "no") {
         // Tapped "+ i have another one", then changed their mind: the locked
-        // devices still need a meet-or-ship answer.
-        if (pendingLocksRef.current.length) {
+        // devices still need a meet-or-ship answer (unless they already said
+        // "not sure yet" for them).
+        if (pendingLocksRef.current.length && !payDeferredRef.current) {
           pushMsgs({ from: "user", text: label, tap: true }, payChips());
           return;
         }
@@ -1026,10 +1031,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       const lk = lastLockRef.current;
       pushMsgs({ from: "user", text: label, tap: true });
       if (key === "later" || !lk) {
-        // "not sure yet" IS their answer for what's locked so far (the team
-        // sorts it out by text) — clearing it keeps "that's it for now" from
-        // asking the pay question a second time.
-        pendingLocksRef.current = [];
+        // "not sure yet" IS their answer for now (the team sorts it out by
+        // text): "that's it for now" won't ask again, and a meetup or box
+        // picked after the next lock still covers these devices.
+        payDeferredRef.current = true;
         pushMsgs({ from: "bot", text: "no problem — we’ll text you and sort it out." }, anotherChips());
         return;
       }
@@ -1174,6 +1179,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         const offer: number | null = typeof d.offer === "number" ? d.offer : null;
         lastLockRef.current = { model: quoteLabel(gRow, gSpec.storage ?? gRow.storages[0]), contact: c, offer, name: gName.trim() };
         pendingLocksRef.current = [...pendingLocksRef.current, lastLockRef.current];
+        payDeferredRef.current = false;
         pixelTrack("Lead", { content_name: gRow.label, value: offer ?? 0, currency: "USD" }, lockEventId);
         // (the LOCKED breadcrumb + the confirmation text are server-side)
         // Peak trust: they just saw a real number and handed over a way to
