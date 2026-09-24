@@ -1778,6 +1778,25 @@ export default function AdminPage() {
     setPendingStatus((prev) => ({ ...prev, [lead.id]: v }));
   };
 
+  // What still blocks Mark Paid, in plain words. The button shows these
+  // instead of sitting silently grey — a payout was once "done" with the
+  // button never enabled, so nothing saved and no receipt went out.
+  const payoutMissingFor = (lead: Lead): string[] => {
+    const missing: string[] = [];
+    if (!(Number(payoutAmount) > 0)) missing.push("amount paid");
+    if (!payoutMethod) missing.push("how you paid");
+    else if (payoutMethod !== "cash" && !payoutReference.trim()) missing.push("confirmation #");
+    const idOnFile = !!lead.imei || !!(lead.devices && lead.devices.length > 0 && lead.devices.every((d) => !!d.imei));
+    if (!idOnFile) {
+      if (payoutImeiOverride) {
+        if (!payoutNote.trim()) missing.push("note on why there's no IMEI");
+      } else if (payoutImei.trim().length < 4) {
+        missing.push("IMEI / serial");
+      }
+    }
+    return missing;
+  };
+
   // Token gate. proxy.ts now bounces unauthorized users to Google sign-in
   // before this page even renders. The form below stays as a fallback for
   // direct-token entry (env-disaster recovery): if Google OAuth is broken
@@ -3671,10 +3690,16 @@ export default function AdminPage() {
                             />
                             <span>Also create a profit-ledger row (cost = ${payoutAmount || "0"})</span>
                           </label>
+                          {payoutMissingFor(lead).length > 0 && (
+                            <p className="text-[10px] text-[#ffcf4d] leading-snug">
+                              To finish, add: {payoutMissingFor(lead).join(" · ")}
+                              {payoutMissingFor(lead).includes("IMEI / serial") && " (or tick “No identifier” and add a note)"}
+                            </p>
+                          )}
                           <div className="flex gap-1.5">
                             <button
                               type="button"
-                              disabled={!payoutMethod || (payoutMethod !== "cash" && !payoutReference.trim()) || !payoutAmount.trim() || Number(payoutAmount) <= 0 || !(lead.imei || (lead.devices && lead.devices.length > 0 && lead.devices.every((d) => !!d.imei)) || (!payoutImeiOverride && payoutImei.trim().length >= 4) || (payoutImeiOverride && payoutNote.trim().length > 0))}
+                              disabled={payoutMissingFor(lead).length > 0}
                               onClick={async () => {
                                 const amt = Number(payoutAmount) || 0;
                                 // Fold the device identifier (or override
@@ -3724,7 +3749,9 @@ export default function AdminPage() {
                               }}
                               className="flex-1 px-2 py-1.5 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                             >
-                              {payingStatus === "met" ? "Mark Met" : "Mark Paid"}{lead.phone || lead.email ? " & Send Receipt" : ""}
+                              {payoutMissingFor(lead).length > 0
+                                ? `Missing: ${payoutMissingFor(lead).join(", ")}`
+                                : `${payingStatus === "met" ? "Mark Met" : "Mark Paid"}${lead.phone || lead.email ? " & Send Receipt" : ""}`}
                             </button>
                             <button
                               type="button"
