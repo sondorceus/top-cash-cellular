@@ -8,6 +8,12 @@ import { reportError } from "../../../../lib/error-report";
 import { REFERRAL_REFERRER_REWARD } from "../../../../lib/referral";
 import { isCustomerLeadPost } from "../../../../lib/lead-devices";
 import { formatOfferNumber } from "../../../../lib/offer-number";
+import { fetchCommsRead } from "../../../../lib/mc-comms";
+
+// The two paid/met lookups below (review token, referral) each read the
+// live feed; a short memo lets one request's pair share a single read, and
+// they run in parallel — together they were most of Mark Paid's wait.
+const recentFeed = () => fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false, memoMs: 3_000 });
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -61,13 +67,9 @@ async function postReviewTokenMarker(leadId: string, token: string, name?: strin
 async function leadHasReviewToken(leadId: string): Promise<boolean> {
   if (!MC_KEY) return false;
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (!r.ok) return false;
-    const data = await r.json().catch(() => ({}));
-    const messages: { body?: string }[] = Array.isArray(data.messages) ? data.messages : [];
+    const read = await recentFeed();
+    if (!read.complete) return false;
+    const messages: { body?: string }[] = read.messages;
     const re = new RegExp(`\\[REVIEW-TOKEN:\\s*${leadId}\\]`, "i");
     return messages.some((m) => !!m.body && !isCustomerLeadPost(m.body) && re.test(m.body));
   } catch {
@@ -99,13 +101,9 @@ async function creditReferralIfAny(leadId: string): Promise<void> {
   if (referralCreditInFlight.has(leadId)) return;
   referralCreditInFlight.add(leadId);
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (!r.ok) return;
-    const data = await r.json().catch(() => ({}));
-    const messages: { id?: string; body?: string }[] = Array.isArray(data.messages) ? data.messages : [];
+    const read = await recentFeed();
+    if (!read.complete) return;
+    const messages: { id?: string; body?: string }[] = read.messages;
 
     // Locate this lead's own message + check if it's already credited.
     let leadBody: string | undefined;
@@ -703,6 +701,13 @@ export async function POST(req: NextRequest) {
     });
     mcOk = r.ok;
   } catch {}
+  // Nothing persisted → say so, before any text or email goes out. This
+  // used to answer 200 with mcOk:false and still notify the customer; the
+  // admin showed "✓ Saved", the next poll reverted the row, the owner
+  // flipped it again and the customer got a second receipt.
+  if (!mcOk) {
+    return NextResponse.json({ error: "Not saved — Mission Control refused the update. Nothing was sent to the customer; try again." }, { status: 502 });
+  }
 
   // Mint a single-use review token IF this flip is paid/met. The
   // token is the customer's ticket to /reviews/new — no token, no
@@ -712,6 +717,10 @@ export async function POST(req: NextRequest) {
   // verify-token endpoint can validate it later.
   let reviewToken: string | undefined;
   if (status === "paid" || status === "met") {
+    // Credit the referrer (if this lead carries a "Referred-by:" line) in
+    // parallel with the token check — independent reads of the same feed.
+    // Best-effort + idempotent (see creditReferralIfAny).
+    const creditP = creditReferralIfAny(leadId);
     // Only mint a token the FIRST time a lead completes. Re-flipping
     // paid↔met (or re-saving paid) used to mint a brand-new token each
     // time and email the customer another review invite. Skip if one
@@ -746,10 +755,7 @@ export async function POST(req: NextRequest) {
         }).catch(() => false));
       }
     }
-    // Credit the referrer (if this lead carries a "Referred-by:" line).
-    // Best-effort + idempotent — see creditReferralIfAny. A re-flip to
-    // paid/met won't double-pay; an MC outage just skips it silently.
-    await creditReferralIfAny(leadId);
+    await creditP;
   }
 
   // 2. Fire SMS + email in parallel.

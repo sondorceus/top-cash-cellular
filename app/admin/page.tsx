@@ -339,7 +339,7 @@ export default function AdminPage() {
       form.append("idNumber", idNumber.trim());
       form.append("dob", idDob);
       form.append("photo", idFile);
-      const r = await fetch(`/api/admin/leads/id-capture?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/id-capture?token=${encodeURIComponent(token)}`, {
         method: "POST",
         body: form,
       });
@@ -398,6 +398,27 @@ export default function AdminPage() {
   // (or a TTL elapses) — so a lagging GET can't resurrect a deleted lead.
   const fetchSeqRef = useRef(0);        // increments per request started
   const appliedSeqRef = useRef(0);      // highest seq actually applied
+  // The 5 s poll: one request in flight at a time (a slow MC read used to
+  // pile ticks up, each a fresh full-history read), abortable on unmount.
+  const tickInFlightRef = useRef<AbortController | null>(null);
+  // Signature of the list last applied — an identical poll result is
+  // skipped so 200 rows don't re-render every 5 s when nothing changed.
+  const lastListSigRef = useRef("");
+  // When the console last wrote (status, note, delete, label, …). For 20 s
+  // after, reads send fresh=1 so the server's memoized feed can't show the
+  // owner's own change as undone.
+  const lastWriteRef = useRef(0);
+  const adminWrite = useCallback((input: string, init?: RequestInit) => {
+    lastWriteRef.current = Date.now();
+    return fetch(input, init);
+  }, []);
+  const freshParam = () => (Date.now() - lastWriteRef.current < 20_000 ? "&fresh=1" : "");
+  // Total the server holds for this view (it returns the newest 200).
+  const [leadCount, setLeadCount] = useState<number | null>(null);
+  // Leads with a save in flight — a second tap on Mark Paid / a chip while
+  // the first request is still running used to fire twice (two receipts,
+  // two ledger rows, two review tokens).
+  const savingIdsRef = useRef(new Set<string>());
   // leadId → expiry (ms epoch). Within window, the lead is force-hidden
   // from Active no matter what MC returns. TTL covers MC's worst-case
   // write+read lag with margin; if a delete genuinely failed the lead
@@ -514,7 +535,7 @@ export default function AdminPage() {
     if (!newQuote || isNaN(newQuote) || !adjustReason.trim()) return;
     setAdjustSavingId(lead.id);
     try {
-      const r = await fetch(`/api/admin/leads/adjust?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/adjust?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -543,7 +564,7 @@ export default function AdminPage() {
     if (!token || !lead.phone) return;
     setSmsThreads((prev) => ({ ...prev, [lead.id]: { loading: true } }));
     try {
-      const r = await fetch(`/api/admin/leads/sms?token=${encodeURIComponent(token)}&phone=${encodeURIComponent(lead.phone)}`, { cache: "no-store" });
+      const r = await adminWrite(`/api/admin/leads/sms?token=${encodeURIComponent(token)}&phone=${encodeURIComponent(lead.phone)}`, { cache: "no-store" });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const d = await r.json();
       setSmsThreads((prev) => ({ ...prev, [lead.id]: { loading: false, messages: d.messages || [] } }));
@@ -565,13 +586,18 @@ export default function AdminPage() {
     setBulkSaving(true);
     const ids = Array.from(selectedIds);
     setBulkProgress({ done: 0, total: ids.length });
+    let failed = 0; // saves the server refused — the rows keep their old status
     try {
       for (let i = 0; i < ids.length; i++) {
         const lead = leads.find((l) => l.id === ids[i]);
         if (!lead) { setBulkProgress({ done: i + 1, total: ids.length }); continue; }
         if (lead.status === newStatus) { setBulkProgress({ done: i + 1, total: ids.length }); continue; }
         try {
-          await fetch(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
+          // No placeholder reason on a bulk reject: the literal "Bulk update
+          // — see operator for details" went out to customers as the reason
+          // they were turned down. Without one the route sends its generic
+          // "there's an issue — email support" wording.
+          const r = await adminWrite(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -583,13 +609,14 @@ export default function AdminPage() {
               device: lead.model || lead.device,
               quote: lead.quote,
               payout: lead.payout,
-              rejectionReason: newStatus === "rejected" ? "Bulk update — see operator for details" : undefined,
             }),
           });
-          setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, status: newStatus, statusUpdatedAt: new Date().toISOString() } : l)));
-        } catch {}
+          if (!r.ok) failed++;
+          else setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, status: newStatus, statusUpdatedAt: new Date().toISOString() } : l)));
+        } catch { failed++; }
         setBulkProgress({ done: i + 1, total: ids.length });
       }
+      if (failed > 0) setError(`${failed} of ${ids.length} didn't save — those rows kept their old status. Try them again.`);
       setSelectedIds(new Set());
       setBulkStatus("");
     } finally {
@@ -613,7 +640,7 @@ export default function AdminPage() {
       for (let i = 0; i < ids.length; i++) {
         const lead = leads.find((l) => l.id === ids[i]);
         try {
-          const r = await fetch(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
+          const r = await adminWrite(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ leadId: ids[i], reason: `bulk delete via admin UI${lead?.name ? ` for ${lead.name}` : ""}` }),
@@ -669,7 +696,7 @@ export default function AdminPage() {
     setEmailSendingId(lead.id);
     setEmailErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
     try {
-      const r = await fetch(`/api/admin/leads/email?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/email?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -807,7 +834,7 @@ export default function AdminPage() {
       setCounterOfferSending(true);
       setCounterOfferError("");
       try {
-        const r = await fetch(`/api/admin/leads/counter-offer`, {
+        const r = await adminWrite(`/api/admin/leads/counter-offer`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-admin-token": token },
           body: JSON.stringify({
@@ -876,7 +903,7 @@ export default function AdminPage() {
     setCounterOfferSending(true);
     setCounterOfferError("");
     try {
-      const r = await fetch(`/api/admin/leads/counter-offer`, {
+      const r = await adminWrite(`/api/admin/leads/counter-offer`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({
@@ -999,7 +1026,7 @@ export default function AdminPage() {
     setLabelGeneratingId(lead.id);
     setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
     try {
-      const r = await fetch(`/api/admin/leads/label?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/label?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1109,7 +1136,7 @@ export default function AdminPage() {
     setLabelResendingId(lead.id);
     setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
     try {
-      const r = await fetch(`/api/admin/leads/label-resend?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/label-resend?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1140,7 +1167,7 @@ export default function AdminPage() {
     if (!token || !noteDraft.trim()) return;
     setNoteSavingId(lead.id);
     try {
-      const r = await fetch(`/api/admin/leads/note?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/note?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ leadId: lead.id, note: noteDraft }),
@@ -1217,7 +1244,7 @@ export default function AdminPage() {
       // needs-review is a client-side filter on top of the active list,
       // so coerce to "active" for the backend fetch.
       const wireView = view === "needs-review" ? "active" : view;
-      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}`, { cache: "no-store" });
+      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}${freshParam()}`, { cache: "no-store" });
       if (r.status === 401) {
         setError("Invalid token");
         setToken("");
@@ -1230,7 +1257,10 @@ export default function AdminPage() {
       // latency means an older slow request can resolve last and clobber.
       if (seq <= appliedSeqRef.current) return;
       appliedSeqRef.current = seq;
-      setLeads(applyPending(d.leads || [], view));
+      const next = applyPending(d.leads || [], view);
+      lastListSigRef.current = JSON.stringify(next);
+      setLeads(next);
+      setLeadCount(typeof d.count === "number" ? d.count : null);
       setInternalHidden(d.internalHidden || 0);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load leads");
@@ -1284,7 +1314,7 @@ export default function AdminPage() {
     setDeletingId(lead.id);
     setError(null);
     try {
-      const r = await fetch(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ leadId: lead.id, reason: `deleted via admin UI for ${label}` }),
@@ -1321,7 +1351,7 @@ export default function AdminPage() {
     setRestoringId(lead.id);
     setError(null);
     try {
-      const r = await fetch(`/api/admin/leads/restore?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/restore?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ leadId: lead.id }),
@@ -1364,22 +1394,30 @@ export default function AdminPage() {
     if (!token || !autoRefresh) return;
     const tick = async () => {
       if (typeof document !== "undefined" && document.visibilityState === "hidden") return;
+      if (tickInFlightRef.current) return; // the previous poll hasn't returned — don't stack another
+      const ac = new AbortController();
+      tickInFlightRef.current = ac;
       const seq = ++fetchSeqRef.current;
       try {
         const wireView = view === "needs-review" ? "active" : view;
         const r = await fetch(
-          `/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}`,
-          { cache: "no-store" },
+          `/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}${freshParam()}`,
+          { cache: "no-store", signal: ac.signal },
         );
         if (!r.ok) return;
         const d = await r.json();
         // Ignore stale stragglers — only the freshest started fetch wins.
         if (seq <= appliedSeqRef.current) return;
         appliedSeqRef.current = seq;
+        if (typeof d.count === "number") setLeadCount(d.count);
         // Suppress leads we've optimistically deleted (and trashed leads
         // we've restored) until MC catches up, so a lagging read can't
         // resurrect them.
         const next: Lead[] = applyPending(d.leads || [], view);
+        // Nothing changed since the last applied list → leave state alone.
+        const sig = JSON.stringify(next);
+        if (sig === lastListSigRef.current) return;
+        lastListSigRef.current = sig;
         setLeads((prev) => {
           const prevById = new Map(prev.map((l) => [l.id, l.status]));
           const changedIds: string[] = [];
@@ -1397,11 +1435,21 @@ export default function AdminPage() {
           }
           return next;
         });
-      } catch {}
+      } catch {} finally {
+        if (tickInFlightRef.current === ac) tickInFlightRef.current = null;
+      }
     };
     // Tightened from 15s to 5s 2026-05-17 — Skywalker reported staleness.
     const interval = setInterval(tick, 5000);
-    return () => clearInterval(interval);
+    // Coming back to the tab polls at once instead of waiting out the tick.
+    const onVis = () => { if (document.visibilityState === "visible") void tick(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVis);
+      tickInFlightRef.current?.abort();
+      tickInFlightRef.current = null;
+    };
     // showInternal in deps so toggling the chip restarts the interval
     // with the right param, not just the next-fired tick.
   }, [token, autoRefresh, view, showInternal]);
@@ -1431,6 +1479,9 @@ export default function AdminPage() {
     setToken("");
     setLeads([]);
     localStorage.removeItem("tcc-admin-token");
+    // The Google session cookie too — clearing only the local token left
+    // the console re-unlocking itself on the next load.
+    void fetch("/api/auth/signout", { method: "POST" }).catch(() => {}).then(() => { window.location.href = "/admin"; });
   };
 
   const matchesSearch = (lead: Lead, q: string): boolean => {
@@ -1721,6 +1772,8 @@ export default function AdminPage() {
 
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string; amount?: number }) => {
     if (!token || newStatus === lead.status) return;
+    if (savingIdsRef.current.has(lead.id)) return; // a save for this lead is already running
+    savingIdsRef.current.add(lead.id);
     setSavingId(lead.id);
     // Only pass shipAddress when the lead is a SHIPPING handoff AND
     // we're flipping it to "shipped". Local meetups never get a
@@ -1734,7 +1787,7 @@ export default function AdminPage() {
       if (parsed) shipAddressPayload = parsed;
     }
     try {
-      const r = await fetch(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1752,8 +1805,11 @@ export default function AdminPage() {
           payoutConfirmation,
         }),
       });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const d = await r.json();
+      const d = await r.json().catch(() => ({}));
+      // The route answers 502 when Mission Control refused the update (and
+      // sends nothing to the customer); an older build answered 200 with
+      // mcOk:false — treat both as not saved.
+      if (!r.ok || d?.mcOk === false) throw new Error(typeof d?.error === "string" ? d.error : `Not saved (HTTP ${r.status})`);
       if (typeof d.receiptText === "string" && d.receiptText) {
         const rc = { leadId: lead.id, name: lead.name || "Seller", phone: (lead.phone || "").replace(/[^0-9+]/g, ""), text: d.receiptText, sms: !!d.smsSent, email: !!d.emailSent, hasEmail: !!lead.email };
         setReceipts((cur) => [rc, ...cur.filter((x) => x.leadId !== lead.id)]);
@@ -1764,7 +1820,10 @@ export default function AdminPage() {
       setTimeout(() => setSavedFlash((s) => ({ ...s, [lead.id]: null })), 3500);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
+      // The dropdown must not keep showing a status that didn't save.
+      setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; });
     } finally {
+      savingIdsRef.current.delete(lead.id);
       setSavingId(null);
     }
   };
@@ -2050,7 +2109,7 @@ export default function AdminPage() {
             <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl p-3">
               <p className="text-[10px] uppercase tracking-wider text-[#00c853] font-bold" title="Cash TCC paid customers for the phones it bought (COGS / cash-out) — NOT resale revenue. Resale + profit live on /admin/profit.">💸 Paid to customers · this week</p>
               <p className="text-xl sm:text-2xl font-extrabold text-[#00c853] mt-0.5">${stats.revenueWeek.toLocaleString()}</p>
-              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenueMonth.toLocaleString()} MTD · ${stats.revenue.toLocaleString()} all-time · <a href="/admin/profit" className="underline hover:text-white">resale + profit →</a></p>
+              <p className="text-[10px] text-[#dcdcdc] mt-0.5">${stats.revenueMonth.toLocaleString()} MTD · ${stats.revenue.toLocaleString()} {leadCount != null && leadCount > leads.length ? `across the newest ${leads.length} of ${leadCount} leads` : "all-time"} · <a href="/admin/profit" className="underline hover:text-white">resale + profit →</a></p>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-xl p-3">
               <p className="text-[10px] uppercase tracking-wider text-[#c5c5c5] font-bold">📊 Performance</p>
@@ -3120,7 +3179,7 @@ export default function AdminPage() {
                         <div className="mt-2 rounded-lg bg-[#ffb400]/8 border border-[#ffb400]/30 px-3 py-2.5">
                           <div className="flex items-center justify-between gap-2 mb-1.5">
                             <div className="flex items-center gap-2">
-                              <span className="text-[#ffb400] text-sm font-bold leading-none">{"★".repeat(lead.review.rating)}<span className="text-white/15">{"★".repeat(5 - lead.review.rating)}</span></span>
+                              <span className="text-[#ffb400] text-sm font-bold leading-none">{"★".repeat(Math.min(5, Math.max(0, lead.review.rating)))}<span className="text-white/15">{"★".repeat(Math.max(0, 5 - lead.review.rating))}</span></span>
                               {lead.review.verified && (
                                 <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-[#00c853]/15 text-[#7be8a8] border border-[#00c853]/40">✓ Verified</span>
                               )}
@@ -3783,8 +3842,9 @@ export default function AdminPage() {
                           <div className="flex gap-1.5">
                             <button
                               type="button"
-                              disabled={payoutMissingFor(lead).length > 0}
+                              disabled={payoutMissingFor(lead).length > 0 || savingId === lead.id}
                               onClick={async () => {
+                                if (savingIdsRef.current.has(lead.id)) return; // double-tap
                                 const amt = Number(payoutAmount) || 0;
                                 // Fold the device identifier (or override
                                 // reason) into the note so it persists in

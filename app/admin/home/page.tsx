@@ -24,6 +24,9 @@ interface Analytics {
 interface HomeLead {
   id: string;
   timestamp: string;
+  // Set when this post is a seller's re-submission of an open trade
+  // (lib/lead-dupes) — not its own pipeline entry.
+  duplicateOf?: string;
   name?: string;
   phone?: string;
   email?: string;
@@ -180,7 +183,7 @@ export default function AdminHomePage() {
           <div className="sub">{sum ? `avg $${sum.avgQuote.toLocaleString()} per lead` : ""}</div>
         </Link>
         <Link href="/admin" className="tadm-tile">
-          <div className="num">{activeLeads ? activeLeads.length : "—"}</div>
+          <div className="num">{activeLeads ? activeLeads.filter((l) => !["paid", "met", "rejected"].includes(l.status) && !l.duplicateOf).length : "—"}</div>
           <div className="lbl">open pipeline</div>
           <div className="sub">{sum ? `${sum.totalLeads.toLocaleString()} leads all-time` : ""}</div>
         </Link>

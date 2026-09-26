@@ -121,15 +121,21 @@ export default function LiveChatsPage() {
     nearBottomRef.current = true;   // fresh thread open → land at the latest
   }, [open]);
 
-  async function post(body: { session: string; text?: string; takeover?: boolean; sms?: boolean }) {
+  // Resolves to whether the server accepted it — a reply that didn't land
+  // used to vanish from the box as if sent.
+  async function post(body: { session: string; text?: string; takeover?: boolean; sms?: boolean }): Promise<boolean> {
     setBusy(true);
     try {
-      await fetch("/api/admin/chats", {
+      const r = await fetch("/api/admin/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...hdrs },
         body: JSON.stringify(body),
+        signal: AbortSignal.timeout(20_000),
       });
       loadThread(body.session);
+      return r.ok;
+    } catch {
+      return false;
     } finally {
       setBusy(false);
     }
@@ -249,7 +255,9 @@ export default function LiveChatsPage() {
                   if (!t) return;
                   setDraft("");
                   // Sending a message implies takeover — flip it on in the same post.
-                  void post({ session: open, text: t, ...(takeover ? {} : { takeover: true }), ...(alsoText ? { sms: true } : {}) });
+                  // A refused send puts the text back in the box instead of losing it.
+                  void post({ session: open, text: t, ...(takeover ? {} : { takeover: true }), ...(alsoText ? { sms: true } : {}) })
+                    .then((ok) => { if (!ok) setDraft((cur) => cur || t); });
                 }}
               >
                 <input

@@ -5,7 +5,7 @@ import path from "path";
 import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-lookup";
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import { parseDollarAmount } from "../../../lib/lead-money";
-import { fetchCommsPaged } from "../../../lib/mc-comms";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 import { parseOfferBonus, isCustomerLeadPost, ITEM_UPDATE_BONUS_EXCLUDED } from "../../../lib/lead-devices";
 import { findDuplicates } from "../../../lib/lead-dupes";
 import skuLabelsJson from "../../../data/sku-labels.json";
@@ -316,7 +316,7 @@ interface AdminLead {
   // "Payout-confirmation: method=X · ref=Y · note=Z" line attached
   // to the [STATUS: paid|met] marker. Skywalker 2026-05-18 — answers
   // "did we actually pay them, and how?" without digging into MC.
-  payoutConfirmation?: { method?: string; reference?: string; note?: string; at: string };
+  payoutConfirmation?: { method?: string; reference?: string; note?: string; amount?: number; at: string };
   // Texas Secondhand Dealer Act ID capture, parsed from
   // [ID-CAPTURED: leadId] markers. Most recent wins. We never surface
   // the full ID# — only last4 + DOB year + the photo URL.
@@ -449,16 +449,25 @@ export async function GET(req: NextRequest) {
   // of a single capped limit=5000 slice — otherwise, once the live feed is
   // full, the OLDEST leads silently fall off every admin view. fetchCommsPaged
   // walks backward via the `before` cursor, deduped by id.
-  const [messages, reviewsRes] = await Promise.all([
-    fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, maxPages: 12 }),
+  // memoMs: the Leads page polls every 5 s and Home every 60 s, and each
+  // poll was a full 12-page walk of the history (with no cap on how many
+  // could run at once). One walk per instance now serves 15 s of polls;
+  // the console sends fresh=1 for 20 s after any write of its own so the
+  // owner's change never shows as "undone" by a memoized read.
+  const fresh = req.nextUrl.searchParams.get("fresh") === "1";
+  const [read, reviewsRes] = await Promise.all([
+    fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, maxPages: 12, memoMs: fresh ? 0 : 15_000 }),
     fetch(`${MC_API}/api/reviews?limit=500`, {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
-    }),
+      signal: AbortSignal.timeout(10_000),
+    }).catch(() => null),
   ]);
+  const messages = read.messages;
   // The feed always carries lead markers, so an empty result means MC was
-  // unreachable (the helper returns [] on fetch failure) rather than "no leads".
-  if (messages.length === 0) {
+  // unreachable rather than "no leads" — and a read that lost a page
+  // part-way would make every older lead vanish for one poll.
+  if (!read.complete || messages.length === 0) {
     return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
   }
 
@@ -467,7 +476,7 @@ export async function GET(req: NextRequest) {
   // publicly, just not inline on a lead row.
   type ReviewRow = { id: string; leadId?: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
   const reviewsByLead = new Map<string, ReviewRow>();
-  if (reviewsRes.ok) {
+  if (reviewsRes?.ok) {
     try {
       const rData = await reviewsRes.json();
       const reviews: ReviewRow[] = Array.isArray(rData.reviews) ? rData.reviews : [];
@@ -500,6 +509,8 @@ export async function GET(req: NextRequest) {
   // marker's Payout-confirmation line. Most recent wins.
   const payoutConfirmByLead = new Map<string, { method?: string; reference?: string; note?: string; amount?: number; timestamp: string }>();
   const notesByLead = new Map<string, { text: string; timestamp: string }[]>();
+  // Newest staff price adjustment per lead ("[QUOTE ADJUSTED: $N] [LEAD: id]").
+  const adjustedQuoteByLead = new Map<string, { amount: number; timestamp: string }>();
   // Latest FedEx label per lead. We keep only the most recent so
   // regenerating overrides the prior label on the UI.
   const labelByLead = new Map<string, { tracking: string; url: string; service?: string; timestamp: string }>();
@@ -749,6 +760,15 @@ export async function GET(req: NextRequest) {
       arr.push({ text: nm[1].trim(), timestamp: m.timestamp });
       notesByLead.set(leadId, arr);
     }
+    // Staff's inspection-time price change (adjust route). Never read here
+    // before: the admin's optimistic row reverted on the next poll while
+    // the customer's /offer page showed the new number.
+    const qa = m.body.match(/\[QUOTE ADJUSTED:\s*\$?([\d,]+(?:\.\d+)?)\]/i);
+    if (qa) {
+      const amt = Math.round(parseFloat(qa[1].replace(/,/g, "")));
+      const prev = adjustedQuoteByLead.get(leadId);
+      if (Number.isFinite(amt) && (!prev || m.timestamp > prev.timestamp)) adjustedQuoteByLead.set(leadId, { amount: amt, timestamp: m.timestamp });
+    }
   }
 
   // Determine each lead's bucket — active / trashed (recoverable) / purged.
@@ -786,7 +806,10 @@ export async function GET(req: NextRequest) {
     // the multi-device header "[NEW BUYBACK LEAD — N DEVICES]".
     // Skywalker 2026-05-17: multi-device leads were getting skipped
     // because the literal includes() check missed them.
-    if (!m.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
+    // isCustomerLeadPost: the header must START the post (or follow the chat
+    // lead's own line). A staff or agent message that merely quotes
+    // "[NEW BUYBACK LEAD]" used to become a phantom lead row.
+    if (!m.body || !isCustomerLeadPost(m.body) || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
     // Skip legacy phantom preview-saves. Before the previewSave fix
     // (2026-05-28) the funnel's "save quote for later" box and the
     // account step ("Continue as Guest" / returning / Google) posted a
@@ -1052,7 +1075,9 @@ export async function GET(req: NextRequest) {
       storage: storageOverride ?? parseField(m.body, "Storage"),
       condition: conditionOverride ?? parseField(m.body, "Condition"),
       carrier: parseField(m.body, "Carrier"),
-      quote: quoteOverride ?? (parseField(m.body, "Quote") || parseField(m.body, "Offer")),
+      // A staff adjustment at inspection is the number in force, over the
+      // funnel's total and the body's original Quote line.
+      quote: adjustedQuoteByLead.has(m.id) ? `$${adjustedQuoteByLead.get(m.id)!.amount}` : quoteOverride ?? (parseField(m.body, "Quote") || parseField(m.body, "Offer")),
       // Only when it sits ON TOP of the device prices — DeviceCorrection
       // subtracts it from `quote` to seed a device price.
       offerBonus: bonusOnTop || undefined,
@@ -1176,11 +1201,11 @@ export async function GET(req: NextRequest) {
         if (!pc) return undefined;
         return { method: pc.method, reference: pc.reference, note: pc.note, amount: pc.amount, at: pc.timestamp };
       })(),
-      idCaptured: (() => {
-        const ic = idCapturedByLead.get(m.id);
-        if (!ic) return undefined;
-        return { type: ic.type, last4: ic.last4, dobYear: ic.dobYear, photoUrl: ic.photoUrl, at: ic.timestamp };
-      })(),
+      // ID capture is parsed (idCapturedByLead) but NOT sent: the console's
+      // ID panel is disabled, and this put a government-ID photo URL + last4
+      // + DOB year for every lead into a payload the phone downloads every
+      // 5 s. Re-enable here when the panel comes back.
+      idCaptured: undefined,
       reviewToken: (() => {
         const rt = reviewTokenByLead.get(m.id);
         if (!rt) return undefined;
@@ -1357,7 +1382,12 @@ export async function GET(req: NextRequest) {
     customerIndex.set(key, arr);
   };
   for (const l of leads) {
-    const spend = l.totalPayout ?? quoteToInt(l.quote);
+    // Lifetime SPEND is money paid out: only completed trades count, at
+    // the amount actually paid. Every prior lead's quote used to be summed,
+    // so a repeat quoter who never sold read as "$X paid out previously".
+    const spend = l.status === "paid" || l.status === "met"
+      ? (l.payoutConfirmation?.amount ?? l.totalPayout ?? quoteToInt(l.quote))
+      : 0;
     const phoneKey = l.phone ? l.phone.replace(/\D/g, "") : undefined;
     const emailKey = l.email ? l.email.toLowerCase().trim() : undefined;
     pushIdx(phoneKey, l.timestamp, spend);
