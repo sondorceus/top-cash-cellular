@@ -173,7 +173,22 @@ export function takeoverStale(state: ChatState, now = Date.now()): boolean {
  * SDK's 1000-blob page like a single list() would. Sessions idle >30 days
  * are pruned (best-effort, bounded) so the tree stays small and cheap.
  */
+// The admin console reloads its inbox every 15 s and the inbound-SMS
+// matcher falls back to it — each call walks the whole gochat/ tree (up to
+// 20 list pages). A short per-instance memo means a console left open
+// doesn't re-walk the tree on every tick; the open thread's own 4 s poll is
+// what carries live messages.
+const INBOX_MEMO_MS = 20_000;
+let inboxSnap: { v: { sid: string; lastTs: number; count: number }[]; at: number } | null = null;
+
 export async function listChatSessions(): Promise<{ sid: string; lastTs: number; count: number }[]> {
+  if (inboxSnap && Date.now() - inboxSnap.at < INBOX_MEMO_MS) return inboxSnap.v;
+  const v = await walkChatSessions();
+  if (v.length) inboxSnap = { v, at: Date.now() };
+  return v;
+}
+
+async function walkChatSessions(): Promise<{ sid: string; lastTs: number; count: number }[]> {
   try {
     const by = new Map<string, { lastTs: number; count: number; urls: string[] }>();
     let cursor: string | undefined;
