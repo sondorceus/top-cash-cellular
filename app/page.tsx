@@ -4673,7 +4673,11 @@ export default function Home() {
   // Footer links on the standalone route pages (/faq etc.) deep-link
   // into the in-app sections below (Terms, Grading, About...) via
   // ?page=<id>. Honor it once on mount, then scrub the param.
-  useEffect(() => {
+  // Layout effect (2026-09-25): on a client-side navigation from those pages
+  // the state lands before the first paint, so the section shows at once
+  // instead of one frame of hero first. (A hard load is unchanged — the
+  // prerendered hero is on screen until the bundle hydrates either way.)
+  useIsomorphicLayoutEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const p = params.get("page");
@@ -4681,9 +4685,10 @@ export default function Home() {
     // to them so there's no duplicate content and the canonical URL wins.
     const REAL_ROUTE: Record<string, string> = { terms: "/terms", grading: "/grading-guide", shipping: "/shipping-returns", accessibility: "/accessibility", itad: "/it-asset-disposition" };
     if (p && REAL_ROUTE[p]) { window.location.replace(REAL_ROUTE[p]); return; }
+    // ("itad" is a REAL_ROUTE now and never reaches this branch.)
     if (
       p === "about" ||
-      p === "affiliate" || p === "itad" || p === "blog" || p === "cookies"
+      p === "affiliate" || p === "blog" || p === "cookies"
     ) {
       setPage(p);
       params.delete("page");
@@ -5454,8 +5459,10 @@ export default function Home() {
   // works, /sell/[slug], /reviews, etc.) can't call startFunnel()
   // directly, so they navigate to `/?ask=handoff` and this effect
   // picks up the query, pops the picker, and rewrites the URL clean
-  // so a back-nav doesn't re-trigger it.
-  useEffect(() => {
+  // so a back-nav doesn't re-trigger it. Layout effect (2026-09-25): the
+  // picker is open on the first paint of a client-side navigation (the
+  // /sell/*, /faq and /how-it-works CTAs) rather than a frame later.
+  useIsomorphicLayoutEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("ask") === "handoff") {
@@ -5468,7 +5475,11 @@ export default function Home() {
   // "Add another device" mode — read ?addToOrder=<leadId> once on mount.
   // Same id shape the append route enforces. Left in the URL so it survives
   // in-funnel navigation; cleared on a successful append (we redirect anyway).
-  useEffect(() => {
+  // Layout effect (2026-09-25): the device picker is what paints first on a
+  // client-side navigation from the offer page, not a frame of hero. Layout
+  // effects also run before every passive effect, so the "declared before
+  // the restore effects" ordering below still holds.
+  useIsomorphicLayoutEffect(() => {
     if (typeof window === "undefined") return;
     const sp = new URLSearchParams(window.location.search);
     const v = sp.get("addToOrder");
