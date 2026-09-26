@@ -126,7 +126,9 @@ export async function GET(req: NextRequest) {
     if (isNewLead) {
       const email = (parseField(m.body, "Email") || "").toLowerCase();
       const device = parseField(m.body, "Device") || "—";
-      const model = device.includes("—") ? device.split("—").slice(-1)[0].trim() : device;
+      // A lead with no Device line parsed to "" and showed up in the device
+      // tally as a blank label; count it as "—" instead.
+      const model = (device.includes("—") ? device.split("—").slice(-1)[0].trim() : device) || "—";
       const quote = parseQuoteDollars(parseField(m.body, "Quote"));
       const isInternal = INTERNAL_EMAILS.includes(email);
       leadEmail.set(m.id, email);
