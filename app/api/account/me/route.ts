@@ -106,7 +106,9 @@ export async function GET(req: NextRequest) {
     return unavailable(429, { "Retry-After": String(Math.max(1, Math.ceil(rlEmail.retryAfterMs / 1000))) });
   }
   const read = MC_KEY
-    ? await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 })
+    // memoMs: /account calls this on load, after Continue and on retry —
+    // one six-page read serves all of them.
+    ? await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6, memoMs: 20_000 })
     : { messages: [], complete: false };
   const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
   if (!read.complete || messages.length === 0) return unavailable(503);

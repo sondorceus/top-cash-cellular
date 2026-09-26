@@ -8,6 +8,7 @@ import { NextRequest, NextResponse, after } from "next/server";
 import { referralCodeForEmail, referralLinkForCode, referralCodeMarker, hasReferralCodeMarker } from "../../../lib/referral";
 import { field, DEVICE_LINE_RE, OFFER_STATUSES, parseOfferBonus, isCustomerLeadPost } from "../../../lib/lead-devices";
 import { canonicalCarrier, carrierLockedFromText } from "../../../lib/quote-engine";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -23,15 +24,13 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   // limit=5000 (full live cap, was 1000): the offer is resolved by id from
   // this slice, so an older offer 404'd once the feed grew past the window.
   // 5000 is MC's live cap — covers an offer's full life at current volume.
-  // (If offers ever need to resolve from the trimmed archive, switch to
-  // fetchCommsPaged with includeArchive — see app/lib/mc-comms.ts.)
-  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) return NextResponse.json({ error: "Offer service unavailable" }, { status: 502 });
-  const data = await r.json().catch(() => ({}));
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  // (If offers ever need to resolve from the trimmed archive, add
+  // includeArchive — see app/lib/mc-comms.ts.) memoMs: every open of a
+  // receipt link paid this ~5000-message read; a seller re-tapping, or the
+  // page's own reloads, now share it for 15 s.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false, memoMs: 15_000 });
+  if (!read.complete) return NextResponse.json({ error: "Offer service unavailable" }, { status: 502 });
+  const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
   const leadMsg = messages.find((m) => m.id === leadId);
   if (!leadMsg?.body) {
     return NextResponse.json({ found: false }, { status: 404 });

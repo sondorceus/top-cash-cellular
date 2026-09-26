@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     after(async () => {
       if (!MC_KEY) return;
       // Same window /api/track reads.
-      const messages = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 });
+      const messages = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6, memoMs: 30_000 });
       if (optedOutIn(messages, norm)) return;
       const hasTrade = messages.some((m) =>
         !!m.body &&

@@ -8,11 +8,23 @@
 //
 // Requires NEXT_PUBLIC_GOOGLE_CLIENT_ID in the environment; without
 // it the button shows a visible "not configured" notice. The GSI
-// loader script (accounts.google.com/gsi/client) is loaded site-wide
-// from app/layout.tsx so any page can drop this in without extra
-// scaffolding.
+// loader script (accounts.google.com/gsi/client) is injected HERE, the
+// first time a button mounts — it used to load from app/layout.tsx on
+// every page of the site, including the static /sell/* pages that have no
+// sign-in at all (2026-09-25).
 
 import { useEffect, useRef, useState } from "react";
+
+const GSI_SRC = "https://accounts.google.com/gsi/client";
+function ensureGsiScript() {
+  if (typeof document === "undefined") return;
+  if (document.querySelector(`script[src^="${GSI_SRC}"]`)) return;
+  const s = document.createElement("script");
+  s.src = GSI_SRC;
+  s.async = true;
+  s.defer = true;
+  document.head.appendChild(s);
+}
 
 export type GoogleCredentialPayload = { email?: string; name?: string; sub?: string; picture?: string };
 
@@ -59,13 +71,16 @@ export function GoogleSignInButton({ onCredential, width = 320, text = "continue
       setError("Google sign-in is not configured (missing NEXT_PUBLIC_GOOGLE_CLIENT_ID).");
       return;
     }
+    ensureGsiScript();
     let cancelled = false;
     let tries = 0;
     const tryInit = () => {
       if (cancelled) return;
       const g = getGsi();
       if (!g) {
-        if (++tries > 50) { setError("Google sign-in failed to load. Please refresh."); return; }
+        // Up to 12 s: the script is fetched on demand now, and a slow
+        // connection needs longer than the old 5 s.
+        if (++tries > 120) { setError("Google sign-in failed to load. Please refresh."); return; }
         setTimeout(tryInit, 100);
         return;
       }

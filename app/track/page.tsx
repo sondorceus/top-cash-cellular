@@ -197,8 +197,27 @@ function DeliveryTracker({ state, desc, at }: { state?: string; desc?: string; a
   );
 }
 
-function TrackInner() {
+// The only reader of the URL. useSearchParams() opts its whole subtree out
+// of prerendering — with it in TrackInner the static HTML was an empty dark
+// <main> until the bundle hydrated (a magic-link open showed a blank screen
+// for seconds on a phone). This leaf sits in its own Suspense inside the
+// page, so the nav, heading and form are in the HTML.
+function TrackParams({ onToken, onContact }: { onToken: (t: string) => void; onContact: (c: string) => void }) {
   const searchParams = useSearchParams();
+  // ?t= → resolve the link. Old ?phone=/?email= deep-links just prefill the
+  // box — we no longer auto-show trades without a verified link.
+  useEffect(() => {
+    const t = searchParams.get("t");
+    const p = searchParams.get("phone");
+    const e = searchParams.get("email");
+    if (t) onToken(t);
+    else if (p) onContact(p);
+    else if (e) onContact(e);
+  }, [searchParams, onToken, onContact]);
+  return null;
+}
+
+function TrackInner() {
   const [contact, setContact] = useState("");
   const [leads, setLeads] = useState<Lead[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -257,19 +276,11 @@ function TrackInner() {
     }
   }, []);
 
-  // ?t= → resolve the link. Old ?phone=/?email= deep-links just prefill the
-  // box — we no longer auto-show trades without a verified link.
-  useEffect(() => {
-    const t = searchParams.get("t");
-    const p = searchParams.get("phone");
-    const e = searchParams.get("email");
-    if (t) verifyToken(t);
-    else if (p) setContact(p);
-    else if (e) setContact(e);
-  }, [searchParams, verifyToken]);
-
   return (
     <main className="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+      <Suspense fallback={null}>
+        <TrackParams onToken={verifyToken} onContact={setContact} />
+      </Suspense>
       <SlideOnScrollNav className="sticky top-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -421,9 +432,5 @@ function TrackInner() {
 }
 
 export default function TrackPage() {
-  return (
-    <Suspense fallback={<main className="min-h-screen bg-[#0a0a0a]" />}>
-      <TrackInner />
-    </Suspense>
-  );
+  return <TrackInner />;
 }

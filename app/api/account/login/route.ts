@@ -71,7 +71,7 @@ async function findLeads(email: string): Promise<{ name?: string; leadCount: num
   let name: string | undefined;
   let leadCount = 0;
   if (!MC_KEY) return { leadCount, failed: true };
-  const { messages, complete } = await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 });
+  const { messages, complete } = await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6, memoMs: 20_000 });
   if (!complete || messages.length === 0) return { leadCount, failed: true };
   for (const m of messages) {
     if (!m.body) continue;

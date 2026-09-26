@@ -41,7 +41,17 @@ export type FetchCommsOpts = {
   // Descend into the trimmed-overflow archive (needed for full history; not
   // needed when sinceMs keeps you inside the recent live window).
   includeArchive?: boolean;
+  // Share one read across requests on this instance for this long. The feed
+  // is global and these callers only filter it per customer, so a read a
+  // few seconds old is as good as a fresh one — and a paged read is up to
+  // six ~5000-message round-trips (2026-09-25: the receipt, tracking and
+  // account pages each paid that per view). 0 (default) = always fresh; a
+  // caller that must see its OWN just-written marker stays at 0.
+  memoMs?: number;
 };
+
+const memo = new Map<string, { at: number; v: Promise<CommsRead> }>();
+const MEMO_MAX = 32;
 
 /**
  * Page backward through MC comms and return the combined messages in
@@ -66,6 +76,20 @@ export type CommsRead = {
 
 /** fetchCommsPaged, plus whether every page it asked for was read. */
 export async function fetchCommsRead(opts: FetchCommsOpts): Promise<CommsRead> {
+  const memoMs = opts.memoMs ?? 0;
+  if (memoMs <= 0) return readPages(opts);
+  // Concurrent callers share the in-flight read; a failed (incomplete) read
+  // is dropped so the next caller retries instead of inheriting the gap.
+  const key = JSON.stringify([opts.pageSize ?? 1000, opts.maxPages ?? 12, opts.sinceMs ?? 0, opts.includeArchive ?? true]);
+  const hit = memo.get(key);
+  if (hit && Date.now() - hit.at < memoMs) return hit.v;
+  const v = readPages(opts).then((r) => { if (!r.complete) memo.delete(key); return r; });
+  if (memo.size >= MEMO_MAX) memo.delete(memo.keys().next().value as string);
+  memo.set(key, { at: Date.now(), v });
+  return v;
+}
+
+async function readPages(opts: FetchCommsOpts): Promise<CommsRead> {
   const {
     apiKey,
     pageSize = 1000,
@@ -89,6 +113,9 @@ export async function fetchCommsRead(opts: FetchCommsOpts): Promise<CommsRead> {
       const r = await fetch(`${MC_API}/api/comms?${qs.toString()}`, {
         headers: { "x-api-key": apiKey },
         cache: "no-store",
+        // Bounded: one stalled page used to hold the caller (a customer's
+        // receipt or tracking view) open with no limit at all.
+        signal: AbortSignal.timeout(15_000),
       });
       if (!r.ok) { complete = false; break; }
       const data = await r.json();

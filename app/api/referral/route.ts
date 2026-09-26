@@ -18,6 +18,7 @@ import { getCustomerSessionFromCookies } from "../../lib/auth";
 import { referralCodeForEmail, referralLinkForCode } from "../../lib/referral";
 import { isCustomerLeadPost } from "../../lib/lead-devices";
 
+import { fetchCommsRead } from "../../lib/mc-comms";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
@@ -48,21 +49,10 @@ export async function GET() {
   }
 
   // Pull recent MC comms. 1000 covers months of referral activity —
-  // same limit the fedex-poll + account routes use.
-  let messages: MCMessage[] = [];
-  try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (r.ok) {
-      const data = await r.json();
-      messages = Array.isArray(data.messages) ? data.messages : [];
-    }
-  } catch {
-    // MC unreachable — still return the code + link so the customer
-    // can share; earnings just show as 0 until MC recovers.
-  }
+  // same limit the fedex-poll + account routes use. memoMs: shared across
+  // the referral card's reloads. MC unreachable → the code + link still
+  // return; earnings just show as 0 until MC recovers.
+  const messages: MCMessage[] = (await fetchCommsRead({ apiKey: MC_KEY, pageSize: 1000, maxPages: 1, includeArchive: false, memoMs: 30_000 })).messages;
 
   // Scan once for: (a) whether this customer's [REFERRAL-CODE:] marker
   // already exists, and (b) every [REFERRAL-EARNED:] crediting them.

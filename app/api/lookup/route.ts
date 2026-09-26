@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, clientIp } from "../../lib/rate-limit";
 
+import { fetchCommsRead } from "../../lib/mc-comms";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
@@ -80,15 +81,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Phone or email required" }, { status: 400 });
   }
 
-  // Pull recent MC comms (last ~500 — enough to cover months of leads)
-  const r = await fetch(`${MC_API}/api/comms?limit=500`, {
-    headers: { "x-api-key": MC_KEY },
-  });
-  if (!r.ok) {
+  // Pull recent MC comms (last ~500 — enough to cover months of leads).
+  // memoMs: the homepage calls this while a seller types their contact —
+  // a burst of lookups in a few seconds now shares one read.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 500, maxPages: 1, includeArchive: false, memoMs: 30_000 });
+  if (!read.complete) {
     return NextResponse.json({ error: "Lookup service unavailable" }, { status: 502 });
   }
-  const data = await r.json().catch(() => ({}));
-  const messages: { body?: string; timestamp: string }[] = data.messages || [];
+  const messages: { body?: string; timestamp: string }[] = read.messages;
 
   // Match the contact against each lead's OWN parsed Phone:/Email: fields —
   // NOT a whole-body substring. The old code digit-stripped the entire body

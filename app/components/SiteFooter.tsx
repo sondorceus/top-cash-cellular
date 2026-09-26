@@ -1,13 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { BRAND, EMAIL, EMAIL_HREF, LOCATION_DISPLAY } from "../lib/constants";
 import { SHOP_ENABLED } from "../lib/shop-flag";
 
 // Site-wide footer for the standalone route pages (/faq, /how-it-works,
 // /track, etc.). The homepage has its own copy wired to in-page state;
 // this one uses real links. In-app sections (Terms, Grading, About...)
-// are reached via /?page=<id>, which page.tsx honors on mount.
+// are reached via /?page=<id>, which page.tsx honors on mount — a client
+// transition from any of these pages mounts it fresh, so that still holds.
+// Internal links are next/link: a raw <a> was a full document reload on
+// every footer tap (layout JS re-run, head scripts re-run).
+
+const A = ({ href, className, children }: { href: string; className: string; children: React.ReactNode }) => (
+  <Link href={href} className={className}>{children}</Link>
+);
 
 export default function SiteFooter() {
   const [sent, setSent] = useState(false);
@@ -68,31 +76,31 @@ export default function SiteFooter() {
           <div>
             <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Quick Navigation</p>
             <div className="space-y-2">
-              <a href="/" className="block text-xs hover:text-[#00c853] transition">Get Custom Quote</a>
-              {SHOP_ENABLED && <a href="/shop" className="block text-xs hover:text-[#00c853] transition">Shop Devices</a>}
-              <a href="/how-it-works" className="block text-xs hover:text-[#00c853] transition">How It Works</a>
-              <a href="/?page=grading" className="block text-xs hover:text-[#00c853] transition">Grading Guide</a>
-              <a href="/?page=shipping" className="block text-xs hover:text-[#00c853] transition">Shipping &amp; Returns</a>
-              <a href="/faq" className="block text-xs hover:text-[#00c853] transition">FAQ</a>
+              <A href="/" className="block text-xs hover:text-[#00c853] transition">Get Custom Quote</A>
+              {SHOP_ENABLED && <A href="/shop" className="block text-xs hover:text-[#00c853] transition">Shop Devices</A>}
+              <A href="/how-it-works" className="block text-xs hover:text-[#00c853] transition">How It Works</A>
+              <A href="/?page=grading" className="block text-xs hover:text-[#00c853] transition">Grading Guide</A>
+              <A href="/?page=shipping" className="block text-xs hover:text-[#00c853] transition">Shipping &amp; Returns</A>
+              <A href="/faq" className="block text-xs hover:text-[#00c853] transition">FAQ</A>
             </div>
           </div>
           <div>
             <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">About Us</p>
             <div className="space-y-2">
-              <a href="/?page=about" className="block text-xs hover:text-[#00c853] transition">About Us</a>
-              <a href="/?page=affiliate" className="block text-xs hover:text-[#00c853] transition">Become an Affiliate</a>
-              <a href="/it-asset-disposition" className="block text-xs hover:text-[#00c853] transition">IT Asset Disposition</a>
-              <a href="/?page=blog" className="block text-xs hover:text-[#00c853] transition">Blog</a>
-              <a href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</a>
+              <A href="/?page=about" className="block text-xs hover:text-[#00c853] transition">About Us</A>
+              <A href="/?page=affiliate" className="block text-xs hover:text-[#00c853] transition">Become an Affiliate</A>
+              <A href="/it-asset-disposition" className="block text-xs hover:text-[#00c853] transition">IT Asset Disposition</A>
+              <A href="/?page=blog" className="block text-xs hover:text-[#00c853] transition">Blog</A>
+              <A href="/reviews" className="block text-xs hover:text-[#00c853] transition">Reviews</A>
               <a href={EMAIL_HREF} className="block text-xs hover:text-[#00c853] transition">Contact Us</a>
             </div>
           </div>
           <div className="col-span-2 md:col-span-1">
             <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Legal</p>
             <div className="space-y-2">
-              <a href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</a>
-              <a href="/?page=terms" className="block text-xs hover:text-[#00c853] transition">Terms &amp; Conditions</a>
-              <a href="/?page=cookies" className="block text-xs hover:text-[#00c853] transition">Cookie Policy</a>
+              <A href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</A>
+              <A href="/?page=terms" className="block text-xs hover:text-[#00c853] transition">Terms &amp; Conditions</A>
+              <A href="/?page=cookies" className="block text-xs hover:text-[#00c853] transition">Cookie Policy</A>
               <button
                 onClick={() => {
                   try { localStorage.removeItem("cookie-consent"); } catch {}
@@ -102,7 +110,7 @@ export default function SiteFooter() {
               >
                 Cookie Settings
               </button>
-              <a href="/?page=accessibility" className="block text-xs hover:text-[#00c853] transition">Accessibility Statement</a>
+              <A href="/?page=accessibility" className="block text-xs hover:text-[#00c853] transition">Accessibility Statement</A>
               <p className="text-xs text-[#9a9a9a] pt-2">{LOCATION_DISPLAY} · Mon–Sat 8 AM–8 PM</p>
             </div>
           </div>
@@ -111,12 +119,12 @@ export default function SiteFooter() {
         <div className="border-t border-[#00c853]/15 pt-6 mb-6">
           <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3 text-center">Sell in Austin</p>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-            <a href="/sell-iphone-austin" className="text-xs hover:text-[#00c853] transition">Sell iPhone</a>
-            <a href="/sell-samsung-austin" className="text-xs hover:text-[#00c853] transition">Sell Samsung</a>
-            <a href="/sell-macbook-austin" className="text-xs hover:text-[#00c853] transition">Sell MacBook</a>
-            <a href="/sell-ipad-austin" className="text-xs hover:text-[#00c853] transition">Sell iPad</a>
-            <a href="/sell-locked-iphone" className="text-xs hover:text-[#00c853] transition">Carrier-Locked iPhone</a>
-            <a href="/sell-financed-phone" className="text-xs hover:text-[#00c853] transition">Financed Phone</a>
+            <A href="/sell-iphone-austin" className="text-xs hover:text-[#00c853] transition">Sell iPhone</A>
+            <A href="/sell-samsung-austin" className="text-xs hover:text-[#00c853] transition">Sell Samsung</A>
+            <A href="/sell-macbook-austin" className="text-xs hover:text-[#00c853] transition">Sell MacBook</A>
+            <A href="/sell-ipad-austin" className="text-xs hover:text-[#00c853] transition">Sell iPad</A>
+            <A href="/sell-locked-iphone" className="text-xs hover:text-[#00c853] transition">Carrier-Locked iPhone</A>
+            <A href="/sell-financed-phone" className="text-xs hover:text-[#00c853] transition">Financed Phone</A>
           </div>
         </div>
 

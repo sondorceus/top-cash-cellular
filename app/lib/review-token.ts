@@ -54,7 +54,8 @@ export async function verifyReviewToken(token: string): Promise<ReviewTokenResul
   // helper returns [] on an MC failure; the feed is never empty, so treat
   // that as unavailable.
   const messages: { id?: string; body?: string; timestamp: string }[] = MC_KEY
-    ? await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, pageSize: 5000, maxPages: 6 })
+    // memoMs: the review page verifies on load and again on submit.
+    ? await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, pageSize: 5000, maxPages: 6, memoMs: 30_000 })
     : [];
   if (messages.length === 0) {
     return { valid: false, error: "Verification service unavailable", status: 502 };

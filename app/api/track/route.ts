@@ -110,7 +110,9 @@ export async function POST(req: NextRequest) {
   // [] on an MC failure; the feed is never empty, so treat that as
   // unavailable. /api/track/request uses the same window.
   const messages: { id: string; body?: string; timestamp: string }[] = MC_KEY
-    ? await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6 })
+    // memoMs: a magic-link open is a six-page read; back-to-back opens (the
+    // seller re-tapping, /api/track/request's own read) share it.
+    ? await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 365 * 24 * 60 * 60 * 1000, pageSize: 5000, maxPages: 6, memoMs: 30_000 })
     : [];
   if (messages.length === 0) {
     return NextResponse.json({ error: "Tracking service unavailable" }, { status: 502 });

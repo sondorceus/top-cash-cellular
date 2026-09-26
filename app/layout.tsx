@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 import MetaPixel from "./components/MetaPixel";
 import SiteChat from "./components/SiteChat";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -134,8 +135,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});try{if(localStorage.getItem('cookie-consent')==='full'){gtag('consent','update',{ad_storage:'granted',ad_user_data:'granted',ad_personalization:'granted',analytics_storage:'granted'});}}catch(e){}`,
           }}
         />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H5VGFLJ71" />
-        <script src="https://accounts.google.com/gsi/client" async defer />
+        {/* gtag.js loads after the page is interactive (next/script): as a
+            raw <script async> in <head> the browser's preload scanner fetched
+            GA + the Ads library ahead of the app bundle on every page. The
+            config calls below queue in dataLayer and run when it lands, so
+            nothing is lost. The Google sign-in loader that also lived here
+            is injected by GoogleSignInButton on the pages that have one. */}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-8H5VGFLJ71" strategy="afterInteractive" />
         <script dangerouslySetInnerHTML={{ __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8H5VGFLJ71');gtag('config','AW-18099653912');` }} />
         {/* Microsoft Clarity — heatmaps + session recordings. Gated on
             cookie consent: window.tccLoadClarity() injects the tag and
