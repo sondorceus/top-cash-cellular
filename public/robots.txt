@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+# Nothing to index behind these; the customer pages (/offer, /track, /account,
+# /reviews/new) stay crawlable and carry a noindex meta instead, so a crawler
+# that follows a shared link sees the instruction to drop the URL.
+Disallow: /api/
+Disallow: /admin/
 
 Sitemap: https://topcashcellular.com/sitemap.xml
