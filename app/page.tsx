@@ -5730,14 +5730,10 @@ export default function Home() {
     return () => { cancelled = true; clearTimeout(t); };
   }, [step, phone, email]);
 
-  useEffect(() => {
-    const imgs = ["/ipadpro.png", "/ipadair.png", "/ipadmini.png", "/ipadbase.png", "/ipad.png",
-      "/iphone17.png", "/iphone16.png", "/iphone15.png", "/iphone14.png", "/iphone13.png", "/iphone12.png", "/iphone11.png",
-      "/iphone17air.png", "/iphone17e.png", "/iphone17base.png",
-      "/iphone16plus.png", "/iphone16base.png", "/iphone16e.png", "/iphone15base.png",
-      "/iphone14base.png", "/iphone14plus.png", "/iphone13base.png", "/iphone12base.png", "/iphone12mini.png", "/iphone11base.png"];
-    imgs.forEach(src => { const img = new Image(); img.src = src; });
-  }, []);
+  // (The 25-image warm that used to run here is gone: it fetched ~1 MB of
+  // raw PNGs on every homepage load, competing with the app bundle on
+  // cellular, while every tile renders an optimized next/image URL instead —
+  // the warmed files were never the ones shown.)
 
   useEffect(() => {
     if (!statsVisible) return;
@@ -6074,7 +6070,9 @@ export default function Home() {
   type Promo = { active: boolean; text: string; percent: number; appliesTo: string; minQuantity?: number; flatBonus?: number };
   const [promo, setPromo] = useState<Promo | null>(null);
   useEffect(() => {
-    fetch("/promo.json", { cache: "no-store" }).then(r => r.ok ? r.json() : null).then(setPromo).catch(() => setPromo(null));
+    // Static files change only on deploy; the browser revalidates them for
+    // free (304). `no-store` re-downloaded every one of them on every load.
+    fetch("/promo.json").then(r => r.ok ? r.json() : null).then(setPromo).catch(() => setPromo(null));
   }, []);
   // Real competitor trade-in values per model id, refreshed monthly via
   // .github/workflows/refresh-comps.yml. Each JSON is keyed by our
@@ -6095,27 +6093,35 @@ export default function Home() {
       const ids = Array.isArray(d?.notAccepted) ? d.notAccepted.filter((x): x is string => typeof x === "string") : [];
       if (ids.length) setOemNotAccepted(prev => [...prev, ...ids]);
     };
-    fetch("/comps/apple-trade-in.json", { cache: "no-store" })
+    fetch("/comps/apple-trade-in.json")
       .then(r => r.ok ? r.json() : null)
       .then((d: OemJson) => { setAppleComps(d?.values || null); addNotAccepted(d); })
       .catch(() => setAppleComps(null));
-    fetch("/comps/google-trade-in.json", { cache: "no-store" })
+    fetch("/comps/google-trade-in.json")
       .then(r => r.ok ? r.json() : null)
       .then((d: OemJson) => { setGoogleComps(d?.values || null); addNotAccepted(d); })
       .catch(() => setGoogleComps(null));
-    fetch("/comps/samsung-trade-in.json", { cache: "no-store" })
+    fetch("/comps/samsung-trade-in.json")
       .then(r => r.ok ? r.json() : null)
       .then((d: OemJson) => { setSamsungComps(d?.values || null); addNotAccepted(d); })
       .catch(() => setSamsungComps(null));
-    fetch("/comps/decluttr.json", { cache: "no-store" })
+    fetch("/comps/decluttr.json")
       .then(r => r.ok ? r.json() : null)
       .then((d: { values?: Record<string, number> } | null) => setDecluttrComps(d?.values || null))
       .catch(() => setDecluttrComps(null));
-    // PC laptop additive specs (IWM scrape). Populates the module-level
-    // PC_LAPTOP_SPECS_CACHE so getMacSpec() / hasAdditiveSpecs() pick
-    // them up; setPcSpecsVersion bumps a counter to trigger a rerender
-    // once the data is in.
-    fetch("/comps/pc-laptop-specs.json", { cache: "no-store" })
+  }, []);
+  // PC laptop additive specs (IWM scrape) — a 1.1 MB file. Populates the
+  // module-level PC_LAPTOP_SPECS_CACHE so getMacSpec() / hasAdditiveSpecs()
+  // pick them up; setPcSpecsVersion bumps a counter to rerender once the
+  // data is in. Loaded the moment a PC laptop brand is picked (the specs
+  // decide that flow's next step, so they must be in before a model is
+  // chosen) — every phone seller used to download and parse it on page load.
+  const pcSpecsRequestedRef = useRef(false);
+  useEffect(() => {
+    const PC_LAPTOP_TYPES = ["lenovo", "hp", "dell", "alienware", "acer", "surface"];
+    if (!deviceType || !PC_LAPTOP_TYPES.includes(deviceType) || pcSpecsRequestedRef.current) return;
+    pcSpecsRequestedRef.current = true;
+    fetch("/comps/pc-laptop-specs.json")
       .then(r => r.ok ? r.json() : null)
       .then((d: Record<string, MacSpec> | null) => {
         if (d) {
@@ -6123,8 +6129,8 @@ export default function Home() {
           setPcSpecsVersion(v => v + 1);
         }
       })
-      .catch(() => {});
-  }, []);
+      .catch(() => { pcSpecsRequestedRef.current = false; }); // a failed load may retry on the next brand pick
+  }, [deviceType]);
   const promoApplies = !!(promoClaimed && promo?.active && deviceType && (promo.appliesTo === "all" || promo.appliesTo === deviceType) && (!promo.minQuantity || quantity >= promo.minQuantity));
   const promoMultiplier = promoApplies && promo && promo.percent ? 1 + (promo.percent / 100) : 1;
   const promoFlatBonus = promoApplies && promo?.flatBonus ? promo.flatBonus : 0;

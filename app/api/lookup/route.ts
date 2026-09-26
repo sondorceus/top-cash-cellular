@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
   if (!r.ok) {
     return NextResponse.json({ error: "Lookup service unavailable" }, { status: 502 });
   }
-  const data = await r.json();
+  const data = await r.json().catch(() => ({}));
   const messages: { body?: string; timestamp: string }[] = data.messages || [];
 
   // Match the contact against each lead's OWN parsed Phone:/Email: fields —

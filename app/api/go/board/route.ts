@@ -9,13 +9,20 @@ import { fetchReviews } from "../../../go/reviews";
 import type { GoReviews } from "../../../go/go-client";
 
 export const dynamic = "force-dynamic";
-let snap: { rows: BoardRow[]; reviews: GoReviews; at: number } | null = null;
+type Snap = { rows: BoardRow[]; reviews: GoReviews; at: number };
+let snap: Snap | null = null;
+// Requests that arrive while the snapshot is being rebuilt share the one
+// rebuild instead of each pricing ~100 cells and calling MC themselves.
+let inflight: Promise<Snap> | null = null;
 
 export async function GET(req: NextRequest) {
   if (!snap || Date.now() - snap.at > 60_000) {
-    const [rows, reviews] = await Promise.all([computeBoard(), fetchReviews()]);
-    snap = { rows, reviews, at: Date.now() };
+    inflight ??= Promise.all([computeBoard(), fetchReviews()])
+      .then(([rows, reviews]) => (snap = { rows, reviews, at: Date.now() }))
+      .finally(() => { inflight = null; });
+    await inflight;
   }
+  if (!snap) return NextResponse.json({ rows: [], reviews: { avg: 0, count: 0, top: [] }, area: clientGeo(req).area }, { status: 503 });
   // area: the visitor's Vercel geo, so the site-wide widget's handoff chips
   // match the /go page's (label first outside Austin, no meetup outside TX —
   // review 2026-09-23). Per visitor, hence private (the browser still keeps

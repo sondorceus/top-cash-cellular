@@ -32,8 +32,13 @@ export async function GET() {
       headers: { "x-api-key": MC_KEY },
       cache: "no-store",
     });
-    const data = await r.json();
-    return NextResponse.json({ reviews: data.reviews || [], count: data.count || 0, avg: data.avg || 0 });
+    const data = await r.json().catch(() => ({}));
+    // Reviews change a few times a week; this was an uncached Mission Control
+    // round-trip per homepage visitor. The CDN now serves it for 5 minutes.
+    return NextResponse.json(
+      { reviews: data.reviews || [], count: data.count || 0, avg: data.avg || 0 },
+      { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600" } },
+    );
   } catch (e) {
     return NextResponse.json({ reviews: [], count: 0, avg: 0, error: String(e) }, { status: 200 });
   }

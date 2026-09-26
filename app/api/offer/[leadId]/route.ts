@@ -30,7 +30,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     cache: "no-store",
   });
   if (!r.ok) return NextResponse.json({ error: "Offer service unavailable" }, { status: 502 });
-  const data = await r.json();
+  const data = await r.json().catch(() => ({}));
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
   const leadMsg = messages.find((m) => m.id === leadId);
   if (!leadMsg?.body) {
@@ -73,23 +73,32 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   let payoutMethod = "";
   let payoutRef = "";
   let payoutAmount: number | null = null;
+  // The lead id is constant for the request — these were six `new RegExp`
+  // per message (30,000 compilations per receipt view), and every marker
+  // below names the id literally, so a message without it is skipped first.
+  const RE_CONTACT = new RegExp(`\\[CONTACT-UPDATE:\\s*${leadId}\\][^\\n]*phone=([^\\n]+)`, "i");
+  const RE_ITEMS = new RegExp(`\\[ITEM-UPDATE:\\s*${leadId}\\][^\\n]*?(\\{.*\\})`, "i");
+  const RE_STATUS = new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i");
+  const RE_COUNTER = new RegExp(`\\[COUNTER-OFFER:\\s*${leadId}\\][^\\n]*?offer=\\$?([\\d,]+(?:\\.\\d+)?)`, "i");
+  const RE_COUNTER_RESP = new RegExp(`\\[COUNTER-RESPONSE:\\s*${leadId}\\][^\\n]*?response=(accept|decline)`, "i");
+  const RE_ADJUSTED = new RegExp(`\\[QUOTE ADJUSTED:\\s*\\$?([\\d,]+(?:\\.\\d+)?)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i");
   for (const m of messages) {
     // Staff/system markers are their own posts; one inside a customer lead
     // body (this lead's or another's) is forged — see isCustomerLeadPost.
-    if (!m.body || isCustomerLeadPost(m.body)) continue;
-    const cu = m.body.match(new RegExp(`\\[CONTACT-UPDATE:\\s*${leadId}\\][^\\n]*phone=([^\\n]+)`, "i"));
+    if (!m.body || !m.body.includes(leadId) || isCustomerLeadPost(m.body)) continue;
+    const cu = m.body.match(RE_CONTACT);
     if (cu && (!phoneOverrideAt || m.timestamp > phoneOverrideAt)) {
       phoneOverride = cu[1].trim();
       phoneOverrideAt = m.timestamp;
     }
-    const iu = m.body.match(new RegExp(`\\[ITEM-UPDATE:\\s*${leadId}\\][^\\n]*?(\\{.*\\})`, "i"));
+    const iu = m.body.match(RE_ITEMS);
     if (iu && (!itemUpdateAt || m.timestamp > itemUpdateAt)) {
       try {
         const parsed = JSON.parse(iu[1]);
         if (parsed && Array.isArray(parsed.devices)) { itemUpdate = parsed; itemUpdateAt = m.timestamp; }
       } catch { /* ignore malformed marker */ }
     }
-    const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
+    const sm = m.body.match(RE_STATUS);
     if (sm && (OFFER_STATUSES as readonly string[]).includes(sm[1].toLowerCase())) {
       if (!statusAt || m.timestamp > statusAt) {
         status = sm[1].toLowerCase();
@@ -122,18 +131,18 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
     }
     // Staff counter-offer + the customer's accept/decline. Decimal/comma-safe
     // (same parse as the admin leads route).
-    const co = m.body.match(new RegExp(`\\[COUNTER-OFFER:\\s*${leadId}\\][^\\n]*?offer=\\$?([\\d,]+(?:\\.\\d+)?)`, "i"));
+    const co = m.body.match(RE_COUNTER);
     if (co && (!counterOfferAt || m.timestamp > counterOfferAt)) {
       counterOfferAmt = Math.round(parseFloat(co[1].replace(/,/g, "")));
       counterOfferAt = m.timestamp;
     }
-    const cr = m.body.match(new RegExp(`\\[COUNTER-RESPONSE:\\s*${leadId}\\][^\\n]*?response=(accept|decline)`, "i"));
+    const cr = m.body.match(RE_COUNTER_RESP);
     if (cr && (!counterRespAt || m.timestamp > counterRespAt)) {
       counterRespAccept = cr[1].toLowerCase() === "accept";
       counterRespAt = m.timestamp;
     }
     // Staff quote adjustment at inspection: "[QUOTE ADJUSTED: $N] [LEAD: id]".
-    const qa = m.body.match(new RegExp(`\\[QUOTE ADJUSTED:\\s*\\$?([\\d,]+(?:\\.\\d+)?)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
+    const qa = m.body.match(RE_ADJUSTED);
     if (qa && (!quoteAdjustedAt || m.timestamp > quoteAdjustedAt)) {
       quoteAdjustedAmt = Math.round(parseFloat(qa[1].replace(/,/g, "")));
       quoteAdjustedAt = m.timestamp;
