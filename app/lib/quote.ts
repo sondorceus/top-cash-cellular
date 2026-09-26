@@ -42,10 +42,12 @@ const BLOB_KEY = "prices/overrides.json";
 // the bot to the admin route's request handlers.)
 export async function readPriceOverrides(): Promise<PriceOverrides> {
   try {
-    const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });
+    // Bounded: this read sits under every quote, and a stalled Blob call
+    // held the caller open with no limit at all.
+    const { blobs } = await list({ prefix: BLOB_KEY, limit: 5, abortSignal: AbortSignal.timeout(8_000) });
     const found = blobs.find((b) => b.pathname === BLOB_KEY);
     if (!found) return EMPTY_OVERRIDES;
-    const r = await fetch(found.url, { cache: "no-store" });
+    const r = await fetch(found.url, { cache: "no-store", signal: AbortSignal.timeout(6_000) });
     if (!r.ok) return EMPTY_OVERRIDES;
     const d = await r.json();
     return {

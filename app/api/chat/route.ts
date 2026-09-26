@@ -15,6 +15,13 @@ import { normalizeStorage } from "../../lib/quote";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
+// Hard ceiling on one invocation, background work included. The turn itself
+// is budgeted at 45 s and every call it makes is bounded; the background
+// tail (store writes, alerts, a slow IMEI lookup, triage) fits well inside
+// this. A turn that ran to the platform's 300 s default (2026-09-22) was
+// one stuck network call holding a function open for five minutes.
+export const maxDuration = 120;
+
 // Conversation model. Sonnet-tier because the live rule-following failures
 // (re-asking an answered spec, narrating tool use, parroting example lines)
 // are ones Haiku keeps making despite HARD-RULE prompts — and this surface

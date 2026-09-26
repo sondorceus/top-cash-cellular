@@ -17,6 +17,9 @@ import { appendChatMsg, readChat, takeoverStale, validGoSession } from "../../..
 import { sidTokenValid } from "../../../lib/go-sid-token";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 
+// One store read (bounded) — a poll never needs more than this.
+export const maxDuration = 30;
+
 export async function GET(req: NextRequest) {
   const ip = clientIp(req);
   // 120/min tolerates several CGNAT'd sellers polling at 15/min each; the

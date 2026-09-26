@@ -42,6 +42,36 @@ export function validGoSession(sid: unknown): sid is string {
   return typeof sid === "string" && sid.length <= 32 && GO_SID_RE.test(sid);
 }
 
+// Every Blob call here is bounded. The store sits on the critical path of
+// every chat turn, and Blob calls carried no timeout at all — one stalled
+// list() or record fetch held a turn open until the platform's 300 s limit
+// (prod, 2026-09-22) while the seller watched typing dots.
+const BLOB_OP_MS = 8_000;    // list / put / del
+const BLOB_FETCH_MS = 6_000; // one record's content
+const deadline = (ms: number) => AbortSignal.timeout(ms);
+
+// A record never changes once written (unique path, never overwritten), so
+// one read per instance is enough. Without this a long thread re-fetched
+// every record on every turn — a 40-turn chat was ~160 content fetches per
+// message, and a lock read the whole thread twice more.
+const MSG_CACHE_MAX = 4000;
+const msgCache = new Map<string, StoredMsg>();
+async function fetchMsg(url: string, role: StoredMsg["role"], ts: number): Promise<StoredMsg | null> {
+  const hit = msgCache.get(url);
+  if (hit) return hit;
+  try {
+    const r = await fetch(url, { cache: "no-store", signal: deadline(BLOB_FETCH_MS) });
+    const j = await r.json();
+    if (!j || typeof j.text !== "string") return null;
+    const m: StoredMsg = { role, text: j.text as string, ts };
+    if (msgCache.size >= MSG_CACHE_MAX) msgCache.delete(msgCache.keys().next().value as string);
+    msgCache.set(url, m);
+    return m;
+  } catch {
+    return null;
+  }
+}
+
 const CTL_CMD: Record<string, string> = { "takeover:on": "tkon", "takeover:off": "tkoff", notified: "ntf" };
 
 export async function appendChatMsg(sid: string, role: ChatRole, text: string): Promise<void> {
@@ -55,7 +85,7 @@ export async function appendChatMsg(sid: string, role: ChatRole, text: string): 
   await put(
     path,
     JSON.stringify({ role, text: cmd ? text : String(text).slice(0, 2000), ts }),
-    { access: "public", contentType: "application/json", addRandomSuffix: false },
+    { access: "public", contentType: "application/json", addRandomSuffix: false, abortSignal: deadline(BLOB_OP_MS) },
   ).catch(() => { /* a dropped chat log must never break the chat itself */ });
 }
 
@@ -91,7 +121,7 @@ export async function readChat(sid: string, after = 0, cap = Infinity, noteCap =
     const blobs: { url: string; pathname: string }[] = [];
     let cursor: string | undefined;
     for (let page = 0; page < 5; page++) {
-      const res = await list({ prefix: `gochat/${sid}/`, limit: 1000, cursor });
+      const res = await list({ prefix: `gochat/${sid}/`, limit: 1000, cursor, abortSignal: deadline(BLOB_OP_MS) });
       blobs.push(...res.blobs);
       if (!res.hasMore || !res.cursor) break;
       cursor = res.cursor;
@@ -119,14 +149,7 @@ export async function readChat(sid: string, after = 0, cap = Infinity, noteCap =
       ...(noteCap > 0 ? records.filter((b) => b.p.role === "note").slice(-noteCap) : []),
     ]);
     const wanted = records.filter((b) => keep.has(b));
-    const fetched = await Promise.all(
-      wanted.map((b) =>
-        fetch(b.url, { cache: "no-store" })
-          .then((r) => r.json())
-          .then((j) => (j && typeof j.text === "string" ? { role: b.p.role as StoredMsg["role"], text: j.text as string, ts: b.p.ts } : null))
-          .catch(() => null),
-      ),
-    );
+    const fetched = await Promise.all(wanted.map((b) => fetchMsg(b.url, b.p.role as StoredMsg["role"], b.p.ts)));
     return { msgs: fetched.filter((m): m is StoredMsg => m !== null), takeover, notified, lastTs, takeoverTs, lastOwnerTs };
   } catch {
     return empty;
@@ -155,7 +178,7 @@ export async function listChatSessions(): Promise<{ sid: string; lastTs: number;
     const by = new Map<string, { lastTs: number; count: number; urls: string[] }>();
     let cursor: string | undefined;
     for (let page = 0; page < 20; page++) {
-      const res = await list({ prefix: "gochat/", limit: 1000, cursor });
+      const res = await list({ prefix: "gochat/", limit: 1000, cursor, abortSignal: deadline(BLOB_OP_MS) });
       for (const b of res.blobs) {
         const parts = b.pathname.split("/");
         if (parts.length < 3) continue;
@@ -177,7 +200,7 @@ export async function listChatSessions(): Promise<{ sid: string; lastTs: number;
     const stale = [...by.entries()].filter(([, v]) => v.lastTs < cutoff);
     if (stale.length) {
       const urls = stale.flatMap(([, v]) => v.urls).slice(0, 400);
-      void del(urls).catch(() => {});
+      void del(urls, { abortSignal: deadline(BLOB_OP_MS) }).catch(() => {});
       // Photo blobs live under a SEPARATE prefix (gochat-img/<sid>/) that the
       // message-blob urls above never cover — prune each stale session's
       // photos too, or seller device pics (faces, EXIF, serials) stay public
@@ -200,8 +223,8 @@ async function pruneSessionImages(sids: string[]): Promise<void> {
   for (const sid of sids) {
     if (!validSession(sid)) continue;
     try {
-      const { blobs } = await list({ prefix: `gochat-img/${sid}/`, limit: 1000 });
-      if (blobs.length) await del(blobs.map((b) => b.url));
+      const { blobs } = await list({ prefix: `gochat-img/${sid}/`, limit: 1000, abortSignal: deadline(BLOB_OP_MS) });
+      if (blobs.length) await del(blobs.map((b) => b.url), { abortSignal: deadline(BLOB_OP_MS) });
     } catch { /* a failed prune retries on the next stale sweep */ }
   }
 }
@@ -237,7 +260,7 @@ export async function rememberPhoneSession(contact: string, sid: string): Promis
   const key = phoneKey(contact);
   if (!key || !validSession(sid)) return;
   await put(`gochat-phone/${key}/${Date.now()}-${sid}.json`, "{}", {
-    access: "public", contentType: "application/json", addRandomSuffix: false,
+    access: "public", contentType: "application/json", addRandomSuffix: false, abortSignal: deadline(BLOB_OP_MS),
   }).catch(() => { /* the scan fallback still works */ });
 }
 
@@ -245,7 +268,7 @@ async function pointerSession(phone: string): Promise<string | null> {
   const key = phoneKey(phone);
   if (!key) return null;
   try {
-    const { blobs } = await list({ prefix: `gochat-phone/${key}/`, limit: 100 });
+    const { blobs } = await list({ prefix: `gochat-phone/${key}/`, limit: 100, abortSignal: deadline(BLOB_OP_MS) });
     // Sessions are pruned at 30 days idle; a pointer older than that would
     // resurrect a dead thread (and a "meet"-shaped text from an old seller
     // would post a phantom delivery option). Ignore it and let the scan run.
@@ -259,7 +282,7 @@ async function pointerSession(phone: string): Promise<string | null> {
     }
     if (!best || !validSession(best.sid)) return null;
     // The thread must still exist (pruned sessions leave their pointer behind).
-    const alive = await list({ prefix: `gochat/${best.sid}/`, limit: 1 });
+    const alive = await list({ prefix: `gochat/${best.sid}/`, limit: 1, abortSignal: deadline(BLOB_OP_MS) });
     return alive.blobs.length ? best.sid : null;
   } catch {
     return null;
@@ -270,7 +293,7 @@ async function pointerSession(phone: string): Promise<string | null> {
 async function latestContactFor(sid: string): Promise<string> {
   if (!validSession(sid)) return "";
   try {
-    const { blobs } = await list({ prefix: `gochat/${sid}/`, limit: 1000 });
+    const { blobs } = await list({ prefix: `gochat/${sid}/`, limit: 1000, abortSignal: deadline(BLOB_OP_MS) });
     const notes = blobs
       .map((b) => ({ url: b.url, p: parsePath(b.pathname) }))
       .filter((b): b is { url: string; p: Parsed } => b.p !== null && b.p.role === "note")
@@ -278,14 +301,7 @@ async function latestContactFor(sid: string): Promise<string> {
       // Every owner text parks an "SMS sent to …" note, so a chatty thread can
       // push CONTACT down the list — 15 clears any realistic negotiation.
       .slice(0, 15);
-    const texts = await Promise.all(
-      notes.map((n) =>
-        fetch(n.url, { cache: "no-store" })
-          .then((r) => r.json())
-          .then((j) => (j && typeof j.text === "string" ? (j.text as string) : ""))
-          .catch(() => ""),
-      ),
-    );
+    const texts = await Promise.all(notes.map((n) => fetchMsg(n.url, "note", n.p.ts).then((m) => m?.text || "")));
     // notes is newest-first, so the first hit IS the newest CONTACT.
     return texts.find((t) => t.startsWith(CONTACT_PREFIX))?.slice(CONTACT_PREFIX.length).trim() || "";
   } catch {

@@ -63,6 +63,9 @@ export async function callAI(req: AIRequest): Promise<AIResult> {
         : {}),
     }),
     cache: "no-store",
+    // Bounded: a stalled gateway call in a background triage held the chat
+    // function open to the platform limit.
+    signal: AbortSignal.timeout(30_000),
   });
   if (!r.ok) {
     const body = await r.text().catch(() => "");
@@ -115,6 +118,7 @@ export async function postAIMarker(opts: {
     const r = await fetch(`${MC_API}/api/comms`, {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(10_000),
       body: JSON.stringify({
         from,
         fromName,

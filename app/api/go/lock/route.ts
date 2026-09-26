@@ -52,6 +52,10 @@ import { MANUAL_REVIEW_DEVICES } from "../../../data/prices";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
+// MC post 12 s + owner alert 12 s + store notes + the confirmation's
+// background tail — a lock never legitimately needs more.
+export const maxDuration = 90;
+
 // Same scrub as /api/lead's cleanField: brackets (the admin parser keys on
 // [STATUS:]/[LEAD:] markers anywhere in a comm body) AND newlines/tabs —
 // the lead body is line-anchored "Key: value" fields with the customer's

@@ -25,6 +25,9 @@ import { notifyOwnerSms } from "../../../lib/owner-sms";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
+// One blob put + one store write + a bounded owner ping.
+export const maxDuration = 60;
+
 const MAX_BYTES = 4 * 1024 * 1024; // Vercel's body ceiling is ~4.5MB; stay under it
 const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 

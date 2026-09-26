@@ -44,7 +44,11 @@ async function sickw(service: number, imei: string): Promise<Raw> {
   const key = process.env.SICKW_API_KEY || "";
   if (!key) return { status: "nokey", text: "", error: "no SICKW_API_KEY" };
   try {
-    const r = await fetch(`https://sickw.com/api.php?format=json&key=${key}&imei=${imei}&service=${service}`, { cache: "no-store", signal: AbortSignal.timeout(45_000) });
+    // 25 s (was 45): a lookup normally answers in a few seconds, and the
+    // chat only waits 10 s before moving on — the rest runs in the
+    // background, where two 45 s calls in a row kept the function alive
+    // for a minute and a half.
+    const r = await fetch(`https://sickw.com/api.php?format=json&key=${key}&imei=${imei}&service=${service}`, { cache: "no-store", signal: AbortSignal.timeout(25_000) });
     if (!r.ok) return { status: "http", text: "", error: `HTTP ${r.status}` };
     const d = await r.json();
     const balance = d.balance != null ? Number(d.balance) : undefined;

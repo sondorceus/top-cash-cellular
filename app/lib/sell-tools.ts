@@ -14,6 +14,7 @@
 
 import { after } from "next/server";
 import { quoteDevice, normalizeStorage, type QuoteSpec } from "./quote";
+import { cachedOverrides } from "./overrides-cache";
 import { PRICE_TABLE } from "../data/prices";
 import { notifyOwnerSms } from "./owner-sms";
 import { lookupImei } from "./imei-lookup";
@@ -211,7 +212,9 @@ export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> 
     mdmLocked: !!input.mdm_locked,
     faceIdBroken: !!input.faceid_broken,
   };
-  const r = await quoteDevice(spec).catch(() => null);
+  // The same 60 s overrides memo the /go board and chip flow use — without
+  // it every chat quote paid its own Blob list + fetch mid-reply.
+  const r = await cachedOverrides().then((ov) => quoteDevice(spec, ov)).catch(() => null);
   if (!r || r.offer == null || r.manualReview) {
     // A below-minimum / manual-review result is NOT "no offer" — the owner
     // prices these by hand (locked or older cracked units, high-value SKUs).

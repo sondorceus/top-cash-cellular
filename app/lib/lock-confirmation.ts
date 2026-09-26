@@ -37,7 +37,7 @@ export async function sendLockConfirmationEmail(o: {
     const intro = offer != null
       ? `That number holds until <strong style="color:${MAIL.ink}">${esc(until)}</strong> if the device matches what you told us. Meet up in the Austin area for cash on the spot, or we send a free FedEx label — your pick. Reply to this email with <strong style="color:${MAIL.ink}">MEET</strong> or <strong style="color:${MAIL.ink}">SHIP</strong>, or pick it back up in your chat.`
       : `We'll send you a real offer shortly. Reply to this email with <strong style="color:${MAIL.ink}">MEET</strong> if you're in the Austin area or <strong style="color:${MAIL.ink}">SHIP</strong> for a free FedEx label, or pick it back up in your chat.`;
-    const r = await resend.emails.send({
+    const send = resend.emails.send({
       from: "Top Cash Cellular <noreply@topcashcellular.com>",
       replyTo: "support@topcashcellular.com",
       to,
@@ -54,6 +54,14 @@ export async function sendLockConfirmationEmail(o: {
         ? `Your ${dev} offer is locked at $${offer} until ${until}. Reply MEET for a cash meetup in the Austin area or SHIP for a free FedEx label. Your chat: ${link}`
         : `We're pricing your ${dev} by hand and will send a real offer shortly. Reply MEET if you're in the Austin area or SHIP for a free FedEx label. Your chat: ${link}`,
     });
+    // The Resend SDK takes no abort signal — race it against a ceiling (same
+    // pattern as owner-sms) so a stalled send can't hold the lock route open.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const r = await Promise.race([
+      send,
+      new Promise<null>((resolve) => { timer = setTimeout(() => resolve(null), 10_000); }),
+    ]).finally(() => clearTimeout(timer));
+    if (!r) return { sent: false, reason: "email send timed out" };
     return { sent: !r.error, reason: r.error ? String(r.error.message || "resend error") : undefined };
   } catch (e) {
     return { sent: false, reason: e instanceof Error ? e.message : "threw" };
