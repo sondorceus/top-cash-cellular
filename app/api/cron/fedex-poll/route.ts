@@ -22,6 +22,9 @@ import { fetchCommsPaged } from "../../../lib/mc-comms";
 // already matches the current FedEx state. Safe to run hourly.
 
 export const runtime = "nodejs";
+// 25 sequential Track calls plus MC/status round trips can outlive the plan
+// default.
+export const maxDuration = 300;
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -40,6 +43,7 @@ async function postToMc(body: string): Promise<boolean> {
       method: "POST",
       headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({ from: "powerhouse", fromName: "Powerhouse", body }),
+      signal: AbortSignal.timeout(10_000),
     });
     return r.ok;
   } catch { return false; }
@@ -60,7 +64,7 @@ async function flipStatusWithNotify(
   const adminToken = process.env.TCC_ADMIN_TOKEN;
   if (!adminToken) return { reached: false, mcPersisted: false };
   try {
-    const r = await fetch(`${origin}/api/admin/leads/status?token=${encodeURIComponent(adminToken)}`, {
+    const r = await fetch(`${origin}/api/admin/leads/status`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
       body: JSON.stringify({ leadId, status, ...customer }),
@@ -95,17 +99,21 @@ export async function GET(req: NextRequest) {
   if (messages.length === 0) return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
 
   // Index: latest status per lead, latest FEDEX-EVENT state per lead,
-  // and the set of deleted lead ids.
+  // and when each lead was last deleted / restored.
   const statusByLead = new Map<string, { status: string; ts: string }>();
   const lastFedexStateByLead = new Map<string, { state: string; code: string; ts: string }>();
-  const deletedLeads = new Set<string>();
+  // Newest [DELETED-LEAD]/[RESTORED-LEAD] per lead — a lead restored after
+  // deletion is live again and its box still needs tracking (lib/lead-dupes
+  // rule; the old set never read the restore).
+  const deletedAt = new Map<string, string>();
+  const restoredAt = new Map<string, string>();
   // Leads we've already sent a "stalled shipment" alert for, so the
   // watchdog pings the owner once, not every run.
   const staleAlertedLeads = new Set<string>();
   // Timestamp of the last "[FEDEX-TRACK-FORBIDDEN]" alert. The Track API
   // returning 403 for every number is a standing config problem (Track
   // API not enabled on the FedEx project), so we alert at most once per
-  // ~20h instead of every 30-min run.
+  // 7 days instead of every run — the owner knows; a daily repeat is noise.
   let trackForbiddenAlertAt = "";
   // NEWEST [LABEL: leadId] per lead (/api/lead, /go, admin, retry all write
   // the same shape). After a regenerate the lead has two markers; admin,
@@ -130,7 +138,9 @@ export async function GET(req: NextRequest) {
       if (!prev || m.timestamp > prev.ts) lastFedexStateByLead.set(fm[1], { state: fm[2].toLowerCase(), code: (fm[3] || "").replace(/\]$/, ""), ts: m.timestamp });
     }
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
-    if (dm) deletedLeads.add(dm[1]);
+    if (dm && m.timestamp > (deletedAt.get(dm[1]) || "")) deletedAt.set(dm[1], m.timestamp);
+    const rm = m.body.match(/\[RESTORED-LEAD:\s*([\w-]+)\]/i);
+    if (rm && m.timestamp > (restoredAt.get(rm[1]) || "")) restoredAt.set(rm[1], m.timestamp);
     const stm = m.body.match(/\[SHIP-STALE:\s*([\w-]+)\]/i);
     if (stm) staleAlertedLeads.add(stm[1]);
     if (/\[FEDEX-TRACK-FORBIDDEN\]/i.test(m.body) && m.timestamp > trackForbiddenAlertAt) {
@@ -151,7 +161,8 @@ export async function GET(req: NextRequest) {
   for (const m of messages) {
     if (!m.body || !m.id) continue;
     if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
-    if (deletedLeads.has(m.id)) continue;
+    const del = deletedAt.get(m.id);
+    if (del && (restoredAt.get(m.id) || "") <= del) continue; // in the trash
     // A lead is trackable when it HAS a label — the [LABEL: leadId] marker
     // carries the tracking number, not the lead body. Keying on the
     // "--- Handoff: SHIPPING ---" header skipped every /go shipment
@@ -211,7 +222,15 @@ export async function GET(req: NextRequest) {
     // per-second cap but politeness beats getting throttled.
     await new Promise((r) => setTimeout(r, 150));
     const newState = result.state;
-    if (result.authError) trackForbidden = true;
+    if (result.authError) {
+      // 403 is the credentials, not this package — every further Track call
+      // this run fails the same way. Alert below (rate-limited) and stop
+      // polling; no [FEDEX-EVENT] marker either, a blind "unknown" is not a
+      // tracking state.
+      trackForbidden = true;
+      processed.push({ leadId: c.id, tracking: c.tracking, before: c.status, nowState: "forbidden", mcPosted: false, error: "Track API 403 — credentials lack Track access" });
+      break;
+    }
     // Stalled-ship watchdog — a label that's been sitting for STALE_DAYS with
     // FedEx showing no scan ("unknown") or only "label created" (never picked
     // up) almost always means the customer delivered another way or never
@@ -305,11 +324,12 @@ export async function GET(req: NextRequest) {
   // but no pickup/out-for-delivery/delivered event ever lands, so packages
   // arrive with zero notification. Can't be fixed in code: the Track API
   // must be added to the FedEx project at developer.fedex.com. Alert the
-  // owner at most once per ~20h so it can't rot unnoticed again.
+  // owner once per 7 days (newest marker in the 30-day window) so it can't
+  // rot unnoticed, without a daily repeat of what he already knows.
   if (trackForbidden) {
     const lastMs = trackForbiddenAlertAt ? Date.now() - new Date(trackForbiddenAlertAt).getTime() : Infinity;
-    if (lastMs > 20 * 60 * 60 * 1000) {
-      await postToMc(`[FEDEX-TRACK-FORBIDDEN] FedEx Track API returns 403 for every tracking number — credentials are NOT authorized for the Track API, so NO delivery notifications fire (labels still work). Add the Track API to the FedEx project at developer.fedex.com, same project as FEDEX_CLIENT_ID. ${processed.length} package(s) affected this run.`);
+    if (lastMs > 7 * 24 * 60 * 60 * 1000) {
+      await postToMc(`[FEDEX-TRACK-FORBIDDEN] FedEx Track API returns 403 for every tracking number — credentials are NOT authorized for the Track API, so NO delivery notifications fire (labels still work). Add the Track API to the FedEx project at developer.fedex.com, same project as FEDEX_CLIENT_ID. ${candidates.length} labeled package(s) waiting on tracking.`);
       await notifyOwnerSms(`⚠️ TCC tracking is OFF: FedEx won't authorize our Track API (403), so package deliveries arrive with NO alert. Fix: enable the Track API on the FedEx developer project. Labels still work.`);
     }
   }

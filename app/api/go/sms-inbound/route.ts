@@ -14,7 +14,9 @@
 //
 // Keywords (2026-09-11):
 //   STOP / UNSUBSCRIBE / CANCEL / END / QUIT → opt-out: SMS-STOP session note
-//     + [SMS-OPT-OUT: <10 digits>] MC marker. Every sender checks one of them.
+//     + [SMS-OPT-OUT: <10 digits>] MC marker + a durable sms-optout blob that
+//     sendSellerSms checks on every send (the marker pages out of the crons'
+//     comms window; the blob doesn't).
 //   MEET / SHIP → the seller's handoff choice, straight from the lock
 //     confirmation text: posts a [DELIVERY OPTION] comm (the same shape the
 //     homepage funnel writes) + an owner alert + a HANDOFF-CHOICE note, and
@@ -30,7 +32,7 @@ import { appendChatMsg, findSessionByPhone, readChat, phoneKey } from "../../../
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { rateLimit } from "../../../lib/rate-limit";
-import { sendSellerSms, smsOptOutMarker, STOP_RE, SMS_STOP_NOTE, notesHaveOptOut } from "../../../lib/seller-sms";
+import { sendSellerSms, smsOptOutMarker, markOptedOut, STOP_RE, SMS_STOP_NOTE, notesHaveOptOut } from "../../../lib/seller-sms";
 
 export const dynamic = "force-dynamic";
 
@@ -127,6 +129,7 @@ export async function POST(req: NextRequest) {
     // A STOP from a number we texted but can't map to a session still has to
     // stick: the MC marker is keyed on the number, not the session.
     if (STOP_RE.test(text)) {
+      await markOptedOut(from);
       await postMc(`${smsOptOutMarker(from)} texted STOP (no /go session matched)`, ["sms-opt-out"], "low");
       return NextResponse.json({ ok: true, matched: false, optedOut: true });
     }
@@ -162,6 +165,7 @@ export async function POST(req: NextRequest) {
 
   if (STOP_RE.test(text)) {
     await appendChatMsg(sid, "note", `${SMS_STOP_NOTE}: ${from} opted out by text`);
+    await markOptedOut(from);
     await postMc(`${smsOptOutMarker(from)} sess:${sid} — seller texted STOP; no more texts to this number`, ["sms-opt-out", `sess-${sid}`], "low");
     return NextResponse.json({ ok: true, matched: true, sid, optedOut: true });
   }

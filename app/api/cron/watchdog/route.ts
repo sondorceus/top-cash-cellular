@@ -31,6 +31,10 @@ import { duplicatesFromComms } from "../../../lib/lead-dupes";
 //
 // Auth: Authorization: Bearer ${CRON_SECRET} (same as the other crons).
 
+// Up to ~40 sequential chat-store reads plus the MC paging — past the plan
+// default on a busy window.
+export const maxDuration = 300;
+
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
 const OWNER_EMAIL = process.env.OWNER_EMAIL || "support@topcashcellular.com";
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -109,7 +113,14 @@ export async function GET(req: NextRequest) {
   const labelAtByLead = new Map<string, string>();
   const counterAtByLead = new Map<string, string>();
   const counterRespByLead = new Map<string, string>();
-  const deleted = new Set<string>();
+  // Newest [DELETED-LEAD]/[RESTORED-LEAD] per lead — a lead restored after
+  // deletion is live again (lib/lead-dupes rule; the set never read the restore).
+  const deletedAt = new Map<string, string>();
+  const restoredAt = new Map<string, string>();
+  // A [FEDEX-TRACK-FORBIDDEN] marker in the window: tracking is blind (Track
+  // API 403), so "got a label, never shipped" and "shipped, never arrived"
+  // can't be inferred — the flips that clear them come from fedex-poll.
+  let trackBlind = false;
   // Leads the owner marked "contacted" from the alert email (one-tap link).
   const contactedByLead = new Set<string>();
   // (leadId|cat) -> latest watchdog-alert timestamp, for cooldown.
@@ -143,7 +154,10 @@ export async function GET(req: NextRequest) {
     const cr = body.match(/\[COUNTER-RESPONSE:\s*([\w-]+)\]/i);
     if (cr && m.timestamp > (counterRespByLead.get(cr[1]) || "")) counterRespByLead.set(cr[1], m.timestamp);
     const del = body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
-    if (del) deleted.add(del[1]);
+    if (del && m.timestamp > (deletedAt.get(del[1]) || "")) deletedAt.set(del[1], m.timestamp);
+    const res = body.match(/\[RESTORED-LEAD:\s*([\w-]+)\]/i);
+    if (res && m.timestamp > (restoredAt.get(res[1]) || "")) restoredAt.set(res[1], m.timestamp);
+    if (/\[FEDEX-TRACK-FORBIDDEN\]/i.test(body)) trackBlind = true;
     const lc = body.match(/\[LEAD-CONTACTED:\s*([\w-]+)\]/i);
     if (lc) contactedByLead.add(lc[1]);
     const wa = body.match(/\[WATCHDOG-ALERT:\s*([\w-]+)\][^\n]*cat=(\w+)/i);
@@ -159,7 +173,8 @@ export async function GET(req: NextRequest) {
 
   const flags: Flag[] = [];
   for (const [leadId, lead] of leads) {
-    if (deleted.has(leadId)) continue;
+    const del = deletedAt.get(leadId);
+    if (del && (restoredAt.get(leadId) || "") <= del) continue; // in the trash
     if (dupes.has(leadId)) continue;
     if (INTERNAL_EMAILS.includes(field(lead.body, "Email").toLowerCase())) continue;
 
@@ -170,8 +185,8 @@ export async function GET(req: NextRequest) {
     const consider: Array<{ cat: Cat; since: number }> = [];
     if (status === "received") consider.push({ cat: "received_unpaid", since: ms(statusTs) });
     if (status === "tested") consider.push({ cat: "tested_unpaid", since: ms(statusTs) });
-    if (status === "shipped") consider.push({ cat: "shipped_unreceived", since: ms(statusTs) });
-    if (status === "quote_requested" && labelAtByLead.has(leadId)) {
+    if (status === "shipped" && !trackBlind) consider.push({ cat: "shipped_unreceived", since: ms(statusTs) });
+    if (status === "quote_requested" && labelAtByLead.has(leadId) && !trackBlind) {
       consider.push({ cat: "label_unshipped", since: ms(labelAtByLead.get(leadId)) });
     }
     if (counterAtByLead.has(leadId) && !counterRespByLead.has(leadId)) {
@@ -213,7 +228,9 @@ export async function GET(req: NextRequest) {
     const sess = field(leads.get(f.leadId)?.body || "", "Session");
     if (!validGoSession(sess)) continue;
     checks++;
-    const state = await readChat(sess, 0);
+    // Newest record + the notes: the lock/choice milestones are notes and
+    // lastOwnerTs is pathname-derived, so the chat itself isn't fetched.
+    const state = await readChat(sess, 0, 1, 40);
     const notes = state.msgs.filter((x) => x.role === "note");
     // Only a choice made for THIS lead's lock counts (same per-lock rule as
     // /api/go/label): from its LOCKED note (written just after the lead
@@ -259,6 +276,7 @@ export async function GET(req: NextRequest) {
         tags: ["watchdog", "go_silent", "urgent"],
         priority: "high",
       }),
+      signal: AbortSignal.timeout(10_000),
     }).catch(() => {});
   }
 
@@ -280,7 +298,7 @@ export async function GET(req: NextRequest) {
       .sort((a, b) => b.lastTs - a.lastTs)
       .slice(0, 30);
     for (const s of recent) {
-      const st = await readChat(s.sid, 0);
+      const st = await readChat(s.sid, 0, 1, 40); // notes only — the SMS breadcrumbs
       for (const m of st.msgs) {
         if (m.role !== "note" || m.ts < now - RELAY_WINDOW_MS) continue;
         if (/^SMS sent to /.test(m.text)) relaySent++;
@@ -312,6 +330,7 @@ export async function GET(req: NextRequest) {
         tags: ["watchdog", "sms_relay_down", "urgent"],
         priority: "high",
       }),
+      signal: AbortSignal.timeout(10_000),
     }).catch(() => {});
   }
   const smsRelay = { sent: relaySent, failed: relayFailed, down: relayFailed >= 2 && relaySent === 0, alerted: smsRelayDown && !dryRun };
@@ -353,6 +372,7 @@ export async function GET(req: NextRequest) {
         tags: ["watchdog", "no_leads", "urgent"],
         priority: "high",
       }),
+      signal: AbortSignal.timeout(10_000),
     }).catch(() => {});
   }
 
@@ -382,6 +402,7 @@ export async function GET(req: NextRequest) {
       wouldSms: flags.filter((f) => RULES[f.cat].urgent).length > 0,
       noLeadsAlarm,
       goSilentAlarm,
+      trackBlind,
       smsRelay,
       goActive24,
       goActivePriorWeek,
@@ -434,6 +455,7 @@ export async function GET(req: NextRequest) {
         tags: ["watchdog", f.cat, ...(RULES[f.cat].urgent ? ["urgent"] : [])],
         priority: RULES[f.cat].urgent ? "high" : "normal",
       }),
+      signal: AbortSignal.timeout(10_000),
     }).catch(() => {}),
   ));
 

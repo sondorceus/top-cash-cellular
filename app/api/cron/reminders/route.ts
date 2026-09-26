@@ -41,11 +41,18 @@ import { duplicatesFromComms } from "../../../lib/lead-dupes";
 // this on cron-fired requests. Manual hits get 401.
 
 export const runtime = "nodejs";
+// Sends are sequential and each waits on a relay/Resend/MC round trip — the
+// plan default cut a busy run off mid-loop.
+export const maxDuration = 300;
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
 const SITE = "https://topcashcellular.com";
+// Our own test leads (same list the watchdog/sequences/admin use) — never a
+// customer, never a reminder.
+const INTERNAL_EMAILS = (process.env.TCC_INTERNAL_EMAILS || "sondorceus@gmail.com,sellurcell@topcashcells.com")
+  .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
 
 // 24-48 hour aging window. Reminders only fire once per lead per kind.
 const REMIND_AFTER_MS = 24 * 60 * 60 * 1000;
@@ -96,22 +103,32 @@ function parseField(body: string, key: string): string | undefined {
   return v || undefined;
 }
 
-async function logReminderSent(leadId: string, kind: Kind) {
+// The marker is the only thing that keeps the hourly run from re-texting a
+// seller it just texted, so a text without its marker is worse than no text:
+// retry with a short backoff (MC is one Railway box that blips), bound each
+// try, and report a miss honestly — the caller halts the run on it.
+async function logReminderSent(leadId: string, kind: Kind): Promise<boolean> {
   const marker = `[REMINDER-SENT: ${leadId}] kind=${kind} at=${new Date().toISOString()}`;
-  try {
-    await fetch(`${MC_API}/api/comms`, {
-      method: "POST",
-      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: "tcc-admin",
-        fromName: "TCC Admin",
-        role: "system",
-        body: marker,
-        tags: ["reminder-sent", kind],
-        priority: "low",
-      }),
-    });
-  } catch {}
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await new Promise((r) => setTimeout(r, 500 * attempt));
+    try {
+      const r = await fetch(`${MC_API}/api/comms`, {
+        method: "POST",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "tcc-admin",
+          fromName: "TCC Admin",
+          role: "system",
+          body: marker,
+          tags: ["reminder-sent", kind],
+          priority: "low",
+        }),
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (r.ok) return true;
+    } catch {}
+  }
+  return false;
 }
 
 // Email template wrapper. Sonny's 2026-05-29 design (PNG logo,
@@ -264,7 +281,7 @@ function templateReviewReminder(lead: LeadShape, reviewUrl: string) {
   const first = (lead.name || "there").split(" ")[0];
   const device = lead.model || lead.device || "your device";
   return {
-    smsBody: `Top Cash: Hi ${first}, hope you enjoyed selling ${device}. Quick favor — mind leaving a 30-sec review? ${reviewUrl}`,
+    smsBody: `Top Cash: Hi ${first}, hope you enjoyed selling ${device}. Quick favor — mind leaving a 30-sec review? ${reviewUrl} Reply STOP to opt out.`,
     emailSubject: `One quick favor — review your trade?`,
     emailHtml: wrapEmail({
       title: "★ Leave a quick review?",
@@ -330,8 +347,26 @@ export async function GET(req: NextRequest) {
   // the [DELIVERY OPTION] comm carries their Session: line. Their reminder
   // uses the local/ship template, never "reply MEET or SHIP" again.
   const handoffBySession = new Map<string, "ship" | "local">();
+  // Newest [DELETED-LEAD]/[RESTORED-LEAD] per lead, one pass (a lead restored
+  // after deletion is live again — same rule as lib/lead-dupes). Was a regex
+  // scan of the whole window per lead.
+  const deletedAt = new Map<string, string>();
+  const restoredAt = new Map<string, string>();
+  // Leads holding a FedEx label, and the newest tracking state fedex-poll
+  // recorded for each ([FEDEX-EVENT: id state=…]) — the ship reminder below
+  // needs FedEx to confirm the label is still unscanned.
+  const labeledLeads = new Set<string>();
+  const fedexStateByLead = new Map<string, { state: string; ts: string }>();
   for (const m of messages) {
     if (!m.body) continue;
+    const dl = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
+    if (dl && m.timestamp > (deletedAt.get(dl[1]) || "")) deletedAt.set(dl[1], m.timestamp);
+    const rl = m.body.match(/\[RESTORED-LEAD:\s*([\w-]+)\]/i);
+    if (rl && m.timestamp > (restoredAt.get(rl[1]) || "")) restoredAt.set(rl[1], m.timestamp);
+    const lb = m.body.match(/\[LABEL:\s*([\w-]+)\]/i);
+    if (lb) labeledLeads.add(lb[1]);
+    const fx = m.body.match(/\[FEDEX-EVENT:\s*([\w-]+)\s+state=([a-z_]+)/i);
+    if (fx && m.timestamp > (fedexStateByLead.get(fx[1])?.ts || "")) fedexStateByLead.set(fx[1], { state: fx[2].toLowerCase(), ts: m.timestamp });
     const dm = m.body.match(/^\[DELIVERY OPTION\]\s*(LOCAL|SHIPPING)/i);
     if (dm) {
       const sess = parseField(m.body, "Session");
@@ -383,14 +418,18 @@ export async function GET(req: NextRequest) {
   const dupes = duplicatesFromComms(messages);
 
   const isDeleted = (id: string) => {
-    const lastDel = messages.filter((mm) => mm.body && new RegExp(`\\[DELETED-LEAD:\\s*${id}\\]`, "i").test(mm.body)).map((mm) => mm.timestamp).sort().pop();
-    if (!lastDel) return false;
-    const lastRes = messages.filter((mm) => mm.body && new RegExp(`\\[RESTORED-LEAD:\\s*${id}\\]`, "i").test(mm.body)).map((mm) => mm.timestamp).sort().pop();
-    return !lastRes || lastRes < lastDel;
+    const del = deletedAt.get(id);
+    return !!del && (restoredAt.get(id) || "") <= del;
   };
+  // Labeled leads the ship reminder had to hold back (tracking unconfirmed).
+  let skippedLabelBlind = 0;
 
   for (const m of messages) {
     if (!m.body || !m.id) continue;
+    // Deleted leads (soft-trashed) → skip, chat leads included — the admin
+    // trashes a chat contact under this same message id, and it used to be
+    // texted anyway. They re-surface only on restore.
+    if (isDeleted(m.id)) continue;
     // Chat-contact leads (site chat) — their own candidate list.
     if (/^\[CHAT LEAD ✅\]/.test(m.body)) {
       const cl = parseChatLead(m.id, m.timestamp, m.body);
@@ -400,19 +439,19 @@ export async function GET(req: NextRequest) {
       if (remindedByKind.chat.has(m.id)) continue;
       const pk = phoneKey(cl.contact);
       const ek = cl.contact.includes("@") ? cl.contact.toLowerCase() : "";
+      if (ek && INTERNAL_EMAILS.includes(ek)) continue; // our own test chat
       if ((pk && lockedContacts.has(pk)) || (ek && lockedContacts.has(ek))) continue; // they locked — the lead cron covers them
       if (pk && optedOutIn(messages, cl.contact)) continue;
       chatCandidates.push(cl);
       continue;
     }
     if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
-    // Deleted leads (soft-trashed) → skip. They re-surface only on restore.
-    if (isDeleted(m.id)) continue;
     if (dupes.has(m.id)) continue;
     const name = parseField(m.body, "Name");
     const phone = parseField(m.body, "Phone");
     const email = parseField(m.body, "Email");
     if (!phone && !email) continue;
+    if (email && INTERNAL_EMAILS.includes(email.toLowerCase())) continue; // our own test lead
     const deviceLine = parseField(m.body, "Device") || "";
     const handoffMethod: "ship" | "local" | undefined = /--- Handoff:\s*SHIPPING/i.test(m.body)
       ? "ship"
@@ -421,7 +460,17 @@ export async function GET(req: NextRequest) {
         : undefined;
     const source = parseField(m.body, "Source") || "";
     const session = parseField(m.body, "Session");
-    const quoteRaw = parseField(m.body, "Quote") || "";
+    // The internal "(clamped from $X)" tamper note never reaches a seller
+    // text (watchdog/sequences strip it the same way).
+    const quoteRaw = (parseField(m.body, "Quote") || "").replace(/\s*\(clamped from[^)]*\)/i, "").trim();
+    // A real dollar figure or nothing. "TBD (custom)" is a hand quote
+    // (won't-turn-on/parts locks, manual-review MacBooks) and "$0" a
+    // recycle-only donor: no number to remind about, no lock to expire —
+    // the seller is waiting on the OWNER (the go_unworked watchdog nudges
+    // him). Before this the texts read "your iPhone 17 Pro offer (TBD
+    // (custom)) is still locked", and a recycle donor got "your quote is
+    // still good".
+    const quoteNum = Number(quoteRaw.replace(/,/g, "").match(/\$\s*(\d+)/)?.[1] || 0);
     const isGo = /source=go\b/i.test(source);
     // TCPA: text only numbers we have consent for. Main-funnel leads carry
     // "SMS opt-in: YES" when the seller ticked the consent box; ship/mixed
@@ -441,13 +490,8 @@ export async function GET(req: NextRequest) {
       email,
       device: deviceLine.split(" — ")[0],
       model: deviceLine.split(" — ")[1],
-      // "TBD (custom)" = hand quote (won't-turn-on/parts locks, manual-
-      // review MacBooks): no number, so no "still locked" reminder and no
-      // lock to expire — the seller is waiting on the OWNER's number (the
-      // go_unworked watchdog nudges him). Before this the texts read
-      // "your iPhone 17 Pro offer (TBD (custom)) is still locked".
-      quote: /\d/.test(quoteRaw) ? quoteRaw : undefined,
-      manual: !/\d/.test(quoteRaw),
+      quote: quoteNum > 0 ? quoteRaw : undefined,
+      manual: !(quoteNum > 0),
       handoffMethod: handoffMethod ?? (session ? handoffBySession.get(session) : undefined),
       session,
       lockUntil: parseField(m.body, "Lock-Until"),
@@ -467,7 +511,14 @@ export async function GET(req: NextRequest) {
     if (statusName === "quote_requested" && !lead.manual) {
       const subAge = now - new Date(m.timestamp).getTime();
       if (subAge >= REMIND_AFTER_MS && subAge < REMIND_UNTIL_MS && !remindedByKind.quote.has(m.id)) {
-        quoteCandidates.push(lead);
+        // A lead holding a label is shipping, and "drop your device at
+        // FedEx" is only right while FedEx confirms the label unscanned
+        // ([FEDEX-EVENT … state=label_created]). Tracking is blind today
+        // (Track API 403 — see fedex-poll), so with no confirmation the box
+        // may already be in transit: no text beats a wrong one. Held, not
+        // re-templated — the generic copy asks them to pick a handoff.
+        if (labeledLeads.has(m.id) && fedexStateByLead.get(m.id)?.state !== "label_created") skippedLabelBlind++;
+        else quoteCandidates.push(lead);
       }
       // Expiry — /go leads only (they carry Lock-Until), inside the last 36h.
       if (lead.lockUntil && !remindedByKind.expiry.has(m.id)) {
@@ -498,7 +549,8 @@ export async function GET(req: NextRequest) {
     const goSessions = [...new Set([...quoteCandidates, ...expiryCandidates].filter((l) => l.isGo && l.session).map((l) => l.session as string))].slice(0, MAX_CHAT_CHECKS);
     for (const sid of goSessions) {
       if (!validGoSession(sid)) continue;
-      const state = await readChat(sid, 0);
+      // lastOwnerTs is pathname-derived — no content fetches needed.
+      const state = await readChat(sid, Number.MAX_SAFE_INTEGER);
       if (state.lastOwnerTs > 0) ownerWorked.add(sid);
     }
   }
@@ -510,7 +562,9 @@ export async function GET(req: NextRequest) {
   // seller already picked a handoff by text. Bounded per run.
   const chatReady: ChatLead[] = [];
   for (const cl of chatCandidates.slice(0, MAX_CHAT_CHECKS)) {
-    const state = await readChat(cl.session, 0);
+    // Newest record + the notes only: the milestones live in notes and
+    // lastOwnerTs is pathname-derived, so the thread's chat isn't fetched.
+    const state = await readChat(cl.session, 0, 1, 40);
     const notes = state.msgs.filter((x) => x.role === "note").map((x) => x.text);
     if (state.lastOwnerTs > 0) continue;
     if (notes.some((t) => t.startsWith("LOCKED:") || t.startsWith("HANDOFF-CHOICE:") || t.startsWith("SMS-STOP"))) continue;
@@ -524,6 +578,7 @@ export async function GET(req: NextRequest) {
       quote: quoteReady.map((l) => ({ id: l.id, go: !!l.isGo, channel: l.phone ? "sms" : "email", session: l.session || null, handoff: l.handoffMethod || null })),
       expiry: expiryReady.map((l) => ({ id: l.id, lockUntil: l.lockUntil, channel: l.phone ? "sms" : "email" })),
       skippedOwnerWorked: ownerWorked.size,
+      skippedLabelBlind,
       chat: chatReady.map((c) => ({ id: c.id, session: c.session, device: c.device, channel: c.contact.includes("@") ? "email" : "sms" })),
       review: reviewCandidates.map((r) => ({ id: r.lead.id, sms: !!(r.lead.phone && r.lead.smsOptIn), email: !!r.lead.email })),
       skippedChatChecks: Math.max(0, chatCandidates.length - MAX_CHAT_CHECKS),
@@ -535,9 +590,19 @@ export async function GET(req: NextRequest) {
   let chatSent = 0;
   let reviewSent = 0;
   const errors: string[] = [];
+  // A text that went out without its [REMINDER-SENT] marker would go out
+  // again next hour, so the first marker miss halts every remaining send
+  // loop this run — the leads simply wait for a run that can record them.
+  let markerDown = false;
+  const recordSent = async (id: string, kind: Kind): Promise<void> => {
+    if (await logReminderSent(id, kind)) return;
+    markerDown = true;
+    errors.push(`${kind} ${id}: sent but the [REMINDER-SENT] marker failed — sends halted this run`);
+  };
 
   // Fire quote reminders.
   for (const lead of quoteReady) {
+    if (markerDown) break;
     try {
       const handoffKind: "ship" | "local" | "none" = lead.handoffMethod || "none";
       const tmpl = templateQuoteReminder(lead, handoffKind);
@@ -549,8 +614,8 @@ export async function GET(req: NextRequest) {
       // return false (they don't throw) on a relay/Resend failure, so the old
       // unconditional log would permanently suppress the retry after an outage.
       if (results.some(Boolean)) {
-        await logReminderSent(lead.id, "quote");
         quoteSent++;
+        await recordSent(lead.id, "quote");
       } else {
         errors.push(`quote ${lead.id}: all channels failed`);
       }
@@ -561,6 +626,7 @@ export async function GET(req: NextRequest) {
 
   // Fire expiry notes.
   for (const lead of expiryReady) {
+    if (markerDown) break;
     try {
       const tmpl = templateExpiry(lead);
       const tasks: Promise<boolean>[] = [];
@@ -568,8 +634,8 @@ export async function GET(req: NextRequest) {
       if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
       const results = await Promise.all(tasks);
       if (results.some(Boolean)) {
-        await logReminderSent(lead.id, "expiry");
         expirySent++;
+        await recordSent(lead.id, "expiry");
       } else {
         errors.push(`expiry ${lead.id}: all channels failed`);
       }
@@ -580,14 +646,15 @@ export async function GET(req: NextRequest) {
 
   // Fire chat-contact reminders.
   for (const cl of chatReady) {
+    if (markerDown) break;
     try {
       const tmpl = templateChat(cl.device, cl.session);
       const ok = cl.contact.includes("@")
         ? await sendEmail(cl.contact, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody)
         : await sendSms(cl.contact, tmpl.smsBody);
       if (ok) {
-        await logReminderSent(cl.id, "chat");
         chatSent++;
+        await recordSent(cl.id, "chat");
       } else {
         errors.push(`chat ${cl.id}: send failed`);
       }
@@ -598,6 +665,7 @@ export async function GET(req: NextRequest) {
 
   // Fire review reminders.
   for (const { lead } of reviewCandidates) {
+    if (markerDown) break;
     try {
       // Need an active review token to embed in the URL. If MC marker
       // has one and it's not expired/used, use it. Otherwise mint a
@@ -625,6 +693,7 @@ export async function GET(req: NextRequest) {
             tags: ["review-token", "minted", "from-reminder"],
             priority: "low",
           }),
+          signal: AbortSignal.timeout(10_000),
         });
       }
       const params = new URLSearchParams();
@@ -640,8 +709,8 @@ export async function GET(req: NextRequest) {
       const results = await Promise.all(tasks);
       // Only mark reminded if a channel actually delivered (see quote loop).
       if (results.some(Boolean)) {
-        await logReminderSent(lead.id, "review");
         reviewSent++;
+        await recordSent(lead.id, "review");
       } else {
         errors.push(`review ${lead.id}: all channels failed`);
       }
@@ -657,6 +726,8 @@ export async function GET(req: NextRequest) {
     expiryCandidates: expiryReady.length,
     expirySent,
     skippedOwnerWorked: ownerWorked.size,
+    skippedLabelBlind,
+    haltedOnMarker: markerDown || undefined,
     chatCandidates: chatReady.length,
     chatSent,
     reviewCandidates: reviewCandidates.length,
