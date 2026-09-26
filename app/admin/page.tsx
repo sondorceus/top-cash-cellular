@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { DeviceCorrection } from "./DeviceCorrection";
 import { parseDollarAmount } from "../lib/lead-money";
 import { formatOfferNumber, offerNumberMatches } from "../lib/offer-number";
@@ -1201,6 +1201,14 @@ export default function AdminPage() {
     setPreviewCard(localStorage.getItem("tcc-admin-preview") === "1");
   }, []);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  // The input stays bound to searchQuery so typing is instant; the list
+  // filters off this trailing copy so the dedupe + search pass over a few
+  // hundred leads doesn't rerun on every keystroke. 2026-09-25.
+  const [debouncedQuery, setDebouncedQuery] = useState<string>("");
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery), 150);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
   // Google sign-in info (rendered in the header when present). proxy.ts
   // already gates this page to admin emails, so if we got here at all,
@@ -1568,11 +1576,15 @@ export default function AdminPage() {
     return out.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
   };
 
-  const dedupedLeads = dedupeLeads(leads);
-  const searchedLeads = dedupedLeads.filter((l) => matchesSearch(l, searchQuery));
-  const matchesHandoff = (l: Lead) =>
-    handoffFilter === "all" || (handoffFilter === "none" ? !l.handoffMethod : l.handoffMethod === handoffFilter);
-  const filteredLeads = searchedLeads.filter(matchesHandoff);
+  // Memoized: this dedupe -> search -> handoff chain used to rerun on every
+  // render (each keystroke, poll tick, or row-panel toggle). The helpers
+  // above are pure functions of their arguments, so each step depends only
+  // on the state it reads. 2026-09-25.
+  const dedupedLeads = useMemo(() => dedupeLeads(leads), [leads]);
+  const searchedLeads = useMemo(() => dedupedLeads.filter((l) => matchesSearch(l, debouncedQuery)), [dedupedLeads, debouncedQuery]);
+  const matchesHandoff = useCallback((l: Lead) =>
+    handoffFilter === "all" || (handoffFilter === "none" ? !l.handoffMethod : l.handoffMethod === handoffFilter), [handoffFilter]);
+  const filteredLeads = useMemo(() => searchedLeads.filter(matchesHandoff), [searchedLeads, matchesHandoff]);
 
   // "Needs review" filter — leads that staff should look at right now.
   // Three triggers:
@@ -1598,12 +1610,12 @@ export default function AdminPage() {
     if ((l.devices ?? []).some(d => (d.quote ?? 0) <= 0)) return true;
     return false;
   }
-  const needsReviewLeads = filteredLeads.filter(leadNeedsReview);
+  const needsReviewLeads = useMemo(() => filteredLeads.filter(leadNeedsReview), [filteredLeads]);
   const displayedLeadsBase = view === "needs-review" ? needsReviewLeads : filteredLeads;
   // Apply the command-center bucket filter everywhere displayedLeads is read.
-  const displayedLeads = bucketFilter
+  const displayedLeads = useMemo(() => bucketFilter
     ? displayedLeadsBase.filter((l) => priorityBucket(l) === bucketFilter)
-    : displayedLeadsBase;
+    : displayedLeadsBase, [displayedLeadsBase, bucketFilter]);
 
   const computeStats = (list: Lead[]) => {
     const now = Date.now();
@@ -1675,7 +1687,10 @@ export default function AdminPage() {
     const avgPayoutHours = payoutLatencyN > 0 ? payoutLatencySum / payoutLatencyN : 0;
     return { total: list.length, thisWeek, thisMonth, conversionRate, avgQuote, topPayouts, revenue, revenueMonth, revenueWeek, pendingCount, shippedCount, avgPayoutHours, paidCount };
   };
-  const stats = computeStats(dedupedLeads);
+  // Header stats only move when the deduped list does (each applied poll);
+  // the 7d/30d windows inside computeStats refresh on that cadence instead
+  // of on every render. 2026-09-25.
+  const stats = useMemo(() => computeStats(dedupedLeads), [dedupedLeads]);
 
   // Stale-lead detection. Each status has a target SLA + a louder alert
   // threshold. Active leads past either get badged. Tested → paid is the
@@ -1746,7 +1761,7 @@ export default function AdminPage() {
 
   // Customer history — every lead that matches the given email or phone
   // (normalized). Used by the history modal opened from a lead row.
-  const historyLeads = ((): Lead[] => {
+  const historyLeads = useMemo((): Lead[] => {
     if (!historyKey) return [];
     const target = historyKey.value.toLowerCase().trim();
     return dedupedLeads.filter((l) => {
@@ -1755,12 +1770,12 @@ export default function AdminPage() {
       const t = historyKey.kind === "email" ? target : target.replace(/\D/g, "");
       return v && v === t;
     });
-  })();
+  }, [dedupedLeads, historyKey]);
   // Customer history modal "Total paid" — use the same 3-tier cascade
   // the page header uses so it doesn't undercount multi-device leads
   // (no Quote: field, only totalPayout) and doesn't collapse $1,250
   // quotes to $1 the way the old /\d+/ regex did.
-  const historyTotalPaid = historyLeads
+  const historyTotalPaid = useMemo(() => historyLeads
     .filter((l) => isPaid(l.status))
     .reduce((s, l) => {
       const v =
@@ -1768,7 +1783,7 @@ export default function AdminPage() {
         || (typeof l.totalPayout === "number" && l.totalPayout > 0 ? l.totalPayout : 0)
         || parseDollarAmount(l.quote);
       return s + v;
-    }, 0);
+    }, 0), [historyLeads]);
 
   const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string; amount?: number }) => {
     if (!token || newStatus === lead.status) return;
@@ -1944,7 +1959,7 @@ export default function AdminPage() {
                 const open = stats.pendingCount;
                 const completed = total - open;
                 const dupeNote = leads.length !== dedupedLeads.length ? ` · ${leads.length - dedupedLeads.length} dupes merged` : "";
-                const filterActive = bucketFilter || searchQuery || (statusFilter !== "active" && statusFilter !== "all");
+                const filterActive = bucketFilter || debouncedQuery || (statusFilter !== "active" && statusFilter !== "all");
                 const filterNote = filterActive ? ` · showing ${displayedLeads.length}` : "";
                 return `${total} lead${total === 1 ? "" : "s"} · ${open} open · ${completed} completed${dupeNote}${filterNote}`;
               })()}
