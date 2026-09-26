@@ -27,6 +27,10 @@ async function loadReviews(): Promise<Review[]> {
     const r = await fetch(`${MC_API}/api/reviews?limit=200`, {
       headers: { "x-api-key": MC_KEY },
       next: { revalidate: 60 },
+      // A stalled MC held this render for as long as the platform allowed.
+      // Past 8 s the fetch rejects into the catch below and the page shows
+      // its empty state, the same way a non-2xx does (2026-09-25).
+      signal: AbortSignal.timeout(8_000),
     });
     if (!r.ok) return [];
     const data = await r.json();

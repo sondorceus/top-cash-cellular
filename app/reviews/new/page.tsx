@@ -11,6 +11,17 @@ type GateState =
   | { kind: "invalid"; reason: string }
   | { kind: "valid"; token: string; leadName: string; leadDevice: string };
 
+// What the gate shows while the token check runs, and the Suspense fallback
+// in NewReviewPage — one component so the static HTML and the first client
+// render are the same markup, and nothing moves when the form mounts.
+function Verifying() {
+  return (
+    <section className="px-4 sm:px-6 py-16 max-w-xl mx-auto text-center">
+      <p className="text-[#dcdcdc] text-sm">Verifying your review link…</p>
+    </section>
+  );
+}
+
 function NewReviewInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -99,24 +110,8 @@ function NewReviewInner() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white">
-      <SlideOnScrollNav className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
-        <Link href="/" className="text-xl font-bold tracking-tight">
-          Top Cash <span className="text-[#00c853]">Cellular</span>
-        </Link>
-        <div className="flex items-center gap-3">
-          <HeaderSearch className="flex w-40 sm:w-56 md:w-64" />
-          <Link href="/reviews" className="text-sm text-[#dcdcdc] hover:text-white transition whitespace-nowrap">
-            ← Reviews
-          </Link>
-        </div>
-      </SlideOnScrollNav>
-
-      {gate.kind === "loading" && (
-        <section className="px-4 sm:px-6 py-16 max-w-xl mx-auto text-center">
-          <p className="text-[#dcdcdc] text-sm">Verifying your review link…</p>
-        </section>
-      )}
+    <>
+      {gate.kind === "loading" && <Verifying />}
 
       {gate.kind === "invalid" && (
         <section className="px-4 sm:px-6 py-12 max-w-xl mx-auto">
@@ -254,16 +249,33 @@ function NewReviewInner() {
           </form>
         </section>
       )}
-    </main>
+    </>
   );
 }
 
 export default function NewReviewPage() {
-  // Suspense boundary required by Next 15 around useSearchParams so the
-  // page can still pre-render statically; the params hydrate on the client.
+  // Next requires a Suspense boundary around useSearchParams so the page
+  // can still pre-render statically; the params hydrate on the client. Only
+  // NewReviewInner reads them, so only it sits inside the boundary — the
+  // <main> and the nav (which never touch the URL) prerender into the
+  // static HTML. Until 2026-09-25 the whole page was inside, with an empty
+  // <main> as the fallback: a blank black screen until JS ran.
   return (
-    <Suspense fallback={<main className="min-h-screen bg-[#0a0a0a]" />}>
-      <NewReviewInner />
-    </Suspense>
+    <main className="min-h-screen bg-[#0a0a0a] text-white">
+      <SlideOnScrollNav className="px-4 sm:px-6 py-4 flex items-center justify-between border-b border-white/10 sticky top-0 bg-[#0a0a0a]/95 backdrop-blur z-10">
+        <Link href="/" className="text-xl font-bold tracking-tight">
+          Top Cash <span className="text-[#00c853]">Cellular</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <HeaderSearch className="flex w-40 sm:w-56 md:w-64" />
+          <Link href="/reviews" className="text-sm text-[#dcdcdc] hover:text-white transition whitespace-nowrap">
+            ← Reviews
+          </Link>
+        </div>
+      </SlideOnScrollNav>
+      <Suspense fallback={<Verifying />}>
+        <NewReviewInner />
+      </Suspense>
+    </main>
   );
 }

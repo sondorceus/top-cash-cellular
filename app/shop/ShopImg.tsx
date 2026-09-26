@@ -20,7 +20,12 @@ export default function ShopImg({ src, fallback, alt = "", ...rest }: Props) {
     if (!fallback || !el || !el.complete || el.naturalWidth > 0) return;
     // complete + no pixels is either "already failed" or, in some browsers,
     // a lazy image that hasn't been fetched yet. Only a real load error may
-    // swap a real photo for the stock one, so confirm with a probe.
+    // swap a real photo for the stock one, so confirm with a probe — for
+    // eager images only. A lazy one can't have failed yet (its fetch starts
+    // when it nears the viewport, after hydration), so any error it does hit
+    // reaches onError below; probing it here downloaded every below-the-fold
+    // photo in the grid on page load (2026-09-25).
+    if (el.loading === "lazy") return;
     let live = true;
     const probe = new Image();
     probe.onerror = () => {

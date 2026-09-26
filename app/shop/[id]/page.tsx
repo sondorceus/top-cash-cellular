@@ -1,9 +1,11 @@
+import { cache } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteFooter from "../../components/SiteFooter";
 import { readPublicListings } from "../../lib/shop-listings";
 import { GRADE_LABEL, GRADE_BLURB } from "../../lib/shop-grades";
+import { price } from "../../lib/shop-price";
 import ShopHeader from "../ShopHeader";
 import { ListingCard } from "../ShopBrowser";
 import { categoryForListing } from "../categories";
@@ -20,8 +22,14 @@ type Props = { params: Promise<{ id: string }> };
 
 // strict: a store outage throws to the error page — never notFound() (a
 // 404 that search engines drop) for a unit that exists.
+// cache(): generateMetadata and the page body both need the listings, and
+// a read is a Blob list() plus a fetch of the newest doc. React's
+// per-request memo makes that one read per product view; it was two
+// (2026-09-25).
+const getAll = cache(() => readPublicListings({ strict: true }));
+
 async function getListing(id: string) {
-  const listings = await readPublicListings({ strict: true });
+  const listings = await getAll();
   return listings.find((l) => l.id === id) ?? null;
 }
 
@@ -29,7 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const l = await getListing(id);
   if (!l) return { title: `Listing not found | ${BRAND}` };
-  const priceStr = `$${(l.priceCents / 100).toFixed(0)}`;
+  // Same formatter as the page and the grid card. toFixed(0) here made a
+  // texted link unfurl as "$250" for a unit the page then sold at $249.99
+  // (2026-09-25).
+  const priceStr = price(l.priceCents);
   const name = [l.modelLabel, l.storage, l.color].filter(Boolean).join(" ");
   // Absolute image URL for the share card: listing photos are already
   // absolute Blob URLs; stock renders are /public-relative and need the
@@ -63,7 +74,7 @@ export default async function ListingPage({ params }: Props) {
   // half-built is reachable or indexable (see lib/shop-flag).
   if (!SHOP_ENABLED) notFound();
   const { id } = await params;
-  const all = await readPublicListings({ strict: true });
+  const all = await getAll();
   const l = all.find((x) => x.id === id) ?? null;
   if (!l) notFound();
 
@@ -74,7 +85,7 @@ export default async function ListingPage({ params }: Props) {
     .slice(0, 4);
 
   const name = [l.modelLabel, l.storage, l.color].filter(Boolean).join(" ");
-  const priceStr = `$${(l.priceCents / 100).toFixed(2).replace(/\.00$/, "")}`;
+  const priceStr = price(l.priceCents);
   const images = l.photos.length ? l.photos : l.stockImage ? [l.stockImage] : [];
 
   const jsonLd = {

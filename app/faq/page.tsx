@@ -139,6 +139,9 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
 // Groups the flat FAQ list above into sections for display. Each entry
 // lists the exact `q` strings that belong to the section; the render
 // filters FAQ by these. Keeps answer copy untouched in one place.
+// The match is character-for-character and a miss is silent: the entry
+// simply appears in no section (the Apple Trade-In answer was unreachable
+// that way until 2026-09-25). Copy the `q` rather than retyping it.
 const FAQ_CATEGORIES: { name: string; questions: string[] }[] = [
   {
     name: "Payments & pricing",
@@ -146,7 +149,7 @@ const FAQ_CATEGORIES: { name: string; questions: string[] }[] = [
       "How fast do I get paid?",
       "What if my device arrives in worse condition than I quoted?",
       "Is the price you quote on the website actually what I'll get?",
-      "How do I know your prices are higher than Apple Trade-In or my carrier?",
+      "How does your price compare to Apple Trade-In or my carrier?",
       "How long is my quote locked in?",
       "I picked the wrong payout method — can I change it?",
       "How do coupon codes work?",

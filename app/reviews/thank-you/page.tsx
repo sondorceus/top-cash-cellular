@@ -4,7 +4,17 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
-function ThankYouInner() {
+// $25 reward coupon — minted server-side at submit time, also emailed to
+// the customer's inbox. We show the code here too in case they want to
+// screenshot it right now. Skywalker 2026-05-18 "$25 added to whatever
+// device they sell in the future".
+//
+// This is the only part of the page that reads the URL, so it is the only
+// part inside the Suspense boundary Next requires around useSearchParams;
+// the heading, copy and buttons prerender into the static HTML. Until
+// 2026-09-25 the whole page sat inside the boundary with an empty <main>
+// as its fallback — a blank black screen until JS ran.
+function RewardCoupon() {
   const searchParams = useSearchParams();
   const code = searchParams.get("code");
   const value = searchParams.get("value") || "25";
@@ -23,6 +33,34 @@ function ThankYouInner() {
     }
   };
 
+  if (!code) return null;
+  return (
+    <div className="bg-white/[0.04] border border-[#ffb400]/40 rounded-2xl p-6 mb-6 text-left">
+      <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#ffd54f] mb-2 text-center">Plus — your thank-you bonus</p>
+      <h2 className="text-2xl font-bold text-white text-center mb-2">${value} off your next trade</h2>
+      <p className="text-[#dcdcdc] text-sm text-center leading-relaxed mb-4">
+        No minimum, no fine print. Just paste this code on your next trade and we&apos;ll add ${value} to whatever your offer is.
+      </p>
+      <button
+        onClick={copy}
+        className="w-full bg-black/40 border-2 border-dashed border-[#ffb400]/50 hover:border-[#ffb400]/80 rounded-xl py-4 px-5 mb-3 transition cursor-pointer group"
+      >
+        <p className="text-[10px] text-[#ffd54f] uppercase tracking-[0.18em] font-bold mb-1">Your code · tap to copy</p>
+        <p className="font-mono font-extrabold text-2xl text-white tracking-[0.1em] break-all">{code}</p>
+        <p className="text-[11px] text-[#bdbdbd] mt-2 flex items-center justify-center gap-1">{copied ? <><svg className="w-3.5 h-3.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Copied to clipboard</> : "Tap to copy"}</p>
+      </button>
+      {expDate ? (
+        <p className="text-[11px] text-[#888] text-center leading-relaxed">
+          Expires {expDate} · single-use · sent to your email so you don&apos;t have to keep this tab open
+        </p>
+      ) : (
+        <p className="text-[11px] text-[#888] text-center">Single-use · sent to your email so you don&apos;t have to keep this tab open</p>
+      )}
+    </div>
+  );
+}
+
+export default function ReviewThankYou() {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4 py-12">
       <div className="max-w-lg w-full mx-auto text-center">
@@ -34,35 +72,9 @@ function ThankYouInner() {
           You just helped the next seller make a confident decision. We appreciate you.
         </p>
 
-        {/* $25 reward coupon — minted server-side at submit time,
-            also emailed to the customer's inbox. We show the code
-            here too in case they want to screenshot it right now.
-            Skywalker 2026-05-18 "$25 added to whatever device they
-            sell in the future". */}
-        {code ? (
-          <div className="bg-white/[0.04] border border-[#ffb400]/40 rounded-2xl p-6 mb-6 text-left">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#ffd54f] mb-2 text-center">Plus — your thank-you bonus</p>
-            <h2 className="text-2xl font-bold text-white text-center mb-2">${value} off your next trade</h2>
-            <p className="text-[#dcdcdc] text-sm text-center leading-relaxed mb-4">
-              No minimum, no fine print. Just paste this code on your next trade and we&apos;ll add ${value} to whatever your offer is.
-            </p>
-            <button
-              onClick={copy}
-              className="w-full bg-black/40 border-2 border-dashed border-[#ffb400]/50 hover:border-[#ffb400]/80 rounded-xl py-4 px-5 mb-3 transition cursor-pointer group"
-            >
-              <p className="text-[10px] text-[#ffd54f] uppercase tracking-[0.18em] font-bold mb-1">Your code · tap to copy</p>
-              <p className="font-mono font-extrabold text-2xl text-white tracking-[0.1em] break-all">{code}</p>
-              <p className="text-[11px] text-[#bdbdbd] mt-2 flex items-center justify-center gap-1">{copied ? <><svg className="w-3.5 h-3.5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Copied to clipboard</> : "Tap to copy"}</p>
-            </button>
-            {expDate ? (
-              <p className="text-[11px] text-[#888] text-center leading-relaxed">
-                Expires {expDate} · single-use · sent to your email so you don&apos;t have to keep this tab open
-              </p>
-            ) : (
-              <p className="text-[11px] text-[#888] text-center">Single-use · sent to your email so you don&apos;t have to keep this tab open</p>
-            )}
-          </div>
-        ) : null}
+        <Suspense fallback={<p className="text-[#dcdcdc] text-sm mb-6">Checking for your thank-you bonus…</p>}>
+          <RewardCoupon />
+        </Suspense>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
@@ -80,13 +92,5 @@ function ThankYouInner() {
         </div>
       </div>
     </main>
-  );
-}
-
-export default function ReviewThankYou() {
-  return (
-    <Suspense fallback={<main className="min-h-screen bg-[#0a0a0a]" />}>
-      <ThankYouInner />
-    </Suspense>
   );
 }

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ShopListingPublic } from "../lib/shop-listings";
 import { GRADE_LABEL, LISTING_GRADES, type ListingGrade } from "../lib/shop-grades";
+import { price } from "../lib/shop-price";
 import ShopImg from "./ShopImg";
 
 // Client half of the shop grids: sort + grade filter + the listing cards.
@@ -18,11 +19,6 @@ const GRADE_STYLE: Record<string, { text: string; border: string; bg: string }> 
 };
 
 type Sort = "new" | "price-asc" | "price-desc";
-
-export function price(cents: number): string {
-  const d = cents / 100;
-  return Number.isInteger(d) ? `$${d}` : `$${d.toFixed(2)}`;
-}
 
 function GradeChip({ grade }: { grade: string }) {
   const s = GRADE_STYLE[grade] ?? GRADE_STYLE.good;

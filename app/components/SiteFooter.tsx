@@ -7,9 +7,14 @@ import { SHOP_ENABLED } from "../lib/shop-flag";
 
 // Site-wide footer for the standalone route pages (/faq, /how-it-works,
 // /track, etc.). The homepage has its own copy wired to in-page state;
-// this one uses real links. In-app sections (Terms, Grading, About...)
-// are reached via /?page=<id>, which page.tsx honors on mount — a client
-// transition from any of these pages mounts it fresh, so that still holds.
+// this one uses real links. Sections that only exist inside the homepage
+// (About, Affiliate, Blog, Cookies) are reached via /?page=<id>, which
+// page.tsx honors on mount — a client transition from any of these pages
+// mounts it fresh, so that still holds. Sections with a route of their own
+// (Grading, Shipping, Terms, Accessibility) link straight to it: /?page=<id>
+// for those loaded the whole homepage bundle and then hard-redirected
+// (page.tsx REAL_ROUTE → window.location.replace) — two page loads for one
+// footer tap (2026-09-25).
 // Internal links are next/link: a raw <a> was a full document reload on
 // every footer tap (layout JS re-run, head scripts re-run).
 
@@ -79,8 +84,8 @@ export default function SiteFooter() {
               <A href="/" className="block text-xs hover:text-[#00c853] transition">Get Custom Quote</A>
               {SHOP_ENABLED && <A href="/shop" className="block text-xs hover:text-[#00c853] transition">Shop Devices</A>}
               <A href="/how-it-works" className="block text-xs hover:text-[#00c853] transition">How It Works</A>
-              <A href="/?page=grading" className="block text-xs hover:text-[#00c853] transition">Grading Guide</A>
-              <A href="/?page=shipping" className="block text-xs hover:text-[#00c853] transition">Shipping &amp; Returns</A>
+              <A href="/grading-guide" className="block text-xs hover:text-[#00c853] transition">Grading Guide</A>
+              <A href="/shipping-returns" className="block text-xs hover:text-[#00c853] transition">Shipping &amp; Returns</A>
               <A href="/faq" className="block text-xs hover:text-[#00c853] transition">FAQ</A>
             </div>
           </div>
@@ -99,7 +104,7 @@ export default function SiteFooter() {
             <p className="text-white font-semibold text-xs uppercase tracking-wider mb-3">Legal</p>
             <div className="space-y-2">
               <A href="/privacy" className="block text-xs hover:text-[#00c853] transition">Privacy Policy</A>
-              <A href="/?page=terms" className="block text-xs hover:text-[#00c853] transition">Terms &amp; Conditions</A>
+              <A href="/terms" className="block text-xs hover:text-[#00c853] transition">Terms &amp; Conditions</A>
               <A href="/?page=cookies" className="block text-xs hover:text-[#00c853] transition">Cookie Policy</A>
               <button
                 onClick={() => {
@@ -110,7 +115,7 @@ export default function SiteFooter() {
               >
                 Cookie Settings
               </button>
-              <A href="/?page=accessibility" className="block text-xs hover:text-[#00c853] transition">Accessibility Statement</A>
+              <A href="/accessibility" className="block text-xs hover:text-[#00c853] transition">Accessibility Statement</A>
               <p className="text-xs text-[#9a9a9a] pt-2">{LOCATION_DISPLAY} · Mon–Sat 8 AM–8 PM</p>
             </div>
           </div>

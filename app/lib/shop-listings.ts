@@ -51,6 +51,12 @@ const PREFIX = "shop-private/listings-";
 // Pre-2026-09-16 docs are listings-doc-<random suffix>.json = generation 0.
 const GEN_RE = /^shop-private\/listings-g(\d{1,12})-[0-9a-f]{32}\.json$/;
 const PRUNE_AFTER_MS = 60_000;
+// Bound on every store round-trip (list() and the doc fetch). Without it a
+// stalled Blob API or CDN held the request — and the product page, whose
+// render awaits this — until the platform killed it. A timeout surfaces as
+// ListingsUnavailableError like any other failed read: strict callers 503,
+// public pages show "coming soon" (2026-09-25).
+const STORE_TIMEOUT_MS = 8_000;
 
 export type ListingStatus = "listed" | "on_hold" | "sold" | "removed";
 
@@ -114,7 +120,7 @@ async function listDocBlobs(): Promise<ListBlobResultBlob[]> {
   let cursor: string | undefined;
   try {
     do {
-      const page = await list({ prefix: PREFIX, limit: 1000, cursor });
+      const page = await list({ prefix: PREFIX, limit: 1000, cursor, abortSignal: AbortSignal.timeout(STORE_TIMEOUT_MS) });
       out.push(...page.blobs);
       cursor = page.hasMore ? page.cursor : undefined;
     } while (cursor);
@@ -154,7 +160,7 @@ function nextPathname(base: ListBlobResultBlob | null): string {
 async function fetchDoc(url: string): Promise<ListingsDoc | null> {
   let r: Response;
   try {
-    r = await fetch(url, { cache: "no-store" });
+    r = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(STORE_TIMEOUT_MS) });
   } catch (e) {
     throw new ListingsUnavailableError(`listings fetch failed: ${errMsg(e)}`);
   }
