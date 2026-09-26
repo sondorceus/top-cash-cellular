@@ -7,7 +7,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
-import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
+import { appendChatMsg, readChat, takeoverStale, validGoSession } from "../../../lib/gochat-store";
 import { clientGeo } from "../../../lib/geo";
 import { resolveGoSpec, goQuote } from "../../../go/spec";
 
@@ -27,6 +27,16 @@ export async function POST(req: NextRequest) {
   const res = resolveGoSpec(body);
   if (!res.ok) return NextResponse.json({ ok: false, error: res.error }, { status: 400 });
   const spec = res.spec;
+  const sessionId = String(body.sessionId || "");
+  // Sonny is live in this thread (2026-09-26): the chip flow must not put a
+  // second number on the seller's screen over his negotiation. Flags only —
+  // ts/role/ctl ride in the pathname, so this is one list() and no fetches.
+  // The client already understands takeover:true (from /api/chat); it
+  // routes the tap through the chat so his console sees what they picked.
+  if (validGoSession(sessionId)) {
+    const flags = await readChat(sessionId, Date.now()).catch(() => null);
+    if (flags?.takeover && !takeoverStale(flags)) return NextResponse.json({ ok: false, takeover: true }, { status: 409 });
+  }
   const offer = await goQuote(spec);
   if (offer == null) {
     return NextResponse.json({ ok: false, manualReview: true });
@@ -37,7 +47,6 @@ export async function POST(req: NextRequest) {
   // (a forged "quote shown: … → $950" note would put an invented number in
   // the bot's mouth). Notes here are engine-true by construction: worst
   // case an abuser writes REAL quotes for REAL specs into their own session.
-  const sessionId = String(body.sessionId || "");
   if (validGoSession(sessionId)) {
     const geo = clientGeo(req);
     after(async () => {

@@ -13,7 +13,7 @@
 // lives in the route's system prompt, not in the tools.
 
 import { after } from "next/server";
-import { quoteDevice, normalizeStorage, type QuoteSpec } from "./quote";
+import { quoteDevice, normalizeStorage, canonicalCarrier, type QuoteSpec } from "./quote";
 import { cachedOverrides } from "./overrides-cache";
 import { PRICE_TABLE } from "../data/prices";
 import { notifyOwnerSms } from "./owner-sms";
@@ -57,7 +57,9 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
   const n = " " + raw.toLowerCase().replace(/[^a-z0-9+ ]/g, " ").replace(/\s+/g, " ") + " ";
   const pro = /\bpro\b/.test(n);
   const max = /pro\s*max|\bmax\b/.test(n);
-  const plus = /\bplus\b|\+/.test(n);
+  // "+" means Plus only right after the model number ("15+", "s24+") —
+  // "iphone 15 + charger" read as a 15 Plus until 2026-09-26.
+  const plus = /\bplus\b|\d\+/.test(n);
   const ultra = /\bultra\b/.test(n);
   const fe = /\bfe\b/.test(n);
   const mini = /\bmini\b/.test(n);
@@ -193,7 +195,12 @@ export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> 
       };
     }
   }
-  const carrier = (input.carrier || "unlocked").toLowerCase();
+  // Canonical id only (2026-09-26): the tool schema's enum is advice to the
+  // model, not enforcement — "AT&T", "at t" and "cricket" reached the engine
+  // as typed, found no deduction row for that spelling, and priced as
+  // UNLOCKED. canonicalCarrier maps the known spellings and anything else
+  // to "other" (the prepaid tier), never to the unlocked price.
+  const carrier = canonicalCarrier(input.carrier);
   const spec: QuoteSpec = {
     modelId: hit.slug,
     modelLabel: hit.label,

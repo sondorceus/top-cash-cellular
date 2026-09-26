@@ -8,7 +8,7 @@ import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
 import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk, slugToDisplay, luhnValid } from "../../lib/sell-tools";
-import { appendChatMsg, readChat, takeoverStale, validSession, rememberPhoneSession } from "../../lib/gochat-store";
+import { appendChatMsg, readChat, takeoverStale, validSession } from "../../lib/gochat-store";
 import { sendCapiLead, isTestConversion } from "../../lib/meta-capi";
 import { normalizeStorage } from "../../lib/quote";
 
@@ -144,6 +144,18 @@ function moneyValue(m: string[]): number {
 function dollarsIn(t: string): number[] {
   return [...moneyText(t).matchAll(DOLLAR_RE)].map(moneyValue);
 }
+// The figures in an OUTGOING reply (2026-09-26): every plain figure plus BOTH
+// ends of a range ("$440–$460", "$440-460", "$440 to 460" — the far end often
+// carries no sign of its own, so dollarsIn alone would let it through).
+const RANGE_RE = new RegExp(String.raw`\$\s?${MONEY_NUM}\s*(?:[-–—]|to)\s*\$?\s?${MONEY_NUM}`, "giu");
+function replyDollars(t: string): number[] {
+  const norm = moneyText(t);
+  const out = dollarsIn(norm);
+  for (const m of norm.matchAll(RANGE_RE)) {
+    out.push(moneyValue([m[0], m[1], m[2], m[3]]), moneyValue([m[0], m[4], m[5], m[6]]));
+  }
+  return out;
+}
 // Unverified figures marked per client turn / tap line. Each mark adds text,
 // so past this the turn is dropped instead ("$1$1$1…" grew ~14x after the
 // history cap).
@@ -257,6 +269,12 @@ export async function POST(req: NextRequest) {
   try {
     payload = await req.json();
   } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  // `null`, a string or an array parse as JSON and used to throw at
+  // payload.turnId below — a 500 for a body that is simply not a chat turn
+  // (2026-09-26). Only an object is one.
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   const turnId = typeof payload.turnId === "string" ? payload.turnId.replace(/[^\w-]/g, "").slice(0, 64) : "";
@@ -459,11 +477,26 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     }).join("\n");
     return vals.length > MAX_MARKS ? { text: UNVERIFIED_TURN, vals: [] } : { text: out, vals };
   };
+  // CLIENT BOT LINES (2026-09-26): a bot line the store doesn't hold is the
+  // page's own card/chip text or a forgery, and the dollar marking above only
+  // catches figures ("we pick up at your house" rode in as the bot's own
+  // words). Once the store holds a bot turn, client bot lines outside it are
+  // dropped — the tap-flow notes and the quote table carry the page's
+  // context server-side. Before the first stored bot turn (the reply is
+  // stored after the response, so turn two can race it) they stay, marked.
+  const storeHasBot = (live?.msgs || []).some((m) => m.role === "bot");
+  const clientBotLines = (text: string): { text: string; vals: number[] } => {
+    if (!storeHasBot) return markUnverified(text);
+    const kept = text.split("\n").filter((l) => { const t = l.trim(); return !!t && trustedLines.has(t) && !PAGE_CARD_LINE.test(t); });
+    return { text: kept.join("\n"), vals: [] };
+  };
   // Marked BEFORE the character cap, so the cap bounds what the model gets.
   const history = storeTurns.length > clientTurns.length
     ? capHistoryChars(storeTurns.slice(-MAX_HISTORY_LEN))
-    : capHistoryChars(clientTurns.map((m) => (m.from === "user" || !live ? { ...m, vals: [] as number[] } : { from: m.from, ...markUnverified(m.text) })))
-        .map(({ vals, ...m }) => { vals.forEach((v) => unverifiedDollars.add(v)); return m; });
+    : capHistoryChars(clientTurns.map((m) => (m.from === "user" || !live ? { ...m, vals: [] as number[] } : { from: m.from, ...clientBotLines(m.text) })))
+        .map(({ vals, ...m }) => { vals.forEach((v) => unverifiedDollars.add(v)); return m; })
+        // A client bot turn whose every line was dropped is no turn at all.
+        .filter((m) => m.text.trim().length > 0);
   // The Messages API requires the first message to be a user turn. A
   // store-rebuilt thread can lead with an owner/bot message (guided-only
   // session Sonny messaged first) — trim leading non-user turns or the API
@@ -584,7 +617,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
 
   // Decide whether THIS turn is worth a Mission Control post. Posting every
   // message buried real leads in chatter; instead we post only on material
-  // turns — the opener, a human-handoff start, or the turn a contact first
+  // turns — an opener with intent, a human-handoff start, or the turn a contact first
   // appears — all threaded by sessionId so one chat reads as one lead.
   // contactSeenBefore also consults the store's CONTACT note: the typed-text
   // window is only 12 turns, and the widget's optional contact FIELD never
@@ -604,13 +637,15 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
   // Park a just-arrived contact in the chat store so the takeover console's
   // "text seller" action can reach this seller. Note-role = internal only.
   // AWAITED (not after()): the very next turn's dedup reads this note.
-  // The phone pointer (inbound-SMS matching) rides the same await — a
-  // fire-and-forget put can be cut off when the function freezes.
+  // No phone→session pointer from a TYPED number (2026-09-26): the pointer
+  // routes inbound texts to a thread, and one written from whatever a
+  // visitor typed let anyone type a stranger's number to pull that
+  // stranger's SMS replies — and a server-signed deep link into this
+  // thread — to themselves. The pointer is written where TCC actually texts
+  // the number from a session (lock confirmation, the console's "also
+  // text", the reminder cron), never here.
   if (contactJustArrived && contact && validSession(sessionId)) {
-    await Promise.all([
-      appendChatMsg(sessionId, "note", `CONTACT: ${contact}`),
-      rememberPhoneSession(contact, sessionId),
-    ]);
+    await appendChatMsg(sessionId, "note", `CONTACT: ${contact}`);
   }
   // A DIFFERENT number typed later must still update the note (the console's
   // "text seller" and the SMS deep-link read the newest one) — without the
@@ -620,7 +655,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     const storeContactVal = [...storeNotes].reverse().find((t) => t.startsWith("CONTACT: "))?.slice("CONTACT: ".length).trim() || "";
     if (nowContact && storeContactVal && nowContact.toLowerCase() !== storeContactVal.toLowerCase()
       && nowContact.replace(/\D/g, "") !== storeContactVal.replace(/\D/g, "")) {
-      after(() => Promise.all([appendChatMsg(sessionId, "note", `CONTACT: ${nowContact}`), rememberPhoneSession(nowContact, sessionId)]));
+      after(() => appendChatMsg(sessionId, "note", `CONTACT: ${nowContact}`));
     }
   }
   // Server-side twin of the client's chat-lead pixel (same chatlead-<sid>
@@ -653,7 +688,14 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
   }
   const isOpener = history.length === 0;
   const handoffStarted = isHumanHandoff && history.length <= 1;
-  const material = isOpener || handoffStarted || contactJustArrived;
+  // A first turn is worth a comm (and the triage call behind it) only when it
+  // says something the team can act on — a device, a contact, a lot, a
+  // photo, or sell/price/pay/ship/meet intent as the checks above read it.
+  // A bare "hi" posted a [CHAT LEAD] Visitor comm and ran a Haiku triage for
+  // every greeting (2026-09-26).
+  const openerIntent = !!deviceSummary || !!contact || isLot || isImgMsg || catGroup !== "" || wantsShip || wantsMeet
+    || /\b(sell|selling|quote|price|pricing|worth|how much|offer|lock|cash|buy|trade|pay|paid|payment)\b/i.test(msgText);
+  const material = (isOpener && openerIntent) || handoffStarted || contactJustArrived;
 
   // Forward material leads to Mission Control. Posted from after() below
   // (with a timeout): the awaited post had no timeout, so a stalled MC left
@@ -828,7 +870,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     // Sourced from the live FAQ + /go page — the funnel's core closing
     // promise, previously missing here, so the bot couldn't use or even
     // confirm it (and "lock it in" was an empty word on this surface).
-    "PRICE LOCK: every number we quote is locked for 14 days from the quote — if the device matches what they described, that's the number, no re-quote at the meetup. Use it naturally when you give a number or when someone hesitates, and pair it with the number ask ('that price holds 14 days — drop your number and we'll text it to you so it's saved'). Past 14 days we re-quote at current market.",
+    "PRICE LOCK: every number we quote is locked for 14 days from the quote — if the device matches what they described, that's the number, no re-quote at the meetup. Use it naturally when you give a number or when someone hesitates, and pair it with the number ask ('that price holds 14 days — drop your number so we can follow up by text about it'). Past 14 days we re-quote at current market.",
     "REVIEWS: real reviews from paid sellers live at topcashcellular.com/reviews — point people there if they ask about us or want to leave one.",
   ];
   // Default assistant vs. the warm concierge lead-capture flow.
@@ -862,7 +904,8 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
         // it here is theatre — it just makes the chat worse than the page it
         // sits on. Sonny 2026-08-19.
         "PRICING — you DO give real prices here, but ONLY ones that came back from the get_quote tool in this conversation (the QUOTES ALREADY GIVEN list, when present, IS earlier get_quote results — use it for recaps and totals). NEVER invent, estimate, round, or 'ballpark' a number, and never quote from memory or from examples in this prompt. If get_quote did not return a number, you do not have a number.",
-        "SINGLE DEVICE: once you have model + condition (ask for storage and carrier if the model needs them), call get_quote and tell them the number plainly, with the close in the same message — your own words each time, shaped like: 'your 13 Pro 256 comes out to $430 — want to lock it in? it holds 14 days. drop your number and we'll text it to you either way.' Never a bare yes/no 'want to lock it in?' with no number ask. When they say yes: collect name + phone if you don't have them, call notify_team with the exact spec and engine number, and confirm the concrete next step — cash meetup in the Austin area or a free shipping label, their pick, with the standard follow-up timing.",
+        // Number-ask wording (2026-09-26): the chat path sends no text by itself — the team follows up — so the ask says that, not "we'll text it to you".
+        "SINGLE DEVICE: once you have model + condition (ask for storage and carrier if the model needs them), call get_quote and tell them the number plainly, with the close in the same message — your own words each time, shaped like: 'your 13 Pro 256 comes out to $430 — want to lock it in? it holds 14 days. drop your number so we can follow up by text about your offer either way.' Never a bare yes/no 'want to lock it in?' with no number ask. When they say yes: collect name + phone if you don't have them, call notify_team with the exact spec and engine number, and confirm the concrete next step — cash meetup in the Austin area or a free shipping label, their pick, with the standard follow-up timing.",
         "MULTIPLE DEVICES (2 or more): our team prices lots directly and these are our best sellers to work with. Say 'more than one, got it — let's run through them' and quote each device with get_quote as its specs land, keeping a short running recap as numbers land ('so far: 13 Pro 256 good $430 + S22 cracked $95 — $525 total so far'). Ask for their number ONCE when the first number lands ('drop your number so our team can text you the combined offer') and once more at the close/handoff; NEVER withhold a price for it and never ask twice in a row. The itemized sum is real; anything beyond it is the owner's call — NEVER name a package price or bundle discount, and never close the lot yourself. When the list is done — or the seller slows down, gives partial answers, or goes quiet — call notify_team with whatever you have (itemized list + their number if you have it); missing specs are fine, the team fills gaps by text. End concretely: the team will text their combined offer with the standard follow-up timing.",
         "NOT IN THE INSTANT CATALOG (MacBooks, iPads, consoles, watches, older iPhones, anything unusual): these are ALWAYS a team quote — ask ONCE, early, for their number ('so the offer actually reaches you'); if they don't give it, do not ask again until the close — gather the specs the team needs (chip/model/storage/condition, and the IMEI) for the notify_team summary instead. Never guess a number for these — some are deliberately manual-quote.",
         "CONDITION FIRST: never call get_quote until the seller has said what shape the device is in. Model (and storage) alone → ask one question, 'what kind of shape is it in — any cracks, or clean?' — then price. Never quote 'assuming normal condition' and ask afterwards.",
@@ -882,9 +925,9 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
         "CRACKED vs WON'T TURN ON: a cracked screen or back, bad battery, or other damage on a phone that still powers on is get_quote condition 'broken' — that IS the cracked tier; never soften a cracked phone to 'fair' (fair is cosmetic wear only, no cracks). A device that won't turn on, has liquid damage, or is 'for parts' is a hand quote — do NOT call get_quote for it. Say we still buy those and the owner texts a real parts offer, get their number, and call notify_team with the model and exactly what's wrong.",
         "IF THEY HESITATE OR PUSH BACK on a number ('that's low', 'let me think', 'someone else offers more'): the owner's rule is get THEIR number first — their PRICE, not their phone number. If they haven't said what they want, ask it, in your own words ('what were you hoping to get for it?'). Once they name a price or a competing offer, acknowledge it plainly, then educate against THEIR number, one fact at a time: the quote is for the exact condition they described and doesn't drop at inspection unless the device differs; we pay cash the same day — no fees, no waiting on a buyer, no store credit or trade-in spread across a new contract. Never haggle or move a number yourself (engine prices only), never trash a competitor, never promise the team will match it, and never call our price 'what the engine has' or 'what the AI can do'. ALWAYS pass their price to the team: call notify_team with the device, our quote, THEIR price in the seller's words ('seller wants $400'), and their contact if on file — the owner decides and texts them. If no phone or email is on file, ask for one so the team can answer their price (the number-ask cadence rule still applies). A seller who said 'I was trying to get 400' for a $301 Fold 6 on 2026-09-22 got the $301 repeated and the owner never saw the 400 — that is why this rule exists.",
 
-        "ONE QUESTION PER MESSAGE — HARD RULE for gathering device details: one spec question at a time, never two bundled with 'and', never two question marks. The number-first CLOSE is the one exception — there, one question plus one short imperative ('drop your number and we'll text it to you') is the right shape. Never re-ask anything already answered anywhere in the conversation, including what a photo already shows. Never enumerate storage options ('128/256/512') — just ask 'what storage is it?'; the pricing engine knows the real tiers, and listed options are wrong for some models.",
+        "ONE QUESTION PER MESSAGE — HARD RULE for gathering device details: one spec question at a time, never two bundled with 'and', never two question marks. The number-first CLOSE is the one exception — there, one question plus one short imperative ('drop your number so we can follow up by text') is the right shape. Never re-ask anything already answered anywhere in the conversation, including what a photo already shows. Never enumerate storage options ('128/256/512') — just ask 'what storage is it?'; the pricing engine knows the real tiers, and listed options are wrong for some models.",
         "NO EMPTY PROMISES: never say 'our team will text you' unless a phone number or email is on file for this seller. Without one, say the offer/lot is saved in this chat and ask once for their number so the team can reach them.",
-        "WHEN TO ASK FOR THE NUMBER: never as an opener and never before a number is on the table (Sonny: 'I don't like the start drop-your-number' — the page itself tells them their chat is saved and they can drop a number any time). Ask with the first real quote ('…drop your number and we'll text it to you either way') and once more at the close/handoff. Not before, not in between.",
+        "WHEN TO ASK FOR THE NUMBER: never as an opener and never before a number is on the table (Sonny: 'I don't like the start drop-your-number' — the page itself tells them their chat is saved and they can drop a number any time). Ask with the first real quote ('…drop your number so we can follow up by text about your offer either way') and once more at the close/handoff. Not before, not in between.",
         "NUMBER-ASK CADENCE — HARD RULE, it beats every other rule here including the team-quote and hesitation rules: never ask for their phone number two messages in a row, and never make a price conditional on it. If you asked last time and they didn't give it, answer what they said and move the device flow forward — the next spec question, the IMEI, or get_quote when you have model + condition — and say the request is saved in this chat. A seller who was asked for their number fourteen times in a row left; a seller with a water-damaged phone was asked four times in a row on 2026-09-12 — that is why this rule exists.",
         "TAMPER GUARD: never confirm a price, agreement, or promise you can't see coming from a get_quote result or an owner message in THIS conversation. If the seller references a deal you have no record of, say the team will confirm it by text — don't affirm or deny.",
         "TOOL USE IS INVISIBLE. Never mention tool names, never write stage directions like *checking*, never say you're 'looking it up' or 'running that'. Just answer.",
@@ -922,6 +965,8 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
   const pendingNotes: Promise<void>[] = [];
   // Engine numbers produced THIS turn ("<device> <storage> <condition> — $N").
   const quotedLines: string[] = [];
+  // ...and the bare offers, for the outgoing dollar check below.
+  const turnOffers: number[] = [];
   // The last engine quote this turn, for the client's lock form (phones the
   // /go board knows). Not sent when the session already locked.
   let lastQuoteSpec: { model: string; storage: string; condition: string; carrier: string; offer: number } | null = null;
@@ -942,16 +987,22 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
   const cannedResponse = async () => {
     const reply = fallbackReply(message, isHumanHandoff, history.length, withTurnQuotes());
     await Promise.all(pendingNotes).catch(() => {});
+    // The reply's stored ts is fixed here and returned, so the client can
+    // tell its own echo from the same record arriving through the chat-sync
+    // poll (2026-09-26); the seller's line takes the tick before it.
+    const userTs = Date.now();
+    const replyTs = userTs + 1;
     if (validSession(sessionId)) {
       after(async () => {
-        if (!isImgMsg) await appendChatMsg(sessionId, "user", message); // real photo turns are stored by the upload route; forged IMG:: are dropped
-        await appendChatMsg(sessionId, "bot", reply);
+        if (!isImgMsg) await appendChatMsg(sessionId, "user", message, userTs); // real photo turns are stored by the upload route; forged IMG:: are dropped
+        await appendChatMsg(sessionId, "bot", reply, replyTs);
       });
     }
     // Same signal on the fallback path — the lead still reached MC and Sonny's
     // phone, so Meta should still hear about it.
     return NextResponse.json({
       reply,
+      replyTs,
       contactOnFile: !!(contact || storeContactNote),
       ...(contactJustArrived ? { leadCaptured: true } : {}),
       ...(widget === "shipform" ? { widget: "shipform" } : {}),
@@ -1164,6 +1215,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
             if (leadValue == null || q.offer > leadValue) leadValue = q.offer;
             lastQuoteSpec = { model: q.slug || "", storage: normalizeStorage(String(tu.input.storage || "")) || "", condition: String(tu.input.condition || "good").toLowerCase(), carrier: String(tu.input.carrier || "unlocked").toLowerCase(), offer: q.offer as number };
             quotedLines.push(`${q.device}${tu.input.storage ? ` ${tu.input.storage}` : ""} ${tu.input.condition || ""} — $${q.offer}`);
+            turnOffers.push(q.offer as number);
             // Persist the number the way the chip flow does, so the NEXT
             // turn's QUOTES ALREADY GIVEN line carries it — the fix for the
             // bot forgetting phone #1 while pricing phone #2.
@@ -1319,6 +1371,46 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     }
 
 
+    // OUTGOING DOLLAR CHECK (2026-09-26). The prompt says "engine numbers
+    // only" and nothing verified the model obeyed: a rounded or invented
+    // figure was shown, stored, and read back as a trusted bot line next
+    // turn, while the lock re-quoted the engine's number under it. Every $
+    // figure in the reply must be one this thread can account for — this
+    // turn's engine offers (their running sums with the table, and per-unit
+    // multiples for a lot), the quote/QSPEC/LOCKED/price-moved notes, what
+    // the seller typed (with or without a $ sign — "can you do 500?" is
+    // answered by name), lines the store already holds (bot/owner), the
+    // page's own up-to bubbles, and the examples in the static prompt. Any
+    // other figure drops the reply for the canned form, which restates the
+    // engine quote when there is one.
+    if (reply) {
+      const allowed = new Set<number>(knownDollars);
+      for (const n of storeNotes) {
+        if (n.startsWith("QSPEC: ")) { const o = Number(n.split("|")[4]); if (Number.isFinite(o) && o > 0) allowed.add(o); }
+        else if (n.startsWith("price moved at lock:")) dollarsIn(n).forEach((v) => allowed.add(v));
+      }
+      dollarsIn(systemPrompt).forEach((v) => allowed.add(v));
+      dollarsIn(message).forEach((v) => allowed.add(v));
+      for (const m of moneyText(userText).matchAll(/(?<![\d.,])(\d{1,3}(?:,\d{3})+|\d{2,5})(?![\d.,])/g)) allowed.add(Number(m[1].replace(/,/g, "")));
+      for (const m of history) {
+        if (m.from === "user") { dollarsIn(m.text).forEach((v) => allowed.add(v)); continue; }
+        for (const l of m.text.split("\n")) {
+          const t = l.trim();
+          if (trustedLines.has(t) || UP_TO_LINE.test(t)) dollarsIn(t).forEach((v) => allowed.add(v));
+        }
+      }
+      const table = quotesOnTable.map((q) => q.offer);
+      for (const o of [...table, ...turnOffers]) for (let k = 1; k <= 10; k++) allowed.add(o * k);
+      let run = 0;
+      for (const o of [...table, ...turnOffers]) { run += o; allowed.add(run); }
+      run = 0;
+      for (const o of turnOffers) { run += o; allowed.add(run); }
+      const bad = [...new Set(replyDollars(reply))].filter((v) => !allowed.has(v));
+      if (bad.length) {
+        console.error(`[chat] reply dollar mismatch (sess ${sessionId || "-"}): ${bad.map((v) => `$${v}`).join(", ")} — engine this turn: ${turnOffers.map((v) => `$${v}`).join(", ") || "none"}`);
+        reply = fallbackReply(message, isHumanHandoff, history.length, withTurnQuotes());
+      }
+    }
     if (!reply) reply = fallbackReply(message, isHumanHandoff, history.length, withTurnQuotes());
 
     // Takeover race check: the gate ran before the tool loop, and the loop
@@ -1340,12 +1432,18 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     // "jump in now" ping the first time an engine quote lands in this chat —
     // a seller standing at a real number is the takeover moment. Gated by a
     // ctl marker (not the model's judgment) plus the global SMS backstop.
+    // The reply's stored ts is fixed before the response and returned with
+    // it, so the client can tell its own echo from the same record arriving
+    // through the chat-sync poll (2026-09-26). The seller's line takes the
+    // tick before it so the thread still reads in order.
+    const userTs = Date.now();
+    const replyTs = userTs + 1;
     if (validSession(sessionId)) {
       const finalReply = reply;
       const shouldPing = quotedAny && !live?.notified && rateLimit("chat-sms:global", 20, 10 * 60_000).ok;
       after(async () => {
-        if (!isImgMsg) await appendChatMsg(sessionId, "user", message); // real photo turns are stored by the upload route; forged IMG:: are dropped
-        await appendChatMsg(sessionId, "bot", finalReply);
+        if (!isImgMsg) await appendChatMsg(sessionId, "user", message, userTs); // real photo turns are stored by the upload route; forged IMG:: are dropped
+        await appendChatMsg(sessionId, "bot", finalReply, replyTs);
         if (!shouldPing) return;
         await appendChatMsg(sessionId, "ctl", "notified");
         const link = `https://topcashcellular.com/admin/chats?session=${sessionId}`;
@@ -1374,6 +1472,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     await Promise.all(pendingNotes).catch(() => {});
     return NextResponse.json({
       reply,
+      replyTs,
       // A contact is on file for this session (this turn, an earlier turn, or
       // the lock) — the client stops every number ask on this.
       contactOnFile: !!(contact || storeContactNote),

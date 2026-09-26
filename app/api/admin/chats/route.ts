@@ -1,25 +1,26 @@
 // Owner console API for live site-chat takeover (ManyChat-style).
 //
-//   GET  ?token=                 → session inbox, newest first
-//   GET  ?token=&session=<sid>   → one thread (all roles) + takeover state
+//   GET                          → session inbox, newest first
+//   GET  ?session=<sid>          → one thread (all roles) + takeover state
 //   POST {session, text?, takeover?} → send an owner message and/or flip
 //        takeover on/off. Owner messages reach the seller through the /go
 //        client's chat-sync polling within a few seconds.
 //
-// Auth: same pattern as every other admin route — x-admin-token header or
-// ?token= query against TCC_ADMIN_TOKEN.
+// Auth: x-admin-token header against TCC_ADMIN_TOKEN (proxy.ts injects it
+// for a Google admin session). The ?token= query form went 2026-09-26.
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
-import { appendChatMsg, listChatSessions, readChat, validSession } from "../../../lib/gochat-store";
+import { appendChatMsg, listChatSessions, readChat, validSession, rememberPhoneSession } from "../../../lib/gochat-store";
 import { sidToken } from "../../../lib/go-sid-token";
 import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
+// Header only (2026-09-26): the console sends x-admin-token (or the proxy
+// injects it from the Google session) and Theot sends the header too — a
+// ?token= in the URL only ever landed the secret in request logs.
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 export async function GET(req: NextRequest) {
@@ -77,6 +78,10 @@ export async function POST(req: NextRequest) {
       const kTok = sidToken(sid);
       smsSent = await sendSellerSms(contact, `${text}\n\n— Top Cash Cellular · reply in your chat: https://topcashcellular.com/go${kTok ? `?sid=${sid}&k=${kTok}` : ""}`);
       await appendChatMsg(sid, "note", smsSent ? `SMS sent to ${contact}` : `SMS FAILED to ${contact}`);
+      // The reply to this text belongs in this thread: the phone→session
+      // pointer follows the text that went out (2026-09-26), so the inbound
+      // matcher finds this session even when the lock's own text failed.
+      if (smsSent) await rememberPhoneSession(contact, sid);
     } else {
       await appendChatMsg(sid, "note", "SMS skipped — no phone number on file for this session");
     }

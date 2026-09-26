@@ -264,17 +264,37 @@ function chatTimeout(): AbortSignal | undefined {
   }
 }
 
+// 8 base36 chars from the CSPRNG (2026-09-26): the id is the thread's bearer
+// token (chat-sync, upload, label all take it alone), and Math.random is not
+// a secret. Same alphabet and length as before; rejection sampling keeps the
+// draw uniform. Math.random only where crypto is missing (old webviews).
+function randomTag(n = 8): string {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+  try {
+    const out: string[] = [];
+    while (out.length < n) {
+      const bytes = new Uint8Array(n);
+      crypto.getRandomValues(bytes);
+      for (const b of bytes) if (b < 252 && out.length < n) out.push(alphabet[b % 36]);
+    }
+    return out.join("");
+  } catch {
+    return Math.random().toString(36).slice(2, 2 + n).padEnd(n, "0");
+  }
+}
+
 function newSessionId(src: string) {
-  const rand = Math.random().toString(36).slice(2, 10);
+  const rand = randomTag();
   // The tag slot must match validGoSession (letters/digits, ≤10) or every
   // /go endpoint refuses the id.
   const tag = src.replace(/[^a-zA-Z0-9]/g, "").slice(0, 10);
   return `go${tag ? `-${tag}` : ""}-${rand}`.slice(0, 24);
 }
 
-// Messenger-style continuity: the session id survives tab closes (7 days),
-// so a returning seller resumes the SAME thread — including replies Sonny
-// sent from /admin/chats while they were gone — instead of starting over.
+// Messenger-style continuity: the session id survives tab closes (7 days
+// from the last activity — touchSession below), so a returning seller
+// resumes the SAME thread — including replies Sonny sent from /admin/chats
+// while they were gone — instead of starting over.
 const SESSION_KEY = "tcc-go-session";
 // The owner's SMS deep-link (?sid=&k=) is adopted in the restore effect —
 // AFTER the server verifies k — never here: an unverified ?sid= would let
@@ -299,6 +319,13 @@ function persistentSessionId(src: string): { sid: string; fresh: boolean } {
   const sid = newSessionId(src);
   try { localStorage.setItem(SESSION_KEY, JSON.stringify({ sid, ts: Date.now() })); } catch { /* private mode */ }
   return { sid, fresh: true };
+}
+// Activity keeps the id alive (2026-09-26): the 7-day rule above used to run
+// from the MINT, so a seller mid-negotiation on day 8 got a fresh, empty
+// thread while their lock, contact and label stayed on the old id. Every
+// send, tap note and poll that brought something in refreshes the stamp.
+function touchSession(sid: string) {
+  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ sid, ts: Date.now() })); } catch { /* private mode */ }
 }
 
 // A real photo of the owner for the proof row + his chat messages. Gated on
@@ -413,6 +440,9 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // for anything it doesn't retire.
   const msgKeys = useRef(new WeakMap<object, number>());
   const msgSeq = useRef(0);
+  // Per page load — keeps the per-form lock eventId unique across reloads
+  // (message keys restart at 1 on every load).
+  const loadNonce = useRef(Date.now().toString(36));
   const keyOf = (m: Msg): number => {
     let k = msgKeys.current.get(m);
     if (!k) { k = ++msgSeq.current; msgKeys.current.set(m, k); }
@@ -498,9 +528,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   const [aiQuoted, setAiQuoted] = useState(false);
   const [contactCaptured, setContactCaptured] = useState(false);
   const lastSyncRef = useRef(0);
-  // Owner messages already on screen ("ts|text") — the cursor below trails
-  // the newest record, so a poll can return the same reply twice.
-  const seenOwnerRef = useRef<Set<string>>(new Set());
+  // Owner and bot records already on screen ("ts|text") — the cursor below
+  // trails the newest record, so a poll can return the same reply twice, and
+  // a bot reply arrives twice by design: with the POST response (which
+  // carries its stored ts) and again through the poll (2026-09-26).
+  const seenSyncRef = useRef<Set<string>>(new Set());
   // A record's ts is taken BEFORE its blob upload finishes, so Sonny's reply
   // can become listable after a NEWER record (the seller's own message, a tap
   // note). Jumping the cursor straight to the newest ts skipped that reply
@@ -538,15 +570,19 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         if (r.ok) { // a rate-limited tick must never flip UI state
           const d = await r.json();
           if (Array.isArray(d?.msgs) && d.msgs.length) {
-            const fresh = (d.msgs as { ts?: unknown; text?: unknown }[]).filter((m) => {
+            const fresh = (d.msgs as { role?: unknown; ts?: unknown; text?: unknown }[]).filter((m) => {
               if (typeof m?.ts !== "number") return false;
               const key = `${m.ts}|${String(m.text)}`;
-              if (seenOwnerRef.current.has(key)) return false;
-              seenOwnerRef.current.add(key);
+              if (seenSyncRef.current.has(key)) return false;
+              seenSyncRef.current.add(key);
               return true;
             });
             if (fresh.length) {
-              setMsgs((cur) => [...cur, ...fresh.map((m) => ({ from: "owner" as const, text: String(m.text) }))]);
+              // A bot record here is a reply whose POST response never made
+              // it back (a dropped webview fetch) — shown instead of leaving
+              // the seller to re-send the turn (2026-09-26).
+              setMsgs((cur) => [...cur, ...fresh.map((m) => ({ from: m.role === "bot" ? ("bot" as const) : ("owner" as const), text: String(m.text) }))]);
+              touchSession(sessionId);
             }
           }
           advanceSyncCursor(d?.lastTs, r);
@@ -588,6 +624,18 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     if (st?.tccChat) window.history.back(); // popstate → setChatOpen(false)
     else setChatOpen(false);
   }
+  // Keyboard / screen-reader basics (2026-09-26): focus moves INTO the
+  // dialog when it opens — onto the overlay itself, never the composer (see
+  // the no-programmatic-focus rule below: a focused input pops the keyboard
+  // and iOS hides the box) — and Escape closes it like the ✕.
+  useEffect(() => {
+    if (!chatOpen) return;
+    try { overlayRef.current?.focus({ preventScroll: true }); } catch { /* older webviews */ }
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeChat(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatOpen]);
 
   // Thread restore, once per page load: a returning seller (persisted
   // session id) gets their conversation back — bot replies and anything
@@ -633,14 +681,15 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           setChatOpen(true); // the SMS said "reply in your chat" — the board would be a dead end
         }
         if (Array.isArray(d?.msgs) && d.msgs.length) {
-          // Owner replies are keyed like the poll's, so a tick that already
-          // rendered one (seller tapped before this resolved) isn't doubled.
+          // Owner and bot replies are keyed like the poll's, so a tick that
+          // already rendered one (seller tapped before this resolved) isn't
+          // doubled — and a later poll won't re-add a restored bot line.
           const restored: Msg[] = (d.msgs as { role: string; text: string; ts?: unknown }[])
             .filter((m) => {
-              if (m.role !== "owner" || typeof m.ts !== "number") return true;
+              if ((m.role !== "owner" && m.role !== "bot") || typeof m.ts !== "number") return true;
               const key = `${m.ts}|${String(m.text)}`;
-              if (seenOwnerRef.current.has(key)) return false;
-              seenOwnerRef.current.add(key);
+              if (seenSyncRef.current.has(key)) return false;
+              seenSyncRef.current.add(key);
               return true;
             })
             .map((m) => ({
@@ -705,6 +754,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // Guided-funnel breadcrumbs for the owner console — the chip flow never
   // touches /api/chat, so quote/lock milestones are logged here instead.
   function logNote(text: string) {
+    touchSession(sessionIdRef.current); // a tap is activity — the id stays alive
     void fetch("/api/go/chat-sync", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -975,6 +1025,13 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           { from: "bot", text: "this one we price by hand — drop your number and we\u2019ll text you a real offer." },
           { from: "bot", kind: "lockform", manual: true },
         );
+      } else if (d?.takeover) {
+        // Sonny took the thread while the chips were being answered (the
+        // poll hadn't said so yet — 2026-09-26): the engine stays quiet and
+        // the spec they tapped goes to him as a message, exactly like a tap
+        // during a takeover the client already knew about.
+        setTakeover(true);
+        void send([quoteLabel(row, storageKey), spec.condition, spec.carrier ?? spec.connectivity ?? spec.disc].filter(Boolean).join(" · "));
       } else {
         pushMsgs({ from: "bot", text: "hit a snag pulling the number — tap that again for me." }, stepChips(row, lastDim));
       }
@@ -1165,7 +1222,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     // Conversions API Lead carry the SAME event id, so Meta keeps one copy.
     // Per-lock (not per-session) because "got another one?" means a session
     // can lock several devices, each its own conversion.
-    const lockEventId = `lock-${sessionId}-${Date.now().toString(36)}`;
+    // Stable per LOCK FORM (2026-09-26), not per tap: a retap after a lost
+    // response carries the same id, so the server answers with the lock it
+    // already wrote instead of writing another. The per-load nonce keeps it
+    // unique across reloads.
+    const formMsg = [...msgs].reverse().find((m) => "kind" in m && m.kind === "lockform" && !m.done);
+    const lockEventId = `lock-${sessionId}-${loadNonce.current}${formMsg ? keyOf(formMsg) : Date.now().toString(36)}`;
     // The number on the seller's screen. The server refuses to write a lead
     // when the engine disagrees (moved:true) — a mid-session price edit can
     // never lock a figure they haven't seen, and never double-posts a lead.
@@ -1253,6 +1315,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     // as junk the model can't read.
     if (!t || sending || uploading) return;
     interactedRef.current = true;
+    touchSession(sessionId);
     // The server keeps the newest 40 turns; sending the whole thread was
     // several KB of mobile uplink per message on a long chat, for nothing.
     const history = historyFor(msgs).slice(-40);
@@ -1345,7 +1408,13 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           d?.widget === "shipform" ? [{ from: "bot", kind: "shipform" }]
           : d?.widget === "label" && d?.label?.tracking && d?.label?.url ? [{ from: "bot", kind: "label", tracking: String(d.label.tracking), url: String(d.label.url) }]
           : [];
-        setMsgs((m) => [...m, { from: "bot", text: d?.reply || "hang on — try that again in a sec" }, ...lockExtra, ...extra]);
+        // The reply's stored ts (server, 2026-09-26) keys it like a poll
+        // record: a poll that already showed this reply doesn't get a twin,
+        // and the next poll won't re-add it.
+        const replyKey = typeof d?.replyTs === "number" && typeof d?.reply === "string" ? `${d.replyTs}|${d.reply}` : "";
+        const shown = !!replyKey && seenSyncRef.current.has(replyKey);
+        if (replyKey) seenSyncRef.current.add(replyKey);
+        setMsgs((m) => [...m, ...(shown ? [] : [{ from: "bot" as const, text: d?.reply || "hang on — try that again in a sec" }]), ...lockExtra, ...extra]);
       }
     } catch {
       // kind:"err" keeps this local-only bubble OUT of the history sent to
@@ -1396,6 +1465,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     // the two replies in completion order.
     if (uploading || sending || files.length === 0) return;
     interactedRef.current = true;
+    touchSession(sessionId);
     const MAX_BATCH = 6;
     const batch = files.slice(0, MAX_BATCH); // per-pick cap; they can attach again
     const history = historyFor(msgs).slice(-40);
@@ -1486,7 +1556,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         if (dd?.takeover && !dd?.reply) setTakeover(true);
         else if (dd?.reply) {
           if (takeoverRef.current) setTakeover(false);
-          setMsgs((m) => [...m, { from: "bot", text: dd.reply }]);
+          // Same echo/poll dedupe as the typed path (2026-09-26).
+          const replyKey = typeof dd?.replyTs === "number" ? `${dd.replyTs}|${dd.reply}` : "";
+          const shown = !!replyKey && seenSyncRef.current.has(replyKey);
+          if (replyKey) seenSyncRef.current.add(replyKey);
+          if (!shown) setMsgs((m) => [...m, { from: "bot", text: dd.reply }]);
         }
       } catch { /* photos are stored + surfaced either way */ }
       setSending(false);
@@ -1509,7 +1583,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     <>
   {/* full-screen immersive chat */}
   {chatOpen && (
-    <div ref={overlayRef} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col text-white" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
+    <div ref={overlayRef} tabIndex={-1} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col text-white focus:outline-none" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
         <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
         <div className="flex-1 min-w-0">
@@ -1721,7 +1795,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   <div className="text-[15px] font-bold text-white">your FedEx label is ready</div>
                   <div className="text-[13px] text-white/70 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
                   <a href={m.url} target="_blank" rel="noopener noreferrer" className="tcc-button-primary mt-3 inline-block py-2.5 px-5 text-[15px] font-bold rounded-2xl">open my label</a>
-                  <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the {m.devices && m.devices > 1 ? `${m.devices} devices together` : "device"}, drop it at any FedEx location. we text you the moment it lands and pay within 24 hours of inspection. {m.texted ? "we texted you this link too." : m.emailed ? "we emailed you this link too." : "this link stays right here in the chat."}</div>
+                  <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the {m.devices && m.devices > 1 ? `${m.devices} devices together` : "device"}, drop it at any FedEx location. we&rsquo;ll text you when it&rsquo;s checked in at our warehouse and pay within 24 hours of inspection. {m.texted ? "we texted you this link too." : m.emailed ? "we emailed you this link too." : "this link stays right here in the chat."}</div>
                 </div>
               </div>
             );
@@ -2273,7 +2347,7 @@ function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: strin
       className="rounded-2xl border border-white/10 bg-white/[0.06] p-3 flex flex-col gap-2 max-w-[92%]"
       onSubmit={(e) => { e.preventDefault(); if (ok && !disabled) onSave(v.trim()); }}
     >
-      <div className="text-[13px] text-white/60">we&rsquo;ll text you the offer — even if this chat gets cut off.</div>
+      <div className="text-[13px] text-white/60">so we can reach you about your offer — even if this chat gets cut off.</div>
       <div className="flex gap-2">
         <input
           value={v}

@@ -1,6 +1,6 @@
 // Client-side sync for the /go chat's LIVE OWNER TAKEOVER.
 //
-// GET  ?session=&after=  → owner messages newer than `after`, takeover flag,
+// GET  ?session=&after=  → owner + bot messages newer than `after`, takeover flag,
 //   and lastTs (the session's newest stored record). The /go client polls
 //   this every few seconds while the chat is open and advances its cursor
 //   from lastTs — so idle polls list the prefix and fetch NOTHING.
@@ -41,8 +41,12 @@ export async function GET(req: NextRequest) {
   const adopt = k !== null ? sidTokenValid(sid, k) : undefined;
   if (adopt === false) return NextResponse.json({ msgs: [], takeover: false, lastTs: 0, adopt: false });
   const state = await readChat(sid, after);
+  // Polls carry owner AND bot records (2026-09-26): a bot reply whose POST
+  // response the webview dropped was stored but never shown, and the seller
+  // re-sent the turn. The client dedupes both by ts|text — /api/chat returns
+  // its reply's stored ts for exactly that.
   const msgs = state.msgs
-    .filter((m) => (full ? m.role !== "note" : m.role === "owner"))
+    .filter((m) => (full ? m.role !== "note" : m.role === "owner" || m.role === "bot"))
     .map((m) => ({ role: m.role, text: m.text, ts: m.ts }));
   // A takeover Sonny abandoned reads as OFF here — otherwise the client
   // shows "Sonny is with you — live" over dead air all week.
@@ -110,9 +114,12 @@ export async function POST(req: NextRequest) {
   // route (opt-out, handoff already chosen) — server-written only, like the rest.
   // LEAD-ID / LABEL: written by the lock + label routes — a forged LEAD-ID
   // would let a stranger's label marker land on someone else's lead.
+  // EMAIL-FALLBACK / LOCK-EVENT (2026-09-26): the label route emails the
+  // label to the first; the lock route tells a retap from a second identical
+  // device by the second — both server-written.
   // "price moved at lock" is written by the lock route now (the page no
   // longer posts it) — a forged one would show the console a fake repricing.
-  if (/^\s*(CONTACT|QSPEC|LOCKED|HANDOFF|quote shown|price moved|SMS|Email sent|Email FAILED|LEAD-ID|LABEL|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
+  if (/^\s*(CONTACT|EMAIL-FALLBACK|QSPEC|LOCKED|LOCK-EVENT|HANDOFF|quote shown|price moved|SMS|Email sent|Email FAILED|LEAD-ID|LABEL|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
   await appendChatMsg(sid, "note", text);
   return NextResponse.json({ ok: true });
 }

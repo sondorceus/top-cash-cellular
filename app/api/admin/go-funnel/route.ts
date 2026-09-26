@@ -19,7 +19,8 @@
 // 30 days by default (the store prunes idle sessions at 30d anyway), 400
 // note fetches per call.
 //
-// Auth: x-admin-token / ?token= against TCC_ADMIN_TOKEN, like every admin route.
+// Auth: x-admin-token against TCC_ADMIN_TOKEN — header only since 2026-09-26
+// (the analytics page sends the header; ?token= only put the secret in logs).
 import { NextRequest, NextResponse } from "next/server";
 import { list } from "@vercel/blob";
 import { safeEqual } from "../../../lib/admin-auth";
@@ -52,9 +53,7 @@ type Session = {
   device: string; geo: string; area: string; };
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 function dayKey(ts: number): string {

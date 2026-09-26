@@ -27,6 +27,11 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const RESEND_KEY = process.env.RESEND_API_KEY;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Store read + MC comm + FedEx (25 s ceiling) + label blob + the seller's
+// text/email — never legitimately more; the plan default let a stall hold
+// "printing your label…" for five minutes (2026-09-26).
+export const maxDuration = 90;
+
 // Line breaks (U+2028/U+2029 included) become spaces: these fields are
 // "Key: value" lines of the [DELIVERY OPTION] comm.
 function clean(v: unknown, max: number): string {
@@ -117,6 +122,8 @@ export async function POST(req: NextRequest) {
       await fetch(`${MC_API}/api/comms`, {
         method: "POST",
         headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        // Bounded (2026-09-26): a stalled MC used to hold the label mint.
+        signal: AbortSignal.timeout(10_000),
         body: JSON.stringify({
           from: "topcash-web", fromName: "Top Cash Cellular", role: "system",
           body: [
@@ -149,23 +156,31 @@ export async function POST(req: NextRequest) {
   // texted / emailed go back to the page: the label card only says "we
   // texted you this link" when a text actually went out (the relay has been
   // down for days at a time).
+  // "checked in at our warehouse", not "the moment it lands" (2026-09-26):
+  // the FedEx tracking poll is blind (Track API 403), so the text goes out
+  // at check-in and the copy says so.
   let texted = false;
   let emailed = false;
   if (!notesHaveOptOut(notes) && phoneDigits.length === 10) {
-    texted = await sendSellerSms(phoneDigits, `Top Cash Cellular: your free FedEx label is ready — ${result.url}\nTracking ${result.tracking}. Box the ${boxNoun}, drop it at any FedEx location, and we text you the moment it lands. Reply STOP to opt out.`).catch(() => false);
+    texted = await sendSellerSms(phoneDigits, `Top Cash Cellular: your free FedEx label is ready — ${result.url}\nTracking ${result.tracking}. Box the ${boxNoun}, drop it at any FedEx location, and we'll text you when it's checked in at our warehouse. Reply STOP to opt out.`).catch(() => false);
   }
-  if (isEmail && RESEND_KEY) {
+  // The address to email: an email contact, or the EMAIL-FALLBACK a phone
+  // seller left when their lock text failed (confirm-email writes it as its
+  // own note since 2026-09-26, so the phone stays the newest CONTACT).
+  const fallbackEmail = [...notes].reverse().find((t) => t.startsWith("EMAIL-FALLBACK: "))?.slice("EMAIL-FALLBACK: ".length).trim() || "";
+  const emailTo = isEmail ? contact : EMAIL_RE.test(fallbackEmail) ? fallbackEmail : "";
+  if (emailTo && RESEND_KEY) {
     try {
       const { Resend } = await import("resend");
       const r = await new Resend(RESEND_KEY).emails.send({
-        from: "Top Cash Cellular <noreply@topcashcellular.com>", replyTo: "support@topcashcellular.com", to: contact,
+        from: "Top Cash Cellular <noreply@topcashcellular.com>", replyTo: "support@topcashcellular.com", to: emailTo,
         subject: `Your free FedEx label for the ${boxNoun}`,
         html: mailShell({
           preheader: `Tracking ${result.tracking}`, eyebrow: "Your label", title: "Your FedEx label is ready",
-          introHtml: `<span style="color:${MAIL.body}">Print it, box the ${multi ? esc(boxNoun) : "device"}, and drop it at any FedEx location. We text you the moment it lands and pay within 24 hours of inspection. Tracking <strong style="color:${MAIL.ink}">${esc(result.tracking)}</strong>.</span>`,
+          introHtml: `<span style="color:${MAIL.body}">Print it, box the ${multi ? esc(boxNoun) : "device"}, and drop it at any FedEx location. We'll text you when it's checked in at our warehouse and pay within 24 hours of inspection. Tracking <strong style="color:${MAIL.ink}">${esc(result.tracking)}</strong>.</span>`,
           buttonHref: result.url, buttonLabel: "Open my label",
         }),
-        text: `Your FedEx label: ${result.url}\nTracking ${result.tracking}. Drop it at any FedEx location; we text you when it lands.`,
+        text: `Your FedEx label: ${result.url}\nTracking ${result.tracking}. Drop it at any FedEx location; we'll text you when it's checked in at our warehouse.`,
       });
       emailed = !r.error;
     } catch { /* the page card still shows the label */ }

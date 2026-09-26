@@ -29,6 +29,9 @@ const MC_KEY = process.env.MC_API_KEY || "";
 export const maxDuration = 60;
 
 const MAX_BYTES = 4 * 1024 * 1024; // Vercel's body ceiling is ~4.5MB; stay under it
+// Bounded like the store's own calls (gochat-store BLOB_OP_MS): a stalled
+// list or put here held the upload open to maxDuration (2026-09-26).
+const BLOB_OP_MS = 8_000;
 const EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 // First bytes must match the claimed type — content-type alone is attacker-
@@ -77,7 +80,7 @@ export async function POST(req: NextRequest) {
   // rather than anything the client claims.
   let firstPhoto = false;
   try {
-    const existing = await list({ prefix: `gochat-img/${sid}/`, limit: 1 });
+    const existing = await list({ prefix: `gochat-img/${sid}/`, limit: 1, abortSignal: AbortSignal.timeout(BLOB_OP_MS) });
     firstPhoto = existing.blobs.length === 0;
   } catch { /* ping is best-effort */ }
 
@@ -89,6 +92,7 @@ export async function POST(req: NextRequest) {
       access: "public",
       contentType: type,
       addRandomSuffix: false,
+      abortSignal: AbortSignal.timeout(BLOB_OP_MS),
     });
     url = blob.url;
   } catch {

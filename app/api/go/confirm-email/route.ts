@@ -52,7 +52,12 @@ export async function POST(req: NextRequest) {
 
   const r = await sendLockConfirmationEmail({ to: email, dev, offer, lockUntil, sessionId });
   await Promise.all([
-    appendChatMsg(sessionId, "note", `CONTACT: ${email}`),
+    // Its own note, not a CONTACT (2026-09-26): the newest CONTACT is the
+    // number the console texts and the label route texts the label to — an
+    // email written over it read as "no phone on file" in the console, and
+    // anyone holding the session id could plant one. The label route reads
+    // this note to email the label as well.
+    appendChatMsg(sessionId, "note", `EMAIL-FALLBACK: ${email}`),
     appendChatMsg(
       sessionId,
       "note",

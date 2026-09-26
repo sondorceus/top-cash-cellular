@@ -12,6 +12,7 @@
 //
 // Best-effort like owner-sms: never throws, returns false on any failure.
 import { put, list } from "@vercel/blob";
+import { createHmac } from "crypto";
 import { phoneKey } from "./gochat-store";
 
 const RELAY_URL = "https://itsofficialnotarys.com/api/sms/relay";
@@ -87,12 +88,25 @@ export function optedOutIn(messages: { body?: string }[], phone: string): boolea
 const OPTOUT_PREFIX = "sms-optout/";
 const BLOB_OP_MS = 8_000;
 
+// The blob path is an HMAC of the 10 digits, keyed like go-sid-token
+// (2026-09-26): the store is public and the plain-digit path made "did this
+// number opt out?" answerable by anyone who had seen one photo URL (the
+// store host is in it). No key configured → the plain digits, as before.
+function optOutKey(digits: string): string {
+  const key = process.env.TCC_ADMIN_TOKEN || "";
+  return key ? createHmac("sha256", key).update(`smsoptout:${digits}`).digest("hex").slice(0, 32) : digits;
+}
+// Opt-outs recorded before 2026-09-26 sit under the plain digits. They are
+// read as a fallback until 2026-10-26 — and re-recorded under the HMAC path
+// on first sight, so they hold after that date too. Drop the fallback then.
+const PLAIN_KEY_FALLBACK_UNTIL = Date.parse("2026-10-26T00:00:00Z");
+
 /** Record a STOP for good. Best-effort: the session note and the MC marker
  *  are written by the caller regardless. */
 export async function markOptedOut(phone: string): Promise<void> {
   const key = phoneKey(phone);
   if (!key) return;
-  await put(`${OPTOUT_PREFIX}${key}/1.json`, "{}", {
+  await put(`${OPTOUT_PREFIX}${optOutKey(key)}/1.json`, "{}", {
     access: "public", contentType: "application/json", addRandomSuffix: false, allowOverwrite: true, abortSignal: AbortSignal.timeout(BLOB_OP_MS),
   }).catch(() => {});
 }
@@ -103,8 +117,13 @@ async function optedOutDurably(phone: string): Promise<boolean> {
   const key = phoneKey(phone);
   if (!key) return false;
   try {
-    const { blobs } = await list({ prefix: `${OPTOUT_PREFIX}${key}/`, limit: 1, abortSignal: AbortSignal.timeout(BLOB_OP_MS) });
-    return blobs.length > 0;
+    const { blobs } = await list({ prefix: `${OPTOUT_PREFIX}${optOutKey(key)}/`, limit: 1, abortSignal: AbortSignal.timeout(BLOB_OP_MS) });
+    if (blobs.length > 0) return true;
+    if (optOutKey(key) === key || Date.now() >= PLAIN_KEY_FALLBACK_UNTIL) return false;
+    const plain = await list({ prefix: `${OPTOUT_PREFIX}${key}/`, limit: 1, abortSignal: AbortSignal.timeout(BLOB_OP_MS) });
+    if (plain.blobs.length === 0) return false;
+    void markOptedOut(phone); // migrate: the HMAC path outlives the fallback window
+    return true;
   } catch {
     return false;
   }

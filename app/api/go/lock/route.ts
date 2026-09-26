@@ -39,9 +39,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
-import { appendChatMsg, readChat, validSession, validGoSession, rememberPhoneSession } from "../../../lib/gochat-store";
+import { appendChatMsg, readChat, validSession, validGoSession, rememberPhoneSession, phoneKey, type StoredMsg } from "../../../lib/gochat-store";
 import { sendCapiLead, isTestConversion } from "../../../lib/meta-capi";
-import { sendSellerSms, looksLikePhone, notesHaveOptOut } from "../../../lib/seller-sms";
+import { sendSellerSms, looksLikePhone, notesHaveOptOut, toE164 } from "../../../lib/seller-sms";
 import { after } from "next/server";
 import { sendLockConfirmationEmail, goChatLink, lockDateLabel, LOCK_DAYS } from "../../../lib/lock-confirmation";
 import { resolveGoSpec, goQuote, type GoSpec } from "../../../go/spec";
@@ -55,6 +55,20 @@ const MC_KEY = process.env.MC_API_KEY || "";
 // MC post 12 s + owner alert 12 s + store notes + the confirmation's
 // background tail — a lock never legitimately needs more.
 export const maxDuration = 90;
+
+// ONE LEAD PER TAP (2026-09-26). A lost response looks exactly like a lost
+// request on a phone, and the retap ran the whole lock again: two leads, two
+// owner alerts, two confirmation texts. Two guards, both before any write:
+//   • the client's eventId (its Meta dedup id, stable per lock form) — a
+//     repeat of an id whose first run wrote a lead gets that run's response
+//     back (per instance, like /api/chat's turn map);
+//   • a LOCKED note for the same spec AND contact inside the last 10
+//     minutes IS this lock — answered from the notes, nothing re-sent —
+//     unless it carries a different eventId (an identical second device
+//     locked from its own form, "+ i have another one").
+const LOCK_MAX = 300;
+const locks = new Map<string, Promise<unknown>>();
+const LOCK_DEDUPE_MS = 10 * 60_000;
 
 // Same scrub as /api/lead's cleanField: brackets (the admin parser keys on
 // [STATUS:]/[LEAD:] markers anywhere in a comm body) AND newlines/tabs —
@@ -116,14 +130,34 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
+  // The client's per-lock dedup id (also the Meta event id). A repeat of an
+  // id that already wrote a lead replays that lead's response instead of
+  // running the lock again; a refused run lets the retry through.
+  const eventId = String(body.eventId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
+  const seen = eventId ? locks.get(eventId) : undefined;
+  if (seen) {
+    const replay = await seen;
+    if (replay) return NextResponse.json(replay);
+  }
+  const run = handleLock(req, body, ip, eventId);
+  if (eventId) {
+    if (locks.size >= LOCK_MAX) locks.delete(locks.keys().next().value as string);
+    locks.set(eventId, run.then(async (r) => {
+      if (!r.ok) return null;
+      const j = await r.clone().json();
+      return j?.ok ? j : null; // moved:true is a 200 too — not a lead, not replayed
+    }).catch(() => null));
+  }
+  return run;
+}
 
+async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: string, eventId: string): Promise<NextResponse> {
   const name = sanitize(String(body.name || "")).slice(0, 80);
   const contact = sanitize(String(body.contact || "")).slice(0, 120);
   const attest = body.attest === true;
   const src = String(body.src || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 10);
   const landedPath = String(body.landed || "").replace(/[^a-zA-Z0-9_\-/?=&.]/g, "").slice(0, 80);
   const sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
-  const eventId = String(body.eventId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
   // The number the seller is looking at. Optional (older bundles don't send
   // it); when present the engine must agree or no lead is written.
   const quotedOffer = typeof body.quotedOffer === "number" && Number.isFinite(body.quotedOffer) ? Math.round(body.quotedOffer) : null;
@@ -157,6 +191,40 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "too many tries — give it a minute" }, { status: 429 });
   }
 
+  const PARTS_LABEL = "Won't turn on / parts";
+  const specLine = parts ? spec.specLine.replace(/\bbroken\b/, "won't turn on / parts") : spec.specLine;
+  // The session's notes, read once: the same-lock guard below, the IMEI
+  // lookups the chat ran (they ride on the lead) and whether a GEO note is
+  // already on file.
+  let notes: StoredMsg[] = [];
+  let notesRead = false;
+  if (validSession(sessionId)) {
+    try { notes = (await readChat(sessionId, 0)).msgs.filter((m) => m.role === "note"); notesRead = true; } catch { /* no notes */ }
+  }
+  // SAME LOCK TWICE (2026-09-26): a retap after a lost response — or the
+  // same eventId landing on another instance — must not write a second
+  // lead, alert the owner again or text the seller again. A LOCKED note for
+  // this exact spec and contact inside the last 10 minutes IS this lock,
+  // unless its LOCK-EVENT note names a different form (an identical second
+  // device): answered from the notes, with what the confirmation notes say.
+  const reEsc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const sameLock = new RegExp(`^LOCKED: ${reEsc(specLine)} (?:\\$(\\d+)|\\(manual\\)) — ${reEsc(contact.slice(0, 60))}$`);
+  const recentLock = [...notes].reverse().find((m) => m.ts >= Date.now() - LOCK_DEDUPE_MS && sameLock.test(m.text));
+  if (recentLock) {
+    const since = notes.filter((m) => m.ts >= recentLock.ts).map((m) => m.text);
+    const priorEvent = since.find((t) => t.startsWith("LOCK-EVENT: "))?.slice("LOCK-EVENT: ".length).trim() || "";
+    if (!eventId || !priorEvent || priorEvent === eventId) {
+      const priorOffer = Number(recentLock.text.match(sameLock)?.[1] || 0) || null;
+      const priorLeadId = [...since].reverse().find((t) => t.startsWith("LEAD-ID: "))?.slice("LEAD-ID: ".length).trim() || null;
+      const priorConfirmed: "sms" | "email" | "pending" | "failed" =
+        since.some((t) => /^SMS sent to .*\(lock confirmation\)/.test(t)) ? "sms"
+          : since.some((t) => /^Email sent to .*\(lock confirmation/.test(t)) ? "email"
+            : since.some((t) => /^(SMS|Email|Confirmation) (FAILED|skipped) to .*\(lock confirmation/.test(t)) ? "failed"
+              : "pending";
+      return NextResponse.json({ ok: true, offer: priorOffer, lockUntil: new Date(recentLock.ts + LOCK_DAYS * 24 * 3600_000).toISOString(), confirmed: priorConfirmed, replayed: true, ...(priorLeadId ? { leadId: priorLeadId } : {}) });
+    }
+  }
+
   // Engine is the only price authority — quote fresh at lock time, through
   // the same resolver /api/go/quote used to show the number.
   const offer = parts ? null : await goQuote(spec);
@@ -182,9 +250,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, moved: true, offer });
   }
 
+  // ONE NUMBER, THREE LOCKS A DAY across every session (2026-09-26). The
+  // confirmation text below is what makes a phone→session pointer real, so
+  // a script locking a stranger's number from many sessions must not get
+  // to text it from each of them. Charged here — past the spec, contact and
+  // price-moved checks, before anything is written — so a repaint retap
+  // spends nothing. Email contacts have no number to cap.
+  const lockPhone = phoneKey(toE164(contact) || "");
+  if (lockPhone && !rateLimit(`lock-phone:${lockPhone}`, 3, 24 * 60 * 60_000).ok) {
+    return NextResponse.json({ ok: false, error: "that number has locked a few quotes today — our team will follow up by text on those" }, { status: 429 });
+  }
+
   const isEmail = EMAIL_RE.test(contact);
-  const PARTS_LABEL = "Won't turn on / parts";
-  const specLine = parts ? spec.specLine.replace(/\bbroken\b/, "won't turn on / parts") : spec.specLine;
   const ua = sanitize(req.headers.get("user-agent") || "unknown");
   const visitorId = sanitize(req.cookies.get("tcc_visitor_id")?.value || "").slice(0, 64);
   const safeIp = sanitize(ip).slice(0, 60);
@@ -192,16 +269,10 @@ export async function POST(req: NextRequest) {
   const lockUntil = new Date(Date.now() + LOCK_DAYS * 24 * 3600_000).toISOString();
   const hasGoSession = validGoSession(sessionId);
   // IMEI lookups the chat already ran for this thread — the accurate
-  // identification rides on the lead whatever the chips said.
-  let imeiFacts: string[] = [];
-  let hasGeoNote = true;
-  if (validSession(sessionId)) {
-    try {
-      const notes = (await readChat(sessionId, 0)).msgs.filter((m) => m.role === "note");
-      imeiFacts = notes.filter((m) => m.text.startsWith("IMEI: ")).map((m) => m.text).slice(-3);
-      hasGeoNote = notes.some((m) => m.text.startsWith("GEO: "));
-    } catch { /* no notes */ }
-  }
+  // identification rides on the lead whatever the chips said. (From the
+  // notes read above; no session = nothing to read, and no GEO write.)
+  const imeiFacts = notes.filter((m) => m.text.startsWith("IMEI: ")).map((m) => m.text).slice(-3);
+  const hasGeoNote = !notesRead || notes.some((m) => m.text.startsWith("GEO: "));
 
   // Standard single-device lead body — field-for-field the /api/lead
   // shape. Quote: TBD (custom) is the funnel's own no-engine-price
@@ -308,27 +379,33 @@ export async function POST(req: NextRequest) {
   // client — and written HERE (server-side, engine result in hand) so the
   // LOCKED breadcrumb can't be client-forged.
   // AWAITED (one blob round-trip): these notes are what the console, the
-  // inbound-SMS matcher (phone pointer), the reminders cron and the funnel
-  // card read. A fire-and-forget put can be cut off when the function exits
-  // right after the response.
+  // reminders cron and the funnel card read. A fire-and-forget put can be
+  // cut off when the function exits right after the response. (The
+  // phone→session pointer the inbound-SMS matcher reads is written below,
+  // only once the confirmation text has actually gone out — 2026-09-26.)
+  // LOCK-EVENT pairs the lock with the form it came from (the same-lock
+  // guard above tells a retap from an identical second device by it).
   if (validSession(sessionId)) {
     await Promise.all([
       appendChatMsg(sessionId, "note", `CONTACT: ${contact}`),
       ...(!hasGeoNote && geo.area !== "unknown" ? [appendChatMsg(sessionId, "note", `GEO: ${geo.label} · area=${geo.area}`)] : []),
       appendChatMsg(sessionId, "note", `LOCKED: ${specLine}${offer != null ? ` $${offer}` : " (manual)"} — ${contact.slice(0, 60)}`),
+      ...(eventId ? [appendChatMsg(sessionId, "note", `LOCK-EVENT: ${eventId}`)] : []),
       ...(leadId ? [appendChatMsg(sessionId, "note", `LEAD-ID: ${leadId}`)] : []),
-      rememberPhoneSession(contact, sessionId),
     ]);
   }
 
   // The seller's confirmation — the text the page promised. Raced against a
-  // short budget so the locked card can say "we just texted you" only when
-  // that is TRUE (the relay has been down for days at a time); the send
-  // itself always runs to completion inside after().
+  // budget so the locked card can say "we just texted you" only when that
+  // is TRUE (the relay has been down for days at a time); the send itself
+  // always runs to completion inside after(). 8 s since 2026-09-26 (was
+  // 2.5 s): the relay's own ceiling is 8 s, so a send that fails slowly no
+  // longer leaves the card on "we'll text you the details shortly" with no
+  // email fallback — the 2026-09-23 failure survived on that path.
   const confirmation = sendConfirmation({ contact, isEmail, spec, offer, lockUntil, sessionId });
   const early = await Promise.race<{ sent: boolean; channel: string } | null>([
     confirmation,
-    new Promise<null>((r) => setTimeout(() => r(null), 2500)),
+    new Promise<null>((r) => setTimeout(() => r(null), 8_000)),
   ]);
   // sms/email = delivered before the response; pending = still in flight;
   // failed = the channel refused (relay down, opted out) — the card must not
@@ -346,6 +423,9 @@ export async function POST(req: NextRequest) {
           ? `${c.channel === "sms" ? "SMS" : "Email"} sent to ${contact} (lock confirmation)`
           : `${c.channel === "sms" ? "SMS" : c.channel === "email" ? "Email" : "Confirmation"} ${c.reason === "opted out" ? "skipped" : "FAILED"} to ${contact} (lock confirmation${c.reason ? ` — ${c.reason}` : ""})`,
       );
+      // A text went out from this thread → its replies belong here. The
+      // pointer follows the text, never the typed number (2026-09-26).
+      if (c.sent && c.channel === "sms") await rememberPhoneSession(contact, sessionId);
     }
     // Server-side twin of the client's Lead pixel (same event id → Meta
     // dedupes). The FB in-app webview drops browser events exactly here, at

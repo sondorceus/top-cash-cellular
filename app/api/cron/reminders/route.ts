@@ -4,7 +4,7 @@ import { randomBytes } from "crypto";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { sendSellerSms, optedOutIn, looksLikePhone } from "../../../lib/seller-sms";
 import { sidToken } from "../../../lib/go-sid-token";
-import { readChat, validGoSession, phoneKey } from "../../../lib/gochat-store";
+import { readChat, validGoSession, phoneKey, appendChatMsg, rememberPhoneSession } from "../../../lib/gochat-store";
 import { duplicatesFromComms } from "../../../lib/lead-dupes";
 import { latestContactUpdates } from "../../../lib/lead-devices";
 
@@ -179,6 +179,17 @@ function goLink(session?: string): string {
   if (!session || !validGoSession(session)) return `${SITE}/go`;
   const k = sidToken(session);
   return k ? `${SITE}/go?sid=${session}&k=${k}` : `${SITE}/go`;
+}
+
+// A /go seller texted from their thread (quote / expiry reminder): the note
+// the inbound matcher reads and the phone→session pointer, written only
+// when the text actually went out (2026-09-26). The lock's own confirmation
+// writes the same pair; this covers the lock whose text failed and the
+// reminder that then reached them.
+async function notedGoText(lead: LeadShape, smsOk: boolean, what: string): Promise<void> {
+  if (!smsOk || !lead.phone || !lead.isGo || !lead.session || !validGoSession(lead.session)) return;
+  await appendChatMsg(lead.session, "note", `SMS sent to ${lead.phone} (${what})`);
+  await rememberPhoneSession(lead.phone, lead.session);
 }
 
 function dateLabel(iso: string): string {
@@ -619,6 +630,7 @@ export async function GET(req: NextRequest) {
       // unconditional log would permanently suppress the retry after an outage.
       if (results.some(Boolean)) {
         quoteSent++;
+        await notedGoText(lead, !!lead.phone && results[0] === true, "quote reminder");
         await recordSent(lead.id, "quote");
       } else {
         errors.push(`quote ${lead.id}: all channels failed`);
@@ -639,6 +651,7 @@ export async function GET(req: NextRequest) {
       const results = await Promise.all(tasks);
       if (results.some(Boolean)) {
         expirySent++;
+        await notedGoText(lead, !!lead.phone && results[0] === true, "expiry reminder");
         await recordSent(lead.id, "expiry");
       } else {
         errors.push(`expiry ${lead.id}: all channels failed`);
@@ -653,11 +666,19 @@ export async function GET(req: NextRequest) {
     if (markerDown) break;
     try {
       const tmpl = templateChat(cl.device, cl.session);
-      const ok = cl.contact.includes("@")
+      const byEmail = cl.contact.includes("@");
+      const ok = byEmail
         ? await sendEmail(cl.contact, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody)
         : await sendSms(cl.contact, tmpl.smsBody);
       if (ok) {
         chatSent++;
+        // A text from this thread → its reply belongs here: the note the
+        // inbound matcher reads plus the phone→session pointer, written
+        // only when a text actually went out (2026-09-26).
+        if (!byEmail && validGoSession(cl.session)) {
+          await appendChatMsg(cl.session, "note", `SMS sent to ${cl.contact} (chat reminder)`);
+          await rememberPhoneSession(cl.contact, cl.session);
+        }
         await recordSent(cl.id, "chat");
       } else {
         errors.push(`chat ${cl.id}: send failed`);

@@ -74,9 +74,11 @@ async function fetchMsg(url: string, role: StoredMsg["role"], ts: number): Promi
 
 const CTL_CMD: Record<string, string> = { "takeover:on": "tkon", "takeover:off": "tkoff", notified: "ntf" };
 
-export async function appendChatMsg(sid: string, role: ChatRole, text: string): Promise<void> {
+// `ts` may be supplied (2026-09-26): the chat route fixes its reply's ts
+// before it answers and returns it, so the client can match its own echo
+// against the same record arriving through the chat-sync poll.
+export async function appendChatMsg(sid: string, role: ChatRole, text: string, ts = Date.now()): Promise<void> {
   if (!validSession(sid)) return;
-  const ts = Date.now();
   const rand = Math.random().toString(36).slice(2, 6);
   const cmd = role === "ctl" ? CTL_CMD[text] || "tkoff" : null;
   const path = cmd
@@ -249,8 +251,9 @@ async function pruneSessionImages(sids: string[]): Promise<void> {
 // Sellers reply to the texts /admin/chats sends them, and those replies land
 // on the NOTARY project's Telnyx webhook — it owns the number we borrow. That
 // webhook hands them back to /api/go/sms-inbound, which needs to know which
-// thread the reply belongs to. Match = the newest session whose latest
-// "CONTACT: " note is the same 10-digit number.
+// thread the reply belongs to. Match = the newest session that TEXTED that
+// 10-digit number (its "SMS sent to …" note) — since 2026-09-26; a typed
+// "CONTACT: " note no longer counts, see rememberPhoneSession.
 //
 // Deliberately bounded (this runs off a webhook): a window of recent sessions,
 // and ONLY note-role blobs are fetched — role is pathname-encoded, so
@@ -262,9 +265,12 @@ export function phoneKey(v: unknown): string {
   return d.length >= 10 ? d.slice(-10) : "";
 }
 
-const CONTACT_PREFIX = "CONTACT: ";
-
-// Phone → session POINTER, written whenever a contact lands (lock, chat).
+// Phone → session POINTER, written when TCC TEXTS a number from a session
+// (lock confirmation, the console's "also text", the reminder cron) — the
+// moment a reply becomes expected. Until 2026-09-26 it was written whenever
+// a contact landed, including a number merely TYPED into a chat: anyone
+// could type a stranger's number and route that stranger's SMS replies (and
+// a server-signed deep link into their own thread) to themselves.
 // One tiny blob per (number, time) under gochat-phone/<key>/<ts>-<sid>.json:
 // unique paths (no CDN-stale overwrites) and the sid rides in the pathname,
 // so a lookup is ONE list() with zero fetches. The scan below stayed as the
@@ -279,6 +285,28 @@ export async function rememberPhoneSession(contact: string, sid: string): Promis
   }).catch(() => { /* the scan fallback still works */ });
 }
 
+// The record that makes a phone→session match legitimate: the note every
+// seller-SMS path writes on success ("SMS sent to <contact>…"). A session
+// that texted this number from itself is where the reply belongs.
+const SMS_SENT_PREFIX = "SMS sent to ";
+const PHONE_SHAPE = /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+/** The 10-digit key of an "SMS sent to …" note, or "" for any other note. */
+export function smsSentKey(note: string): string {
+  if (!note.startsWith(SMS_SENT_PREFIX)) return "";
+  // The contact was stored as typed ("call me at 512-555-1212 after 5"), so
+  // the number is the first phone-shaped run, not every digit in the line.
+  return phoneKey(note.slice(SMS_SENT_PREFIX.length).match(PHONE_SHAPE)?.[0] || "");
+}
+
+/** True when the session holds an "SMS sent to" note for this number. Notes
+ *  only (role is in the pathname), newest 60 — a chatty thread parks an
+ *  "SMS sent to" note per owner text, so the confirmation can sit deep. */
+async function textedFrom(sid: string, key: string): Promise<boolean> {
+  if (!key || !validSession(sid)) return false;
+  const state = await readChat(sid, 0, 1, 60);
+  return state.msgs.some((m) => m.role === "note" && smsSentKey(m.text) === key);
+}
+
 async function pointerSession(phone: string): Promise<string | null> {
   const key = phoneKey(phone);
   if (!key) return null;
@@ -288,40 +316,45 @@ async function pointerSession(phone: string): Promise<string | null> {
     // resurrect a dead thread (and a "meet"-shaped text from an old seller
     // would post a phantom delivery option). Ignore it and let the scan run.
     const floor = Date.now() - 30 * 24 * 3600_000;
-    let best: { ts: number; sid: string } | null = null;
+    const pointed: { ts: number; sid: string }[] = [];
     for (const b of blobs) {
       const m = (b.pathname.split("/").pop() || "").match(/^(\d+)-(.+)\.json$/);
       if (!m) continue;
       const ts = Number(m[1]);
-      if (Number.isFinite(ts) && ts >= floor && (!best || ts > best.ts)) best = { ts, sid: m[2] };
+      if (Number.isFinite(ts) && ts >= floor && validSession(m[2])) pointed.push({ ts, sid: m[2] });
     }
-    if (!best || !validSession(best.sid)) return null;
-    // The thread must still exist (pruned sessions leave their pointer behind).
-    const alive = await list({ prefix: `gochat/${best.sid}/`, limit: 1, abortSignal: deadline(BLOB_OP_MS) });
-    return alive.blobs.length ? best.sid : null;
+    // Newest first — and ONLY a session that actually texted this number
+    // (2026-09-26): pointers written before that rule, from typed contacts,
+    // are still in the store, and one planted from a stranger's chat must
+    // never win. The note read also proves the thread still exists (pruned
+    // sessions leave their pointer behind). Bounded: 5 candidates.
+    for (const p of pointed.sort((a, b) => b.ts - a.ts).slice(0, 5)) {
+      if (await textedFrom(p.sid, key)) return p.sid;
+    }
+    return null;
   } catch {
     return null;
   }
 }
 
-/** Newest CONTACT note for one session, or "" — notes only, capped. */
-async function latestContactFor(sid: string): Promise<string> {
-  if (!validSession(sid)) return "";
+/** The numbers one session has TEXTED — its "SMS sent to" notes, newest 40.
+ *  Notes only (role is pathname-encoded), so this costs one list plus the
+ *  note fetches; a CONTACT note alone is what the seller typed and proves
+ *  nothing (2026-09-26). */
+async function textedKeysFor(sid: string): Promise<Set<string>> {
+  const out = new Set<string>();
+  if (!validSession(sid)) return out;
   try {
     const { blobs } = await list({ prefix: `gochat/${sid}/`, limit: 1000, abortSignal: deadline(BLOB_OP_MS) });
     const notes = blobs
       .map((b) => ({ url: b.url, p: parsePath(b.pathname) }))
       .filter((b): b is { url: string; p: Parsed } => b.p !== null && b.p.role === "note")
       .sort((a, b) => b.p.ts - a.p.ts)
-      // Every owner text parks an "SMS sent to …" note, so a chatty thread can
-      // push CONTACT down the list — 15 clears any realistic negotiation.
-      .slice(0, 15);
+      .slice(0, 40);
     const texts = await Promise.all(notes.map((n) => fetchMsg(n.url, "note", n.p.ts).then((m) => m?.text || "")));
-    // notes is newest-first, so the first hit IS the newest CONTACT.
-    return texts.find((t) => t.startsWith(CONTACT_PREFIX))?.slice(CONTACT_PREFIX.length).trim() || "";
-  } catch {
-    return "";
-  }
+    for (const t of texts) { const k = smsSentKey(t); if (k) out.add(k); }
+  } catch { /* no notes → no match */ }
+  return out;
 }
 
 export async function findSessionByPhone(
@@ -331,14 +364,15 @@ export async function findSessionByPhone(
 ): Promise<string | null> {
   const want = phoneKey(phone);
   if (!want) return null;
-  // Newest pointer first — one list, no fetches, any age.
+  // Newest verified pointer first — one list plus a note read per candidate.
   const pointed = await pointerSession(phone);
   if (pointed) return pointed;
   const cutoff = Date.now() - maxAgeMs;
   const recent = (await listChatSessions()).filter((s) => s.lastTs >= cutoff).slice(0, maxSessions);
-  const contacts = await Promise.all(recent.map((s) => latestContactFor(s.sid)));
+  const texted = await Promise.all(recent.map((s) => textedKeysFor(s.sid)));
   // listChatSessions is newest-first — if a seller has used the number twice,
   // the reply belongs to the thread they're actually mid-negotiation on.
-  const i = contacts.findIndex((c) => c !== "" && phoneKey(c) === want);
+  // A thread that never texted this number is no match, however recent.
+  const i = texted.findIndex((keys) => keys.has(want));
   return i === -1 ? null : recent[i].sid;
 }

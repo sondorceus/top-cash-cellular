@@ -42,7 +42,9 @@ const MC_KEY = process.env.MC_API_KEY || "";
 // Telnyx delivers at-least-once, and the store is append-only with unique
 // paths — so a redelivered event would post the seller's text twice. Same
 // text into the same session inside this window is treated as that redelivery.
-const DUPE_WINDOW_MS = 5 * 60_000;
+// 60 s (was 5 min, 2026-09-26): a redelivery lands within seconds, while a
+// seller's second "ok" a few minutes later is a real message and was dropped.
+const DUPE_WINDOW_MS = 60_000;
 
 const MEET_RE = /^\s*(meet|meetup|local|austin)\b/i;
 const SHIP_RE = /^\s*(ship|shipping|label|mail)\b/i;
