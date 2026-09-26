@@ -78,3 +78,21 @@ export function needsBinding(req: NextRequest, sid: string): boolean {
 export function linkBinds(req: NextRequest, sid: string, k?: string | null): boolean {
   return typeof k === "string" && k.length > 0 && sidTokenValid(sid, k) && needsBinding(req, sid);
 }
+
+// LEGACY GRACE (2026-09-26). Sessions that predate binding (the deploy at
+// BINDING_SINCE) could never have received a cookie: their own sellers'
+// browsers read as unbound, and touchSession keeps an active session alive
+// for as long as they keep chatting — so a seller mid-flow would have seen
+// "open the link from your text" indefinitely. Until the grace ends (those
+// sessions age out of the store in 30 days anyway) the first cookie-less
+// browser that presents one of them is treated as its owner and bound from
+// then on — a `bound` control record marks the take, so the next
+// cookie-less browser is refused like any other. That is the pre-change
+// exposure, limited to those sessions and dated; a session started after
+// BINDING_SINCE gets no grace.
+export const BINDING_SINCE = Date.parse("2026-09-26T14:00:00Z");
+export const LEGACY_GRACE_UNTIL = Date.parse("2026-10-26T00:00:00Z");
+/** `firstTs` = the session's oldest record (ChatState.firstTs, pathname-derived). */
+export function legacySession(firstTs: number): boolean {
+  return firstTs > 0 && firstTs < BINDING_SINCE && Date.now() < LEGACY_GRACE_UNTIL;
+}

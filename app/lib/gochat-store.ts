@@ -14,7 +14,7 @@
 //   bot   — AI replies
 //   owner — Sonny, sent from /admin/chats (rendered distinctly client-side)
 //   note  — milestone breadcrumbs from the guided funnel (quote shown, lock)
-//   ctl   — control records; cmd lives in the path: tkon | tkoff | ntf
+//   ctl   — control records; cmd lives in the path: tkon | tkoff | ntf | bnd
 import { put, list, del } from "@vercel/blob";
 
 export type ChatRole = "user" | "bot" | "owner" | "note" | "ctl";
@@ -28,6 +28,12 @@ export type ChatState = {
   // expire an abandoned takeover instead of muting the bot forever.
   takeoverTs: number;
   lastOwnerTs: number;
+  // The oldest record's ts, pathname-derived like lastTs (0 when none) —
+  // the legacy-session grace in go-owner keys on it (2026-09-26).
+  firstTs: number;
+  // A browser has taken this legacy session under that grace (ctl `bnd`) —
+  // the next cookie-less one is refused like any other.
+  bound: boolean;
 };
 
 const SID_RE = /^[a-z0-9_-]{4,32}$/i;
@@ -72,7 +78,8 @@ async function fetchMsg(url: string, role: StoredMsg["role"], ts: number): Promi
   }
 }
 
-const CTL_CMD: Record<string, string> = { "takeover:on": "tkon", "takeover:off": "tkoff", notified: "ntf" };
+// `bound` (2026-09-26): the legacy grace was used on this session once.
+const CTL_CMD: Record<string, string> = { "takeover:on": "tkon", "takeover:off": "tkoff", notified: "ntf", bound: "bnd" };
 
 // `ts` may be supplied (2026-09-26): the chat route fixes its reply's ts
 // before it answers and returns it, so the client can match its own echo
@@ -113,7 +120,7 @@ function parsePath(pathname: string): Parsed | null {
 // long chat the cap used to drop the early CONTACT/LOCKED/GEO/quote notes,
 // which re-fired the lead and hid the lock and the quoted numbers.
 export async function readChat(sid: string, after = 0, cap = Infinity, noteCap = 0): Promise<ChatState> {
-  const empty: ChatState = { msgs: [], takeover: false, notified: false, lastTs: 0, takeoverTs: 0, lastOwnerTs: 0 };
+  const empty: ChatState = { msgs: [], takeover: false, notified: false, lastTs: 0, takeoverTs: 0, lastOwnerTs: 0, firstTs: 0, bound: false };
   if (!validSession(sid)) return empty;
   try {
     // Paginate like listChatSessions does — a single list() silently truncates
@@ -135,15 +142,19 @@ export async function readChat(sid: string, after = 0, cap = Infinity, noteCap =
     let takeover = false;
     let notified = false;
     let lastTs = 0;
+    let firstTs = 0;
+    let bound = false;
     let takeoverTs = 0;
     let lastOwnerTs = 0;
     for (const b of parsed) {
       if (b.p.ts > lastTs) lastTs = b.p.ts;
+      if (!firstTs || b.p.ts < firstTs) firstTs = b.p.ts;
       if (b.p.role === "owner" && b.p.ts > lastOwnerTs) lastOwnerTs = b.p.ts;
       if (b.p.role !== "ctl") continue;
       if (b.p.cmd === "tkon") { takeover = true; takeoverTs = b.p.ts; }
       else if (b.p.cmd === "tkoff") { takeover = false; takeoverTs = b.p.ts; }
       if (b.p.cmd === "ntf") notified = true;
+      if (b.p.cmd === "bnd") bound = true;
     }
     const records = parsed.filter((b) => b.p.role !== "ctl" && b.p.ts > after);
     const keep = new Set([
@@ -152,7 +163,7 @@ export async function readChat(sid: string, after = 0, cap = Infinity, noteCap =
     ]);
     const wanted = records.filter((b) => keep.has(b));
     const fetched = await Promise.all(wanted.map((b) => fetchMsg(b.url, b.p.role as StoredMsg["role"], b.p.ts)));
-    return { msgs: fetched.filter((m): m is StoredMsg => m !== null), takeover, notified, lastTs, takeoverTs, lastOwnerTs };
+    return { msgs: fetched.filter((m): m is StoredMsg => m !== null), takeover, notified, lastTs, takeoverTs, lastOwnerTs, firstTs, bound };
   } catch {
     return empty;
   }

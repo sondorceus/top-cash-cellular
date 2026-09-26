@@ -15,7 +15,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendChatMsg, readChat, takeoverStale, validGoSession } from "../../../lib/gochat-store";
 import { sidTokenValid } from "../../../lib/go-sid-token";
-import { linkBinds, needsBinding, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
+import { legacySession, linkBinds, needsBinding, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 
 // One store read (bounded) — a poll never needs more than this.
@@ -48,9 +48,20 @@ export async function GET(req: NextRequest) {
   // URL. Flags only for the check (one list, no fetches); a session with
   // nothing stored yet answers as it always did, so a poll that beats the
   // binding request by a moment is not told "unbound".
+  // LEGACY GRACE (2026-09-26): a session started before binding shipped has
+  // no cookie anywhere, so its own seller read as unbound — the first
+  // cookie-less browser that presents one is its owner (go-owner
+  // legacySession) and this reply binds it. Anything started since stays
+  // refused exactly as above.
+  let graceBind = false;
   if (!sessionOwned(req, sid, k)) {
     const flags = await readChat(sid, Date.now());
-    if (flags.lastTs > 0) return NextResponse.json({ msgs: [], takeover: false, lastTs: after || 0, unbound: true });
+    if (flags.lastTs > 0) {
+      // Once taken (the `bound` control record), the grace is spent.
+      if (!legacySession(flags.firstTs) || flags.bound) return NextResponse.json({ msgs: [], takeover: false, lastTs: after || 0, unbound: true });
+      graceBind = true;
+      await appendChatMsg(sid, "ctl", "bound");
+    }
   }
   const state = await readChat(sid, after);
   // Polls carry owner AND bot records (2026-09-26): a bot reply whose POST
@@ -100,7 +111,7 @@ export async function GET(req: NextRequest) {
   const res = NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}), ...(label ? { label } : {}) });
   // A valid link binds this browser too: the cookie is absent, or names the
   // session the browser had before the texted link brought it here.
-  if (linkBinds(req, sid, k)) setOwnerCookie(res, sid);
+  if (graceBind || linkBinds(req, sid, k)) setOwnerCookie(res, sid);
   return res;
 }
 

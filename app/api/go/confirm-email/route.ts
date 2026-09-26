@@ -10,7 +10,7 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
-import { linkBinds, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
+import { legacySession, linkBinds, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
 import { sendLockConfirmationEmail, LOCK_DAYS } from "../../../lib/lock-confirmation";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 
@@ -35,8 +35,17 @@ export async function POST(req: NextRequest) {
   // tcc_go_owner cookie) or a texted link's k may mail the offer anywhere —
   // before any read, same shape as the label route's refusal.
   const k = typeof body.k === "string" ? body.k : "";
-  if (!sessionOwned(req, sessionId, k)) return NextResponse.json({ ok: false, kind: "UNBOUND", hint: "Open the link from your text to add an email." }, { status: 403 });
-  const bound = (res: NextResponse) => { if (linkBinds(req, sessionId, k)) setOwnerCookie(res, sessionId); return res; };
+  // LEGACY GRACE (2026-09-26): a session started before binding shipped has
+  // no cookie anywhere — the first cookie-less browser that presents one is
+  // its owner (go-owner legacySession); one flags-only list, no fetches.
+  let graceBind = false;
+  if (!sessionOwned(req, sessionId, k)) {
+    const flags = await readChat(sessionId, Date.now());
+    if (!legacySession(flags.firstTs) || flags.bound) return NextResponse.json({ ok: false, kind: "UNBOUND", hint: "Open the link from your text to add an email." }, { status: 403 });
+    graceBind = true;
+    await appendChatMsg(sessionId, "ctl", "bound"); // the grace is spent on this take
+  }
+  const bound = (res: NextResponse) => { if (graceBind || linkBinds(req, sessionId, k)) setOwnerCookie(res, sessionId); return res; };
   if (!EMAIL_RE.test(email)) return NextResponse.json({ ok: false, error: "that email doesn't look right" }, { status: 400 });
 
   const state = await readChat(sessionId, 0);

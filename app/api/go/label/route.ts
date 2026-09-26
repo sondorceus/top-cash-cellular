@@ -15,7 +15,7 @@
 // Labels cost money, so this is rate-limited harder than the chat.
 import { NextRequest, NextResponse } from "next/server";
 import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
-import { linkBinds, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
+import { legacySession, linkBinds, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { mintGoLabel } from "../../../lib/go-label";
 import { deviceKindFromString } from "../../../lib/fedex";
@@ -51,10 +51,19 @@ export async function POST(req: NextRequest) {
   // before any read or validation, so a bare session id in a stranger's
   // hands can't spend a FedEx label on their own address.
   const k = typeof body.k === "string" ? body.k : "";
-  if (!sessionOwned(req, sid, k)) return NextResponse.json({ ok: false, kind: "UNBOUND", hint: "Open the link from your text to print your label." }, { status: 403 });
-  // A link that just proved ownership binds this browser for the rest of
-  // the visit (the reply carries the cookie).
-  const bound = (res: NextResponse) => { if (linkBinds(req, sid, k)) setOwnerCookie(res, sid); return res; };
+  // LEGACY GRACE (2026-09-26): a session started before binding shipped has
+  // no cookie anywhere — the first cookie-less browser that presents one is
+  // its owner (go-owner legacySession); one flags-only list, no fetches.
+  let graceBind = false;
+  if (!sessionOwned(req, sid, k)) {
+    const flags = await readChat(sid, Date.now());
+    if (!legacySession(flags.firstTs) || flags.bound) return NextResponse.json({ ok: false, kind: "UNBOUND", hint: "Open the link from your text to print your label." }, { status: 403 });
+    graceBind = true;
+    await appendChatMsg(sid, "ctl", "bound"); // the grace is spent on this take
+  }
+  // A link (or the grace) that just proved ownership binds this browser for
+  // the rest of the visit (the reply carries the cookie).
+  const bound = (res: NextResponse) => { if (graceBind || linkBinds(req, sid, k)) setOwnerCookie(res, sid); return res; };
 
   const state = await readChat(sid, 0);
   const noteMsgs = state.msgs.filter((m) => m.role === "note");

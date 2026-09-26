@@ -484,6 +484,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   const [unbound, setUnbound] = useState(false);
   const unboundRef = useRef(false);
   useEffect(() => { unboundRef.current = unbound; }, [unbound]);
+  // Consecutive `unbound` answers this visit: the first only earns a quick
+  // retry (the binding reply may still be in flight), the second shows the
+  // line; any bound answer resets it (2026-09-26).
+  const unboundStreakRef = useRef(0);
   const [bindTick, setBindTick] = useState(0);
   const rearmSync = () => { if (unboundRef.current) setBindTick((t) => t + 1); };
   const threadRef = useRef<HTMLDivElement>(null);
@@ -582,37 +586,50 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     const poll = async () => {
       if (stopped) return;
       if (document.visibilityState === "hidden") return; // resumed by onVis
+      // The next tick: the normal cadence, or the unbound schedule below.
+      let delay: number | null = null;
       try {
         const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=${lastSyncRef.current}${adoptKRef.current ? `&k=${adoptKRef.current}` : ""}`, { cache: "no-store", signal: ac.signal });
         if (r.ok) { // a rate-limited tick must never flip UI state
           const d = await r.json();
-          // Not this browser's thread (no owner cookie, no link): stop here —
-          // nothing would ever come back — and say so under the composer.
-          if (d?.unbound) { setUnbound(true); return; }
-          if (unboundRef.current) setUnbound(false);
-          if (Array.isArray(d?.msgs) && d.msgs.length) {
-            const fresh = (d.msgs as { role?: unknown; ts?: unknown; text?: unknown }[]).filter((m) => {
-              if (typeof m?.ts !== "number") return false;
-              const key = `${m.ts}|${String(m.text)}`;
-              if (seenSyncRef.current.has(key)) return false;
-              seenSyncRef.current.add(key);
-              return true;
-            });
-            if (fresh.length) {
-              // A bot record here is a reply whose POST response never made
-              // it back (a dropped webview fetch) — shown instead of leaving
-              // the seller to re-send the turn (2026-09-26).
-              setMsgs((cur) => [...cur, ...fresh.map((m) => ({ from: m.role === "bot" ? ("bot" as const) : ("owner" as const), text: String(m.text) }))]);
-              touchSession(sessionId);
+          if (d?.unbound) {
+            // Not this browser's thread (no owner cookie, no link) — or the
+            // binding reply is still in flight: the first such answer in a
+            // visit only earns a retry ~3 s later; the second in a row shows
+            // the line. Polling then slows to 30 s instead of stopping, so a
+            // later binding (the legacy grace, a texted link opened in this
+            // browser, a cookie that landed late) clears it by itself
+            // (2026-09-26).
+            unboundStreakRef.current += 1;
+            if (unboundStreakRef.current >= 2) setUnbound(true);
+            delay = unboundStreakRef.current === 1 ? 3_000 : 30_000;
+          } else {
+            unboundStreakRef.current = 0;
+            if (unboundRef.current) setUnbound(false);
+            if (Array.isArray(d?.msgs) && d.msgs.length) {
+              const fresh = (d.msgs as { role?: unknown; ts?: unknown; text?: unknown }[]).filter((m) => {
+                if (typeof m?.ts !== "number") return false;
+                const key = `${m.ts}|${String(m.text)}`;
+                if (seenSyncRef.current.has(key)) return false;
+                seenSyncRef.current.add(key);
+                return true;
+              });
+              if (fresh.length) {
+                // A bot record here is a reply whose POST response never made
+                // it back (a dropped webview fetch) — shown instead of leaving
+                // the seller to re-send the turn (2026-09-26).
+                setMsgs((cur) => [...cur, ...fresh.map((m) => ({ from: m.role === "bot" ? ("bot" as const) : ("owner" as const), text: String(m.text) }))]);
+                touchSession(sessionId);
+              }
             }
+            advanceSyncCursor(d?.lastTs, r);
+            if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
           }
-          advanceSyncCursor(d?.lastTs, r);
-          if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
         }
       } catch { /* next tick */ }
       if (stopped) return;
       const quiet = Date.now() - lastActivityRef.current > 60_000;
-      timer = setTimeout(poll, quiet ? 10_000 : 4_000);
+      timer = setTimeout(poll, delay ?? (quiet ? 10_000 : 4_000));
     };
     const onVis = () => {
       if (document.visibilityState !== "visible") return;
@@ -706,8 +723,9 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           setChatOpen(true); // the SMS said "reply in your chat" — the board would be a dead end
         }
         // A local session this browser can't prove it owns (cookie gone):
-        // nothing to restore, the line under the composer says why.
-        if (d?.unbound) setUnbound(true);
+        // nothing to restore. Counts as the visit's first unbound answer —
+        // the line waits for a second one from the poll (2026-09-26).
+        if (d?.unbound) unboundStreakRef.current += 1;
         if (Array.isArray(d?.msgs) && d.msgs.length) {
           // Owner and bot replies are keyed like the poll's, so a tick that
           // already rendered one (seller tapped before this resolved) isn't
