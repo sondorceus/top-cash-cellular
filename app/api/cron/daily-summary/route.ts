@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mailButton } from "../../../lib/email-shell";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 // Daily morning summary email — runs once a day via Vercel cron at
 // ~9am CT and emails the owner a single-page dashboard of yesterday's
@@ -39,6 +40,10 @@ function parseQuoteDollars(quote: string | null): number {
   return m ? parseInt(m[1], 10) : 0;
 }
 
+// Paging the whole feed + archive is a few 5000-row reads at up to 15 s
+// each; the default function budget is not a safe ceiling for that.
+export const maxDuration = 300;
+
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization") || "";
   const secret = process.env.CRON_SECRET;
@@ -50,16 +55,23 @@ export async function GET(req: NextRequest) {
 
   if (!MC_KEY) return NextResponse.json({ error: "MC_API_KEY not configured" }, { status: 500 });
 
+  // The whole feed plus the archive (2026-09-25). "Paid customers" and
+  // "Lifetime revenue" are all-time tiles, but they were summed over the
+  // newest 1000 comms only — a few weeks of markers — so the digest
+  // understated both a little more every day. Pages of 5000 back through the
+  // archive (each page bounded in mc-comms), then oldest-first: the single
+  // pass below needs a lead's post before its status markers. A read that
+  // broke off early still sends (the 24 h / 7 d tiles come from the newest
+  // page) but labels the lifetime tiles as partial.
   let messages: Msg[] = [];
+  let complete = true;
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=1000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (!r.ok) throw new Error(`MC ${r.status}`);
-    const j = await r.json();
-    const arr = j.messages || j;
-    if (Array.isArray(arr)) messages = arr;
+    const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 8, includeArchive: true });
+    complete = read.complete;
+    if (read.messages.length === 0) throw new Error("MC returned no messages");
+    messages = read.messages
+      .map((m): Msg => ({ id: m.id, body: m.body, timestamp: String(m.timestamp || "") }))
+      .sort((a, b) => (a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0));
   } catch (e) {
     return NextResponse.json({ error: `MC fetch failed: ${e instanceof Error ? e.message : "?"}` }, { status: 502 });
   }
@@ -186,18 +198,20 @@ export async function GET(req: NextRequest) {
     .join(" · ") || "—";
 
   // HTML email — quick scannable digest, mobile-friendly width.
-  const html = buildDigestHtml({ day, week, topDevices, allTimeRevenue, allTimePaid, dayErrors, weekErrors });
+  const html = buildDigestHtml({ day, week, topDevices, allTimeRevenue, allTimePaid, lifetimePartial: !complete, dayErrors, weekErrors });
   const errorTag = dayErrors.some((e) => e.critical) ? " 🚨" : dayErrors.length ? " ⚠️" : "";
   const goTag = day.goLocks || day.goChat ? ` · go ${day.goLocks}+${day.goChat}` : "";
   const subject = `📊 Top Cash daily${errorTag} — ${day.newLeads} new · ${day.paid} paid · $${day.revenue.toLocaleString()} (24h)${goTag}`;
 
-  // Send via Resend if configured. If not, return the payload so the
-  // operator can preview/debug.
-  if (!RESEND_KEY) {
+  // Send via Resend if configured. If not — or on ?dry=1, the same switch
+  // the other crons take, so the numbers can be checked without mailing the
+  // owner a digest — return the payload so the operator can preview/debug.
+  const dry = req.nextUrl.searchParams.get("dry") === "1";
+  if (!RESEND_KEY || dry) {
     return NextResponse.json({
       sent: false,
-      reason: "RESEND_API_KEY not configured",
-      preview: { subject, day, week, topDevices, allTimeRevenue, allTimePaid, dayErrors, weekErrors },
+      reason: dry ? "dry run" : "RESEND_API_KEY not configured",
+      preview: { subject, day, week, topDevices, allTimeRevenue, allTimePaid, lifetimePartial: !complete, dayErrors, weekErrors },
     });
   }
   try {
@@ -230,10 +244,13 @@ function buildDigestHtml(args: {
   topDevices: string;
   allTimeRevenue: number;
   allTimePaid: number;
+  // true when the comms read stopped before its own end — the lifetime
+  // tiles then cover only what was read.
+  lifetimePartial: boolean;
   dayErrors: Array<{ context: string; critical: boolean; message: string }>;
   weekErrors: Array<{ context: string; critical: boolean }>;
 }): string {
-  const { day, week, topDevices, allTimeRevenue, allTimePaid, dayErrors, weekErrors } = args;
+  const { day, week, topDevices, allTimeRevenue, allTimePaid, lifetimePartial, dayErrors, weekErrors } = args;
   // Error section — only render when there's something to flag.
   const dayCritical = dayErrors.filter((e) => e.critical).length;
   const weekCritical = weekErrors.filter((e) => e.critical).length;
@@ -295,8 +312,8 @@ ${stat("Revenue", `$${week.revenue.toLocaleString()}`, "#00c853")}
 <div style="font-size:11px;color:#888;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px">All-time</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px">
 <tr>
-${stat("Paid customers", String(allTimePaid), "#fff")}
-${stat("Lifetime revenue", `$${allTimeRevenue.toLocaleString()}`, "#00c853")}
+${stat(lifetimePartial ? "Paid customers (partial read)" : "Paid customers", String(allTimePaid), "#fff")}
+${stat(lifetimePartial ? "Lifetime revenue (partial read)" : "Lifetime revenue", `$${allTimeRevenue.toLocaleString()}`, "#00c853")}
 </tr>
 </table>
 </td></tr>
