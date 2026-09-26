@@ -15,55 +15,26 @@ type Resp = {
   recent: Send[];
 };
 
-const STORAGE_KEY = "tcc_admin_token";
+// Session path (2026-09-26): proxy.ts swaps this placeholder header for the
+// real token on a Google admin session. The token-paste unlock is gone.
+const AUTH_HEADERS = { "x-admin-token": "session" } as const;
 
 export default function SequencesAdminPage() {
-  const [token, setToken] = useState("");
-  const [tokenInput, setTokenInput] = useState("");
   const [data, setData] = useState<Resp | null>(null);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
-  useEffect(() => {
-    try { const t = localStorage.getItem(STORAGE_KEY); if (t) setToken(t); } catch {}
-  }, []);
-
-  const load = useCallback(async (t: string) => {
+  const load = useCallback(async () => {
     setLoading(true); setAuthError("");
     try {
-      const r = await fetch(`/api/admin/sequences?token=${encodeURIComponent(t)}`, { cache: "no-store" });
-      if (r.status === 401) { setAuthError("Invalid admin token."); setData(null); return; }
+      const r = await fetch(`/api/admin/sequences`, { cache: "no-store", headers: AUTH_HEADERS });
+      if (r.status === 401) { setAuthError("Not signed in — sign in with Google on /admin (your session may have expired), then reload."); setData(null); return; }
       const j = (await r.json()) as Resp;
       setData(j);
     } catch { setAuthError("Couldn't load sequences."); } finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { if (token) load(token); }, [token, load]);
-
-  const saveToken = () => {
-    const t = tokenInput.trim();
-    if (!t) return;
-    try { localStorage.setItem(STORAGE_KEY, t); } catch {}
-    setToken(t);
-  };
-
-  if (!token) {
-    return (
-      <div className="tadm-wrap">
-        <div className="tadm-page-head">
-          <h1>Sequences</h1>
-          <p>Enter the admin token to view email drips.</p>
-        </div>
-        <div className="tadm-card" style={{ maxWidth: 420 }}>
-          <h3>Unlock</h3>
-          <input value={tokenInput} onChange={(e) => setTokenInput(e.target.value)} placeholder="Admin token" type="password"
-            className="tadm-input" style={{ width: "100%", marginBottom: 10 }} />
-          <button onClick={saveToken} className="tadm-btn primary" style={{ width: "100%" }}>Unlock</button>
-          {authError && <p style={{ color: "var(--tadm-bad)", fontSize: 12.5, margin: "10px 0 0" }}>{authError}</p>}
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => { load(); }, [load]);
 
   return (
     <div className="tadm-wrap">

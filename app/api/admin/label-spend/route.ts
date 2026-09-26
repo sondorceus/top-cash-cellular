@@ -25,9 +25,10 @@ const STALE_DAYS = 4;
 const USED_STATES = new Set(["picked_up", "out_for_delivery", "delivered"]);
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 export async function GET(req: NextRequest) {

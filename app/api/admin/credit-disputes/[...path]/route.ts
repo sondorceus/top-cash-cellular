@@ -12,8 +12,8 @@ const OP_KEY = process.env.CREDIT_INTAKE_OPERATOR_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 function authed(req: NextRequest): boolean {
-  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)
-    || safeEqual(req.nextUrl.searchParams.get("token"), ADMIN_TOKEN);
+  // Header only (2026-09-26): ?token= put the admin secret in request logs.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 function cleanSearch(req: NextRequest): string {
@@ -40,7 +40,38 @@ async function forward(req: NextRequest, path: string[]) {
   if (ct) headers.set("content-type", ct);
   const cd = res.headers.get("content-disposition");
   if (cd) headers.set("content-disposition", cd);
+  // The console only ever DISPLAYS a client's SSN, so the full number never
+  // needs to reach the browser: every `ssn` field in a JSON body is masked to
+  // its last 4 before it leaves the server (2026-09-26). File downloads and
+  // other content types stream through untouched.
+  if (ct && /application\/json/i.test(ct)) {
+    const text = await res.text();
+    return new NextResponse(maskSsn(text), { status: res.status, headers });
+  }
   return new NextResponse(res.body, { status: res.status, headers });
+}
+
+function maskSsn(text: string): string {
+  const mask = (v: string): string => {
+    const d = v.replace(/\D/g, "");
+    return d.length >= 4 ? `•••-••-${d.slice(-4)}` : "••••";
+  };
+  const walk = (v: unknown): unknown => {
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === "object") {
+      const out: Record<string, unknown> = {};
+      for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+        out[k] = /^ssn$/i.test(k) && typeof val === "string" ? mask(val) : walk(val);
+      }
+      return out;
+    }
+    return v;
+  };
+  try {
+    return JSON.stringify(walk(JSON.parse(text)));
+  } catch {
+    return text; // not JSON after all — pass through
+  }
 }
 
 type Ctx = { params: Promise<{ path: string[] }> };

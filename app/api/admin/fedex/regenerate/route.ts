@@ -1,4 +1,4 @@
-// POST /api/admin/fedex/regenerate?token=<...>
+// POST /api/admin/fedex/regenerate   (x-admin-token header)
 // Body: { leadId }
 //
 // Staff-triggered manual retry of a failed FedEx label. Wraps the same
@@ -13,10 +13,8 @@ import { retryFedexLabel } from "../../../../lib/fedex-retry";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function POST(req: NextRequest) {
-  if (
-    !safeEqual(req.nextUrl.searchParams.get("token"), ADMIN_TOKEN) &&
-    !safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)
-  ) {
+  // Header only (2026-09-26): ?token= put the admin secret in request logs.
+  if (!safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   let payload: { leadId?: unknown };

@@ -58,7 +58,6 @@ export type SlotInput = {
 };
 
 const STORAGE_KEY = "tcc-slots-v1";
-const ADMIN_TOKEN_KEY = "tcc-admin-token-v1";
 
 // MC list/create endpoint returns a flat record (no per-booking detail);
 // shared normalizer keeps the Slot shape consistent for UI code.
@@ -102,20 +101,12 @@ function writeLocal(slots: Slot[]): void {
   } catch {}
 }
 
-function readAdminToken(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return window.localStorage.getItem(ADMIN_TOKEN_KEY);
-  } catch {
-    return null;
-  }
-}
-
+// Session path (2026-09-26): the value is a placeholder — proxy.ts overwrites
+// this header with the real token for a Google admin session, and without
+// one the route answers 401. The raw TCC_ADMIN_TOKEN is no longer typed into
+// (or read from) the browser.
 function adminHeaders(): Record<string, string> {
-  const h: Record<string, string> = { "Content-Type": "application/json" };
-  const t = readAdminToken();
-  if (t) h["x-admin-token"] = t;
-  return h;
+  return { "Content-Type": "application/json", "x-admin-token": "session" };
 }
 
 function genId(): string {
@@ -150,7 +141,7 @@ export async function addSlot(input: SlotInput): Promise<Slot> {
       headers: adminHeaders(),
       body: JSON.stringify(input),
     });
-    if (r.status === 401) throw new Error("Unauthorized — admin token missing or wrong, or Google session expired.");
+    if (r.status === 401) throw new Error("Not signed in — open /admin and sign in with Google (your session may have expired).");
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const s = await r.json();
     return normalizeMcSlot(s as McSlotRecord);
@@ -180,7 +171,7 @@ export async function removeSlot(id: string): Promise<void> {
       method: "DELETE",
       headers: adminHeaders(),
     });
-    if (r.status === 401) throw new Error("Unauthorized — admin token missing or wrong, or Google session expired.");
+    if (r.status === 401) throw new Error("Not signed in — open /admin and sign in with Google (your session may have expired).");
     if (!r.ok && r.status !== 404) throw new Error(`HTTP ${r.status}`);
     return;
   } catch (e) {

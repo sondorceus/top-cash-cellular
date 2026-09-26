@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { logComm } from "../../../../lib/comms-log";
+import { fetchCommsRead } from "../../../../lib/mc-comms";
+import { field, isCustomerLeadPost, latestContactUpdates, reEscape, resolveCurrentDevices, devicesTotal, parseOfferBonus, nextItemUpdateVersion, ITEM_UPDATE_BONUS_EXCLUDED } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -12,11 +14,17 @@ const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 // Quote-adjustment endpoint. Used at handoff when in-person inspection differs
 // from the customer's self-graded quote. Doesn't change the lead status — just
 // records a new offer + reason and notifies the customer.
+//
+// 2026-09-26: the customer's phone/e-mail come from the LEAD (body + latest
+// [CONTACT-UPDATE]), never from the request body; nothing is sent unless the
+// marker persisted; and an amount far above the current quote needs
+// confirmHigh — a fat-fingered "5000" for "500" went out as a binding offer.
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 async function sendSms(to: string, body: string): Promise<boolean> {
@@ -95,7 +103,10 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
-  const { leadId, newQuote, reason, name, phone, email, device } = body;
+  // `phone` / `email` may still arrive in the body from older clients; they
+  // are ignored — the send goes to the contact on the lead (below).
+  const { leadId, newQuote, reason, name, device } = body;
+  const confirmHigh = body.confirmHigh === true;
   // newQuote must be a non-negative number — but DON'T use `!newQuote`, which
   // rejects a legitimate $0 adjusted offer (device worth nothing / recycle).
   if (!leadId || !reason || typeof newQuote !== "number" || !Number.isFinite(newQuote) || newQuote < 0) {
@@ -103,6 +114,53 @@ export async function POST(req: NextRequest) {
   }
   if (!/^[\w-]{1,64}$/.test(String(leadId))) {
     return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
+  }
+  const id = String(leadId);
+
+  // The lead itself: the current quote for the sanity cap and the contact the
+  // notice goes to. Paged through the archive so an older lead still
+  // resolves; an incomplete read fails closed (nothing written, nothing sent).
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 3_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "Couldn't read the lead from Mission Control — nothing changed and nothing was sent. Try again." }, { status: 502 });
+  }
+  const leadMsg = read.messages.find((m) => m.id === id && isCustomerLeadPost(m.body) && /\[NEW BUYBACK LEAD/i.test(m.body || ""));
+  if (!leadMsg?.body) {
+    return NextResponse.json({ error: "Lead not found in Mission Control — nothing changed and nothing was sent." }, { status: 404 });
+  }
+  const leadBody = leadMsg.body;
+  const toPhone = latestContactUpdates(read.messages).get(id)?.phone || field(leadBody, "Phone") || "";
+  const toEmail = field(leadBody, "Email") || "";
+
+  // Current quote = the newest staff adjustment, else the order's device
+  // total plus the coupon/referral bonus (the figure the offer page shows).
+  const adjRe = new RegExp(`\\[QUOTE ADJUSTED:\\s*\\$?([\\d,]+(?:\\.\\d+)?)\\]\\s*\\[LEAD:\\s*${reEscape(id)}\\]`, "i");
+  let currentQuote = 0;
+  let adjAt = "";
+  for (const m of read.messages) {
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
+    const am = m.body.match(adjRe);
+    if (am && (!adjAt || m.timestamp > adjAt)) {
+      currentQuote = Math.round(parseFloat(am[1].replace(/,/g, ""))) || 0;
+      adjAt = m.timestamp;
+    }
+  }
+  if (!adjAt) {
+    const devices = resolveCurrentDevices(leadBody, read.messages, id);
+    const bonus = nextItemUpdateVersion(read.messages, id) >= ITEM_UPDATE_BONUS_EXCLUDED ? parseOfferBonus(leadBody) : 0;
+    currentQuote = devicesTotal(devices) + bonus;
+  }
+  // Sanity cap: more than double (or $500 over) the current quote, or any
+  // amount over $10,000, needs confirmHigh from the board.
+  const highCap = Math.max(2 * currentQuote, currentQuote + 500);
+  if (!confirmHigh && ((currentQuote > 0 && newQuote > highCap) || newQuote > 10000)) {
+    return NextResponse.json({
+      error: currentQuote > 0
+        ? `New offer $${newQuote} is far above the current $${currentQuote} — confirm the amount to send it.`
+        : `New offer $${newQuote} is above $10,000 — confirm the amount to send it.`,
+      needsConfirmHigh: true,
+      currentQuote,
+    }, { status: 422 });
   }
 
   // Sanitize each field that lands in the MC marker body — strip
@@ -125,17 +183,24 @@ export async function POST(req: NextRequest) {
     });
     mcOk = r.ok;
   } catch {}
+  // Nothing persisted → say so, BEFORE any text or e-mail goes out. This used
+  // to answer 200 with mcOk:false and still notify: the board reverted on the
+  // next poll, staff re-sent, and the customer got a second notice for a
+  // number the offer page never showed. Mirrors the status route. 2026-09-26.
+  if (!mcOk) {
+    return NextResponse.json({ error: "Not saved — Mission Control refused the update. Nothing was sent to the customer; try again." }, { status: 502 });
+  }
 
   const first = name?.split(" ")[0] || "there";
   const dev = device || "your device";
   const smsBody = `Top Cash: Hi ${first}, your offer for ${dev} was adjusted to $${newQuote} — ${reason}. Reply or email support@topcashcellular.com with questions.`;
 
   const [smsSent, emailSent] = await Promise.all([
-    phone ? sendSms(phone, smsBody) : Promise.resolve(false),
-    email ? emailAdjust(email, name, device, newQuote, reason) : Promise.resolve(false),
+    toPhone ? sendSms(toPhone, smsBody) : Promise.resolve(false),
+    toEmail ? emailAdjust(toEmail, name, device, newQuote, reason) : Promise.resolve(false),
   ]);
-  if (smsSent && phone) logComm({ leadId, channel: "sms", kind: "adjust", to: phone, subject: `adjusted to $${newQuote}` });
-  if (emailSent && email) logComm({ leadId, channel: "email", kind: "adjust", to: email, subject: `adjusted to $${newQuote}` });
+  if (smsSent && toPhone) logComm({ leadId: id, channel: "sms", kind: "adjust", to: toPhone, subject: `adjusted to $${newQuote}` });
+  if (emailSent && toEmail) logComm({ leadId: id, channel: "email", kind: "adjust", to: toEmail, subject: `adjusted to $${newQuote}` });
 
-  return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, newQuote, reason });
+  return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, newQuote, reason, currentQuote });
 }

@@ -13,7 +13,7 @@ import { mailLogo, mailButton, mailDeviceImg } from "../../../../lib/email-shell
 import { safeEqual } from "../../../../lib/admin-auth";
 import { signCounterToken } from "../../../../lib/counter-token";
 import { reportError } from "../../../../lib/error-report";
-import { fetchCommsPaged } from "../../../../lib/mc-comms";
+import { fetchCommsRead } from "../../../../lib/mc-comms";
 import { isCustomerLeadPost } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -25,9 +25,10 @@ const TWILIO_FROM = process.env.TWILIO_PHONE || "";
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 async function sendSms(to: string, body: string): Promise<boolean> {
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  let body: { leadId?: string; name?: string; phone?: string; email?: string; device?: string; originalQuote?: number; offer?: number; reason?: string; deductions?: Array<{ label?: unknown; amount?: unknown }>; items?: Array<{ device?: unknown; storage?: unknown; quote?: unknown; deductions?: Array<{ label?: unknown; amount?: unknown }> }> };
+  let body: { leadId?: string; name?: string; phone?: string; email?: string; device?: string; originalQuote?: number; offer?: number; reason?: string; confirmHigh?: unknown; deductions?: Array<{ label?: unknown; amount?: unknown }>; items?: Array<{ device?: unknown; storage?: unknown; quote?: unknown; deductions?: Array<{ label?: unknown; amount?: unknown }> }> };
   try {
     body = await req.json();
   } catch {
@@ -129,26 +130,43 @@ export async function POST(req: NextRequest) {
   }
   if (!phone && !email) return NextResponse.json({ error: "phone or email required to reach customer" }, { status: 400 });
 
+  // Sanity cap (2026-09-26), the same rule as the adjust route: an offer far
+  // above the quote (or any offer over $10,000) is almost always a typo, and
+  // it reaches the customer as a binding number. The board confirms and
+  // re-sends with confirmHigh.
+  const confirmHigh = body.confirmHigh === true;
+  const highCap = Math.max(2 * roundedQuote, roundedQuote + 500);
+  if (!confirmHigh && ((roundedQuote > 0 && finalOffer > highCap) || finalOffer > 10000)) {
+    return NextResponse.json({
+      error: roundedQuote > 0
+        ? `Offer $${finalOffer} is far above the $${roundedQuote} quote — confirm the amount to send it.`
+        : `Offer $${finalOffer} is above $10,000 — confirm the amount to send it.`,
+      needsConfirmHigh: true,
+    }, { status: 422 });
+  }
+
   // Don't send a counter on a lead that's already closed — the customer would
   // get a live accept/decline link for a finished trade. Counters during
-  // inspection (shipped/received/tested) are normal and stay allowed. Fails
-  // OPEN if MC is unreachable so a transient blip doesn't block staff.
+  // inspection (shipped/received/tested) are normal and stay allowed.
   // Paged through the archive: a single limit=1000 slice is ~3 days, so a
-  // lead paid last week could still be sent a counter. Empty = MC down.
-  try {
-    const msgs = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, sinceMs: 180 * 24 * 3600_000, pageSize: 5000, maxPages: 4 });
-    if (msgs.length > 0) {
-      let curStatus = "", curAt = "";
-      for (const m of msgs) {
-        if (isCustomerLeadPost(m.body)) continue; // a status line typed into a lead is forged
-        const sm = m.body?.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
-        if (sm && (!curAt || m.timestamp > curAt)) { curStatus = sm[1].toLowerCase(); curAt = m.timestamp; }
-      }
-      if (["paid", "met", "rejected"].includes(curStatus)) {
-        return NextResponse.json({ error: `Can't send a counter — this lead is already ${curStatus}.` }, { status: 409 });
-      }
+  // lead paid last week could still be sent a counter. Fails CLOSED
+  // (2026-09-26): an unreadable feed used to let the counter through, so an
+  // MC blip could send a live accept link on a paid trade.
+  const feed = await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, sinceMs: 180 * 24 * 3600_000, pageSize: 5000, maxPages: 4 });
+  if (!feed.complete || feed.messages.length === 0) {
+    return NextResponse.json({ error: "Couldn't read the lead's status from Mission Control — no offer was sent. Try again." }, { status: 502 });
+  }
+  {
+    let curStatus = "", curAt = "";
+    for (const m of feed.messages) {
+      if (isCustomerLeadPost(m.body)) continue; // a status line typed into a lead is forged
+      const sm = m.body?.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
+      if (sm && (!curAt || m.timestamp > curAt)) { curStatus = sm[1].toLowerCase(); curAt = m.timestamp; }
     }
-  } catch { /* MC read failed — allow the counter rather than block staff */ }
+    if (["paid", "met", "rejected"].includes(curStatus)) {
+      return NextResponse.json({ error: `Can't send a counter — this lead is already ${curStatus}.` }, { status: 409 });
+    }
+  }
 
   const token = signCounterToken({
     leadId,

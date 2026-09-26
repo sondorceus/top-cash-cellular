@@ -11,9 +11,10 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
@@ -21,7 +22,9 @@ export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: stri
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { id } = await ctx.params;
-  if (!id || !/^[\w-]{4,64}$/.test(id)) {
+  // {4,96} matches the POST route — the payout panel's `sale-lead-<id>` rows
+  // must be deletable too (2026-09-26).
+  if (!id || !/^[\w-]{4,96}$/.test(id)) {
     return NextResponse.json({ error: "Invalid id" }, { status: 400 });
   }
   try {

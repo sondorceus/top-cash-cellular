@@ -11,8 +11,8 @@ import { callAI } from "../../../lib/ai-gateway";
 // when a per-cell margin chip looks suspicious (e.g. the mbp13m1
 // -82% margin that fell out of the loss-risk review on 2026-05-19).
 //
-//   GET /api/admin/ai-price-check?token=<TCC_ADMIN_TOKEN>
-//        &model=iPhone+17+Pro+Max&storage=256&condition=Excellent
+//   GET /api/admin/ai-price-check   (x-admin-token header)
+//        ?model=iPhone+17+Pro+Max&storage=256&condition=Excellent
 //        &carrier=Unlocked&payout=712
 //
 // Reads as a one-shot since admin uses it interactively. Uses Sonnet
@@ -22,7 +22,9 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;
-  if (!safeEqual(q.get("token"), ADMIN_TOKEN)) {
+  // Header only (2026-09-26): this route read ONLY ?token=, so every call put
+  // the admin secret in request logs. The proxy-injected header works here now.
+  if (!safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const model = q.get("model");

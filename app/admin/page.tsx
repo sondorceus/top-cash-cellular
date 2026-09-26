@@ -318,51 +318,9 @@ export default function AdminPage() {
   // row in the sales ledger (cost=amount, device=lead's corrected
   // device, leadId=lead.id) — saves an open-another-tab step.
   const [payoutAlsoLogResale, setPayoutAlsoLogResale] = useState<boolean>(true);
-  // ID-capture (Texas Secondhand Dealer Act). When `idCaptureId === lead.id`
-  // the lead row renders the inline capture form.
-  const [idCaptureId, setIdCaptureId] = useState<string | null>(null);
-  const [idType, setIdType] = useState<string>("DL");
-  const [idNumber, setIdNumber] = useState<string>("");
-  const [idDob, setIdDob] = useState<string>("");
-  const [idFile, setIdFile] = useState<File | null>(null);
-  const [idUploadingId, setIdUploadingId] = useState<string | null>(null);
-  const [idErrorById, setIdErrorById] = useState<Record<string, string>>({});
-  const submitIdCapture = async (lead: Lead) => {
-    if (!token) return;
-    if (!idType || !idNumber.trim() || !idDob || !idFile) {
-      setIdErrorById((s) => ({ ...s, [lead.id]: "Type, ID number, DOB, and photo all required" }));
-      return;
-    }
-    setIdUploadingId(lead.id);
-    setIdErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
-    try {
-      const form = new FormData();
-      form.append("leadId", lead.id);
-      form.append("idType", idType);
-      form.append("idNumber", idNumber.trim());
-      form.append("dob", idDob);
-      form.append("photo", idFile);
-      const r = await adminWrite(`/api/admin/leads/id-capture?token=${encodeURIComponent(token)}`, {
-        method: "POST",
-        body: form,
-      });
-      const d = await r.json().catch(() => ({}));
-      if (!r.ok) {
-        setIdErrorById((s) => ({ ...s, [lead.id]: d.error || `HTTP ${r.status}` }));
-      } else {
-        setLeads((cur) => cur.map((l) => l.id === lead.id ? {
-          ...l,
-          idCaptured: { type: d.idType, last4: d.last4, dobYear: d.dobYear, photoUrl: d.photoUrl, at: new Date().toISOString() },
-        } : l));
-        setIdCaptureId(null);
-        setIdNumber(""); setIdDob(""); setIdFile(null);
-      }
-    } catch (e) {
-      setIdErrorById((s) => ({ ...s, [lead.id]: e instanceof Error ? e.message : "Network error" }));
-    } finally {
-      setIdUploadingId(null);
-    }
-  };
+  // ID capture (Texas Secondhand Dealer Act) is intentionally absent: the
+  // route never existed and its form sat behind `false &&`. Removed
+  // 2026-09-26; it returns with signed-URL storage.
   const [rejectionReason, setRejectionReason] = useState<string>("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [noteOpenId, setNoteOpenId] = useState<string | null>(null);
@@ -489,9 +447,9 @@ export default function AdminPage() {
     if (!token) return;
     setFraudCheckingId(lead.id);
     try {
-      const r = await fetch(`/api/admin/ai-fraud-check?token=${encodeURIComponent(token)}`, {
+      const r = await fetch(`/api/admin/ai-fraud-check`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({
           leadId: lead.id,
           name: lead.name,
@@ -536,22 +494,40 @@ export default function AdminPage() {
     if (!token) return;
     const newQuote = parseInt(adjustQuote.replace(/\D/g, ""), 10);
     if (!newQuote || isNaN(newQuote) || !adjustReason.trim()) return;
+    // A >30 % move from the number on the row gets a confirm before it goes
+    // out (2026-09-26) — the customer receives it as a binding "Updated
+    // Offer". Confirming here also satisfies the route's high-amount cap.
+    const currentQuote = parseDollarAmount(lead.quote) || lead.totalPayout || 0;
+    let confirmHigh = false;
+    if (currentQuote > 0 && Math.abs(newQuote - currentQuote) / currentQuote > 0.3) {
+      const pct = Math.round((Math.abs(newQuote - currentQuote) / currentQuote) * 100);
+      if (!confirm(`New offer $${newQuote} is ${pct}% ${newQuote > currentQuote ? "above" : "below"} the current $${currentQuote}. Send it to the customer?`)) return;
+      confirmHigh = true;
+    }
     setAdjustSavingId(lead.id);
     try {
-      const r = await adminWrite(`/api/admin/leads/adjust?token=${encodeURIComponent(token)}`, {
+      // The route resolves the customer's phone/e-mail from the lead itself.
+      const post = (high: boolean) => adminWrite(`/api/admin/leads/adjust`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({
           leadId: lead.id,
           newQuote,
           reason: adjustReason.trim(),
           name: lead.name,
-          phone: lead.phone,
-          email: lead.email,
           device: lead.model || lead.device,
+          ...(high ? { confirmHigh: true } : {}),
         }),
       });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      let r = await post(confirmHigh);
+      let d = await r.json().catch(() => ({}));
+      // The route's own cap (against the quote IT resolved) may still ask.
+      if (r.status === 422 && d?.needsConfirmHigh) {
+        if (!confirm(`${d.error}\n\nSend $${newQuote} anyway?`)) return;
+        r = await post(true);
+        d = await r.json().catch(() => ({}));
+      }
+      if (!r.ok) throw new Error(typeof d?.error === "string" ? d.error : `HTTP ${r.status}`);
       setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, quote: `$${newQuote}` } : l)));
       setAdjustingId(null);
       setAdjustQuote("");
@@ -567,7 +543,7 @@ export default function AdminPage() {
     if (!token || !lead.phone) return;
     setSmsThreads((prev) => ({ ...prev, [lead.id]: { loading: true } }));
     try {
-      const r = await adminWrite(`/api/admin/leads/sms?token=${encodeURIComponent(token)}&phone=${encodeURIComponent(lead.phone)}`, { cache: "no-store" });
+      const r = await adminWrite(`/api/admin/leads/sms?phone=${encodeURIComponent(lead.phone)}`, { cache: "no-store", headers: { "x-admin-token": token } });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const d = await r.json();
       setSmsThreads((prev) => ({ ...prev, [lead.id]: { loading: false, messages: d.messages || [] } }));
@@ -586,8 +562,16 @@ export default function AdminPage() {
 
   const runBulkStatus = async (newStatus: string) => {
     if (!token || !newStatus || selectedIds.size === 0) return;
-    setBulkSaving(true);
+    // Paid/met never go through bulk (payout panel only) — belt and braces
+    // for a stale menu. Confirm before the loop (2026-09-26): one mis-tap on
+    // the phone used to text N customers a status they never reached.
+    if (newStatus === "paid" || newStatus === "met") {
+      setError("Mark Paid / Met one lead at a time — use Complete & send receipt.");
+      return;
+    }
     const ids = Array.from(selectedIds);
+    if (!confirm(`Mark ${ids.length} lead${ids.length === 1 ? "" : "s"} as ${statusMeta(newStatus).label}?\n\nEach customer gets the matching text/e-mail.`)) return;
+    setBulkSaving(true);
     setBulkProgress({ done: 0, total: ids.length });
     let failed = 0; // saves the server refused — the rows keep their old status
     try {
@@ -600,9 +584,9 @@ export default function AdminPage() {
           // — see operator for details" went out to customers as the reason
           // they were turned down. Without one the route sends its generic
           // "there's an issue — email support" wording.
-          const r = await adminWrite(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
+          const r = await adminWrite(`/api/admin/leads/status`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/json", "x-admin-token": token },
             body: JSON.stringify({
               leadId: lead.id,
               status: newStatus,
@@ -636,6 +620,14 @@ export default function AdminPage() {
     const ids = Array.from(selectedIds);
     const ok = confirm(`Move ${ids.length} selected lead${ids.length === 1 ? "" : "s"} to Trash?\n\nThey'll be hidden from the Active feed but recoverable from the Trash view. MC comms history is permanent regardless.`);
     if (!ok) return;
+    // Paid/met leads in the selection need a reason (the route insists,
+    // 2026-09-26) — one prompt covers them all.
+    const paidCount = ids.filter((id) => { const s = leads.find((l) => l.id === id)?.status; return s === "paid" || s === "met"; }).length;
+    let paidReason = "";
+    if (paidCount > 0) {
+      paidReason = window.prompt(`${paidCount} of these lead${paidCount === 1 ? " is" : "s are"} PAID/MET. Why trash them? (5+ characters)`)?.trim() || "";
+      if (paidReason.length < 5) { if (paidReason) setError("Reason must be at least 5 characters."); return; }
+    }
     setBulkSaving(true);
     setBulkProgress({ done: 0, total: ids.length });
     try {
@@ -643,10 +635,11 @@ export default function AdminPage() {
       for (let i = 0; i < ids.length; i++) {
         const lead = leads.find((l) => l.id === ids[i]);
         try {
-          const r = await adminWrite(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
+          const isPaidLead = lead?.status === "paid" || lead?.status === "met";
+          const r = await adminWrite(`/api/admin/leads/delete`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ leadId: ids[i], reason: `bulk delete via admin UI${lead?.name ? ` for ${lead.name}` : ""}` }),
+            headers: { "Content-Type": "application/json", "x-admin-token": token },
+            body: JSON.stringify({ leadId: ids[i], reason: `${isPaidLead && paidReason ? `${paidReason} — ` : ""}bulk delete via admin UI${lead?.name ? ` for ${lead.name}` : ""}` }),
           });
           // Only treat it as deleted if the server actually accepted it.
           // Previously a 502/503 (MC down / key missing) still ran the
@@ -699,9 +692,9 @@ export default function AdminPage() {
     setEmailSendingId(lead.id);
     setEmailErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
     try {
-      const r = await adminWrite(`/api/admin/leads/email?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/email`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({
           leadId: lead.id,
           to: lead.email,
@@ -805,6 +798,24 @@ export default function AdminPage() {
     });
   }, [counterOfferLead, counterOfferAmount, counterOfferDeductions]);
 
+  // POST a counter/final offer; on the route's high-amount 422 (2026-09-26),
+  // confirm and re-send with confirmHigh. `cancelled` = staff said no.
+  const postCounterOffer = useCallback(async (payload: Record<string, unknown>) => {
+    const send = (high: boolean) => adminWrite(`/api/admin/leads/counter-offer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-token": token },
+      body: JSON.stringify(high ? { ...payload, confirmHigh: true } : payload),
+    });
+    let r = await send(false);
+    let d = await r.json().catch(() => ({}));
+    if (r.status === 422 && d?.needsConfirmHigh) {
+      if (!confirm(`${d.error}\n\nSend it anyway?`)) return { r, d, cancelled: true };
+      r = await send(true);
+      d = await r.json().catch(() => ({}));
+    }
+    return { r, d, cancelled: false };
+  }, [token, adminWrite]);
+
   const submitCounterOffer = useCallback(async () => {
     if (!counterOfferLead || !token) return;
 
@@ -837,22 +848,18 @@ export default function AdminPage() {
       setCounterOfferSending(true);
       setCounterOfferError("");
       try {
-        const r = await adminWrite(`/api/admin/leads/counter-offer`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "x-admin-token": token },
-          body: JSON.stringify({
-            leadId: counterOfferLead.id,
-            name: counterOfferLead.name,
-            phone: counterOfferLead.phone,
-            email: counterOfferLead.email,
-            device: counterOfferLead.model || counterOfferLead.device,
-            originalQuote: grandQuote,
-            offer: grandTotal,
-            reason: "",
-            items: validItems,
-          }),
+        const { r, d, cancelled } = await postCounterOffer({
+          leadId: counterOfferLead.id,
+          name: counterOfferLead.name,
+          phone: counterOfferLead.phone,
+          email: counterOfferLead.email,
+          device: counterOfferLead.model || counterOfferLead.device,
+          originalQuote: grandQuote,
+          offer: grandTotal,
+          reason: "",
+          items: validItems,
         });
-        const d = await r.json().catch(() => ({}));
+        if (cancelled) return;
         if (!r.ok) { setCounterOfferError(d.error || `HTTP ${r.status}`); return; }
         const sentAt = new Date().toISOString();
         const leadId = counterOfferLead.id;
@@ -906,22 +913,18 @@ export default function AdminPage() {
     setCounterOfferSending(true);
     setCounterOfferError("");
     try {
-      const r = await adminWrite(`/api/admin/leads/counter-offer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-admin-token": token },
-        body: JSON.stringify({
-          leadId: counterOfferLead.id,
-          name: counterOfferLead.name,
-          phone: counterOfferLead.phone,
-          email: counterOfferLead.email,
-          device: counterOfferLead.model || counterOfferLead.device,
-          originalQuote,
-          offer,
-          reason,
-          ...(isItemized ? { deductions: cleanDeductions } : {}),
-        }),
+      const { r, d, cancelled } = await postCounterOffer({
+        leadId: counterOfferLead.id,
+        name: counterOfferLead.name,
+        phone: counterOfferLead.phone,
+        email: counterOfferLead.email,
+        device: counterOfferLead.model || counterOfferLead.device,
+        originalQuote,
+        offer,
+        reason,
+        ...(isItemized ? { deductions: cleanDeductions } : {}),
       });
-      const d = await r.json().catch(() => ({}));
+      if (cancelled) return;
       if (!r.ok) {
         setCounterOfferError(d.error || `HTTP ${r.status}`);
         return;
@@ -941,7 +944,7 @@ export default function AdminPage() {
     } finally {
       setCounterOfferSending(false);
     }
-  }, [counterOfferLead, counterOfferAmount, counterOfferReason, counterOfferDeductions, counterOfferItems, token, closeCounterOffer]);
+  }, [counterOfferLead, counterOfferAmount, counterOfferReason, counterOfferDeductions, counterOfferItems, token, closeCounterOffer, postCounterOffer]);
 
   // Tracks per-lead "Copied!" flash for the review-link button.
   // Skywalker 2026-05-17: "give them to ask for reviews" — admin needs a
@@ -953,7 +956,7 @@ export default function AdminPage() {
     // active token exists (lead never marked paid, or token already
     // used, or expired), refuse and explain. Skywalker 2026-05-18.
     if (!lead.reviewToken) {
-      alert("No active review link for this lead. Mark the lead as Paid or Met first to generate one. If the customer already used their link, mark Paid again to mint a fresh one.");
+      alert("No active review link for this lead. Mark the lead as Paid or Met first to generate one. A used or expired link can't be re-minted from here.");
       return;
     }
     const params = new URLSearchParams();
@@ -1029,9 +1032,9 @@ export default function AdminPage() {
     setLabelGeneratingId(lead.id);
     setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
     try {
-      const r = await adminWrite(`/api/admin/leads/label?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/label`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({
           leadId: lead.id,
           deviceLabel: lead.model || lead.device,
@@ -1093,9 +1096,9 @@ export default function AdminPage() {
     setLabelGeneratingId(lead.id);
     setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
     try {
-      const r = await fetch(`/api/admin/fedex/regenerate?token=${encodeURIComponent(token)}`, {
+      const r = await fetch(`/api/admin/fedex/regenerate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({ leadId: lead.id }),
       });
       const d = await r.json().catch(() => ({}));
@@ -1139,9 +1142,9 @@ export default function AdminPage() {
     setLabelResendingId(lead.id);
     setLabelErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; });
     try {
-      const r = await adminWrite(`/api/admin/leads/label-resend?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/label-resend`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({
           leadId: lead.id,
           to: lead.email,
@@ -1170,9 +1173,9 @@ export default function AdminPage() {
     if (!token || !noteDraft.trim()) return;
     setNoteSavingId(lead.id);
     try {
-      const r = await adminWrite(`/api/admin/leads/note?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/note`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({ leadId: lead.id, note: noteDraft }),
       });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -1219,28 +1222,29 @@ export default function AdminPage() {
   // legacy token paste UI if /api/auth/me is somehow unreachable.
   const [googleUser, setGoogleUser] = useState<{ email: string; name?: string; picture?: string } | null>(null);
 
-  // Hydrate token from URL or localStorage, AND auto-unlock via Google
-  // session if present. proxy.ts injects x-admin-token server-side when
-  // the session is admin, so any non-empty client token works — we use
+  // Unlock via the Google session. proxy.ts injects x-admin-token server-side
+  // when the session is admin, so any non-empty client token works — we use
   // a "google" sentinel just to satisfy the existing if-token guards.
+  //
+  // 2026-09-26: the raw TCC_ADMIN_TOKEN no longer lives in this browser. It
+  // used to be read from ?token=, kept in localStorage and appended to every
+  // request URL (the 5 s poll included) — the master secret in request logs
+  // and browser history. A token an older build stored is used once, in
+  // memory, and removed; an admin session replaces it with the sentinel.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const urlToken = new URLSearchParams(window.location.search).get("token");
+    const LEGACY_KEYS = ["tcc-admin-token", "tcc-admin-token-v1", "tcc_admin_token"];
     const stored = localStorage.getItem("tcc-admin-token");
-    if (urlToken) {
-      setToken(urlToken);
-      localStorage.setItem("tcc-admin-token", urlToken);
-    } else if (stored) {
-      setToken(stored);
-    }
+    if (stored) setToken(stored);
+    for (const k of LEGACY_KEYS) { try { localStorage.removeItem(k); } catch {} }
     fetch("/api/auth/me", { cache: "no-store" })
       .then((r) => r.json())
       .then((me) => {
         if (me?.authenticated && me?.isAdmin) {
           setGoogleUser({ email: me.email, name: me.name, picture: me.picture });
-          // If no legacy token already loaded, use the sentinel so the
-          // existing fetches fire (proxy injects the real header).
-          setToken((t) => t || "google");
+          // The session carries the real token — the sentinel replaces any
+          // legacy value so the secret is never sent from here again.
+          setToken("google");
         }
       })
       .catch(() => {});
@@ -1255,11 +1259,11 @@ export default function AdminPage() {
       // needs-review is a client-side filter on top of the active list,
       // so coerce to "active" for the backend fetch.
       const wireView = view === "needs-review" ? "active" : view;
-      const r = await fetch(`/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}${freshParam()}`, { cache: "no-store" });
+      // Header only (2026-09-26): the token never rides in the URL.
+      const r = await fetch(`/api/admin/leads?view=${wireView}&internal=${showInternal ? "show" : "hide"}${freshParam()}`, { cache: "no-store", headers: { "x-admin-token": token } });
       if (r.status === 401) {
-        setError("Invalid token");
+        setError("Not signed in — sign in with Google (or paste the recovery token).");
         setToken("");
-        localStorage.removeItem("tcc-admin-token");
         return;
       }
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -1318,17 +1322,25 @@ export default function AdminPage() {
     const label = lead.name || lead.email || lead.phone || lead.id;
     const isFinished = lead.status === "paid" || lead.status === "met" || lead.status === "rejected";
     const ttlNote = isFinished
-      ? "Stays in Trash for 24 hours, then auto-purges."
+      ? "Finished lead — leaves the Active/All views after 24 hours but stays in Trash until restored."
       : "Active lead — stays in Trash indefinitely (never auto-purges). MC comms history is permanent regardless.";
     const ok = confirm(`Move "${label}" to Trash?\n\n${ttlNote}\n\nIt will be hidden from the Active feed but recoverable from the Trash view.`);
     if (!ok) return;
+    // A paid/met lead needs a reason (the route insists, 2026-09-26): it is
+    // money already paid, and trashing it hides it from the roster at once.
+    let reason = `deleted via admin UI for ${label}`;
+    if (lead.status === "paid" || lead.status === "met") {
+      const why = window.prompt(`This lead is ${lead.status.toUpperCase()}. Why move it to Trash? (5+ characters)`)?.trim() || "";
+      if (why.length < 5) { if (why) setError("Reason must be at least 5 characters."); return; }
+      reason = `${why} (deleted via admin UI for ${label})`;
+    }
     setDeletingId(lead.id);
     setError(null);
     try {
-      const r = await adminWrite(`/api/admin/leads/delete?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/delete`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ leadId: lead.id, reason: `deleted via admin UI for ${label}` }),
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
+        body: JSON.stringify({ leadId: lead.id, reason }),
       });
       if (!r.ok) {
         // Surface the server's error body (e.g. "MC API key not
@@ -1362,9 +1374,9 @@ export default function AdminPage() {
     setRestoringId(lead.id);
     setError(null);
     try {
-      const r = await adminWrite(`/api/admin/leads/restore?token=${encodeURIComponent(token)}`, {
+      const r = await adminWrite(`/api/admin/leads/restore`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({ leadId: lead.id }),
       });
       if (!r.ok) {
@@ -1412,8 +1424,8 @@ export default function AdminPage() {
       try {
         const wireView = view === "needs-review" ? "active" : view;
         const r = await fetch(
-          `/api/admin/leads?token=${encodeURIComponent(token)}&view=${wireView}&internal=${showInternal ? "show" : "hide"}${freshParam()}`,
-          { cache: "no-store", signal: ac.signal },
+          `/api/admin/leads?view=${wireView}&internal=${showInternal ? "show" : "hide"}${freshParam()}`,
+          { cache: "no-store", signal: ac.signal, headers: { "x-admin-token": token } },
         );
         if (!r.ok) return;
         const d = await r.json();
@@ -1479,11 +1491,13 @@ export default function AdminPage() {
     return () => clearTimeout(t);
   }, [recentlyChanged]);
 
+  // Env-disaster recovery only: the pasted token lives in memory for this
+  // page load and goes out as a header — never in a URL, never persisted.
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!tokenInput.trim()) return;
     setToken(tokenInput.trim());
-    localStorage.setItem("tcc-admin-token", tokenInput.trim());
+    setTokenInput("");
   };
 
   const handleLogout = () => {
@@ -1788,9 +1802,9 @@ export default function AdminPage() {
       return s + v;
     }, 0), [historyLeads]);
 
-  const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string; amount?: number }) => {
-    if (!token || newStatus === lead.status) return;
-    if (savingIdsRef.current.has(lead.id)) return; // a save for this lead is already running
+  const saveStatus = async (lead: Lead, newStatus: string, reason?: string, payoutConfirmation?: { method: string; reference: string; note: string; amount?: number }): Promise<{ ok: boolean; unchanged?: boolean }> => {
+    if (!token || newStatus === lead.status) return { ok: false };
+    if (savingIdsRef.current.has(lead.id)) return { ok: false }; // a save for this lead is already running
     savingIdsRef.current.add(lead.id);
     setSavingId(lead.id);
     // Only pass shipAddress when the lead is a SHIPPING handoff AND
@@ -1805,9 +1819,11 @@ export default function AdminPage() {
       if (parsed) shipAddressPayload = parsed;
     }
     try {
-      const r = await adminWrite(`/api/admin/leads/status?token=${encodeURIComponent(token)}`, {
+      // The route resolves the customer's phone/e-mail from the lead itself;
+      // the fields below are display strings for the receipt copy.
+      const post = (force: boolean) => adminWrite(`/api/admin/leads/status`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": token },
         body: JSON.stringify({
           leadId: lead.id,
           status: newStatus,
@@ -1821,13 +1837,32 @@ export default function AdminPage() {
           rejectionReason: newStatus === "rejected" ? reason : undefined,
           shipAddress: shipAddressPayload,
           payoutConfirmation,
+          ...(force ? { force: true } : {}),
         }),
       });
-      const d = await r.json().catch(() => ({}));
+      let r = await post(false);
+      let d = await r.json().catch(() => ({}));
+      // 409 = the lead is already paid/met/rejected and this would reopen it
+      // (2026-09-26). Reopening is a deliberate override, so ask first.
+      if (r.status === 409 && d?.needsForce) {
+        if (!confirm(`${d.error}\n\nReopen it anyway?`)) {
+          setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; });
+          return { ok: false };
+        }
+        r = await post(true);
+        d = await r.json().catch(() => ({}));
+      }
       // The route answers 502 when Mission Control refused the update (and
       // sends nothing to the customer); an older build answered 200 with
       // mcOk:false — treat both as not saved.
       if (!r.ok || d?.mcOk === false) throw new Error(typeof d?.error === "string" ? d.error : `Not saved (HTTP ${r.status})`);
+      // Already in this status server-side (a double-tap, or the cron got
+      // there first): nothing was written or sent — just settle the row.
+      if (d?.unchanged) {
+        setLeads((cur) => cur.map((l) => (l.id === lead.id ? { ...l, status: newStatus } : l)));
+        setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; });
+        return { ok: true, unchanged: true };
+      }
       if (typeof d.receiptText === "string" && d.receiptText) {
         const rc = { leadId: lead.id, name: lead.name || "Seller", phone: (lead.phone || "").replace(/[^0-9+]/g, ""), text: d.receiptText, sms: !!d.smsSent, email: !!d.emailSent, hasEmail: !!lead.email };
         setReceipts((cur) => [rc, ...cur.filter((x) => x.leadId !== lead.id)]);
@@ -1836,10 +1871,12 @@ export default function AdminPage() {
       setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; });
       setSavedFlash((s) => ({ ...s, [lead.id]: { sms: !!d.smsSent, email: !!d.emailSent } }));
       setTimeout(() => setSavedFlash((s) => ({ ...s, [lead.id]: null })), 3500);
+      return { ok: true };
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
       // The dropdown must not keep showing a status that didn't save.
       setPendingStatus((p) => { const c = { ...p }; delete c[lead.id]; return c; });
+      return { ok: false };
     } finally {
       savingIdsRef.current.delete(lead.id);
       setSavingId(null);
@@ -1873,8 +1910,12 @@ export default function AdminPage() {
     // parseDollarAmount handles comma-grouped quotes ($1,250) that the old
     // /\d+/ regex collapsed to $1 — that was why Nick's $570 mark-paid ended
     // up logged as $1 cash.
+    // An accepted counter-offer is the agreed number (2026-09-26): seeding
+    // the original quote here meant paying the pre-negotiation figure.
     const seedAmount =
-      (lead.totalPayout && lead.totalPayout > 0)
+      (lead.counterOffer?.status === "accepted" && lead.counterOffer.offer > 0)
+        ? String(lead.counterOffer.offer)
+        : (lead.totalPayout && lead.totalPayout > 0)
         ? String(lead.totalPayout)
         : (() => {
             const n = parseDollarAmount(lead.quote);
@@ -1907,8 +1948,9 @@ export default function AdminPage() {
   // Token gate. proxy.ts now bounces unauthorized users to Google sign-in
   // before this page even renders. The form below stays as a fallback for
   // direct-token entry (env-disaster recovery): if Google OAuth is broken
-  // or the email isn't allowlisted, the operator can still get in with
-  // the legacy ADMIN_TOKEN by appending ?token=... to the URL.
+  // or the email isn't allowlisted, the operator can still get in by pasting
+  // the legacy ADMIN_TOKEN here — it is sent as a header for this page load
+  // only, never put in a URL or localStorage (2026-09-26).
   if (!token) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-black text-white px-4">
@@ -2032,7 +2074,7 @@ export default function AdminPage() {
               <button
                 onClick={() => { if (view !== "trash") { setLeads([]); setView("trash"); } }}
                 className={`px-3 py-2 transition cursor-pointer border-l border-white/10 ${view === "trash" ? "bg-amber-500/15 text-amber-300" : "text-[#dcdcdc] hover:bg-white/10"}`}
-                title="Show trashed leads — active leads stay indefinitely; finished leads (paid/met/rejected) auto-purge after 24h"
+                title="Show trashed leads — everything trashed stays here until restored; finished leads (paid/met/rejected) leave the Active view after 24h"
               >🗑 Trash</button>
             </div>
             <button
@@ -3097,110 +3139,10 @@ export default function AdminPage() {
                           )}
                         </div>
                       )}
-                      {/* ID-capture UI intentionally hidden — Skywalker
-                          2026-05-18 "we are small, can't store private
-                          info safely yet". Backend route + parser stay
-                          intact for when signed-URL storage lands. Flip
-                          NEXT_PUBLIC_TCC_ID_CAPTURE_ENABLED=true to
-                          surface this section again. */}
-                      {false && (
-                      <div className="mt-2">
-                        {lead.idCaptured ? (
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-200 border border-emerald-500/45 uppercase tracking-wider">
-                              ✓ ID · {lead.idCaptured?.type} · ****{lead.idCaptured?.last4} · DOB {lead.idCaptured?.dobYear}
-                            </span>
-                            <a
-                              href={lead.idCaptured?.photoUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/[0.06] text-[#dcdcdc] border border-white/15 hover:bg-white/[0.1] transition cursor-pointer"
-                            >
-                              View ID photo ↗
-                            </a>
-                            <button
-                              type="button"
-                              onClick={() => { setIdCaptureId(lead.id); setIdType(lead.idCaptured!.type || "DL"); setIdNumber(""); setIdDob(""); setIdFile(null); }}
-                              className="text-[10px] text-[#888] hover:text-[#dcdcdc] underline cursor-pointer"
-                              title="Re-capture (e.g. wrong photo, expired ID)"
-                            >
-                              re-capture
-                            </button>
-                          </div>
-                        ) : idCaptureId === lead.id ? (
-                          <div className="rounded-lg bg-white/[0.04] border border-amber-500/30 p-2.5 space-y-1.5 max-w-[360px]">
-                            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-300">🪪 Capture seller ID</p>
-                            <p className="text-[10px] text-[#bdbdbd] leading-snug">Texas Secondhand Dealer Act — required for resale. Photo + DOB + ID# stored 2 years. Never displayed to customer.</p>
-                            <select
-                              value={idType}
-                              onChange={(e) => setIdType(e.target.value)}
-                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853] cursor-pointer"
-                            >
-                              <option value="DL">Driver&apos;s License</option>
-                              <option value="STATE_ID">State ID</option>
-                              <option value="PASSPORT">Passport</option>
-                              <option value="MILITARY">Military ID</option>
-                              <option value="OTHER">Other government ID</option>
-                            </select>
-                            <input
-                              type="text"
-                              value={idNumber}
-                              onChange={(e) => setIdNumber(e.target.value)}
-                              placeholder="ID number (full — only last 4 shown later)"
-                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
-                            />
-                            <input
-                              type="date"
-                              value={idDob}
-                              onChange={(e) => setIdDob(e.target.value)}
-                              className="w-full bg-black/40 border border-white/10 rounded px-2 py-1.5 text-xs text-white focus:outline-none focus:border-[#00c853]"
-                            />
-                            <input
-                              type="file"
-                              accept="image/*"
-                              capture="environment"
-                              onChange={(e) => setIdFile(e.target.files?.[0] || null)}
-                              className="w-full text-[11px] text-[#dcdcdc] file:mr-2 file:px-2 file:py-1 file:rounded file:border-0 file:bg-[#00c853]/20 file:text-[#7be8a8] file:cursor-pointer cursor-pointer"
-                            />
-                            {idErrorById[lead.id] && (
-                              <p className="text-[10px] text-red-300">⚠️ {idErrorById[lead.id]}</p>
-                            )}
-                            <div className="flex gap-1.5">
-                              <button
-                                type="button"
-                                onClick={() => submitIdCapture(lead)}
-                                disabled={idUploadingId === lead.id}
-                                className="flex-1 px-2 py-1.5 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-                              >
-                                {idUploadingId === lead.id ? "Uploading…" : "Save ID"}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => { setIdCaptureId(null); setIdNumber(""); setIdDob(""); setIdFile(null); setIdErrorById((s) => { const c = { ...s }; delete c[lead.id]; return c; }); }}
-                                className="px-2 py-1.5 bg-white/5 border border-white/10 rounded text-[11px] text-[#d4d4d4] hover:bg-white/10 cursor-pointer"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          (() => {
-                            const quoteN = parseInt((lead.quote || lead.totalPayout?.toString() || "").replace(/[^\d]/g, "")) || 0;
-                            const required = quoteN >= 500;
-                            return (
-                              <button
-                                type="button"
-                                onClick={() => { setIdCaptureId(lead.id); setIdType("DL"); setIdNumber(""); setIdDob(""); setIdFile(null); }}
-                                className={`text-[10px] font-bold px-2 py-1 rounded border transition cursor-pointer ${required ? "bg-amber-500/15 text-amber-200 border-amber-500/40 hover:bg-amber-500/25" : "bg-white/5 text-[#bdbdbd] border-white/10 hover:bg-white/10"}`}
-                                title={required ? "Quote ≥ $500 — Texas Secondhand Dealer Act requires ID capture before payout" : "Optional ID capture for compliance records"}
-                              >
-                                🪪 {required ? "ID REQUIRED" : "Capture ID"}{required ? " (≥$500)" : ""}
-                              </button>
-                            );
-                          })()
-                        )}
-                      </div>
-                      )}
+                      {/* ID capture (Texas Secondhand Dealer Act) removed
+                          2026-09-26 — the route never existed and the form
+                          was dead code behind `false &&`. It returns with
+                          signed-URL storage. */}
                       {/* Customer review attached to this lead. Surfaces
                           inline so staff sees exactly what the customer
                           said + the rating without leaving the row. */}
@@ -3650,8 +3592,10 @@ export default function AdminPage() {
                           "save my quotes for 24hr". */}
                       {view === "trash" ? (
                         <div className="mt-1.5 space-y-1">
-                          {typeof lead.hoursToAutoPurge === "number" ? (
-                            <p className="text-[10px] text-amber-300">⏳ Auto-purge in {lead.hoursToAutoPurge}h</p>
+                          {lead.hoursToAutoPurge === 0 ? (
+                            <p className="text-[10px] text-amber-300">🕳 Gone from Active views — still here; Restore brings it back</p>
+                          ) : typeof lead.hoursToAutoPurge === "number" ? (
+                            <p className="text-[10px] text-amber-300">⏳ Leaves Active views in {lead.hoursToAutoPurge}h (stays in Trash)</p>
                           ) : lead.deletedAt ? (
                             <p className="text-[10px] text-[#888]">🔒 Kept indefinitely — active lead won&apos;t auto-purge</p>
                           ) : null}
@@ -3671,7 +3615,7 @@ export default function AdminPage() {
                           onClick={() => deleteLead(lead)}
                           disabled={deletingId === lead.id}
                           className="mt-1.5 text-[10px] text-[#ff8088] hover:text-[#ff5566] border border-[#ff5566]/30 hover:border-[#ff5566]/60 rounded px-2 py-1 transition cursor-pointer disabled:opacity-50"
-                          title="Move to Trash — recoverable for 24h"
+                          title="Move to Trash — recoverable from the Trash view"
                         >
                           {deletingId === lead.id ? "Trashing…" : "🗑 Trash"}
                         </button>
@@ -3885,7 +3829,7 @@ export default function AdminPage() {
                                     ? " [IMEI/serial: none — override]"
                                     : payoutImei.trim() ? ` [IMEI/serial at payout: ${payoutImei.trim().replace(/[\[\]]/g, "")}]` : "";
                                 const composedNote = `${payoutNote.trim()}${idLine}`.trim();
-                                await saveStatus(lead, payingStatus, undefined, {
+                                const saved = await saveStatus(lead, payingStatus, undefined, {
                                   method: payoutMethod,
                                   reference: payoutReference.trim(),
                                   note: composedNote,
@@ -3895,7 +3839,10 @@ export default function AdminPage() {
                                 // ledger entry. Failure here doesn't
                                 // un-mark the lead as paid — staff can
                                 // still add it manually on /admin/profit.
-                                if (payoutAlsoLogResale && amt > 0) {
+                                // Only when the status actually saved
+                                // (2026-09-26): a refused or unchanged
+                                // flip must not add a cost row.
+                                if (saved.ok && !saved.unchanged && payoutAlsoLogResale && amt > 0) {
                                   try {
                                     const dev = lead.model || lead.device || "device";
                                     const storage = lead.storage ? ` ${lead.storage}` : "";
@@ -3904,6 +3851,10 @@ export default function AdminPage() {
                                       method: "POST",
                                       headers: { "Content-Type": "application/json", ...(token ? { "x-admin-token": token } : {}) },
                                       body: JSON.stringify({
+                                        // Deterministic id: a re-save replaces
+                                        // this row instead of adding a second
+                                        // cost line (2026-09-26).
+                                        id: `sale-lead-${lead.id}`,
                                         device: `${dev}${storage}${carrier}`.trim(),
                                         platform: "eBay",  // most-common channel; editable later
                                         soldPrice: 0,      // staff fills in once resold
@@ -3917,8 +3868,12 @@ export default function AdminPage() {
                                     });
                                   } catch { /* surfaced if it matters via /admin/profit */ }
                                 }
-                                setPayingId(null);
-                                setPayoutAmount("");
+                                // Keep the panel open on a refused save so the
+                                // error above can be read and the flip retried.
+                                if (saved.ok) {
+                                  setPayingId(null);
+                                  setPayoutAmount("");
+                                }
                               }}
                               className="flex-1 px-2 py-1.5 bg-[#00c853] text-[#0a0a0a] rounded text-[11px] font-bold hover:bg-[#00e676] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                             >
@@ -3989,7 +3944,10 @@ export default function AdminPage() {
                 className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#00c853] cursor-pointer disabled:opacity-50"
               >
                 <option value="">Mark selected as…</option>
-                {STATUS_OPTIONS.map((opt) => (
+                {/* Paid / Met are excluded (2026-09-26): they go through the
+                    per-lead payout panel (amount, method, IMEI, receipt). A
+                    bulk "paid" sent N "Payment sent" texts with no amount. */}
+                {STATUS_OPTIONS.filter((opt) => opt.value !== "paid" && opt.value !== "met").map((opt) => (
                   <option key={opt.value} value={opt.value} className="bg-black">{opt.label}</option>
                 ))}
               </select>

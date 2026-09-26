@@ -4,19 +4,13 @@
 // Austin meetups. Customer-facing slot picker (next phase) reads from
 // the same store via lib/slots-store.
 //
-// Auth: token-input pattern matching /admin/page.tsx so it's consistent
-// across the admin surfaces. Stored in localStorage on first entry so
-// subsequent visits don't re-prompt.
+// Auth: the Google session — proxy.ts injects the admin header for the
+// slots-store calls (2026-09-26). The old "paste TCC_ADMIN_TOKEN" unlock
+// screen put the master secret in every staff browser's localStorage.
 
 import { useEffect, useState, useCallback } from "react";
 import type { CSSProperties } from "react";
 import { listSlots, addSlot, removeSlot, backendLabel, slotBookedCount, type Slot } from "../../lib/slots-store";
-
-const STORED_TOKEN_KEY = "tcc-admin-token-v1";
-// No FALLBACK_TOKEN here — the prior default ("topcash-admin-2026") was
-// shipped in the client bundle and printed in the UI, effectively
-// publishing the admin password. Admin must enter their TCC_ADMIN_TOKEN
-// explicitly on first visit; it's then stored in localStorage. 2026-05-24.
 
 function todayLocalISO(): string {
   const d = new Date();
@@ -49,8 +43,6 @@ const fieldLbl: CSSProperties = {
 };
 
 export default function AdminSlotsPage() {
-  const [token, setToken] = useState("");
-  const [tokenInput, setTokenInput] = useState("");
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,14 +55,6 @@ export default function AdminSlotsPage() {
   const [capacity, setCapacity] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [justAddedId, setJustAddedId] = useState<string | null>(null);
-
-  // On mount, try to restore the admin token from localStorage.
-  useEffect(() => {
-    try {
-      const stored = window.localStorage.getItem(STORED_TOKEN_KEY);
-      if (stored) setToken(stored);
-    } catch {}
-  }, []);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -86,14 +70,7 @@ export default function AdminSlotsPage() {
     }
   }, []);
 
-  useEffect(() => { if (token) refresh(); }, [token, refresh]);
-
-  const handleAuth = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!tokenInput.trim()) return;
-    setToken(tokenInput.trim());
-    try { window.localStorage.setItem(STORED_TOKEN_KEY, tokenInput.trim()); } catch {}
-  };
+  useEffect(() => { refresh(); }, [refresh]);
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -135,37 +112,9 @@ export default function AdminSlotsPage() {
     }
   };
 
-  // -------------- AUTH SCREEN --------------
-  if (!token) {
-    return (
-      <div className="tadm-wrap" style={{ maxWidth: 440 }}>
-        <div className="tadm-page-head">
-          <h1>Meetup slots</h1>
-          <p>Enter the admin token to manage local-meetup time slots.</p>
-        </div>
-        <form onSubmit={handleAuth} className="tadm-card">
-          <h3>Unlock</h3>
-          <input
-            type="password"
-            value={tokenInput}
-            onChange={(e) => setTokenInput(e.target.value)}
-            placeholder="Admin token"
-            autoFocus
-            className="tadm-input"
-            style={{ width: "100%" }}
-          />
-          <button type="submit" className="tadm-btn primary" style={{ width: "100%", marginTop: 10 }}>
-            Unlock
-          </button>
-          <p style={{ margin: "10px 0 0", textAlign: "center", fontSize: 11, color: "var(--tadm-faint)" }}>
-            Use the value of <span style={{ fontFamily: "var(--tadm-mono)" }}>TCC_ADMIN_TOKEN</span> from Vercel env.
-          </p>
-        </form>
-      </div>
-    );
-  }
-
   // -------------- MAIN MANAGER --------------
+  // (The token-paste unlock screen is gone — 2026-09-26. A 401 from the
+  // store surfaces in the error card below with the sign-in hint.)
   return (
     <div className="tadm-wrap">
       <div className="tadm-page-head">

@@ -33,9 +33,10 @@ interface CustomerRow {
 }
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 function parseField(body: string, key: string): string | undefined {
@@ -96,6 +97,10 @@ export async function GET(req: NextRequest) {
   // that was ever trashed even once. Same logic as /api/admin/leads.
   const statusByLead = new Map<string, { status: string; timestamp: string }>();
   const reviewLeads = new Set<string>();
+  // Review-token bookkeeping so a redeemed token resolves to its lead even
+  // when the [REVIEW-USED] marker predates the leadId= field.
+  const tokenLead = new Map<string, string>();
+  const usedTokens = new Set<string>();
   type Tomb = { deleted: boolean; timestamp: string };
   const tombByLead = new Map<string, Tomb>();
   for (const m of messages) {
@@ -107,8 +112,18 @@ export async function GET(req: NextRequest) {
         statusByLead.set(sm[2], { status: sm[1].toLowerCase(), timestamp: m.timestamp });
       }
     }
-    const rm = m.body.match(/\[REVIEW-LEFT:\s*([\w-]+)\]/i);
-    if (rm) reviewLeads.add(rm[1]);
+    // A review exists when the lead's single-use token was redeemed: the
+    // /api/reviews submission posts "[REVIEW-USED: <token>] leadId=<id> …",
+    // and the status route / reminders cron mint "[REVIEW-TOKEN: <id>]
+    // token=<token>". The old [REVIEW-LEFT] marker was never written by
+    // anything, so the "★ reviewed" pill could not light up. 2026-09-26.
+    const rt = m.body.match(/\[REVIEW-TOKEN:\s*([\w-]+)\][^\n]*?\btoken=([\w]+)/i);
+    if (rt) tokenLead.set(rt[2], rt[1]);
+    const ru = m.body.match(/\[REVIEW-USED:\s*([\w]+)\](?:[^\n]*?\bleadId=([\w-]+))?/i);
+    if (ru) {
+      if (ru[2]) reviewLeads.add(ru[2]);
+      else usedTokens.add(ru[1]);
+    }
     const dm = m.body.match(/\[DELETED-LEAD:\s*([\w-]+)\]/i);
     if (dm) {
       const prev = tombByLead.get(dm[1]);
@@ -119,6 +134,10 @@ export async function GET(req: NextRequest) {
       const prev = tombByLead.get(restoreM[1]);
       if (!prev || m.timestamp > prev.timestamp) tombByLead.set(restoreM[1], { deleted: false, timestamp: m.timestamp });
     }
+  }
+  for (const t of usedTokens) {
+    const lid = tokenLead.get(t);
+    if (lid) reviewLeads.add(lid);
   }
   const deletedLeads = new Set(Array.from(tombByLead.entries()).filter(([, t]) => t.deleted).map(([id]) => id));
 

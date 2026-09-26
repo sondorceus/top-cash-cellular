@@ -193,7 +193,9 @@ const ATLAS_CATEGORY_LABELS: Record<string, string> = {
 
 export default function PricesAdminPage() {
   const [data, setData] = useState<Payload | null>(null);
-  const [token, setToken] = useState<string>("");
+  // Why the grid didn't load (401 = not signed in) — shown instead of an
+  // endless "Loading price grid…". 2026-09-26.
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [edits, setEdits] = useState<{
     price: PriceTable;
     carrier: CarrierTable;
@@ -229,20 +231,30 @@ export default function PricesAdminPage() {
     return true;
   };
 
-  // Restore the admin token from localStorage so the user doesn't have to
-  // type it on every reload. NEVER persisted server-side; we just stash it
-  // in browser localStorage like a session cookie alternative.
-  useEffect(() => {
-    const t = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-    if (t) setToken(t);
-  }, []);
+  // Session path (2026-09-26): proxy.ts swaps this placeholder header for the
+  // real token on a Google admin session. The page no longer prompts for
+  // TCC_ADMIN_TOKEN or keeps it in localStorage.
+  const getToken = (): string => "session";
 
   useEffect(() => {
-    fetch("/api/admin/prices")
-      .then((r) => r.json())
-      .then(loadData)
-      .catch(() => {});
+    fetch("/api/admin/prices", { headers: { "x-admin-token": "session" }, cache: "no-store" })
+      .then(async (r) => {
+        if (!r.ok) {
+          setLoadError(r.status === 401 ? "Not signed in — sign in with Google on /admin, then come back." : `Couldn't load prices (HTTP ${r.status}).`);
+          return;
+        }
+        loadData(await r.json());
+      })
+      .catch(() => setLoadError("Couldn't load prices — network error."));
   }, []);
+
+  // Re-pull the grid after a save/revert. A 401 (session expired) is shown
+  // instead of crashing the editor on an error payload.
+  const reload = async () => {
+    const r = await fetch("/api/admin/prices", { headers: { "x-admin-token": getToken() }, cache: "no-store" });
+    if (r.ok) loadData(await r.json());
+    else setLoadError(r.status === 401 ? "Session expired — sign in again on /admin." : `Reload failed (HTTP ${r.status}).`);
+  };
 
   const grouped = useMemo(() => {
     if (!data) return new Map<string, string[]>();
@@ -270,7 +282,9 @@ export default function PricesAdminPage() {
   if (!data) {
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center">
-        <p className="text-sm text-[#888]">Loading price grid…</p>
+        {loadError
+          ? <p className="text-sm text-red-300">{loadError} <a href="/api/auth/google?returnTo=%2Fadmin%2Fprices" className="underline text-white">Sign in</a></p>
+          : <p className="text-sm text-[#888]">Loading price grid…</p>}
       </main>
     );
   }
@@ -338,27 +352,15 @@ export default function PricesAdminPage() {
     return false;
   };
 
-  const getToken = (): string | null => {
-    let t = token || localStorage.getItem("tcc-admin-token") || "";
-    if (!t) {
-      const prompted = window.prompt("Admin token? (will remember in this browser)");
-      if (!prompted) return null;
-      t = prompted;
-      setToken(t);
-      localStorage.setItem("tcc-admin-token", t);
-    }
-    return t;
-  };
-
   const save = async () => {
     const t = getToken();
     if (!t) return;
     setSaving(true);
     setLastSaveMsg(null);
     try {
-      const r = await fetch(`/api/admin/prices?token=${encodeURIComponent(t)}`, {
+      const r = await fetch(`/api/admin/prices`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-admin-token": t },
         body: JSON.stringify({
           priceTable: edits.price,
           carrierDeductions: edits.carrier,
@@ -374,8 +376,7 @@ export default function PricesAdminPage() {
       const j = await r.json();
       setLastSaveMsg(`✓ Saved at ${new Date(j.updatedAt).toLocaleTimeString()} — ${j.overrideModels} model override(s) live`);
       setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
-      const refresh = await fetch("/api/admin/prices");
-      loadData(await refresh.json());
+      await reload();
     } finally {
       setSaving(false);
     }
@@ -395,26 +396,24 @@ export default function PricesAdminPage() {
     // Condition-adjustments-only revert. Uses the dedicated ?condModel=
     // scope so the model's price-cell / carrier / base overrides survive.
     // (Previously this called ?model= and silently wiped ALL overrides.)
-    const r = await fetch(`/api/admin/prices?condModel=${encodeURIComponent(modelId)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    const r = await fetch(`/api/admin/prices?condModel=${encodeURIComponent(modelId)}`, { method: "DELETE", headers: { "x-admin-token": t } });
     if (!r.ok) return;
     setLastSaveMsg(`✓ Reverted ${modelId} condition adjustments`);
-    const refresh = await fetch("/api/admin/prices");
-    loadData(await refresh.json());
+    await reload();
   };
 
   const resetBase = async (modelId: string) => {
     if (!window.confirm(`Revert ${modelId} base price back to the bundled default?`)) return;
     const t = getToken();
     if (!t) return;
-    const r = await fetch(`/api/admin/prices?base=${encodeURIComponent(modelId)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    const r = await fetch(`/api/admin/prices?base=${encodeURIComponent(modelId)}`, { method: "DELETE", headers: { "x-admin-token": t } });
     if (!r.ok) {
       const j = await r.json().catch(() => ({}));
       setLastSaveMsg(`Reset failed: ${r.status} ${j.error || ""}`);
       return;
     }
     setLastSaveMsg(`✓ Reverted ${modelId} base price to baseline`);
-    const refresh = await fetch("/api/admin/prices");
-    loadData(await refresh.json());
+    await reload();
   };
 
   const resetCell = async (model: string, storage: string, cond: string) => {
@@ -422,44 +421,41 @@ export default function PricesAdminPage() {
     const t = getToken();
     if (!t) return;
     const cell = `${model}/${storage}/${cond}`;
-    const r = await fetch(`/api/admin/prices?cell=${encodeURIComponent(cell)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    const r = await fetch(`/api/admin/prices?cell=${encodeURIComponent(cell)}`, { method: "DELETE", headers: { "x-admin-token": t } });
     if (!r.ok) {
       const j = await r.json().catch(() => ({}));
       setLastSaveMsg(`Reset failed: ${r.status} ${j.error || ""}`);
       return;
     }
     setLastSaveMsg(`✓ Reverted ${cell} to baseline`);
-    const refresh = await fetch("/api/admin/prices");
-    loadData(await refresh.json());
+    await reload();
   };
 
   const resetCarrier = async (model: string) => {
     if (!window.confirm(`Revert carrier deductions for ${model} back to baseline?`)) return;
     const t = getToken();
     if (!t) return;
-    const r = await fetch(`/api/admin/prices?carrier=${encodeURIComponent(model)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    const r = await fetch(`/api/admin/prices?carrier=${encodeURIComponent(model)}`, { method: "DELETE", headers: { "x-admin-token": t } });
     if (!r.ok) return;
     setLastSaveMsg(`✓ Reverted ${model} carrier deductions to baseline`);
-    const refresh = await fetch("/api/admin/prices");
-    loadData(await refresh.json());
+    await reload();
   };
 
   const resetModel = async (model: string) => {
     if (!window.confirm(`Revert EVERY ${model} cell back to baseline?`)) return;
     const t = getToken();
     if (!t) return;
-    const r = await fetch(`/api/admin/prices?model=${encodeURIComponent(model)}&token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    const r = await fetch(`/api/admin/prices?model=${encodeURIComponent(model)}`, { method: "DELETE", headers: { "x-admin-token": t } });
     if (!r.ok) return;
     setLastSaveMsg(`✓ Reverted all ${model} overrides`);
-    const refresh = await fetch("/api/admin/prices");
-    loadData(await refresh.json());
+    await reload();
   };
 
   const resetAll = async () => {
     if (!window.confirm(`⚠️ This wipes EVERY price override on the site and reverts everything to the bundled defaults. Continue?`)) return;
     const t = getToken();
     if (!t) return;
-    const r = await fetch(`/api/admin/prices?token=${encodeURIComponent(t)}`, { method: "DELETE" });
+    const r = await fetch(`/api/admin/prices`, { method: "DELETE", headers: { "x-admin-token": t } });
     if (!r.ok) {
       const j = await r.json().catch(() => ({}));
       setLastSaveMsg(`Reset all failed: ${r.status} ${j.error || ""}`);
@@ -467,8 +463,7 @@ export default function PricesAdminPage() {
     }
     setLastSaveMsg(`✓ All overrides cleared`);
     setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
-    const refresh = await fetch("/api/admin/prices");
-    loadData(await refresh.json());
+    await reload();
   };
 
   const groupNames = Array.from(grouped.keys()).sort();

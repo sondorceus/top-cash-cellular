@@ -193,7 +193,9 @@ export async function retryFedexLabel(leadId: string): Promise<RetryResult> {
           from: "topcash-web",
           fromName: "Top Cash Cellular",
           role: "system",
-          body: `[LABEL: ${leadId}] tracking=${result.trackingNumber} url=${blob.url} service=${result.serviceType}`,
+          // cost= (2026-09-26): without it the profit page's label-spend
+          // tracker counted every retried label as "unknown cost".
+          body: `[LABEL: ${leadId}] tracking=${result.trackingNumber} url=${blob.url} service=${result.serviceType}${result.cost != null ? ` cost=$${result.cost}` : ""}`,
           tags: ["fedex-label", "retry-success"],
           priority: "low",
         }),

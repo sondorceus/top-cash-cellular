@@ -12,9 +12,10 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 function genId(): string {
@@ -127,7 +128,11 @@ export async function POST(req: NextRequest) {
   const id = typeof payload.id === "string" && /^[\w-]{4,64}$/.test(payload.id) ? payload.id : genId();
   const subChannel = clean(payload.subChannel, 40);
   const campaign = clean(payload.campaign, 80);
-  const amount = num(payload.amount);
+  // Finite and ≥ 0 (2026-09-26) — a negative "spend" used to inflate net profit.
+  const amount = Number(payload.amount);
+  if (!Number.isFinite(amount) || amount < 0) {
+    return NextResponse.json({ error: "amount must be a number ≥ 0" }, { status: 400 });
+  }
   const spendDate = (() => {
     const s = clean(payload.spendDate, 10);
     return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : new Date().toISOString().slice(0, 10);

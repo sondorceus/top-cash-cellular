@@ -432,9 +432,10 @@ function parseField(body: string, key: string): string | undefined {
 }
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 export async function GET(req: NextRequest) {
@@ -822,7 +823,7 @@ export async function GET(req: NextRequest) {
   const nowMs = Date.now();
   const view = (req.nextUrl.searchParams.get("view") || "active").toLowerCase(); // active | trash | all
   const FINISHED_STATUSES = new Set(["paid", "met", "rejected"]);
-  function bucketFor(leadId: string, status?: string): { kind: "active" } | { kind: "trashed"; deletedAt: string; hoursLeft: number | null } | { kind: "purged" } {
+  function bucketFor(leadId: string, status?: string): { kind: "active" } | { kind: "trashed"; deletedAt: string; hoursLeft: number | null } | { kind: "purged"; deletedAt: string } {
     const delAt = deletedAtByLead.get(leadId);
     const resAt = restoredAtByLead.get(leadId);
     if (!delAt) return { kind: "active" };
@@ -830,7 +831,7 @@ export async function GET(req: NextRequest) {
     const ageMs = nowMs - new Date(delAt).getTime();
     const isFinished = status ? FINISHED_STATUSES.has(status) : false;
     // Only finished leads auto-purge. Active leads stay in trash forever.
-    if (isFinished && ageMs >= TRASH_TTL_FINISHED_MS) return { kind: "purged" };
+    if (isFinished && ageMs >= TRASH_TTL_FINISHED_MS) return { kind: "purged", deletedAt: delAt };
     const hoursLeft = isFinished
       ? Math.max(0, Math.round((TRASH_TTL_FINISHED_MS - ageMs) / (60 * 60 * 1000)))
       : null; // null = no expiry
@@ -873,9 +874,14 @@ export async function GET(req: NextRequest) {
     // status string, not the {status, timestamp} record.)
     const status = statusByLead.get(m.id);
     const bucket = bucketFor(m.id, status?.status);
-    if (bucket.kind === "purged") continue;
+    // The 24 h "purge" is a VIEW filter — nothing is ever deleted from MC.
+    // It used to run before the view check, so a purged lead (finished,
+    // trashed >24 h) vanished from Trash too and could not be restored from
+    // the console. Trash now lists it (hoursToAutoPurge 0); active and all
+    // still hide it. 2026-09-26.
+    if (bucket.kind === "purged" && view !== "trash") continue;
     if (view === "active" && bucket.kind !== "active") continue;
-    if (view === "trash"  && bucket.kind !== "trashed") continue;
+    if (view === "trash"  && bucket.kind !== "trashed" && bucket.kind !== "purged") continue;
     const deviceLine = parseField(m.body, "Device");
     const photosLine = parseField(m.body, "Photos");
     const photos = photosLine ? photosLine.split(" | ").map((s) => s.trim()).filter(Boolean) : undefined;
@@ -1178,11 +1184,11 @@ export async function GET(req: NextRequest) {
       itemsEditedAt,
       itemsNeedReview,
       funnelNeedsReview,
-      deletedAt:        bucket.kind === "trashed" ? bucket.deletedAt : undefined,
+      deletedAt:        bucket.kind === "trashed" || bucket.kind === "purged" ? bucket.deletedAt : undefined,
       // null hoursLeft means "no auto-purge" (active in-flight lead) —
       // pass through as null so the UI can display "kept indefinitely"
-      // instead of a countdown.
-      hoursToAutoPurge: bucket.kind === "trashed" ? (bucket.hoursLeft ?? null) : undefined,
+      // instead of a countdown. 0 = already purged from Active (Trash only).
+      hoursToAutoPurge: bucket.kind === "trashed" ? (bucket.hoursLeft ?? null) : bucket.kind === "purged" ? 0 : undefined,
       status: status?.status || "quote_requested",
       statusUpdatedAt: status?.timestamp,
       latestNote: latestNote?.text,

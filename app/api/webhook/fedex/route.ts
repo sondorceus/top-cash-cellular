@@ -157,7 +157,8 @@ export async function POST(req: NextRequest) {
     const adminToken = process.env.TCC_ADMIN_TOKEN;
     if (adminToken) {
       try {
-        await fetch(`${origin}/api/admin/leads/status?token=${encodeURIComponent(adminToken)}`, {
+        // Header only (2026-09-26) — the status route no longer reads ?token=.
+        await fetch(`${origin}/api/admin/leads/status`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
           body: JSON.stringify({ leadId, status: nextStatus, ...customer }),

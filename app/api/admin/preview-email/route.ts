@@ -8,9 +8,9 @@ import { safeEqual } from "../../../lib/admin-auth";
 // sample payload and returns the HTML so you can pop it open in the
 // browser at any width to verify spacing, FedEx wordmark, etc.
 //
-//   GET /api/admin/preview-email?token=<TCC_ADMIN_TOKEN>
-//   GET /api/admin/preview-email?token=<...>&ship=0   (local-handoff variant)
-//   GET /api/admin/preview-email?token=<...>&multi=1  (multi-device variant)
+//   GET /api/admin/preview-email            (x-admin-token header)
+//   GET /api/admin/preview-email?ship=0     (local-handoff variant)
+//   GET /api/admin/preview-email?multi=1    (multi-device variant)
 //
 // Returns text/html so the browser renders it directly. No Resend call,
 // no MC post, no side effects.
@@ -19,7 +19,9 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;
-  if (!safeEqual(q.get("token"), ADMIN_TOKEN)) {
+  // Header only (2026-09-26): this route read ONLY ?token=, so every call put
+  // the admin secret in request logs. The proxy-injected header works here now.
+  if (!safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const isShip = q.get("ship") !== "0";

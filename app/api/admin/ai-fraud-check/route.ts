@@ -7,7 +7,7 @@ import { callAI } from "../../../lib/ai-gateway";
 // "this looks normal / fishy because X" verdict. Skywalker uses this
 // from the admin lead row when a submission triggers his gut.
 //
-//   POST /api/admin/ai-fraud-check?token=<...>
+//   POST /api/admin/ai-fraud-check   (x-admin-token header)
 //   Body: { leadId, name, email, phone, device, condition, quote,
 //           sourceIP, sourceUA, visitorId, priorLeads, lifetimeSpend,
 //           recentIPLeads: [{ip, count}, ...] }
@@ -18,7 +18,8 @@ import { callAI } from "../../../lib/ai-gateway";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function POST(req: NextRequest) {
-  if (!safeEqual(req.nextUrl.searchParams.get("token"), ADMIN_TOKEN) && !safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)) {
+  // Header only (2026-09-26): ?token= put the admin secret in request logs.
+  if (!safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   let data: Record<string, unknown> = {};

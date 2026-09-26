@@ -35,7 +35,10 @@ type SendResp = {
   failures: { email: string; error: string }[];
 };
 
-const STORAGE_KEY = "tcc_admin_token";
+// Session path (2026-09-26): proxy.ts swaps this placeholder header for the
+// real token on a Google admin session. The page no longer asks staff to
+// paste TCC_ADMIN_TOKEN or keeps it in localStorage.
+const AUTH_HEADERS = { "x-admin-token": "session" } as const;
 
 /* one-off form label styles (colors via --tadm-* vars only) */
 const lbl: CSSProperties = {
@@ -53,8 +56,6 @@ const hint: CSSProperties = {
 };
 
 export default function NewsletterAdminPage() {
-  const [token, setToken] = useState("");
-  const [tokenInput, setTokenInput] = useState("");
   const [subs, setSubs] = useState<Subscriber[]>([]);
   const [counts, setCounts] = useState({ total: 0, explicit: 0, fromLeads: 0 });
   const [loading, setLoading] = useState(false);
@@ -72,25 +73,17 @@ export default function NewsletterAdminPage() {
   const [error, setError] = useState("");
   const [confirmSend, setConfirmSend] = useState(false);
 
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-    if (saved) setToken(saved);
-  }, []);
-
   const recipientCount = useMemo(() => {
     return includeLeads ? counts.total : counts.explicit;
   }, [includeLeads, counts]);
 
   const loadSubs = useCallback(async () => {
-    if (!token) return;
     setLoading(true);
     setAuthError("");
     try {
-      const r = await fetch(`/api/admin/newsletter?token=${encodeURIComponent(token)}`, { cache: "no-store" });
+      const r = await fetch(`/api/admin/newsletter`, { cache: "no-store", headers: AUTH_HEADERS });
       if (r.status === 401) {
-        setAuthError("Invalid admin token");
-        setToken("");
-        if (typeof window !== "undefined") localStorage.removeItem(STORAGE_KEY);
+        setAuthError("Not signed in — sign in with Google on /admin (your session may have expired), then reload.");
         return;
       }
       if (!r.ok) {
@@ -109,18 +102,11 @@ export default function NewsletterAdminPage() {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
-    if (token) loadSubs();
-  }, [token, loadSubs]);
-
-  const submitToken = () => {
-    const t = tokenInput.trim();
-    if (!t) return;
-    setToken(t);
-    if (typeof window !== "undefined") localStorage.setItem(STORAGE_KEY, t);
-  };
+    loadSubs();
+  }, [loadSubs]);
 
   const doPreview = async () => {
     if (!subject.trim() || !body.trim()) {
@@ -130,9 +116,9 @@ export default function NewsletterAdminPage() {
     setPreviewing(true);
     setError("");
     try {
-      const r = await fetch(`/api/admin/newsletter/send?token=${encodeURIComponent(token)}`, {
+      const r = await fetch(`/api/admin/newsletter/send`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...AUTH_HEADERS },
         body: JSON.stringify({ subject, body, preheader, includeLeads, dryRun: true }),
       });
       const d = (await r.json()) as DryRunResp | { error?: string };
@@ -158,9 +144,9 @@ export default function NewsletterAdminPage() {
     setError("");
     setSendResult(null);
     try {
-      const r = await fetch(`/api/admin/newsletter/send?token=${encodeURIComponent(token)}`, {
+      const r = await fetch(`/api/admin/newsletter/send`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...AUTH_HEADERS },
         body: JSON.stringify({ subject, body, preheader, includeLeads, dryRun: false }),
       });
       const d = await r.json();
@@ -185,34 +171,6 @@ export default function NewsletterAdminPage() {
     }
   };
 
-  if (!token) {
-    return (
-      <div className="tadm-wrap">
-        <div className="tadm-card" style={{ maxWidth: 420, margin: "48px auto 0" }}>
-          <h3>Newsletter admin</h3>
-          <p style={{ margin: "0 0 12px", fontSize: 12.5, fontWeight: 500, color: "var(--tadm-dim)" }}>
-            Enter your admin token to manage subscribers.
-          </p>
-          <form onSubmit={(e) => { e.preventDefault(); submitToken(); }}>
-            <input
-              type="password"
-              value={tokenInput}
-              onChange={(e) => setTokenInput(e.target.value)}
-              placeholder="admin token"
-              className="tadm-input"
-              style={{ width: "100%" }}
-              autoFocus
-            />
-            <button type="submit" className="tadm-btn primary" style={{ width: "100%", marginTop: 10 }}>
-              Continue
-            </button>
-            {authError && <p style={{ margin: "10px 0 0", fontSize: 12, color: "var(--tadm-bad)" }}>{authError}</p>}
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="tadm-wrap">
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
@@ -224,6 +182,15 @@ export default function NewsletterAdminPage() {
           {loading ? "Loading…" : "Refresh"}
         </button>
       </div>
+
+      {authError && (
+        <div className="tadm-card" style={{ borderColor: "var(--tadm-bad)" }}>
+          <p style={{ margin: 0, fontSize: 12.5, fontWeight: 600, color: "var(--tadm-bad)" }}>
+            {authError}{" "}
+            <a href="/api/auth/google?returnTo=%2Fadmin%2Fnewsletter" style={{ color: "var(--tadm-info)" }}>Sign in</a>
+          </p>
+        </div>
+      )}
 
       {/* Stat tiles */}
       <div className="tadm-tiles" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))" }}>

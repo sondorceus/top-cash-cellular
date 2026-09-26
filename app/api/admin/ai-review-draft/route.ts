@@ -7,7 +7,7 @@ import { callAI } from "../../../lib/ai-gateway";
 // a personalized reply in TCC's voice. Skywalker copies, edits if
 // needed, pastes into Trustpilot.
 //
-//   GET /api/admin/ai-review-draft?token=<...>&rating=5
+//   GET /api/admin/ai-review-draft?rating=5   (x-admin-token header)
 //        &body=<encoded review text>&device=iPhone+17+Pro&name=Steve
 //
 // Returns:
@@ -20,7 +20,9 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams;
-  if (!safeEqual(q.get("token"), ADMIN_TOKEN)) {
+  // Header only (2026-09-26): this route read ONLY ?token=, so every call put
+  // the admin secret in request logs. The proxy-injected header works here now.
+  if (!safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const ratingRaw = q.get("rating");

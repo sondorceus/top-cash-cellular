@@ -17,7 +17,10 @@ import type { ShopListing } from "../../lib/shop-listings";
 // (13% / $0.40 / per-family shipping) apply. Same numbers the server uses in
 // prod today — the env overrides are unset there too.
 
-const TOKEN_KEY = "tcc-admin-token";
+// Session path (2026-09-26): proxy.ts swaps this placeholder header for the
+// real token on a Google admin session. The page no longer prompts for
+// TCC_ADMIN_TOKEN or keeps it in localStorage.
+const SESSION_TOKEN = "session";
 
 // sell-catalog category → familyForSku() prefix, for shipping cost in the
 // margin math. Desktop rides the laptop rate — closest of the seven families.
@@ -97,7 +100,6 @@ const EMPTY_DRAFT: Draft = {
 };
 
 export default function AdminShopPage() {
-  const [token, setToken] = useState("");
   const [listings, setListings] = useState<ShopListing[]>([]);
   const [loading, setLoading] = useState(true);
   const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
@@ -114,17 +116,7 @@ export default function AdminShopPage() {
   const busyRef = useRef(false);
   const [busy, setBusy] = useState(false);
 
-  const getToken = useCallback((): string | null => {
-    let t = token || localStorage.getItem(TOKEN_KEY) || "";
-    if (!t) {
-      const prompted = window.prompt("Admin token? (will remember in this browser)");
-      if (!prompted) return null;
-      t = prompted;
-      localStorage.setItem(TOKEN_KEY, t);
-    }
-    setToken(t);
-    return t;
-  }, [token]);
+  const getToken = useCallback((): string | null => SESSION_TOKEN, []);
 
   const load = useCallback(async () => {
     const t = getToken();
@@ -132,8 +124,7 @@ export default function AdminShopPage() {
     try {
       const r = await fetch("/api/admin/shop", { headers: { "x-admin-token": t }, cache: "no-store" });
       if (r.status === 401) {
-        localStorage.removeItem(TOKEN_KEY);
-        setFlash("Bad token — reload to re-enter.");
+        setFlash("Not signed in — sign in with Google on /admin (your session may have expired), then reload.");
         return;
       }
       const d = await r.json().catch(() => ({}));

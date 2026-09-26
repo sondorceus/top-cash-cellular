@@ -70,6 +70,10 @@ async function flipStatusWithNotify(
       headers: { "Content-Type": "application/json", "x-admin-token": adminToken },
       body: JSON.stringify({ leadId, status, ...customer }),
     });
+    // 409 (2026-09-26): the route now refuses to move a finished lead back
+    // to an open status. That is the answer, not an outage — a raw backup
+    // marker here would do exactly the downgrade the route just refused.
+    if (r.status === 409) return { reached: true, mcPersisted: true };
     if (!r.ok) return { reached: false, mcPersisted: false };
     // The route returns HTTP 200 even when its own [STATUS:] marker post
     // to MC failed — surface mcOk so the caller can back the marker up.

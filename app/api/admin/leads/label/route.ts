@@ -18,9 +18,10 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 // configured. Skywalker 2026-05-17.
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 type LabelPayload = {
@@ -153,7 +154,9 @@ export async function POST(req: NextRequest) {
   }
 
   // Persist to MC so admin GET surfaces the tracking + URL.
-  const markerBody = `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${labelUrl} service=${label.serviceType}`;
+  // cost= (2026-09-26): /api/lead and go-label already record it; without it
+  // every staff-minted label read as "unknown cost" on the profit page.
+  const markerBody = `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${labelUrl} service=${label.serviceType}${label.cost != null ? ` cost=$${label.cost}` : ""}`;
   try {
     await fetch(`${MC_API}/api/comms`, {
       method: "POST",

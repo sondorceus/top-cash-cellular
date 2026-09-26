@@ -17,9 +17,10 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 function genId(): string {
@@ -124,12 +125,15 @@ export async function GET(req: NextRequest) {
   const data = await r.json();
   const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
 
-  // First pass: collect tombstones so we can ignore deleted sales.
-  const deleted = new Set<string>();
+  // First pass: tombstones — the newest [DELETED-SALE] per id. Time-aware
+  // (2026-09-26): a tombstone hides only [SALE] rows written before it, so
+  // the payout panel's deterministic `sale-lead-<leadId>` row can be deleted
+  // and later re-created instead of staying hidden forever.
+  const deletedAt = new Map<string, string>();
   for (const m of messages) {
     if (!m.body) continue;
     const dm = m.body.match(/\[DELETED-SALE:\s*([\w-]+)\]/i);
-    if (dm) deleted.add(dm[1]);
+    if (dm && m.timestamp > (deletedAt.get(dm[1]) || "")) deletedAt.set(dm[1], m.timestamp);
   }
 
   // Second pass: keep the LATEST [SALE: id] message per id (so an edit
@@ -141,7 +145,8 @@ export async function GET(req: NextRequest) {
     const sm = m.body.match(/\[SALE:\s*([\w-]+)\]/i);
     if (!sm) continue;
     const id = sm[1];
-    if (deleted.has(id)) continue;
+    const tomb = deletedAt.get(id);
+    if (tomb && m.timestamp <= tomb) continue;
     const parsed = parseSaleBody(m.body);
     if (!parsed) continue;
     const profit = +(parsed.soldPrice - parsed.cost - parsed.fees - parsed.shipping).toFixed(2);
@@ -175,12 +180,31 @@ export async function POST(req: NextRequest) {
   }
   // Allow caller to supply an id (for edits — same id = same row);
   // otherwise mint one.
-  const id = typeof payload.id === "string" && /^[\w-]{4,64}$/.test(payload.id) ? payload.id : genId();
+  // {4,96}: the payout panel's `sale-lead-<MC message id>` must fit, or it
+  // would silently fall back to a random id and re-saves would duplicate.
+  const id = typeof payload.id === "string" && /^[\w-]{4,96}$/.test(payload.id) ? payload.id : genId();
   const platform = clean(payload.platform, 40) || "Other";
-  const soldPrice = num(payload.soldPrice);
-  const cost = num(payload.cost);
-  const fees = num(payload.fees);
-  const shipping = num(payload.shipping);
+  // Money fields must be finite and ≥ 0 (2026-09-26): a stray "-" or "abc"
+  // used to land as a negative or as 0 and flip the ledger totals.
+  const money = (v: unknown, label: string): number | string => {
+    if (v === undefined || v === null || v === "") return 0;
+    const n = Number(v);
+    return Number.isFinite(n) && n >= 0 ? n : `${label} must be a number ≥ 0`;
+  };
+  const amounts = {
+    soldPrice: money(payload.soldPrice, "soldPrice"),
+    cost: money(payload.cost, "cost"),
+    fees: money(payload.fees, "fees"),
+    shipping: money(payload.shipping, "shipping"),
+  };
+  const badAmount = Object.values(amounts).find((v) => typeof v === "string");
+  if (typeof badAmount === "string") {
+    return NextResponse.json({ error: badAmount }, { status: 400 });
+  }
+  const soldPrice = amounts.soldPrice as number;
+  const cost = amounts.cost as number;
+  const fees = amounts.fees as number;
+  const shipping = amounts.shipping as number;
   const saleDate = (() => {
     const s = clean(payload.saleDate, 10);
     return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : new Date().toISOString().slice(0, 10);

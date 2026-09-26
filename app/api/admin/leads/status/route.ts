@@ -6,15 +6,18 @@ import { randomBytes } from "crypto";
 import { logComm } from "../../../../lib/comms-log";
 import { reportError } from "../../../../lib/error-report";
 import { REFERRAL_REFERRER_REWARD } from "../../../../lib/referral";
-import { isCustomerLeadPost } from "../../../../lib/lead-devices";
+import { isCustomerLeadPost, field, latestContactUpdates, latestStatus, reEscape } from "../../../../lib/lead-devices";
 import { formatOfferNumber } from "../../../../lib/offer-number";
-import { fetchCommsRead } from "../../../../lib/mc-comms";
+import { fetchCommsRead, type McMessage } from "../../../../lib/mc-comms";
 import { offerUrl } from "../../../../lib/offer-link";
 
-// The two paid/met lookups below (review token, referral) each read the
-// live feed; a short memo lets one request's pair share a single read, and
-// they run in parallel — together they were most of Mark Paid's wait.
-const recentFeed = () => fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false, memoMs: 3_000 });
+// One paged read of the archive per flip (2026-09-26): the lead's current
+// status, its body (contact, Referred-by), the review-token check and the
+// referral guard all come from it. The old newest-5000 live slice missed a
+// lead whose paid marker had scrolled out, so re-marking it minted a second
+// review token and e-mailed a second invite. memoMs lets a double-tap share
+// the read.
+const leadFeed = () => fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 3_000 });
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -61,21 +64,12 @@ async function postReviewTokenMarker(leadId: string, token: string, name?: strin
   } catch {}
 }
 
-// True if this lead already minted a review token. Used to avoid minting
-// a fresh one (and emailing another review invite) every time staff
-// re-flip the lead between paid/met. Best-effort: on lookup failure we
-// return false so a legitimate first token still gets minted.
-async function leadHasReviewToken(leadId: string): Promise<boolean> {
-  if (!MC_KEY) return false;
-  try {
-    const read = await recentFeed();
-    if (!read.complete) return false;
-    const messages: { body?: string }[] = read.messages;
-    const re = new RegExp(`\\[REVIEW-TOKEN:\\s*${leadId}\\]`, "i");
-    return messages.some((m) => !!m.body && !isCustomerLeadPost(m.body) && re.test(m.body));
-  } catch {
-    return false;
-  }
+// True if this lead already minted a review token (an earlier flip or the
+// reminders cron). Used to avoid minting a fresh one (and emailing another
+// review invite). Reads the request's own archive-paged feed (2026-09-26).
+function leadHasReviewToken(messages: McMessage[], leadId: string): boolean {
+  const re = new RegExp(`\\[REVIEW-TOKEN:\\s*${reEscape(leadId)}\\]`, "i");
+  return messages.some((m) => !!m.body && !isCustomerLeadPost(m.body) && re.test(m.body));
 }
 
 // Referral payout — Skywalker 2026-05-22. When a lead completes (paid
@@ -97,15 +91,11 @@ async function leadHasReviewToken(leadId: string): Promise<boolean> {
 // possible but are vanishingly rare at this volume; MC has no lock.)
 const referralCreditInFlight = new Set<string>();
 
-async function creditReferralIfAny(leadId: string): Promise<void> {
+async function creditReferralIfAny(messages: McMessage[], leadId: string): Promise<void> {
   if (!MC_KEY) return;
   if (referralCreditInFlight.has(leadId)) return;
   referralCreditInFlight.add(leadId);
   try {
-    const read = await recentFeed();
-    if (!read.complete) return;
-    const messages: { id?: string; body?: string }[] = read.messages;
-
     // Locate this lead's own message + check if it's already credited.
     let leadBody: string | undefined;
     let alreadyCredited = false;
@@ -208,9 +198,10 @@ function buildReviewUrl(token: string, name?: string, device?: string): string {
 }
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 async function sendSms(to: string, body: string): Promise<boolean> {
@@ -591,6 +582,43 @@ export async function POST(req: NextRequest) {
   if (!/^[\w-]{1,64}$/.test(String(leadId))) {
     return NextResponse.json({ error: "Invalid leadId" }, { status: 400 });
   }
+  const force = body.force === true;
+
+  // Where the lead stands NOW, from the same read the counter-offer 409
+  // uses (2026-09-26). Before this the route wrote whatever it was sent: a
+  // double-tap, or the fedex-poll cron racing a staff click, sent a second
+  // receipt, and a mis-pick could drop a paid lead back to quote_requested.
+  const read = await leadFeed();
+  const messages = read.messages;
+  if (!read.complete || messages.length === 0) {
+    return NextResponse.json({ error: "Couldn't read the lead's current status from Mission Control — nothing changed and nothing was sent. Try again." }, { status: 502 });
+  }
+  const leadMsg = messages.find((m) => m.id === leadId && isCustomerLeadPost(m.body) && /\[NEW BUYBACK LEAD/i.test(m.body || ""));
+  if (!leadMsg?.body) {
+    return NextResponse.json({ error: "Lead not found in Mission Control — nothing changed and nothing was sent." }, { status: 404 });
+  }
+  const leadBody = leadMsg.body;
+  const current = latestStatus(messages, String(leadId));
+  const TERMINAL = new Set(["paid", "met", "rejected"]);
+  if (current === status) {
+    // Same status again (double-tap, cron re-poll): nothing to write, and
+    // no second receipt / token / referral credit.
+    return NextResponse.json({ ok: true, mcOk: true, unchanged: true, status, smsSent: false, emailSent: false });
+  }
+  if (TERMINAL.has(current) && !TERMINAL.has(status) && !force) {
+    return NextResponse.json({ error: `This lead is already ${current}. Reopening it as "${status}" needs an explicit override.`, current, needsForce: true }, { status: 409 });
+  }
+  const completing = status === "paid" || status === "met";
+  const completedRe = new RegExp(`\\[STATUS:\\s*(?:paid|met)\\]\\s*\\[LEAD:\\s*${reEscape(String(leadId))}\\]`, "i");
+  const everCompleted = messages.some((m) => !!m.body && !isCustomerLeadPost(m.body) && completedRe.test(m.body));
+  // Only the FIRST completion mints the review token, credits the referrer,
+  // fires the Purchase and sends the receipt; a paid↔met re-flip just records.
+  const firstCompletion = completing && !everCompleted;
+  // The customer's contact comes from the lead (body + latest offer-page
+  // phone edit), never from the request — a stale row texted old numbers.
+  const toPhone = latestContactUpdates(messages).get(String(leadId))?.phone || field(leadBody, "Phone") || "";
+  const toEmail = field(leadBody, "Email") || "";
+  const labelPhone = toPhone || (typeof phone === "string" ? phone : "");
 
   // Auto-fire FedEx label generation when a ship-handoff lead transitions
   // to "shipped". Triple-gated: the lead must be a ship handoff (UI
@@ -606,7 +634,7 @@ export async function POST(req: NextRequest) {
     typeof shipAddress.city === "string" && shipAddress.city.trim().length > 0 &&
     typeof shipAddress.state === "string" && shipAddress.state.trim().length === 2 &&
     typeof shipAddress.zip === "string" && /^\d{5}/.test(shipAddress.zip);
-  if (status === "shipped" && hasFullShipAddress && phone && name && ADMIN_TOKEN) {
+  if (status === "shipped" && hasFullShipAddress && labelPhone && name && ADMIN_TOKEN) {
     try {
       // Auth via the x-admin-token HEADER only — never the query string.
       // A ?token= in the URL leaks the admin token into access logs and
@@ -623,7 +651,7 @@ export async function POST(req: NextRequest) {
           silent: false, // let the label route send its own dedicated label email
           customer: {
             customerName: name,
-            customerPhone: phone,
+            customerPhone: labelPhone,
             customerStreet: shipAddress.street || "",
             customerUnit: shipAddress.unit || undefined,
             customerCity: shipAddress.city || "",
@@ -707,7 +735,13 @@ export async function POST(req: NextRequest) {
   // admin showed "✓ Saved", the next poll reverted the row, the owner
   // flipped it again and the customer got a second receipt.
   if (!mcOk) {
-    return NextResponse.json({ error: "Not saved — Mission Control refused the update. Nothing was sent to the customer; try again." }, { status: 502 });
+    // Honest about the one thing that DID happen: the shipped auto-fire
+    // above may already have bought a label. The label route reuses a
+    // fresh label on retry, so the money is spent once. 2026-09-26.
+    const labelNote = labelResult?.tracking
+      ? ` A FedEx label was issued (${labelResult.tracking}) — the status did not save; retry will reuse that label, not buy another.`
+      : "";
+    return NextResponse.json({ error: `Not saved — Mission Control refused the update. Nothing was sent to the customer; try again.${labelNote}`, label: labelResult }, { status: 502 });
   }
 
   // Mint a single-use review token IF this flip is paid/met. The
@@ -717,16 +751,15 @@ export async function POST(req: NextRequest) {
   // paid, can't review". 60-day TTL, marker persisted to MC so the
   // verify-token endpoint can validate it later.
   let reviewToken: string | undefined;
-  if (status === "paid" || status === "met") {
+  // First completion only (2026-09-26): a paid↔met re-flip or a re-save must
+  // not credit the referrer, mint a token or fire the Purchase again.
+  if (firstCompletion) {
     // Credit the referrer (if this lead carries a "Referred-by:" line) in
-    // parallel with the token check — independent reads of the same feed.
-    // Best-effort + idempotent (see creditReferralIfAny).
-    const creditP = creditReferralIfAny(leadId);
-    // Only mint a token the FIRST time a lead completes. Re-flipping
-    // paid↔met (or re-saving paid) used to mint a brand-new token each
-    // time and email the customer another review invite. Skip if one
-    // already exists; their original single-use token still works.
-    if (!(await leadHasReviewToken(leadId))) {
+    // parallel with the mint. Best-effort + idempotent (see creditReferralIfAny).
+    const creditP = creditReferralIfAny(messages, String(leadId));
+    // A token may already exist (the reminders cron mints one too); their
+    // original single-use token still works, so don't issue another.
+    if (!leadHasReviewToken(messages, String(leadId))) {
       reviewToken = mintReviewToken();
       await postReviewTokenMarker(leadId, reviewToken, name, device);
       // The trade is DONE — tell Meta, once (same first-completion gate as
@@ -779,17 +812,28 @@ export async function POST(req: NextRequest) {
         reference: conf.reference || undefined,
       }
     : undefined;
-  const ctx: TemplateCtx = { name, device, quote, payout, rejectionReason, reviewToken, phone, email, receipt };
+  // Every real status change notifies the customer EXCEPT a repeat
+  // completion (paid→met, or a re-save with new payout details): that is a
+  // bookkeeping write, and a second receipt / review invite confused sellers.
+  const notify = !completing || firstCompletion;
+  const ctx: TemplateCtx = { name, device, quote, payout, rejectionReason, reviewToken, phone: toPhone || undefined, email: toEmail || undefined, receipt };
   const smsBody = smsTemplate(status, ctx);
-  const [smsSent, emailSent] = await Promise.all([
-    phone ? sendSms(phone, smsBody) : Promise.resolve(false),
-    email ? emailStatus(email, status, ctx) : Promise.resolve(false),
-  ]);
+  const [smsSent, emailSent] = notify
+    ? await Promise.all([
+        toPhone ? sendSms(toPhone, smsBody) : Promise.resolve(false),
+        toEmail ? emailStatus(toEmail, status, ctx) : Promise.resolve(false),
+      ])
+    : [false, false];
   // Audit-trail markers — best-effort, don't block the response.
-  if (smsSent && phone) logComm({ leadId, channel: "sms", kind: "status", to: phone, subject: `status=${status}` });
-  if (emailSent && email) logComm({ leadId, channel: "email", kind: "status", to: email, subject: `status=${status}` });
+  if (smsSent && toPhone) logComm({ leadId, channel: "sms", kind: "status", to: toPhone, subject: `status=${status}` });
+  if (emailSent && toEmail) logComm({ leadId, channel: "email", kind: "status", to: toEmail, subject: `status=${status}` });
 
   // receiptText lets the admin offer "text it from my phone" when the
   // automatic text didn't go out (seller texting has had outages).
-  return NextResponse.json({ ok: true, mcOk, smsSent, emailSent, ...(receipt ? { receiptText: smsBody } : {}), status, label: labelResult });
+  return NextResponse.json({
+    ok: true, mcOk, smsSent, emailSent,
+    ...(receipt && notify ? { receiptText: smsBody } : {}),
+    status, label: labelResult,
+    unchanged: false, firstCompletion, notified: notify, previous: current,
+  });
 }

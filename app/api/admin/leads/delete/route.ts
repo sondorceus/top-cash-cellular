@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
+import { fetchCommsRead } from "../../../../lib/mc-comms";
+import { latestStatus } from "../../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 // Server-only. The NEXT_PUBLIC_ fallback was removed: a NEXT_PUBLIC_ var
@@ -17,9 +19,10 @@ const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 // follow-up if Skywalker wants full GDPR-style removal.
 
 function checkAuth(req: NextRequest): boolean {
-  const headerToken = req.headers.get("x-admin-token");
-  const queryToken = req.nextUrl.searchParams.get("token");
-  return safeEqual(headerToken, ADMIN_TOKEN) || safeEqual(queryToken, ADMIN_TOKEN);
+  // Header only (2026-09-26): a ?token= in the URL put the admin secret in
+  // request logs and browser history. proxy.ts sets this header for a Google
+  // admin session; server-side callers already send it.
+  return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
 export async function POST(req: NextRequest) {
@@ -57,6 +60,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { error: "MC API key not configured on Vercel — set MC_API_KEY (server-only)." },
       { status: 503 },
+    );
+  }
+
+  // A paid/met lead is money already out the door: trashing it drops it from
+  // the roster and analytics at once and (after 24 h) from Active. Require a
+  // reason so a mis-tap on the phone can't silently bury it (2026-09-26).
+  // The read fails closed — the marker post below needs MC anyway.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 3_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "Couldn't read the lead's status from Mission Control — nothing was trashed. Try again." }, { status: 502 });
+  }
+  const current = latestStatus(read.messages, leadId);
+  if ((current === "paid" || current === "met") && reason.length < 5) {
+    return NextResponse.json(
+      { error: `This lead is ${current} — give a reason (5+ characters) to move it to Trash.`, needsReason: true, current },
+      { status: 422 },
     );
   }
 
