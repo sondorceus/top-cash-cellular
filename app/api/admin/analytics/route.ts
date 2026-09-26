@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { extractLeadValueFromBody } from "../../../lib/lead-money";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -45,17 +46,37 @@ function isInternalLead(body: string): boolean {
   return false;
 }
 
+// Calendar days and hours in America/Chicago (2026-09-26) — the same clock
+// the go-funnel uses and the one Sonny reads. The buckets were UTC, so
+// "today" rolled over at 7 pm Austin time and the Home tiles disagreed with
+// the funnel and with the profit page.
+const TZ = "America/Chicago";
+const dayFmt = new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" });
+const hourFmt = new Intl.DateTimeFormat("en-US", { timeZone: TZ, hour: "2-digit", hour12: false });
+function dayKeyOf(ms: number): string {
+  if (!Number.isFinite(ms)) return "0000-00-00"; // unparseable timestamp: never throw, never match a real day
+  const p = dayFmt.formatToParts(new Date(ms));
+  const get = (t: string) => p.find((x) => x.type === t)?.value || "00";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+function hourOf(ms: number): number {
+  if (!Number.isFinite(ms)) return 0;
+  const h = parseInt(hourFmt.formatToParts(new Date(ms)).find((x) => x.type === "hour")?.value || "0", 10);
+  return h === 24 ? 0 : h; // some engines print "24" for midnight with hour12:false
+}
+
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  // Full history, archive included (2026-09-26): totals/averages from one
+  // newest-5000 slice shrank as the feed grew. Incomplete → 502. 30 s memo:
+  // Home polls this every minute and the analytics page too.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 30_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "MC unavailable — analytics not loaded (a partial read would show wrong totals)." }, { status: 502 });
+  }
+  const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
 
   // Status index (for terminal-stage counts in the rollup).
   //
@@ -104,8 +125,8 @@ export async function GET(req: NextRequest) {
   let last24hLeads = 0; let last24hQuote = 0;
   let prev24hLeads = 0;
 
-  const today = new Date(now).toISOString().slice(0, 10);
-  const yesterday = new Date(now - 86400000).toISOString().slice(0, 10);
+  const today = dayKeyOf(now);
+  const yesterday = dayKeyOf(now - 86400000);
 
   const internalView = req.nextUrl.searchParams.get("internal") || "hide";
   let internalSkipped = 0;
@@ -134,14 +155,15 @@ export async function GET(req: NextRequest) {
     );
     totalQuote += quote;
 
-    const dayKey = m.timestamp.slice(0, 10);
-    const hourKey = m.timestamp.slice(0, 13);
+    const dayKey = dayKeyOf(t.getTime());
+    const hr = hourOf(t.getTime());
+    const hourKey = `${dayKey}T${String(hr).padStart(2, "0")}`;
     dailyCounts[dayKey] = (dailyCounts[dayKey] || 0) + 1;
     dailyValue[dayKey] = (dailyValue[dayKey] || 0) + quote;
     hourly[hourKey] = (hourly[hourKey] || 0) + 1;
 
-    if (dayKey === today) todayHourly[t.getUTCHours()] += 1;
-    if (dayKey === yesterday) yesterdayHourly[t.getUTCHours()] += 1;
+    if (dayKey === today) todayHourly[hr] += 1;
+    if (dayKey === yesterday) yesterdayHourly[hr] += 1;
     if (ageH < 24) { last24hLeads++; last24hQuote += quote; }
     else if (ageH < 48) { prev24hLeads++; }
 
@@ -160,7 +182,7 @@ export async function GET(req: NextRequest) {
   // Last 7 days, oldest → newest, so the chart reads left → right
   const days7: { date: string; count: number; quoted: number }[] = [];
   for (let i = 6; i >= 0; i--) {
-    const d = new Date(now - i * 86400000).toISOString().slice(0, 10);
+    const d = dayKeyOf(now - i * 86400000);
     days7.push({ date: d, count: dailyCounts[d] || 0, quoted: dailyValue[d] || 0 });
   }
 
@@ -174,7 +196,7 @@ export async function GET(req: NextRequest) {
       prev24hLeads,
       trendPct: prev24hLeads > 0 ? Math.round(((last24hLeads - prev24hLeads) / prev24hLeads) * 100) : null,
     },
-    todayHourly,           // 24-bin array — hour 0..23 (UTC)
+    todayHourly,           // 24-bin array — hour 0..23 (America/Chicago)
     yesterdayHourly,
     days7,                 // oldest→newest last 7 calendar days
     topDevices,

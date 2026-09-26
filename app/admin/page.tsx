@@ -2389,6 +2389,14 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* The route ships the newest 200 rows; the footnote in the money card
+            was easy to miss (2026-09-26). Honest about the reach: search only
+            filters what is loaded here. */}
+        {leadCount != null && leadCount > leads.length && leads.length > 0 && (
+          <div className="mb-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-100">
+            Showing the newest <b>{leads.length}</b> of <b>{leadCount}</b> {view === "trash" ? "trashed" : ""} leads. Older ones aren&apos;t loaded on this board — search covers only these {leads.length}; the Customers page covers everyone.
+          </div>
+        )}
         {leads.length > 0 && !(view === "needs-review" && needsReviewLeads.length === 0) && (
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
             <div className="hidden md:grid grid-cols-[auto_1fr_1.4fr_1.6fr_1.4fr_auto] gap-4 px-5 py-3 bg-white/5 text-xs font-semibold text-[#dcdcdc] uppercase tracking-wider border-b border-white/10 items-center">

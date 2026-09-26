@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { parseDollarAmount } from "../../../lib/lead-money";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 // Saved-quotes / abandoned-cart list for staff re-marketing. These are
 // the [QUOTE SAVED] markers /api/lead writes when a customer enters their
@@ -48,18 +49,14 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!MC_KEY) return NextResponse.json({ error: "MC not configured" }, { status: 502 });
 
-  let messages: { id?: string; body?: string; timestamp: string }[] = [];
-  try {
-    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (!r.ok) return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
-    const data = await r.json();
-    messages = Array.isArray(data.messages) ? data.messages : [];
-  } catch {
-    return NextResponse.json({ error: "MC fetch failed" }, { status: 502 });
+  // Full history, archive included (2026-09-26): a saved quote whose owner's
+  // real lead had scrolled out of the newest-5000 slice read as "open" and
+  // got chased. Incomplete → 502 rather than a shorter list.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 30_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "MC unavailable — saved quotes not loaded (a partial read would mislabel conversions)." }, { status: 502 });
   }
+  const messages: { id?: string; body?: string; timestamp: string }[] = read.messages;
 
   // Soft-deleted entries — staff "Dismiss" posts a [DELETED-LEAD: id]
   // marker (the same mechanism /api/admin/leads/delete uses), so a

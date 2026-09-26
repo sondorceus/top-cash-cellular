@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { parseDollarAmount, parseTotalPayoutLine } from "../../../lib/lead-money";
 import { latestContactUpdates } from "../../../lib/lead-devices";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -76,15 +77,16 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) {
-    return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
+  // Full history, archive included (2026-09-26): one newest-5000 slice lost
+  // every customer whose lead had scrolled out and read a paid lead as
+  // quote_requested once its status marker fell off the window. An
+  // incomplete read is a 502 — a roster total from half the feed is wrong,
+  // not approximate. 30 s memo: the pages poll this.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 30_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "MC unavailable — roster not loaded (a partial read would show wrong totals)." }, { status: 502 });
   }
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
 
   // Pass 1: index status updates by lead id (so we can attribute each
   // lead's terminal status to its customer roll-up). Status messages have

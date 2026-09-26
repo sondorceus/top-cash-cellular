@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -33,16 +34,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "MC_API_KEY not configured" }, { status: 503 });
   }
 
-  // Pull a generous window — covers ~years of signups at our volume.
-  const r = await fetch(`${MC_API}/api/comms?limit=2000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) {
-    return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
+  // Full history, archive included (2026-09-26): the newest-2000 slice
+  // forgot unsubscribes older than the window while a lead inside it
+  // re-added the address. The recipient list is authoritative — an
+  // incomplete read is a 502, never a shorter list.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 30_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "MC unavailable — subscriber list not loaded (a partial read would be wrong)." }, { status: 502 });
   }
-  const data = await r.json();
-  const messages: { body?: string; timestamp: string }[] = data.messages || [];
+  const messages: { body?: string; timestamp: string }[] = read.messages;
 
   // Pass 1: collect signups by lowercased email. Keep the most-recent
   // signup record so re-signups update the stored name.

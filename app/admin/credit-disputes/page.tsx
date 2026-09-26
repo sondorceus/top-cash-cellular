@@ -14,13 +14,10 @@ const EVENT_LABEL: Record<string, string> = {
 };
 const API = "/api/admin/credit-disputes";
 
+// Session path (2026-09-26): proxy.ts swaps this placeholder for the real
+// token on a Google admin session; the localStorage tokens are gone.
 function hdrs(extra?: Record<string, string>): Record<string, string> {
-  const h: Record<string, string> = { ...(extra || {}) };
-  if (typeof window !== "undefined") {
-    const t = localStorage.getItem("tcc-admin-token-v1") || localStorage.getItem("tcc-admin-token");
-    if (t) h["x-admin-token"] = t;
-  }
-  return h;
+  return { ...(extra || {}), "x-admin-token": "session" };
 }
 function fmt(s?: string) { return s ? String(s).slice(0, 16).replace("T", " ") : "—"; }
 
@@ -40,7 +37,7 @@ export default function CreditDisputes() {
     setLoading(true); setErr("");
     try {
       const r = await fetch(`${API}/intakes`, { headers: hdrs() });
-      if (!r.ok) { setErr(r.status === 401 ? "Not authorized." : "Couldn't load."); return; }
+      if (!r.ok) { setErr(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : "Couldn't load."); return; }
       setRows((await r.json()).intakes || []);
     } catch { setErr("Network error."); } finally { setLoading(false); }
   }, []);

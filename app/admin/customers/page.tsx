@@ -53,14 +53,15 @@ export default function CustomersPage() {
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
     setLoading(true);
+    // Session path (2026-09-26): proxy.ts swaps this placeholder for the real
+    // token on a Google admin session; the localStorage token is gone.
     fetch(`/api/admin/customers?internal=${showInternal ? "show" : "hide"}`, {
-      headers: token ? { "x-admin-token": token } : {},
+      headers: { "x-admin-token": "session" },
       cache: "no-store",
     })
       .then((r) => {
-        if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set token." : `HTTP ${r.status}`);
+        if (!r.ok) throw new Error(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : `HTTP ${r.status}`);
         return r.json();
       })
       .then((d) => { setData(d); setError(null); })

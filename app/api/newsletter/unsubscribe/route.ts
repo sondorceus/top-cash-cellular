@@ -10,12 +10,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { mailLogo, esc as shellEsc } from "../../../lib/email-shell";
 import { verifyNewsletterToken } from "../../../lib/newsletter-token";
+import { markNewsletterUnsub } from "../../../lib/newsletter-unsub";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
 async function postUnsubMarker(email: string): Promise<boolean> {
-  if (!MC_KEY) return false;
+  // Durable copy first (2026-09-26): the blob outlives every comms window
+  // (a marker older than the reader's window used to be forgotten and the
+  // address mailed again); the marker stays as the audit trail. Either
+  // landing counts as recorded — the send route checks the blob.
+  const durable = await markNewsletterUnsub(email);
+  if (!MC_KEY) return durable;
   try {
     const r = await fetch(`${MC_API}/api/comms`, {
       method: "POST",
@@ -29,9 +35,9 @@ async function postUnsubMarker(email: string): Promise<boolean> {
         priority: "low",
       }),
     });
-    return r.ok;
+    return r.ok || durable;
   } catch {
-    return false;
+    return durable;
   }
 }
 

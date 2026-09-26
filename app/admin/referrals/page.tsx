@@ -33,12 +33,14 @@ export default function ReferralsPage() {
   const [paySaving, setPaySaving] = useState(false);
   const [payError, setPayError] = useState("");
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
+  // Session path (2026-09-26): proxy.ts swaps this placeholder for the real
+  // token on a Google admin session; the localStorage token is gone.
+  const token = "session";
 
   const load = useCallback(() => {
     fetch("/api/admin/referrals", { headers: token ? { "x-admin-token": token } : {}, cache: "no-store" })
       .then((r) => {
-        if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set your token." : `HTTP ${r.status}`);
+        if (!r.ok) throw new Error(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : `HTTP ${r.status}`);
         return r.json();
       })
       .then((d) => { setData(d); setError(null); })
@@ -196,7 +198,7 @@ export default function ReferralsPage() {
         )}
 
         <p className="text-[10px] text-[#555] text-center">
-          Aggregated from the last 1,000 MC messages. Recording a payout logs a marker for the books — it does not move money.
+          Aggregated from the full Mission Control history. Recording a payout logs a marker for the books — it does not move money.
         </p>
       </div>
     </main>

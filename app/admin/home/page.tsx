@@ -103,8 +103,9 @@ export default function AdminHomePage() {
   const [leadsOpen, setLeadsOpen] = useState(false);
 
   const refresh = useCallback(async () => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-    const headers: Record<string, string> = token ? { "x-admin-token": token } : {};
+    // Session path (2026-09-26): proxy.ts swaps this placeholder for the
+    // real token on a Google admin session; the localStorage token is gone.
+    const headers: Record<string, string> = { "x-admin-token": "session" };
     const get = (url: string) => fetch(url, { headers, cache: "no-store" });
     const [a, l, s] = await Promise.allSettled([
       get("/api/admin/analytics"),
@@ -160,7 +161,7 @@ export default function AdminHomePage() {
         <div className="sub" suppressHydrationWarning>
           <span>{dateLine}</span>
           {error === "unauthorized" ? (
-            <span className="tadm-chip"><span className="dot bad" />sign in on <Link href="/admin" style={{ color: "var(--tadm-info)" }}>Leads</Link></span>
+            <span className="tadm-chip"><span className="dot bad" />not signed in — sign in with Google on <Link href="/admin" style={{ color: "var(--tadm-info)" }}>Leads</Link></span>
           ) : error ? (
             <span className="tadm-chip"><span className="dot bad" />feed unreachable</span>
           ) : updatedAt ? (

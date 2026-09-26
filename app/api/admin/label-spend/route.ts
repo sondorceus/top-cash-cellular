@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
-import { fetchCommsPaged } from "../../../lib/mc-comms";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 // =========================================================================
 // FedEx LABEL-SPEND TRACKER. Aggregates every [LABEL:] marker's captured
@@ -35,7 +35,14 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!MC_KEY) return NextResponse.json({ error: "MC not configured" }, { status: 502 });
 
-  const msgs = await fetchCommsPaged({ apiKey: MC_KEY });
+  // Archive-paged WITH completeness (2026-09-26): a page that failed part-way
+  // used to silently shrink the label-spend totals. 30 s memo — the profit
+  // page loads this alongside sales and ad-spend.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 30_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "MC unavailable — label spend not loaded (a partial read would show wrong totals)." }, { status: 502 });
+  }
+  const msgs = read.messages;
 
   // Latest FedEx delivery state per lead.
   const stateByLead = new Map<string, { state: string; ts: string }>();

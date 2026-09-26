@@ -167,9 +167,11 @@ export function DeviceCorrection({
         quantity: seed?.quantity || 1,
         imei: imei.replace(/\D/g, ""),
       };
+      // Session path (2026-09-26): without a token from the board the
+      // placeholder rides along and proxy.ts swaps in the real one.
       const r = await fetch("/api/admin/leads/items", {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(token ? { "x-admin-token": token } : {}) },
+        headers: { "Content-Type": "application/json", "x-admin-token": token || "session" },
         body: JSON.stringify({
           leadId: lead.id,
           devices: [corrected, ...others],
@@ -177,6 +179,7 @@ export function DeviceCorrection({
         }),
       });
       const j = await r.json();
+      if (r.status === 401) throw new Error("Not signed in — sign in with Google on /admin (your session may have expired), then reload.");
       if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
       onSaved();
       onClose();

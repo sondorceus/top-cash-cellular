@@ -32,6 +32,12 @@ type SendResp = {
   count: number;
   sent: number;
   failed: number;
+  skippedAlreadySent?: number;
+  skippedUnsub?: number;
+  skippedBlobError?: number;
+  batches?: number;
+  partial?: boolean;
+  remaining?: number;
   failures: { email: string; error: string }[];
 };
 
@@ -39,6 +45,12 @@ type SendResp = {
 // real token on a Google admin session. The page no longer asks staff to
 // paste TCC_ADMIN_TOKEN or keeps it in localStorage.
 const AUTH_HEADERS = { "x-admin-token": "session" } as const;
+
+// One id per composed blast (2026-09-26): the route marks each mailed
+// recipient under it, so a retry — or "Continue" after a run that stopped
+// at the time budget — skips everyone already sent. Editing the text is a
+// new blast and gets a new id.
+const mintSendId = () => `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 
 /* one-off form label styles (colors via --tadm-* vars only) */
 const lbl: CSSProperties = {
@@ -72,6 +84,19 @@ export default function NewsletterAdminPage() {
   const [sendResult, setSendResult] = useState<SendResp | null>(null);
   const [error, setError] = useState("");
   const [confirmSend, setConfirmSend] = useState(false);
+  const [sendId, setSendId] = useState("");
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState("");
+
+  // A run that stopped early keeps its id so "Continue" resumes; any other
+  // change to the composition is a new blast.
+  useEffect(() => {
+    if (sendResult?.partial) return;
+    setSendId(mintSendId());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subject, body, preheader, includeLeads]);
+
+  const continuing = !!(sendResult?.partial && sendResult.sendId === sendId);
 
   const recipientCount = useMemo(() => {
     return includeLeads ? counts.total : counts.explicit;
@@ -135,8 +160,37 @@ export default function NewsletterAdminPage() {
     }
   };
 
+  // Mail this exact composition to OWNER_EMAIL only (2026-09-26).
+  const doTest = async () => {
+    if (!subject.trim() || body.trim().length < 30) {
+      setError("Subject and body (30+ characters) required for a test send");
+      return;
+    }
+    setTesting(true);
+    setError("");
+    setTestResult("");
+    try {
+      const r = await fetch(`/api/admin/newsletter/send`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...AUTH_HEADERS },
+        body: JSON.stringify({ subject, body, preheader, testOnly: true }),
+      });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok || !d.ok) {
+        setError(d.error || `HTTP ${r.status}`);
+        return;
+      }
+      setTestResult(`Test sent to ${d.to} — check that inbox before sending to everyone.`);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Test send failed");
+    } finally {
+      setTesting(false);
+    }
+  };
+
   const doSend = async () => {
-    if (!confirmSend) {
+    // A continuation was already confirmed when the blast started.
+    if (!confirmSend && !continuing) {
       setConfirmSend(true);
       return;
     }
@@ -147,7 +201,7 @@ export default function NewsletterAdminPage() {
       const r = await fetch(`/api/admin/newsletter/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...AUTH_HEADERS },
-        body: JSON.stringify({ subject, body, preheader, includeLeads, dryRun: false }),
+        body: JSON.stringify({ subject, body, preheader, includeLeads, dryRun: false, sendId }),
       });
       const d = await r.json();
       if (!r.ok || !d.ok) {
@@ -157,10 +211,14 @@ export default function NewsletterAdminPage() {
       }
       setSendResult(d as SendResp);
       setConfirmSend(false);
-      setSubject("");
-      setBody("");
-      setPreheader("");
-      setPreviewHtml("");
+      // A run that stopped at the time budget keeps the composition and the
+      // sendId so "Continue" resumes where it stopped; a complete run clears.
+      if (!(d as SendResp).partial) {
+        setSubject("");
+        setBody("");
+        setPreheader("");
+        setPreviewHtml("");
+      }
       // Reload subs in case any unsubs happened mid-send.
       loadSubs();
     } catch (e) {
@@ -271,15 +329,25 @@ export default function NewsletterAdminPage() {
             {previewing ? "Rendering…" : "Preview (dry run)"}
           </button>
           <button
+            onClick={doTest}
+            disabled={testing || sending || !subject.trim() || body.trim().length < 30}
+            className="tadm-btn"
+            title="Mail this exact newsletter to OWNER_EMAIL only — nothing else goes out"
+          >
+            {testing ? "Sending test…" : "Send a test to me"}
+          </button>
+          <button
             onClick={doSend}
             disabled={sending || !subject.trim() || body.trim().length < 30 || recipientCount === 0}
-            className={`tadm-btn ${confirmSend ? "danger" : "primary"}`}
+            className={`tadm-btn ${confirmSend || continuing ? "danger" : "primary"}`}
           >
             {sending
               ? "Sending…"
-              : confirmSend
-                ? `CONFIRM: Send to ${recipientCount}`
-                : `Send to ${recipientCount} →`}
+              : continuing
+                ? `Continue sending (${sendResult?.remaining ?? "?"} remaining)`
+                : confirmSend
+                  ? `CONFIRM: Send to ${recipientCount} recipient${recipientCount === 1 ? "" : "s"}`
+                  : `Send to ${recipientCount} →`}
           </button>
           {confirmSend && !sending && (
             <button onClick={() => setConfirmSend(false)} className="tadm-btn">
@@ -288,6 +356,7 @@ export default function NewsletterAdminPage() {
           )}
         </div>
         {error && <p style={{ margin: "10px 0 0", fontSize: 12, fontWeight: 600, color: "var(--tadm-bad)" }}>{error}</p>}
+        {testResult && <p style={{ margin: "10px 0 0", fontSize: 12, fontWeight: 600, color: "var(--tadm-green)" }}>{testResult}</p>}
       </div>
 
       {/* Preview */}
@@ -311,11 +380,20 @@ export default function NewsletterAdminPage() {
         <div className="tadm-card" style={{ marginTop: 10 }}>
           <h3>
             Send result
-            <span className="right"><span className="tadm-pill on">SENT</span></span>
+            <span className="right">{sendResult.partial ? <span className="tadm-pill warn">PARTIAL</span> : <span className="tadm-pill on">SENT</span>}</span>
           </h3>
           <p style={{ margin: "0 0 6px", fontSize: 13, color: "var(--tadm-text)" }}>
             <strong>{sendResult.sent}</strong> delivered · <strong>{sendResult.failed}</strong> failed (out of {sendResult.count} total)
+            {(sendResult.skippedUnsub || 0) > 0 && <> · {sendResult.skippedUnsub} unsubscribed (skipped)</>}
+            {(sendResult.skippedAlreadySent || 0) > 0 && <> · {sendResult.skippedAlreadySent} already mailed under this send (skipped)</>}
+            {(sendResult.skippedBlobError || 0) > 0 && <> · {sendResult.skippedBlobError} skipped — opt-out store unreadable, not mailed to be safe</>}
+            {typeof sendResult.batches === "number" && <> · {sendResult.batches} batch{sendResult.batches === 1 ? "" : "es"}</>}
           </p>
+          {sendResult.partial && (
+            <p style={{ margin: "0 0 6px", fontSize: 12.5, fontWeight: 600, color: "var(--tadm-warn)" }}>
+              Stopped early to stay inside the server&apos;s time budget — {sendResult.remaining} recipient{sendResult.remaining === 1 ? "" : "s"} not yet mailed. Click &quot;Continue sending&quot; above; everyone already mailed is skipped.
+            </p>
+          )}
           <p style={{ margin: "0 0 10px", font: "600 11px var(--tadm-mono)", color: "var(--tadm-faint)" }}>
             Send ID: <span style={{ color: "var(--tadm-dim)" }}>{sendResult.sendId}</span>
           </p>

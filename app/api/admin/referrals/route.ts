@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { isCustomerLeadPost } from "../../../lib/lead-devices";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 // Referral bookkeeping for staff. The referral program has no database —
 // everything is MC "marker" messages:
@@ -38,18 +39,14 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!MC_KEY) return NextResponse.json({ error: "MC not configured" }, { status: 502 });
 
-  let messages: { id?: string; body?: string; timestamp: string }[] = [];
-  try {
-    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (!r.ok) return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
-    const data = await r.json();
-    messages = Array.isArray(data.messages) ? data.messages : [];
-  } catch {
-    return NextResponse.json({ error: "MC fetch failed" }, { status: 502 });
+  // Full history, archive included (2026-09-26): money owed to referrers
+  // must not depend on which 5,000 messages happen to be newest — an
+  // [REFERRAL-PAID] that scrolled out read as still owed. Incomplete → 502.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 30_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "MC unavailable — referral books not loaded (a partial read would show wrong totals)." }, { status: 502 });
   }
+  const messages: { id?: string; body?: string; timestamp: string }[] = read.messages;
 
   // Walk every referral marker once, bucketing by referrer email.
   const byEmail = new Map<string, Referrer>();

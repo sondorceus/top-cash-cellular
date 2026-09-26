@@ -31,12 +31,14 @@ export default function SavedQuotesPage() {
   const [hideConverted, setHideConverted] = useState(true);
   const [dismissing, setDismissing] = useState<string | null>(null);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
+  // Session path (2026-09-26): proxy.ts swaps this placeholder for the real
+  // token on a Google admin session; the localStorage token is gone.
+  const token = "session";
 
   const load = useCallback(() => {
     fetch("/api/admin/saved-quotes", { headers: token ? { "x-admin-token": token } : {}, cache: "no-store" })
       .then((r) => {
-        if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set your token." : `HTTP ${r.status}`);
+        if (!r.ok) throw new Error(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : `HTTP ${r.status}`);
         return r.json();
       })
       .then((d) => { setData(d); setError(null); })
@@ -169,7 +171,7 @@ export default function SavedQuotesPage() {
         )}
 
         <p className="text-[10px] text-[#555] text-center">
-          From the last 1,000 MC messages. &quot;Converted&quot; means the same email later completed a real trade.
+          From the full Mission Control history. &quot;Converted&quot; means the same email later completed a real trade.
         </p>
       </div>
     </main>

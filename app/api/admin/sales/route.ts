@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
+import { fetchCommsRead } from "../../../lib/mc-comms";
 
 // Profit / sales ledger. Mirrors the [NOTE: …] [LEAD: …] pattern other
 // admin endpoints use — every sale is one comms message on Mission
@@ -112,18 +113,14 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  let r: Response;
-  try {
-    r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-  } catch (e) {
-    return NextResponse.json({ error: e instanceof Error ? e.message : "MC unavailable" }, { status: 502 });
+  // Full history, archive included (2026-09-26): the ledger used to be one
+  // newest-5000 slice, so older [SALE] rows silently left the all-time
+  // totals as the feed grew. Incomplete read → 502, never a partial total.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 30_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "MC unavailable — ledger not loaded (a partial read would show wrong totals)." }, { status: 502 });
   }
-  if (!r.ok) return NextResponse.json({ error: `MC HTTP ${r.status}` }, { status: 502 });
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
 
   // First pass: tombstones — the newest [DELETED-SALE] per id. Time-aware
   // (2026-09-26): a tombstone hides only [SALE] rows written before it, so

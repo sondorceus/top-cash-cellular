@@ -24,6 +24,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { nextItemUpdateVersion, type LeadMessage } from "../../../../lib/lead-devices";
+import { fetchCommsRead } from "../../../../lib/mc-comms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -105,20 +106,16 @@ export async function POST(req: NextRequest) {
 
   // Verify the lead actually exists before we post a correction; an
   // [ITEM-UPDATE] marker with no matching [LEAD: …] is harmless data
-  // litter on MC but confusing in audit logs.
-  let leadOk = false;
-  let messages: LeadMessage[] = [];
-  try {
-    const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-    });
-    if (r.ok) {
-      const data = await r.json();
-      messages = data.messages || [];
-      leadOk = messages.some((m) => m.id === leadId && /\[NEW BUYBACK LEAD/i.test(m.body || ""));
-    }
-  } catch { /* handled below */ }
+  // litter on MC but confusing in audit logs. Archive-paged (2026-09-26):
+  // the newest-5000 slice answered "Lead not found" for any lead older than
+  // the window, so DeviceCorrection failed on older trades. An incomplete
+  // read fails closed — nothing is written.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 3_000 });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "Couldn't read the lead from Mission Control — nothing saved. Try again." }, { status: 502 });
+  }
+  const messages: LeadMessage[] = read.messages;
+  const leadOk = messages.some((m) => m.id === leadId && /\[NEW BUYBACK LEAD/i.test(m.body || ""));
   if (!leadOk) {
     return NextResponse.json({ error: "Lead not found" }, { status: 404 });
   }

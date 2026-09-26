@@ -33,19 +33,20 @@ export default function LiveChatsPage() {
   const [alsoText, setAlsoText] = useState(false);
   const threadRef = useRef<HTMLDivElement>(null);
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-  const hdrs: Record<string, string> = token ? { "x-admin-token": token } : {};
+  // Session path (2026-09-26): proxy.ts swaps this placeholder for the real
+  // token on a Google admin session; the localStorage token is gone.
+  const hdrs: Record<string, string> = { "x-admin-token": "session" };
 
   const loadInbox = useCallback(() => {
     fetch("/api/admin/chats", { headers: hdrs, cache: "no-store" })
       .then((r) => {
-        if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set your token." : `HTTP ${r.status}`);
+        if (!r.ok) throw new Error(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : `HTTP ${r.status}`);
         return r.json();
       })
       .then((d) => { setSessions(d.sessions || []); setError(null); })
       .catch((e) => setError(e.message));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
 
   // Incremental thread poll: after the first full load, each tick asks only
   // for records newer than the newest we've rendered — idle ticks cost the
@@ -88,7 +89,7 @@ export default function LiveChatsPage() {
       })
       .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
 
   // Deep link: /admin/chats?session=<sid> opens that thread directly.
   useEffect(() => {

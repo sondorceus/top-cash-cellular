@@ -438,6 +438,28 @@ function checkAuth(req: NextRequest): boolean {
   return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
+// Customer reviews for the inline row join, memoized per instance for 60 s
+// (2026-09-26): the board's 5 s poll re-fetched /api/reviews on every tick
+// while the reviews themselves change a few times a week. A failed or empty
+// fetch is not kept, so the next poll retries.
+type ReviewRow = { id: string; leadId?: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
+let reviewsMemo: { at: number; v: Promise<ReviewRow[]> } | null = null;
+function loadReviews(): Promise<ReviewRow[]> {
+  if (reviewsMemo && Date.now() - reviewsMemo.at < 60_000) return reviewsMemo.v;
+  const v: Promise<ReviewRow[]> = fetch(`${MC_API}/api/reviews?limit=500`, {
+    headers: { "x-api-key": MC_KEY },
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  })
+    .then(async (r) => (r.ok ? (await r.json())?.reviews : undefined))
+    .then((rows) => (Array.isArray(rows) ? (rows as ReviewRow[]) : []))
+    .catch(() => [] as ReviewRow[]);
+  const entry = { at: Date.now(), v };
+  reviewsMemo = entry;
+  v.then((rows) => { if (rows.length === 0 && reviewsMemo === entry) reviewsMemo = null; });
+  return v;
+}
+
 export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -463,41 +485,46 @@ export async function GET(req: NextRequest) {
   // the console sends fresh=1 for 20 s after any write of its own so the
   // owner's change never shows as "undone" by a memoized read.
   const fresh = req.nextUrl.searchParams.get("fresh") === "1";
-  const [read, reviewsRes] = await Promise.all([
-    fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, maxPages: 12, memoMs: fresh ? 0 : 15_000 }),
-    fetch(`${MC_API}/api/reviews?limit=500`, {
-      headers: { "x-api-key": MC_KEY },
-      cache: "no-store",
-      signal: AbortSignal.timeout(10_000),
-    }).catch(() => null),
+  // fresh=1 (2026-09-26): only the LIVE page is re-read (one request); the
+  // archive pages come from the 15 s memo. The console sends fresh=1 for
+  // 20 s after each write, which used to mean four full 12-page walks. MC
+  // comms are append-only, so newest-live ∪ memoized-history is exact.
+  const [base, live, reviewRows] = await Promise.all([
+    fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, maxPages: 12, memoMs: 15_000 }),
+    fresh
+      ? fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false, memoMs: 0 })
+      : Promise.resolve(null),
+    loadReviews(),
   ]);
-  const messages = read.messages;
+  let messages = base.messages;
+  let complete = base.complete;
+  if (live) {
+    if (!live.complete) complete = false;
+    else {
+      const byId = new Map(messages.map((m) => [m.id, m]));
+      for (const m of live.messages) if (m?.id) byId.set(m.id, m);
+      messages = [...byId.values()].sort((a, b) => String(a.timestamp).localeCompare(String(b.timestamp)));
+    }
+  }
   // The feed always carries lead markers, so an empty result means MC was
   // unreachable rather than "no leads" — and a read that lost a page
   // part-way would make every older lead vanish for one poll.
-  if (!read.complete || messages.length === 0) {
+  if (!complete || messages.length === 0) {
     return NextResponse.json({ error: "MC unavailable" }, { status: 502 });
   }
 
   // Index reviews by leadId. Reviews without a leadId (pre-token,
   // unbackfilled) stay un-attached — they still show on /reviews
   // publicly, just not inline on a lead row.
-  type ReviewRow = { id: string; leadId?: string; rating: number; title?: string; body: string; verified?: boolean; createdAt: string };
   const reviewsByLead = new Map<string, ReviewRow>();
-  if (reviewsRes?.ok) {
-    try {
-      const rData = await reviewsRes.json();
-      const reviews: ReviewRow[] = Array.isArray(rData.reviews) ? rData.reviews : [];
-      for (const rev of reviews) {
-        if (!rev.leadId) continue;
-        // Keep the most-recent review per lead (a customer could resubmit
-        // if we re-mint a token, though strict gate makes that rare).
-        const prev = reviewsByLead.get(rev.leadId);
-        if (!prev || (rev.createdAt && prev.createdAt && rev.createdAt > prev.createdAt)) {
-          reviewsByLead.set(rev.leadId, rev);
-        }
-      }
-    } catch {}
+  for (const rev of reviewRows) {
+    if (!rev.leadId) continue;
+    // Keep the most-recent review per lead (a customer could resubmit
+    // if we re-mint a token, though strict gate makes that rare).
+    const prev = reviewsByLead.get(rev.leadId);
+    if (!prev || (rev.createdAt && prev.createdAt && rev.createdAt > prev.createdAt)) {
+      reviewsByLead.set(rev.leadId, rev);
+    }
   }
 
   // Pass 1: index status updates + notes + soft-deletes + restores by lead id.

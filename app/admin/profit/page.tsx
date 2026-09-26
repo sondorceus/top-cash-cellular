@@ -159,15 +159,14 @@ export default function ProfitPage() {
   const [adBusy, setAdBusy] = useState(false);
   const [adEditingId, setAdEditingId] = useState<string | null>(null);
 
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return "";
-    return localStorage.getItem("tcc-admin-token") || "";
-  }, []);
+  // Session path (2026-09-26): proxy.ts swaps this placeholder for the real
+  // token on a Google admin session; the localStorage token is gone.
+  const token = "session";
 
   const fetchSales = useCallback(async () => {
     try {
       const r = await fetch("/api/admin/sales", { headers: token ? { "x-admin-token": token } : {}, cache: "no-store" });
-      if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set token." : `HTTP ${r.status}`);
+      if (!r.ok) throw new Error(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : `HTTP ${r.status}`);
       setData(await r.json());
       setError(null);
     } catch (e) {
@@ -180,7 +179,7 @@ export default function ProfitPage() {
   const fetchAdSpend = useCallback(async () => {
     try {
       const r = await fetch("/api/admin/ad-spend", { headers: token ? { "x-admin-token": token } : {}, cache: "no-store" });
-      if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set token." : `HTTP ${r.status}`);
+      if (!r.ok) throw new Error(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : `HTTP ${r.status}`);
       setAdData(await r.json());
     } catch (e) {
       // Don't clobber the page error if sales loaded fine — surface

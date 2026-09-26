@@ -65,10 +65,11 @@ export default function AnalyticsPage() {
   }, []);
 
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-    fetch(`/api/admin/analytics?internal=${showInternal ? "show" : "hide"}`, { headers: token ? { "x-admin-token": token } : {} })
+    // Session path (2026-09-26): proxy.ts swaps the placeholder header for
+    // the real token on a Google admin session; the localStorage token is gone.
+    fetch(`/api/admin/analytics?internal=${showInternal ? "show" : "hide"}`, { headers: { "x-admin-token": "session" } })
       .then((r) => {
-        if (!r.ok) throw new Error(r.status === 401 ? "Unauthorized — open /admin first to set token." : `HTTP ${r.status}`);
+        if (!r.ok) throw new Error(r.status === 401 ? "Not signed in — sign in with Google on /admin (your session may have expired), then reload." : `HTTP ${r.status}`);
         return r.json();
       })
       .then(setData)
@@ -95,8 +96,7 @@ export default function AnalyticsPage() {
   const [go, setGo] = useState<GoFunnel | null>(null);
   const [goError, setGoError] = useState<string | null>(null);
   useEffect(() => {
-    const token = typeof window !== "undefined" ? localStorage.getItem("tcc-admin-token") : null;
-    fetch(`/api/admin/go-funnel?days=30`, { headers: token ? { "x-admin-token": token } : {} })
+    fetch(`/api/admin/go-funnel?days=30`, { headers: { "x-admin-token": "session" } })
       .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(setGo)
       .catch((e) => setGoError(e.message));
@@ -162,7 +162,7 @@ export default function AnalyticsPage() {
           <div className="bg-white/[0.04] border border-white/10 rounded-xl p-3">
             <p className="text-[11px] text-[#888] uppercase tracking-wider">Total leads</p>
             <p className="text-2xl font-extrabold">{data.summary.totalLeads}</p>
-            <p className="text-[11px] text-[#aaa]">last 1000 MC msgs scanned</p>
+            <p className="text-[11px] text-[#aaa]">from the full Mission Control history</p>
           </div>
           <div className="bg-white/[0.04] border border-white/10 rounded-xl p-3">
             <p className="text-[11px] text-[#888] uppercase tracking-wider">Avg quote</p>
@@ -179,7 +179,7 @@ export default function AnalyticsPage() {
         {/* TODAY HOURLY */}
         <section className="bg-white/[0.03] border border-white/10 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-            <h2 className="font-bold text-[15px]">Hourly submissions — today (UTC)</h2>
+            <h2 className="font-bold text-[15px]">Hourly submissions — today (Austin time)</h2>
             <span className="text-[12px] text-[#aaa]">{totalToday} today · {totalYesterday} yesterday</span>
           </div>
           <div className="space-y-1">
@@ -403,7 +403,7 @@ export default function AnalyticsPage() {
 
         <p className="text-[10px] text-[#555] text-center">
           Last refreshed {new Date(data.generatedAt).toLocaleTimeString()}.
-          Lead counts are scanned from the most recent 1,000 MC messages.
+          Lead counts come from the full Mission Control history (live feed + archive); days and hours are Austin time.
         </p>
       </div>
     </main>

@@ -13,11 +13,28 @@
 // `dryRun: true` returns the recipient list + preview HTML without
 // hitting Resend — Skywalker can sanity-check the preview before
 // committing.
+//
+// 2026-09-26 — send safety:
+//   • recipients come from the FULL archive-paged history (the newest-2000
+//     slice forgot old unsubscribes), and the durable opt-out blob is
+//     checked per recipient, failing closed;
+//   • batches of 25 with a pause, inside a 300 s function budget, stopping
+//     early with a resume count instead of dying mid-list;
+//   • one "[NEWSLETTER-SENT: <sendId>] batch=N to=<hash>,…" marker per batch
+//     (hashes, never addresses) so a retry with the same client-minted
+//     sendId skips everyone already mailed;
+//   • `testOnly: true` mails OWNER_EMAIL alone.
 
 import { NextRequest, NextResponse } from "next/server";
 import { mailLogo } from "../../../../lib/email-shell";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { signNewsletterToken } from "../../../../lib/newsletter-token";
+import { fetchCommsRead, type McMessage } from "../../../../lib/mc-comms";
+import { isNewsletterUnsubbed, newsletterEmailHash } from "../../../../lib/newsletter-unsub";
+
+// A blast can run for minutes — the default function budget cut long sends
+// off mid-list with no resume (2026-09-26).
+export const maxDuration = 300;
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -37,6 +54,10 @@ type Payload = {
   preheader?: string;
   includeLeads?: boolean;
   dryRun?: boolean;
+  // Client-minted per composed blast; a retry re-uses it (2026-09-26).
+  sendId?: string;
+  // Mail OWNER_EMAIL only — nothing else goes out (2026-09-26).
+  testOnly?: boolean;
 };
 
 type Subscriber = {
@@ -116,14 +137,14 @@ Reply directly or write to <a href="mailto:support@topcashcellular.com" style="c
 // Inline implementation rather than importing — keeps the send route
 // independent of /api/admin/newsletter so a failure in one doesn't
 // break the other.
-async function fetchSubscribers(includeLeads: boolean): Promise<Subscriber[]> {
-  const r = await fetch(`${MC_API}/api/comms?limit=2000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) throw new Error(`MC ${r.status}`);
-  const data = await r.json();
-  const messages: { body?: string; timestamp: string }[] = data.messages || [];
+async function fetchSubscribers(includeLeads: boolean): Promise<{ subscribers: Subscriber[]; messages: McMessage[] }> {
+  // Full history, archive included, no memo (2026-09-26): the recipient
+  // list is authoritative for a blast, so an incomplete read throws (the
+  // caller answers 502) instead of mailing a shorter list. The same
+  // messages carry the [NEWSLETTER-SENT] markers the dedupe reads.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 0 });
+  if (!read.complete || read.messages.length === 0) throw new Error("MC read incomplete");
+  const messages = read.messages;
   const signups = new Map<string, Subscriber>();
   const unsubAt = new Map<string, string>();
   for (const m of messages) {
@@ -178,7 +199,29 @@ async function fetchSubscribers(includeLeads: boolean): Promise<Subscriber[]> {
     if (unsub && unsub > sub.signedUpAt) continue;
     out.push(sub);
   }
-  return out;
+  return { subscribers: out, messages };
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+function personalize(bodyText: string, first: string): string {
+  return bodyText
+    .replace(/\{firstName\}/g, first)
+    .replace(/\{first_name\}/g, first)
+    .replace(/\{name\}/g, first);
+}
+
+// One comms line; bounded so a hung MC can't eat the send budget.
+async function postMarker(body: string): Promise<void> {
+  if (!MC_KEY) return;
+  try {
+    await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: "tcc-admin", fromName: "TCC Admin", role: "system", body, tags: ["newsletter", "sent"], priority: "low" }),
+      signal: AbortSignal.timeout(10_000),
+    });
+  } catch {}
 }
 
 export async function POST(req: NextRequest) {
@@ -204,28 +247,61 @@ export async function POST(req: NextRequest) {
   if (bodyText.length < 30) return NextResponse.json({ error: "Body too short (30+ chars)" }, { status: 400 });
   if (bodyText.length > 20000) return NextResponse.json({ error: "Body too long (20k max)" }, { status: 400 });
 
+  // "Send a test to me" (2026-09-26): one copy to OWNER_EMAIL, nothing else
+  // — no subscriber read, no markers, no dedupe. The only way to see the
+  // real rendering in an inbox before it goes to everyone.
+  if (payload.testOnly === true) {
+    const ownerEmail = (process.env.OWNER_EMAIL || "").trim();
+    if (!ownerEmail) {
+      return NextResponse.json({ error: "OWNER_EMAIL is not configured — nowhere to send the test." }, { status: 400 });
+    }
+    const first = "there";
+    const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${signNewsletterToken(ownerEmail)}`;
+    const personalizedBody = personalize(bodyText, first);
+    const testSubject = `[TEST] ${subject}`;
+    const html = wrap({ subject: testSubject, preheader, first, bodyHtml: bodyToHtml(personalizedBody), unsubUrl });
+    try {
+      const { Resend } = await import("resend");
+      const resend = new Resend(RESEND_KEY);
+      const r = await resend.emails.send({
+        from: "Top Cash Cellular <noreply@topcashcellular.com>",
+        replyTo: "support@topcashcellular.com",
+        to: ownerEmail,
+        subject: testSubject,
+        html,
+        text: `Hi ${first},\n\n${personalizedBody}\n\n— The Top Cash Cellular team\nAustin, TX`,
+      });
+      if (!r?.data?.id) return NextResponse.json({ error: "Resend returned no id for the test send" }, { status: 502 });
+    } catch (e) {
+      return NextResponse.json({ error: e instanceof Error ? e.message : "Test send failed" }, { status: 502 });
+    }
+    return NextResponse.json({ ok: true, testOnly: true, to: ownerEmail });
+  }
+
   let subscribers: Subscriber[];
+  let feed: McMessage[];
   try {
-    subscribers = await fetchSubscribers(includeLeads);
+    ({ subscribers, messages: feed } = await fetchSubscribers(includeLeads));
   } catch {
-    return NextResponse.json({ error: "Failed to load subscribers" }, { status: 502 });
+    return NextResponse.json({ error: "Couldn't load the subscriber list from Mission Control (incomplete read) — nothing was sent. Try again." }, { status: 502 });
   }
   if (subscribers.length === 0) {
     return NextResponse.json({ ok: false, error: "No subscribers yet" }, { status: 400 });
   }
 
-  // Mint a send-id so admin history can group sends and we can later
-  // attribute opens/clicks per send.
-  const sendId = `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+  // The client mints one id per composed blast and re-uses it on a retry,
+  // so recipients already marked under it are skipped. A missing or
+  // malformed id gets a fresh server one (older clients).
+  const sendId = typeof payload.sendId === "string" && /^[\w-]{6,64}$/.test(payload.sendId)
+    ? payload.sendId
+    : `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 
   // Dry-run: render preview for the first recipient + return list.
   if (dryRun) {
     const sample = subscribers[0];
     const first = (sample?.name?.split(/\s+/)[0] || "there").slice(0, 60);
     const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${signNewsletterToken(sample.email)}`;
-    const bodyHtml = bodyToHtml(
-      bodyText.replace(/\{firstName\}/g, first).replace(/\{first_name\}/g, first),
-    );
+    const bodyHtml = bodyToHtml(personalize(bodyText, first));
     const html = wrap({ subject, preheader, first, bodyHtml, unsubUrl });
     return NextResponse.json({
       ok: true,
@@ -237,75 +313,90 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // Real send. Resend's default tier is ~10 req/sec — throttle to
-  // 100ms between sends (10/s) to stay safely under. Sequential to
-  // keep concurrency simple; for our subscriber sizes this is fine.
-  const { Resend } = await import("resend");
-  const resend = new Resend(RESEND_KEY);
-  let sent = 0;
-  let failed = 0;
-  const failures: { email: string; error: string }[] = [];
-  for (const sub of subscribers) {
-    const first = (sub.name?.split(/\s+/)[0] || "there").slice(0, 60);
-    const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${signNewsletterToken(sub.email)}`;
-    const personalizedBody = bodyText
-      .replace(/\{firstName\}/g, first)
-      .replace(/\{first_name\}/g, first)
-      .replace(/\{name\}/g, first);
-    const html = wrap({
-      subject,
-      preheader,
-      first,
-      bodyHtml: bodyToHtml(personalizedBody),
-      unsubUrl,
-    });
-    const text = `Hi ${first},\n\n${personalizedBody}\n\n— The Top Cash Cellular team\nAustin, TX\n\nUnsubscribe: ${unsubUrl}`;
-    try {
-      // Set List-Unsubscribe + List-Unsubscribe-Post per RFC-8058
-      // so Gmail/Outlook show the inbox 1-click unsubscribe button.
-      const r = await resend.emails.send({
-        from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "support@topcashcellular.com",
-        to: sub.email,
-        subject,
-        html,
-        text,
-        headers: {
-          "List-Unsubscribe": `<${unsubUrl}>, <mailto:unsubscribe@topcashcellular.com?subject=unsubscribe>`,
-          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-        },
-      });
-      if (r?.data?.id) sent += 1;
-      else {
-        failed += 1;
-        failures.push({ email: sub.email, error: "Resend returned no id" });
-      }
-    } catch (e) {
-      failed += 1;
-      failures.push({ email: sub.email, error: e instanceof Error ? e.message : "send failed" });
-    }
-    // Throttle.
-    await new Promise((r) => setTimeout(r, 100));
+  // Recipients already mailed under this sendId, from the per-batch
+  // "[NEWSLETTER-SENT: <id>] batch=N to=<hash>,<hash>,…" markers below.
+  const alreadySent = new Set<string>();
+  const sentRe = new RegExp(`\\[NEWSLETTER-SENT:\\s*${sendId}\\][^\\n]*?\\bto=([\\w,]+)`, "i");
+  for (const m of feed) {
+    const sm = m.body?.match(sentRe);
+    if (sm) for (const h of sm[1].split(",")) if (h) alreadySent.add(h);
   }
 
-  // Audit marker. Keep subject in the body so admin send-history can
-  // show what went out. Counts let us spot delivery problems.
-  if (MC_KEY) {
-    try {
-      await fetch(`${MC_API}/api/comms`, {
-        method: "POST",
-        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: "tcc-admin",
-          fromName: "TCC Admin",
-          role: "system",
-          body: `[NEWSLETTER-SENT: ${sendId}] subject=${subject.replace(/[\[\]\r\n]+/g, " ").slice(0, 200)} sent=${sent} failed=${failed} totalSubscribers=${subscribers.length} includeLeads=${includeLeads}`,
-          tags: ["newsletter", "sent"],
-          priority: "low",
-        }),
-      });
-    } catch {}
+  // Real send. Resend's default tier is ~10 req/sec — 100 ms between sends
+  // inside a batch, a pause between batches of 25, and a soft deadline so
+  // the response (with the resume count) always lands inside maxDuration.
+  const { Resend } = await import("resend");
+  const resend = new Resend(RESEND_KEY);
+  const BATCH = 25;
+  const BATCH_PAUSE_MS = 500;
+  const softDeadline = Date.now() + 270_000;
+  let sent = 0, failed = 0, skippedAlreadySent = 0, skippedUnsub = 0, skippedBlobError = 0, batches = 0;
+  let partial = false;
+  let index = 0;
+  const failures: { email: string; error: string }[] = [];
+  while (index < subscribers.length) {
+    if (Date.now() > softDeadline) { partial = true; break; }
+    const batch = subscribers.slice(index, index + BATCH);
+    index += BATCH;
+    batches += 1;
+    const batchHashes: string[] = [];
+    for (const sub of batch) {
+      const hash = newsletterEmailHash(sub.email);
+      if (alreadySent.has(hash)) { skippedAlreadySent += 1; continue; }
+      // Durable opt-out check per recipient, failing CLOSED: an unreadable
+      // store skips the address rather than risk mailing someone who left.
+      const unsub = await isNewsletterUnsubbed(sub.email);
+      if (unsub === true) { skippedUnsub += 1; continue; }
+      if (unsub === null) { skippedBlobError += 1; continue; }
+      const first = (sub.name?.split(/\s+/)[0] || "there").slice(0, 60);
+      const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${signNewsletterToken(sub.email)}`;
+      const personalizedBody = personalize(bodyText, first);
+      const html = wrap({ subject, preheader, first, bodyHtml: bodyToHtml(personalizedBody), unsubUrl });
+      const text = `Hi ${first},\n\n${personalizedBody}\n\n— The Top Cash Cellular team\nAustin, TX\n\nUnsubscribe: ${unsubUrl}`;
+      try {
+        // Set List-Unsubscribe + List-Unsubscribe-Post per RFC-8058
+        // so Gmail/Outlook show the inbox 1-click unsubscribe button.
+        const r = await resend.emails.send({
+          from: "Top Cash Cellular <noreply@topcashcellular.com>",
+          replyTo: "support@topcashcellular.com",
+          to: sub.email,
+          subject,
+          html,
+          text,
+          headers: {
+            "List-Unsubscribe": `<${unsubUrl}>, <mailto:unsubscribe@topcashcellular.com?subject=unsubscribe>`,
+            "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+          },
+        });
+        if (r?.data?.id) {
+          sent += 1;
+          batchHashes.push(hash);
+          alreadySent.add(hash);
+        } else {
+          failed += 1;
+          failures.push({ email: sub.email, error: "Resend returned no id" });
+        }
+      } catch (e) {
+        failed += 1;
+        failures.push({ email: sub.email, error: e instanceof Error ? e.message : "send failed" });
+      }
+      await sleep(100);
+    }
+    // Per-batch marker: hashes only (never addresses). Failures are not
+    // marked, so a retry reaches them again.
+    if (batchHashes.length > 0) {
+      await postMarker(`[NEWSLETTER-SENT: ${sendId}] batch=${batches} to=${batchHashes.join(",")}`);
+    }
+    if (index < subscribers.length) await sleep(BATCH_PAUSE_MS);
   }
+  const remaining = partial ? subscribers.length - index : 0;
+
+  // Summary marker. Keep subject in the body so admin send-history can show
+  // what went out; "=" is stripped from it so the dedupe's `to=` scan can't
+  // pick up subject text.
+  await postMarker(
+    `[NEWSLETTER-SENT: ${sendId}] subject=${subject.replace(/[\[\]\r\n=]+/g, " ").slice(0, 200)} sent=${sent} failed=${failed} alreadySent=${skippedAlreadySent} unsubscribed=${skippedUnsub} storeErrors=${skippedBlobError} totalSubscribers=${subscribers.length} includeLeads=${includeLeads}${partial ? ` partial=1 remaining=${remaining}` : ""}`,
+  );
 
   return NextResponse.json({
     ok: true,
@@ -313,6 +404,12 @@ export async function POST(req: NextRequest) {
     count: subscribers.length,
     sent,
     failed,
+    skippedAlreadySent,
+    skippedUnsub,
+    skippedBlobError,
+    batches,
+    partial,
+    remaining,
     failures: failures.slice(0, 20), // truncate for response size
   });
 }
