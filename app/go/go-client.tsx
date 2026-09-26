@@ -317,15 +317,18 @@ const GO_CSS = `
           .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
         `;
 
-export default function GoClient({ rows, src, reviews, variant = "std", mode = "page", initialGroup = null, landed = "", visitorArea = "unknown" }: {
+export default function GoClient({ rows, src, reviews, variant = "std", mode = "page", initialGroup = null, landed = "", visitorArea = "unknown", initialOpen = false }: {
   rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot";
-  // "widget": no first-paint board — a floating button on any site page that
-  // opens the same overlay (Sonny 2026-09-12: "an icon where they can jump in
-  // the chat anytime"). initialGroup = the page's device family, so the
-  // MacBook page opens on MacBooks. landed = the path the session started on.
+  // "widget": the overlay only — the floating button that opens it lives in
+  // components/ChatFab, and components/SiteChat mounts this client on the
+  // first tap (Sonny 2026-09-12: "an icon where they can jump in the chat
+  // anytime"). initialGroup = the page's device family, so the MacBook page
+  // opens on MacBooks. landed = the path the session started on.
   mode?: "page" | "widget"; initialGroup?: Group | null; landed?: string;
   // From Vercel's edge geo on the /go page: "metro" | "tx" | "us" | "intl" | "unknown".
   visitorArea?: "metro" | "tx" | "us" | "intl" | "unknown";
+  // Widget: mounted by the tap that wants it open — open at once.
+  initialOpen?: boolean;
 }) {
   const lot = variant === "lot";
   // ---- chat state ----
@@ -333,11 +336,16 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // Full-screen chat takeover — opens on engagement (never on load: the
   // board stays the first paint). X returns to the page with the thread
   // intact.
-  const [chatOpen, setChatOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(initialOpen);
   useEffect(() => {
     document.body.style.overflow = chatOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [chatOpen]);
+    // The site-wide button (SiteChat) hides while the overlay is up.
+    if (mode === "widget") window.dispatchEvent(new CustomEvent("tcc:chat-state", { detail: { open: chatOpen } }));
+    return () => {
+      document.body.style.overflow = "";
+      if (mode === "widget") window.dispatchEvent(new CustomEvent("tcc:chat-state", { detail: { open: false } }));
+    };
+  }, [chatOpen, mode]);
   // iOS / the Facebook webview do NOT shrink the layout viewport when the
   // keyboard opens — a `fixed inset-0` overlay keeps its full height and its
   // bottom (the composer) ends up hidden under the keyboard (Sonny's
@@ -347,70 +355,9 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // Widget mode: the homepage's legacy "open chat" buttons and any page can
   // open this overlay with `window.dispatchEvent(new CustomEvent("tcc:open-chat"))`.
   const startedOnPageRef = useRef(false);
-  // The button is DRAGGABLE and remembers where it was put (the legacy
-  // homepage bubble did this and Sonny asked for it back, 2026-09-12): a
-  // fixed corner can sit on top of a page's bottom bar on a phone. A press
-  // that moves < 6px is a tap and opens the chat; anything more is a drag.
-  const [fabPos, setFabPos] = useState<{ x: number; y: number } | null>(null);
-  const fabDrag = useRef<{ startX: number; startY: number; origX: number; origY: number; moved: boolean } | null>(null);
-  const fabRef = useRef<HTMLButtonElement>(null);
-  const clampFab = (x: number, y: number) => {
-    const w = fabRef.current?.offsetWidth ?? 160, h = fabRef.current?.offsetHeight ?? 48;
-    return { x: Math.max(6, Math.min(window.innerWidth - w - 6, x)), y: Math.max(6, Math.min(window.innerHeight - h - 6, y)) };
-  };
-  useEffect(() => {
-    if (mode !== "widget") return;
-    try {
-      const saved = JSON.parse(localStorage.getItem("tcc_chat_fab_pos") || "null");
-      if (saved && typeof saved.x === "number" && typeof saved.y === "number") setFabPos(clampFab(saved.x, saved.y));
-    } catch { /* default corner */ }
-    const onResize = () => setFabPos((p) => (p ? clampFab(p.x, p.y) : p));
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode]);
-  // The default corner vs the page's own bottom bars: the homepage's fixed
-  // quote / checkout CTA rows (and the cookie bar) sit right where the pill
-  // lives, so taps on the right half of "Lock In My Offer" opened the chat
-  // instead. While such a bar is on screen the pill rides above it; a pill
-  // the seller dragged somewhere keeps its spot.
-  const [fabLift, setFabLift] = useState(0);
-  useEffect(() => {
-    if (mode !== "widget" || fabPos || chatOpen) return;
-    let raf = 0;
-    const measure = () => {
-      raf = 0;
-      const vh = window.innerHeight;
-      let lift = 0;
-      document.querySelectorAll<HTMLElement>(".fixed.bottom-0, [data-bottom-bar]").forEach((el) => {
-        if (fabRef.current && (el === fabRef.current || el.contains(fabRef.current))) return;
-        const r = el.getBoundingClientRect();
-        // hidden (lg:hidden), not a bar (a tall sheet), or not at the bottom
-        if (r.height <= 0 || r.height > 220 || r.bottom < vh - 4 || r.top >= vh) return;
-        if (getComputedStyle(el).position !== "fixed") return; // lg:static on desktop
-        lift = Math.max(lift, Math.ceil(vh - r.top));
-      });
-      setFabLift(lift);
-    };
-    // Throttled: the host page's own DOM churn (funnel steps, carousels)
-    // used to force a layout measure every frame while the pill just sat there.
-    let timer = 0;
-    const schedule = () => {
-      if (timer || document.hidden) return;
-      timer = window.setTimeout(() => { timer = 0; if (!raf) raf = requestAnimationFrame(measure); }, 150);
-    };
-    measure();
-    // Bars come and go with the funnel step (React state, no resize event).
-    const mo = new MutationObserver(schedule);
-    mo.observe(document.body, { childList: true, subtree: true });
-    window.addEventListener("resize", schedule);
-    return () => {
-      mo.disconnect();
-      window.removeEventListener("resize", schedule);
-      clearTimeout(timer);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [mode, fabPos, chatOpen]);
+  // (The draggable floating button that used to live here is
+  // components/ChatFab — it is what every page ships; this client loads
+  // behind it on the first tap.)
   useEffect(() => {
     if (mode !== "widget") return;
     const onOpen = () => setChatOpen(true);
@@ -1908,49 +1855,6 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   if (mode === "widget") {
     return (
       <>
-        {!chatOpen && (
-          <button
-            ref={fabRef}
-            type="button"
-            aria-label="Chat with us — get a real number and a text from our team. Drag to move."
-            className="fixed z-40 flex items-center gap-2 rounded-full bg-[#00c853] text-[#0a0a0a] font-bold text-[15px] pl-4 pr-5 py-3 shadow-[0_6px_24px_rgba(0,0,0,0.45)] select-none"
-            style={fabPos
-              ? { left: fabPos.x, top: fabPos.y, touchAction: "none", cursor: fabDrag.current?.moved ? "grabbing" : "grab" }
-              : { right: 16, bottom: fabLift ? `${fabLift + 12}px` : "max(16px, env(safe-area-inset-bottom))", touchAction: "none", cursor: "grab" }}
-            // Keyboard / screen-reader activation (Enter, Space) arrives as a
-            // click with detail 0 — the pointer handlers below never see it.
-            // A real tap opens on pointerup and its click (detail ≥ 1) is ignored.
-            onClick={(e) => { if (e.detail === 0) openChat(); }}
-            onPointerDown={(e) => {
-              const r = e.currentTarget.getBoundingClientRect();
-              fabDrag.current = { startX: e.clientX, startY: e.clientY, origX: r.left, origY: r.top, moved: false };
-              try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* older webviews */ }
-            }}
-            onPointerMove={(e) => {
-              const d = fabDrag.current;
-              if (!d) return;
-              const dx = e.clientX - d.startX, dy = e.clientY - d.startY;
-              if (!d.moved && Math.abs(dx) + Math.abs(dy) < 6) return;
-              d.moved = true;
-              setFabPos(clampFab(d.origX + dx, d.origY + dy));
-            }}
-            onPointerUp={(e) => {
-              const d = fabDrag.current;
-              fabDrag.current = null;
-              try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ignore */ }
-              if (d?.moved) {
-                const r = e.currentTarget.getBoundingClientRect();
-                try { localStorage.setItem("tcc_chat_fab_pos", JSON.stringify({ x: r.left, y: r.top })); } catch { /* private mode */ }
-                return;
-              }
-              openChat();
-            }}
-            onPointerCancel={() => { fabDrag.current = null; }}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden><path strokeLinecap="round" strokeLinejoin="round" d="M4 5h16v11H8l-4 4V5z" /></svg>
-            get my number
-          </button>
-        )}
         <style>{GO_CSS}</style>
         {overlayEl}
       </>

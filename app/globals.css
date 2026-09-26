@@ -192,7 +192,10 @@
   100%     { transform: rotateY(0deg); }
 }
 @media (hover: none) {
-  .hero-flip-inner { animation: heroAutoFlip 8s ease-in-out infinite; }
+  /* Two loops, then it rests on the front: a 3D transform on the LCP
+     headline animating forever kept a compositor layer busy for the whole
+     visit (2026-09-25). */
+  .hero-flip-inner { animation: heroAutoFlip 8s ease-in-out 2; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-flip-inner { transition: none; animation: none; }
@@ -289,21 +292,25 @@ html[data-theme="light"] footer { background: transparent !important; }
    translucent panels (bg-white/N) sit over the iPhone backdrop, and where
    the backdrop is BRIGHT (phone screens, reflections) they washed out —
    "too bright" on the reviews, carrier cards, device photo, etc. Tint them
-   with a semi-opaque DARK frost (NOT white) so they dim + blur the bright
-   backdrop behind them, stay readable, and the backdrop still shows in the
-   open gaps between panels. Skywalker 2026-05-28. */
+   with a semi-opaque DARK frost (NOT white) so they dim the bright backdrop
+   behind them, stay readable, and the backdrop still shows in the open gaps
+   between panels. Skywalker 2026-05-28.
+   NO backdrop blur here (2026-09-25, Skywalker's call): these rules matched
+   ~240 panels on the homepage — every tile, card, FAQ row and button became
+   its own blur layer re-sampling the backdrop whenever anything under it
+   moved, the biggest scroll-jank cost on phones. The tint is a little deeper
+   to carry the readability the blur used to add; blur stays on the nav,
+   menus, modals, drawer and consent bar below. */
 html[data-theme="light"] .bg-white\/\[0\.03\],
 html[data-theme="light"] .bg-white\/5,
 html[data-theme="light"] .bg-white\/\[0\.06\],
 html[data-theme="light"] .bg-white\/\[0\.08\] {
-  background-color: rgba(9, 11, 15, 0.66) !important;
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  background-color: rgba(9, 11, 15, 0.74) !important;
 }
 html[data-theme="light"] .bg-white\/10,
 html[data-theme="light"] .bg-white\/\[0\.12\],
 html[data-theme="light"] .bg-white\/15 {
-  background-color: rgba(9, 11, 15, 0.74) !important;
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  background-color: rgba(9, 11, 15, 0.80) !important;
 }
 /* Solid dark panels that sit over the backdrop (selection frame, brand
    tiles, modals) get the same treatment so they don't read as flat black
