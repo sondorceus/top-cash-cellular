@@ -93,6 +93,66 @@ export function latestStatus(messages: LeadMessage[], leadId: string): string {
   return status;
 }
 
+// Latest [DELETED-LEAD: id] vs [RESTORED-LEAD: id] — the newer wins. The
+// admin trash is undoable, but the customer surface read ANY delete marker
+// as "cancelled" for good: a lead staff trashed by mistake and restored
+// showed "Offer Cancelled" forever and every edit / add / phone save 409'd.
+// Same pairing /api/counter-offer/respond uses. 2026-09-25.
+export function isDeleted(messages: LeadMessage[], leadId: string): boolean {
+  const id = reEscape(leadId);
+  const delRe = new RegExp(`\\[DELETED-LEAD:\\s*${id}\\]`, "i");
+  const resRe = new RegExp(`\\[RESTORED-LEAD:\\s*${id}\\]`, "i");
+  let deletedAt = "";
+  let restoredAt = "";
+  for (const m of messages) {
+    if (!m.body || !m.body.includes(leadId) || isCustomerLeadPost(m.body)) continue;
+    if (delRe.test(m.body) && m.timestamp > deletedAt) deletedAt = m.timestamp;
+    if (resRe.test(m.body) && m.timestamp > restoredAt) restoredAt = m.timestamp;
+  }
+  return !!deletedAt && (!restoredAt || restoredAt < deletedAt);
+}
+
+// Customer phone edits from the offer page — "[CONTACT-UPDATE: id] … phone=…"
+// (app/api/offer/[leadId]/contact). Only the offer GET read the marker;
+// admin, the FedEx crons and the reminders kept texting the number in the
+// immutable lead body. Latest marker per lead wins. The lead body is never
+// rewritten: callers overlay `.get(id)?.phone` on the body's Phone: line.
+// Phone only — the contact route carries no email. 2026-09-25.
+export type ContactUpdate = { phone?: string; at: string };
+
+const CONTACT_UPDATE_RE = /\[CONTACT-UPDATE:\s*([\w-]+)\][^\n]*?phone=([^\n]+)/i;
+
+// Takes any comm shape with a body + timestamp: the crons type their feed
+// with an optional id, and this reader keys on the marker's own lead id.
+export function latestContactUpdates(messages: Array<{ body?: string; timestamp: string }>): Map<string, ContactUpdate> {
+  const out = new Map<string, ContactUpdate>();
+  for (const m of messages) {
+    if (!m.body || !m.body.includes("[CONTACT-UPDATE:") || isCustomerLeadPost(m.body)) continue;
+    const cu = m.body.match(CONTACT_UPDATE_RE);
+    if (!cu) continue;
+    const phone = cu[2].trim();
+    if (!phone) continue;
+    const prev = out.get(cu[1]);
+    if (!prev || m.timestamp > prev.at) out.set(cu[1], { phone, at: m.timestamp });
+  }
+  return out;
+}
+
+// Latest FedEx label tracking number for a lead ("[LABEL: id] tracking=…
+// url=…") — the same last-wins read the offer GET does. The customer-cancel
+// alert names it so staff void a label the cancelled trade no longer needs;
+// the cancel route itself does not void anything. 2026-09-25.
+export function latestLabelTracking(messages: LeadMessage[], leadId: string): string | undefined {
+  const tag = `[LABEL: ${leadId}]`;
+  let tracking: string | undefined;
+  for (const m of messages) {
+    if (!m.body || !m.body.includes(tag) || isCustomerLeadPost(m.body)) continue;
+    const t = m.body.match(/tracking=([^\s]+)/i)?.[1];
+    if (t) tracking = t;
+  }
+  return tracking;
+}
+
 function normDevice(d: Record<string, unknown>): ParsedDevice {
   const quote = Math.round(Number(d.quote));
   const quantity = Math.round(Number(d.quantity));

@@ -1858,30 +1858,35 @@ Pick the best channel per device. Be concise.`;
     if (needsScheduling && email && typeof email === "string" && process.env.RESEND_API_KEY) {
       try {
         const escS = (s: unknown) => String(s ?? "").replace(/[<>&]/g, (ch) => (ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : "&amp;"));
-        const offerHref = `https://topcashcellular.com/offer/${encodeURIComponent(effectiveLeadId)}`;
-        const offerRef = formatOfferNumber(effectiveLeadId);
+        // Only a REAL MC id opens /offer/<id>. The offline- fallback (MC write
+        // failed) exists for the label's PO number, and the "View your offer"
+        // button + "Offer #OFFLINE-…" reference this mail printed for it led
+        // straight to a 404 receipt. Keep the meetup ask either way. 2026-09-25.
+        const offerHref = leadId ? `https://topcashcellular.com/offer/${encodeURIComponent(leadId)}` : null;
+        const offerRef = leadId ? formatOfferNumber(leadId) : "";
+        const refSuffix = offerRef ? ` — Offer #${offerRef}` : "";
         const firstName = (typeof name === "string" ? name.trim().split(/\s+/)[0] : "") || "there";
         const deviceLabel = cleanField(model, 120) || cleanField(device, 80) || "your device";
         const lockLine = quoteNum > 0
           ? `Your offer of $${quoteNum} for ${deviceLabel} is locked in for 14 days.`
           : `We've got your request for ${deviceLabel}.`;
         const schedHtml = mailShell({
-          preheader: `Pick a time for your Austin payout — Offer #${offerRef}`,
+          preheader: `Pick a time for your Austin payout${refSuffix}`,
           eyebrow: "Local meetup",
           title: "Let's set up your Austin meetup",
           introHtml: `Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b style="color:#fff">reply to this email with a couple of times that work this week</b> and we'll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).`,
           buttonHref: offerHref,
-          buttonLabel: "View your offer →",
-          afterButtonHtml: `<div style="font-size:12px;color:#8a8fa3;text-align:center;">Reference: Offer #${escS(offerRef)}</div>`,
+          buttonLabel: offerHref ? "View your offer →" : undefined,
+          afterButtonHtml: offerRef ? `<div style="font-size:12px;color:#8a8fa3;text-align:center;">Reference: Offer #${escS(offerRef)}</div>` : undefined,
         });
-        const schedText = `Hi ${firstName}, ${lockLine} To get paid, reply with a couple of times that work this week and we'll confirm a quick Austin meetup. View your offer: ${offerHref} — Offer #${offerRef}`;
+        const schedText = `Hi ${firstName}, ${lockLine} To get paid, reply with a couple of times that work this week and we'll confirm a quick Austin meetup.${offerHref ? ` View your offer: ${offerHref}${refSuffix}` : ""}`;
         const { Resend } = await import("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
         const sr = await resend.emails.send({
           from: "Top Cash Cellular <noreply@topcashcellular.com>",
           replyTo: "support@topcashcellular.com",
           to: email,
-          subject: `Pick a time for your Top Cash payout — Offer #${offerRef}`,
+          subject: `Pick a time for your Top Cash payout${refSuffix}`,
           html: schedHtml,
           text: schedText,
         });

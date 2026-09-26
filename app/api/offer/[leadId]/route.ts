@@ -6,18 +6,27 @@
 
 import { NextRequest, NextResponse, after } from "next/server";
 import { referralCodeForEmail, referralLinkForCode, referralCodeMarker, hasReferralCodeMarker } from "../../../lib/referral";
-import { field, DEVICE_LINE_RE, OFFER_STATUSES, parseOfferBonus, isCustomerLeadPost } from "../../../lib/lead-devices";
+import { field, DEVICE_LINE_RE, OFFER_STATUSES, parseOfferBonus, isCustomerLeadPost, isDeleted } from "../../../lib/lead-devices";
 import { canonicalCarrier, carrierLockedFromText } from "../../../lib/quote-engine";
 import { fetchCommsRead } from "../../../lib/mc-comms";
+import { rateLimit, rateLimitResponse, clientIp } from "../../../lib/rate-limit";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 
-export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
+export async function GET(req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
   const { leadId } = await ctx.params;
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
   }
+  // The id is the only credential and this payload is the customer's PII
+  // (address, payout handle, label URL), yet the 404/200 answer was an
+  // unthrottled oracle for testing ids. Same helper and per-IP shape as the
+  // write routes, looser: a receipt opens once and a seller re-taps a link a
+  // few times. The two not-found branches below already answer alike.
+  // 2026-09-25.
+  const rl = rateLimit(`offer-get:${clientIp(req)}`, 60, 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
   if (!MC_KEY) {
     return NextResponse.json({ error: "Offer service unavailable" }, { status: 503 });
   }
@@ -27,8 +36,12 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   // (If offers ever need to resolve from the trimmed archive, add
   // includeArchive — see app/lib/mc-comms.ts.) memoMs: every open of a
   // receipt link paid this ~5000-message read; a seller re-tapping, or the
-  // page's own reloads, now share it for 15 s.
-  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false, memoMs: 15_000 });
+  // page's own reloads, now share it for 15 s. ?fresh=1 opts out: the page
+  // sends it right after one of its own writes (and the funnel's add-to-
+  // order redirect carries it), when a read from before the write would
+  // show the old order. 2026-09-25.
+  const fresh = req.nextUrl.searchParams.get("fresh") === "1";
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false, memoMs: fresh ? 0 : 15_000 });
   if (!read.complete) return NextResponse.json({ error: "Offer service unavailable" }, { status: 502 });
   const messages: { id: string; body?: string; timestamp: string }[] = read.messages;
   const leadMsg = messages.find((m) => m.id === leadId);
@@ -214,8 +227,9 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ leadId: st
   // another line must not add a bonus here.
   let bonus = parseOfferBonus(body);
 
-  // Cancellation / deletion check — staff can soft-delete leads.
-  const cancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  // Cancellation / deletion check — staff can soft-delete leads, and
+  // restore them: a restore after the delete un-cancels (isDeleted).
+  const cancelled = isDeleted(messages, leadId);
 
   // Apply a customer device edit (latest [ITEM-UPDATE]) as an override
   // of the parsed device list + total.

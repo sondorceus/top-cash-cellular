@@ -24,14 +24,15 @@
 // marker carrying the combined device list as JSON; the offer GET +
 // admin leads routes apply the latest one.
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
+import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
 import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../../../lib/resell-estimates";
 import { authoritativeLineCap, macSpecUnclaimed } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
-import { parseOfferBonus, isCustomerLeadPost, nextItemUpdateVersion } from "../../../../lib/lead-devices";
+import { parseOfferBonus, isCustomerLeadPost, nextItemUpdateVersion, latestStatus, isDeleted } from "../../../../lib/lead-devices";
 
 // Server-side quote ceiling per added device — mirrors /api/lead's anti-tamper
 // guard so a tampered offer link can't inflate the order total (which flows into
@@ -60,8 +61,12 @@ function field(body: string, key: string): string | undefined {
   const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
   return m?.[1]?.trim() || undefined;
 }
+// { } too: the marker's human lead-in below carries the added model names
+// AHEAD of the JSON, and every [ITEM-UPDATE] reader captures from the first
+// "{" on the line — one brace in a name left the whole order's marker
+// unparseable (the add silently never applied). 2026-09-25.
 function clean(s: unknown, max: number): string {
-  return String(s ?? "").replace(/[\[\]\n\r\t\u2028\u2029]/g, " ").trim().slice(0, max);
+  return String(s ?? "").replace(/[\[\]{}\n\r\t\u2028\u2029]/g, " ").trim().slice(0, max);
 }
 
 // Rebuild the order's CURRENT device list server-side. Resolution order
@@ -182,6 +187,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (added.some((d) => !d.model)) {
     return NextResponse.json({ error: "Every device needs a model." }, { status: 400 });
   }
+  // Per-lead cap shared by every customer write on this offer — see the
+  // cancel route. After validation so a rejected body doesn't spend it.
+  // 2026-09-25.
+  const rlLead = rateLimit(`offer-lead:${leadId}`, 10, 600_000);
+  if (!rlLead.ok) return rateLimitResponse(rlLead.retryAfterMs);
   // MacBook chip / RAM labels (index-aligned with `added`) — the funnel sends
   // them so the ceiling prices the claimed config; the marker text records
   // them for inspection.
@@ -189,34 +199,29 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
 
   // Pull the lead to verify ownership + that it's still editable. limit=5000
   // (full live cap, was 1000) so an older offer still resolves by id.
-  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) return NextResponse.json({ error: "Couldn't reach service — try again shortly." }, { status: 502 });
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  // Shared reader — 15 s timeout, no memo; a failed or empty read is
+  // "unknown", never "not found" (the bare fetch had no timeout). 2026-09-25.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "Mission Control is unavailable — nothing was changed." }, { status: 502 });
+  }
+  const messages = read.messages;
   const leadMsg = messages.find((m) => m.id === leadId);
   if (!leadMsg?.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(leadMsg.body)) {
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
   }
 
-  const cancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  // Restore-aware — a lead staff trashed and restored is live again.
+  const cancelled = isDeleted(messages, leadId);
   if (cancelled) {
     return NextResponse.json({ error: "This offer was cancelled." }, { status: 409 });
   }
 
-  // Status gate — adding locks once the device is on its way.
-  let status = "quote_requested";
-  let statusAt = "";
-  for (const m of messages) {
-    if (!m.body || isCustomerLeadPost(m.body)) continue;
-    const sm = m.body.match(new RegExp(`\\[STATUS:\\s*(\\w+)\\]\\s*\\[LEAD:\\s*${leadId}\\]`, "i"));
-    if (sm && (!statusAt || m.timestamp > statusAt)) {
-      status = sm[1].toLowerCase();
-      statusAt = m.timestamp;
-    }
-  }
+  // Status gate — adding locks once the device is on its way. Whitelisted
+  // via lead-devices.latestStatus like GET and the items route: this loop
+  // took ANY [STATUS: word], so a typo'd staff marker could reopen the gate
+  // GET kept shut. 2026-09-25.
+  const status = latestStatus(messages, leadId);
   if (LOCKED.has(status)) {
     return NextResponse.json({
       error: "This offer can no longer be changed — your trade is already on its way. Email support@topcashcellular.com to add a device.",
@@ -276,8 +281,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     method: "POST",
     headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: "topcash-web",
-      fromName: "Customer Added Device",
+      // Own MC sender bucket for customer-originated posts — see the cancel
+      // route. 2026-09-25.
+      from: "topcash-customer",
+      fromName: "Top Cash Cellular (customer)",
       role: "system",
       body: updateBody,
       tags: anyReview ? ["item-update", "device-added", "needs-review"] : ["item-update", "device-added"],
@@ -287,17 +294,17 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!postRes.ok) {
     return NextResponse.json({ error: "Couldn't add your device — try again shortly." }, { status: 502 });
   }
+  invalidateCommsMemo();
 
   // Owner SMS so staff knows the order grew (estimate; confirmed at
-  // inspection).
+  // inspection). After the response; nothing in it reads the alert's
+  // outcome. 2026-09-25.
   {
-    try {
-      const customerName = field(leadMsg.body, "Name") || "Customer";
-      // `total` is the device subtotal; the order figure (what the offer
-      // page shows) adds the coupon/referral bonus back.
-      const text = `${anyReview ? "⚠️ NEEDS REVIEW — " : ""}ADDED: ${customerName} added ${added.length} device(s) to ${leadId.slice(0, 10).toUpperCase()} → est. $${total + parseOfferBonus(leadMsg.body)}. ${clean(addedSummary, 160)}`;
-      await notifyOwnerSms(text.slice(0, 480));
-    } catch { /* SMS non-fatal */ }
+    const customerName = field(leadMsg.body, "Name") || "Customer";
+    // `total` is the device subtotal; the order figure (what the offer
+    // page shows) adds the coupon/referral bonus back.
+    const text = `${anyReview ? "⚠️ NEEDS REVIEW — " : ""}ADDED: ${customerName} added ${added.length} device(s) to ${leadId.slice(0, 10).toUpperCase()} → est. $${total + parseOfferBonus(leadMsg.body)}. ${clean(addedSummary, 160)}`;
+    after(() => notifyOwnerSms(text.slice(0, 480)).catch(() => {}));
   }
 
   return NextResponse.json({ ok: true, devices, total, added: added.length });

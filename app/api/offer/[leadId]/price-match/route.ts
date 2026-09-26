@@ -10,9 +10,11 @@
 // Access model mirrors /api/offer/[leadId]/cancel — the leadId is the
 // secret, no sign-in required. Skywalker 2026-05-22.
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
+import { latestStatus, isDeleted } from "../../../../lib/lead-devices";
+import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -73,19 +75,40 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (url && !/^https?:\/\//i.test(url)) {
     return NextResponse.json({ error: "If you include a link, it should start with http:// or https://." }, { status: 400 });
   }
+  // Per-lead cap shared by every customer write on this offer — see the
+  // cancel route. After validation so a rejected form doesn't spend it.
+  // 2026-09-25.
+  const rlLead = rateLimit(`offer-lead:${leadId}`, 10, 600_000);
+  if (!rlLead.ok) return rateLimitResponse(rlLead.retryAfterMs);
 
   // Verify the lead exists (the leadId is the access secret). limit=5000
   // (full live cap, was 1000) so an older offer still resolves by id.
-  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) return NextResponse.json({ error: "Couldn't reach service — try again shortly." }, { status: 502 });
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  // Shared reader — 15 s timeout, no memo; a failed or empty read is
+  // "unknown", never "not found" (the bare fetch had no timeout). 2026-09-25.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "Mission Control is unavailable — nothing was changed." }, { status: 502 });
+  }
+  const messages = read.messages;
   const leadMsg = messages.find((m) => m.id === leadId);
   if (!leadMsg?.body || !/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(leadMsg.body)) {
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
+  }
+
+  // A cancelled or closed trade takes no request. The page hides the form
+  // once an offer is paid or cancelled, but this route accepted one — and
+  // fired an owner alert — on any lead. A trade in transit or inspection
+  // stays open: the form still shows there, and staff answer through the
+  // counter-offer flow. Restore-aware like the other write routes.
+  // 2026-09-25.
+  if (isDeleted(messages, leadId)) {
+    return NextResponse.json({ error: "This offer was cancelled." }, { status: 409 });
+  }
+  const status = latestStatus(messages, leadId);
+  if (status === "paid" || status === "met" || status === "rejected") {
+    return NextResponse.json({
+      error: "This trade is already closed — please email support@topcashcellular.com to discuss.",
+    }, { status: 409 });
   }
 
   // Post the marker. Admin parses this in /api/admin/leads to badge
@@ -99,8 +122,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     method: "POST",
     headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: "topcash-web",
-      fromName: isCounter ? "Counter-Offer Request" : "Price-Match Request",
+      // Own MC sender bucket for customer-originated posts — see the cancel
+      // route. The marker text still says which request this is. 2026-09-25.
+      from: "topcash-customer",
+      fromName: "Top Cash Cellular (customer)",
       role: "system",
       body: markerBody,
       tags: isCounter ? ["counter-request", "request"] : ["price-match", "request"],
@@ -110,19 +135,19 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!postRes.ok) {
     return NextResponse.json({ error: "Couldn't record your request — try again shortly." }, { status: 502 });
   }
+  invalidateCommsMemo();
 
   // Owner alert — staff sees it land in real time and can act before the
-  // customer goes elsewhere.
+  // customer goes elsewhere. After the response; nothing in it reads the
+  // alert's outcome. 2026-09-25.
   {
-    try {
-      const customerName = field(leadMsg.body, "Name") || "Customer";
-      const model = field(leadMsg.body, "Model") || field(leadMsg.body, "Device") || "device";
-      const ourQuote = field(leadMsg.body, "Quote") || "";
-      const text = isCounter
-        ? `💬 COUNTER: ${customerName} (${model}) isn't happy — wants $${amount}${ourQuote ? ` (we quoted ${ourQuote})` : ""}.${note ? ` "${note}"` : ""} Offer ${leadId.slice(0, 10).toUpperCase()}.`
-        : `🎯 PRICE-MATCH: ${customerName} (${model}) says ${competitor} quoted $${amount}${ourQuote ? ` — we quoted ${ourQuote}` : ""}. Offer ${leadId.slice(0, 10).toUpperCase()}.`;
-      await notifyOwnerSms(text.slice(0, 480));
-    } catch { /* SMS non-fatal */ }
+    const customerName = field(leadMsg.body, "Name") || "Customer";
+    const model = field(leadMsg.body, "Model") || field(leadMsg.body, "Device") || "device";
+    const ourQuote = field(leadMsg.body, "Quote") || "";
+    const text = isCounter
+      ? `💬 COUNTER: ${customerName} (${model}) isn't happy — wants $${amount}${ourQuote ? ` (we quoted ${ourQuote})` : ""}.${note ? ` "${note}"` : ""} Offer ${leadId.slice(0, 10).toUpperCase()}.`
+      : `🎯 PRICE-MATCH: ${customerName} (${model}) says ${competitor} quoted $${amount}${ourQuote ? ` — we quoted ${ourQuote}` : ""}. Offer ${leadId.slice(0, 10).toUpperCase()}.`;
+    after(() => notifyOwnerSms(text.slice(0, 480)).catch(() => {}));
   }
 
   return NextResponse.json({ ok: true, at });

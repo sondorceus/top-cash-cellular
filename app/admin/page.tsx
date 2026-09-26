@@ -82,6 +82,9 @@ interface Lead {
   itemsEditedAt?: string;
   // True when a customer edit set a device broken — needs a hands-on re-quote.
   itemsNeedReview?: boolean;
+  // Latest price-match / counter REQUEST the customer sent from the offer
+  // page — a pill on the row; staff answer via the counter-offer flow.
+  customerRequest?: { kind: "price-match" | "counter"; at: string; amount?: number; competitor?: string; note?: string };
   // True when /api/lead stamped ⚠️ NEEDS REVIEW at funnel time.
   funnelNeedsReview?: boolean;
   // Live Atlas + eBay margin per lead — computed at GET time using the
@@ -2793,6 +2796,17 @@ export default function AdminPage() {
                                 : `Customer edited their device(s) on ${new Date(lead.itemsEditedAt).toLocaleString()} — the specs, quote, and total shown reflect the edit. Verify at inspection.`}
                             >
                               {lead.itemsNeedReview ? "⚠️ Edited — needs re-quote" : "Customer edited"}
+                            </span>
+                          )}
+                          {/* Customer asked for a better number from the offer
+                              page — a competitor quote to match, or their own
+                              counter. Answer via Counter offer. 2026-09-25. */}
+                          {lead.customerRequest && (
+                            <span
+                              className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-100 border border-amber-500/45"
+                              title={`${lead.customerRequest.kind === "counter" ? "Customer counter" : "Price-match request"}${lead.customerRequest.amount != null ? ` — wants $${lead.customerRequest.amount}` : ""}${lead.customerRequest.competitor ? ` (${lead.customerRequest.competitor})` : ""} · ${new Date(lead.customerRequest.at).toLocaleString()}${lead.customerRequest.note ? ` — "${lead.customerRequest.note}"` : ""}`}
+                            >
+                              {lead.customerRequest.kind === "counter" ? "Counter request" : "Price-match request"}
                             </span>
                           )}
                           {/* Source attribution — show the top channel

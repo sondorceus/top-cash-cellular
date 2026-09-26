@@ -89,6 +89,18 @@ export async function fetchCommsRead(opts: FetchCommsOpts): Promise<CommsRead> {
   return v;
 }
 
+/**
+ * Drop every memoized read on this instance. The offer write routes call it
+ * after a successful MC POST so a GET that follows on the same instance (the
+ * page's post-action refetch, the funnel's add-to-order redirect) is not
+ * answered from a read taken before the write. Other instances keep their
+ * memo — `?fresh=1` on GET /api/offer is the guarantee; this is the cheap
+ * same-instance win. 2026-09-25.
+ */
+export function invalidateCommsMemo(): void {
+  memo.clear();
+}
+
 async function readPages(opts: FetchCommsOpts): Promise<CommsRead> {
   const {
     apiKey,

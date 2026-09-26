@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getTracking } from "../../../lib/fedex";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
+import { latestContactUpdates } from "../../../lib/lead-devices";
 
 // Hourly FedEx tracking poll — Skywalker 2026-05-19. For every lead with
 // a [LABEL:] tracking number (ship, mixed-cart or /go) in quote_requested
@@ -158,6 +159,9 @@ export async function GET(req: NextRequest) {
     customer: { name?: string; phone?: string; email?: string; device?: string; quote?: string; payout?: string };
   };
   const candidates: Candidate[] = [];
+  // Customer phone edits from the offer page — the movement texts must go to
+  // the number the customer corrected to, not the body's. 2026-09-25.
+  const contactUpdates = latestContactUpdates(messages);
   for (const m of messages) {
     if (!m.body || !m.id) continue;
     if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
@@ -180,7 +184,7 @@ export async function GET(req: NextRequest) {
       id: m.id, tracking, status, lastState, lastCode, labelAt,
       customer: {
         name: parseField(m.body, "Name"),
-        phone: parseField(m.body, "Phone"),
+        phone: contactUpdates.get(m.id)?.phone || parseField(m.body, "Phone"),
         email: parseField(m.body, "Email"),
         // The "Device:" line is "<type> — <model>"; the status templates
         // inject this verbatim ("We got Phone — iPhone 15 Pro!"), so take the

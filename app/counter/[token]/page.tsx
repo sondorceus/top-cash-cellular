@@ -126,7 +126,10 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <p className="text-[#dcdcdc] text-sm mb-4 leading-relaxed">
             Got it. We&apos;re moving <strong className="text-white">${decoded.offer}</strong> to payout — you&apos;ll receive payment via your chosen method within 24 hours.
           </p>
-          <p className="text-[11px] text-[#888]">Confirmation also sent via SMS / email. Questions: support@topcashcellular.com</p>
+          {/* What actually happens: the team is alerted and confirms the payout
+              with the customer — this flow sends the customer nothing itself.
+              (The old line promised an SMS / e-mail confirmation.) 2026-09-25. */}
+          <p className="text-[11px] text-[#888]">Our team has been notified and will confirm your payout with you by text or email. Questions: support@topcashcellular.com</p>
           <Link href="/" className="block mt-5 text-[#00c853] text-xs hover:underline">← Top Cash Cellular home</Link>
         </div>
       </main>
@@ -140,7 +143,7 @@ export default function CounterOfferPage({ params }: { params: Promise<{ token: 
           <svg className="w-10 h-10 text-[#00c853] mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
           <h1 className="text-2xl font-bold mb-2">Offer declined</h1>
           <p className="text-[#dcdcdc] text-sm mb-4 leading-relaxed">
-            No problem. We&apos;ll ship your device back to you within 2 business days at no cost. Expect an email with the return tracking number.
+            No problem. We&apos;ll ship your device back to you within 2 business days at no cost — our team will reach out by text or email to arrange the return.
           </p>
           <p className="text-[11px] text-[#888]">Questions: support@topcashcellular.com</p>
           <Link href="/" className="block mt-5 text-[#00c853] text-xs hover:underline">← Top Cash Cellular home</Link>

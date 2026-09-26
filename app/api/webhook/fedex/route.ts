@@ -3,6 +3,7 @@ import { getTracking } from "../../../lib/fedex";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { safeEqual } from "../../../lib/admin-auth";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
+import { latestContactUpdates } from "../../../lib/lead-devices";
 
 // =========================================================================
 // REAL-TIME FedEx TRACKING WEBHOOK.
@@ -117,7 +118,8 @@ export async function POST(req: NextRequest) {
 
   const customer = {
     name: parseField(leadBody, "Name"),
-    phone: parseField(leadBody, "Phone"),
+    // The customer's offer-page phone edit wins over the body. 2026-09-25.
+    phone: latestContactUpdates(messages).get(leadId)?.phone || parseField(leadBody, "Phone"),
     email: parseField(leadBody, "Email"),
     device: parseField(leadBody, "Device")?.split(" — ").slice(-1)[0]?.trim(),
     quote: parseField(leadBody, "Quote")?.replace(/\s*\(clamped from[^)]*\)/i, "").trim(),

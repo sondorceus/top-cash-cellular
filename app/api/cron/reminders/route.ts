@@ -6,6 +6,7 @@ import { sendSellerSms, optedOutIn, looksLikePhone } from "../../../lib/seller-s
 import { sidToken } from "../../../lib/go-sid-token";
 import { readChat, validGoSession, phoneKey } from "../../../lib/gochat-store";
 import { duplicatesFromComms } from "../../../lib/lead-dupes";
+import { latestContactUpdates } from "../../../lib/lead-devices";
 
 // Hourly reminder cron — Skywalker 2026-05-18 "remind 24hr after they
 // get quote to meet/respond/ship, make custom depending on shipping
@@ -416,6 +417,9 @@ export async function GET(req: NextRequest) {
   // since) is the same trade — no reminder or lock-expiry text about it
   // (lib/lead-dupes).
   const dupes = duplicatesFromComms(messages);
+  // Customer phone edits from the offer page — a reminder must text the
+  // number the customer corrected to, not the body's. 2026-09-25.
+  const contactUpdates = latestContactUpdates(messages);
 
   const isDeleted = (id: string) => {
     const del = deletedAt.get(id);
@@ -448,7 +452,7 @@ export async function GET(req: NextRequest) {
     if (!/\[NEW BUYBACK LEAD(\b| — \d+ DEVICES\])/i.test(m.body)) continue;
     if (dupes.has(m.id)) continue;
     const name = parseField(m.body, "Name");
-    const phone = parseField(m.body, "Phone");
+    const phone = contactUpdates.get(m.id)?.phone || parseField(m.body, "Phone");
     const email = parseField(m.body, "Email");
     if (!phone && !email) continue;
     if (email && INTERNAL_EMAILS.includes(email.toLowerCase())) continue; // our own test lead

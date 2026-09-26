@@ -1,90 +1,21 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useRef, useState, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { REQUOTE_CONDITIONS, REQUOTE_STORAGE, matchTier, requote } from "../../lib/requote";
+import dynamic from "next/dynamic";
 import { imageForModel } from "../../lib/device-images";
 import { formatOfferNumber } from "../../lib/offer-number";
-import { PRICE_TABLE } from "../../data/prices";
-import skuLabelsJson from "../../data/sku-labels.json";
-import { quoteDeviceSync, EMPTY_OVERRIDES, normalizeStorage, canonicalCondition, canonicalCarrier } from "../../lib/quote-engine";
+import type { EditItem } from "./EditItem";
 
-// Reverse model-label → SKU map so the offer-page re-quote can run the
-// pricing engine for the edited condition/storage instead of only scaling
-// by tier ratios. Built once.
-const SKU_LABELS = skuLabelsJson as Record<string, string>;
-const SKU_BY_LABEL: Record<string, string> = Object.fromEntries(
-  Object.entries(SKU_LABELS).map(([sku, label]) => [label.toLowerCase().trim(), sku]),
-);
-// Per-unit re-quote for an edited config, or null when the engine can't
-// auto-quote the old or new config (unknown SKU, MacBook, custom/inquiry
-// device, manual-review or sub-minimum config) — caller then falls back to
-// the ratio re-quote.
-//
-// Runs the server's own engine (quote-engine.ts: carrier gap, +$25 bonus,
-// margin cap, Galaxy drop, IWM ceiling) at the bundled prices the homepage
-// shows, then moves the line's CURRENT offer by the engine's step between
-// the old and new configs — so what the engine doesn't see (live admin
-// overrides, the accessory / promo bonuses, an iPad's cellular or Pencil
-// multiplier) carries over: a $ step for phones (flat extras), a ratio for
-// everything else (multipliers). Reverting returns the original exactly.
-// The old bare-cell lookup skipped the carrier gap and caps: an AT&T
-// iPhone 13 Excellent $128 → Good previewed the unlocked $145 and the
-// server refused the save ("An edit can only lower your estimate").
-function tableRequote(
-  modelLabel: string,
-  lead: { carrier?: string; carrierLocked?: boolean },
-  from: { storage: string; condition: string; perUnit: number },
-  toStorage: string,
-  toCondition: string,
-): number | null {
-  const sku = SKU_BY_LABEL[(modelLabel || "").toLowerCase().trim()];
-  const row = sku ? PRICE_TABLE[sku] : undefined;
-  if (!sku || !row) return null;
-  const phone = /^(ip(?!ad)|gs|gz|px|gnote)/.test(sku);
-  const carrier = phone ? canonicalCarrier(lead.carrier) : undefined;
-  const offer = (storageLabel: string, conditionLabel: string, locked: boolean): number | null => {
-    if (!conditionLabel?.trim()) return null;
-    // "256 GB" / /go's "256GB"; rows keyed by edition fall back to base.
-    const tier = matchTier(REQUOTE_STORAGE, storageLabel)?.id ?? normalizeStorage(storageLabel);
-    const storage = tier && row[tier] ? tier : row.base ? "base" : null;
-    if (!storage) return null;
-    const r = quoteDeviceSync({
-      modelId: sku,
-      modelLabel: SKU_LABELS[sku],
-      storage,
-      condition: canonicalCondition(conditionLabel),
-      carrier,
-      carrierLocked: locked,
-      isPhone: phone,
-    }, EMPTY_OVERRIDES);
-    return !r.manualReview && r.offer != null && r.offer > 0 ? r.offer : null;
-  };
-  // Verizon's price hangs on the lock answer, and a 17 / 18 Pro's locked gap
-  // moves with condition — stepping a LOCKED line by the unlocked step saved
-  // an honest 17 Pro Max 2 TB Sealed $1,040 → Excellent edit at $542 (engine:
-  // $927). Use the lead's answer; when it doesn't say (a cart line), the
-  // state whose old-config price sits strictly nearer the line's offer —
-  // unlocked on a tie (a sealed 17 Pro 256 GB prices the same either way)
-  // or with no offer to compare. Only Verizon reads the flag.
-  let locked = lead.carrierLocked ?? false;
-  if (carrier === "verizon" && lead.carrierLocked == null && from.perUnit > 0) {
-    const wl = offer(from.storage, from.condition, true);
-    const wu = offer(from.storage, from.condition, false);
-    locked = wl != null && (wu == null || Math.abs(wl - from.perUnit) < Math.abs(wu - from.perUnit));
-  }
-  const to = offer(toStorage, toCondition, locked);
-  if (to == null) return null;
-  // No current offer to anchor on (a manual-review line) — the engine's.
-  if (!(from.perUnit > 0)) return to;
-  const was = offer(from.storage, from.condition, locked);
-  if (was == null) return null;
-  // Unrounded: the caller rounds after × quantity, so a $255 ×2 line
-  // reverts to $255, not 2 × $128.
-  const v = phone ? from.perUnit + (to - was) : from.perUnit * (to / was);
-  return v > 0 ? v : null;
-}
+// The device editor (./EditItem.tsx) carries the pricing engine and the
+// bundled price table for its live re-quote preview — ~200 KB of source a
+// receipt view never needs, and whose numbers the server re-caps anyway.
+// Loaded on the first Edit click, not with the page. 2026-09-25.
+const EditItemPanel = dynamic(() => import("./EditItem"), {
+  ssr: false,
+  loading: () => <p className="mt-3 pt-3 border-t border-white/10 text-[11px] text-[#888]">Loading editor…</p>,
+});
 
 // /offer/[leadId] — the customer's offer-management page. Shown right
 // after submit (replaces the bare "done" screen), linked from the
@@ -145,9 +76,9 @@ type Offer = {
   needsReview?: boolean;
 };
 
-// A device row in the editable Offer-items list (normalized from the
-// offer's multi-device array or its single-device fields).
-type EditItem = { model: string; storage: string; condition: string; quote: number; quantity: number; needsReview: boolean };
+// A device row in the editable Offer-items list — the `EditItem` type and
+// the editor itself live in ./EditItem.tsx; buildItems below normalizes the
+// offer into rows.
 
 // Shared funnel glyphs (Heroicons outline paths).
 const INBOX_ICON = "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z";
@@ -268,7 +199,7 @@ function DeviceThumb({ model }: { model: string }) {
     <div className="w-12 h-12 rounded-lg bg-[rgba(15,15,15,0.6)] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
       {img && !broken
         ? <Image src={img} alt={model} width={256} height={256} className="w-full h-full object-contain p-1" onError={() => setBroken(true)} />
-        : <svg className="w-6 h-6 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+        : <svg aria-hidden="true" className="w-6 h-6 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d={deviceIcon(model)} />
           </svg>}
     </div>
@@ -340,14 +271,8 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   // Editable device list (Offer items). Initialized from the offer once
   // it loads; edits re-quote by delta and persist via /api/offer/.../items.
   const [items, setItems] = useState<EditItem[]>([]);
+  // Which row is open in the editor; the draft values live in EditItemPanel.
   const [editIdx, setEditIdx] = useState<number | null>(null);
-  const [draftCondition, setDraftCondition] = useState("");
-  const [draftStorage, setDraftStorage] = useState("");
-  const [draftQuantity, setDraftQuantity] = useState(1);
-  // Functional state when a device is edited to "Broken": true =
-  // still works (auto-priced), false = won't power on (manual review),
-  // null = not yet answered.
-  const [draftFunctional, setDraftFunctional] = useState<boolean | null>(null);
   const [savingItems, setSavingItems] = useState(false);
   const [itemsError, setItemsError] = useState("");
   const [itemsSaved, setItemsSaved] = useState(false);
@@ -355,7 +280,21 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetch(`/api/offer/${encodeURIComponent(leadId)}`, { cache: "no-store" })
+    // ?fresh=1 is how the funnel's add-to-order redirect lands here: the
+    // device was appended a moment ago and the server's 15 s read memo would
+    // still show the order without it. Ask for a fresh read, then drop the
+    // param so a reload or a bookmark doesn't keep forcing one. 2026-09-25.
+    let fresh = false;
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("fresh") === "1") {
+        fresh = true;
+        url.searchParams.delete("fresh");
+        window.history.replaceState(null, "", url.toString());
+      }
+    } catch { /* nothing to inspect — a plain read is fine */ }
+    // Bounded: a stalled read used to leave "Loading your offer…" up forever.
+    fetch(`/api/offer/${encodeURIComponent(leadId)}${fresh ? "?fresh=1" : ""}`, { cache: "no-store", signal: AbortSignal.timeout(20_000) })
       .then(async (r) => {
         if (cancelled) return;
         if (r.status === 404) { setError("We couldn't find this offer. Double-check the link."); setOffer(null); return; }
@@ -372,6 +311,25 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     return () => { cancelled = true; };
   }, [leadId]);
 
+  // Re-read past the server memo after one of our own writes and let the
+  // server's figures replace the optimistic ones (a line it clamped, a
+  // review flag it set, the recomputed total, the phone it now shows).
+  // Silent on failure — the optimistic state stays and the next open reads
+  // the truth. Two quick actions can answer out of order; the sequence
+  // number keeps only the latest. 2026-09-25.
+  const refetchSeq = useRef(0);
+  const refetchFresh = async () => {
+    const seq = ++refetchSeq.current;
+    try {
+      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}?fresh=1`, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
+      if (!r.ok) return;
+      const data: Offer = await r.json();
+      if (seq !== refetchSeq.current || !data?.found) return;
+      setOffer(data);
+      setItems(buildItems(data));
+    } catch { /* keep the optimistic state */ }
+  };
+
   const doCancel = async () => {
     setCancelling(true);
     setCancelError("");
@@ -380,15 +338,18 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ note: cancelNote.trim() || undefined }),
+        signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) {
         setCancelError(d.error || "Couldn't cancel — try again or email us.");
         return;
       }
-      // Optimistic update so the page reflects cancellation immediately.
+      // Optimistic update so the page reflects cancellation immediately;
+      // the fresh re-read then confirms it from the server.
       setOffer((prev) => prev ? { ...prev, status: "rejected", cancelled: true } : prev);
       setCancelConfirmOpen(false);
+      void refetchFresh();
     } catch {
       setCancelError("Network error — try again.");
     } finally {
@@ -419,10 +380,12 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           url: pmUrl.trim() || undefined,
           note: pmNote.trim() || undefined,
         }),
+        signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) { setPmError(d.error || "Couldn't send your request — try again."); return; }
       setPmSubmitted(true);
+      void refetchFresh();
     } catch {
       setPmError("Network error — try again.");
     } finally {
@@ -448,10 +411,12 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           amount,
           note: coReason.trim() || undefined,
         }),
+        signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) { setCoError(d.error || "Couldn't send your counter — try again."); return; }
       setCoSubmitted(true);
+      void refetchFresh();
     } catch {
       setCoError("Network error — try again.");
     } finally {
@@ -470,6 +435,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: phoneDraft.trim() }),
+        signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) {
@@ -479,6 +445,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       setOffer((prev) => prev ? { ...prev, phone: phoneDraft.trim() } : prev);
       setEditingPhone(false);
       setPhoneSaved(true);
+      void refetchFresh();
       setTimeout(() => setPhoneSaved(false), 2500);
     } catch {
       setPhoneError("Network error — try again.");
@@ -497,6 +464,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ devices: next }),
+        signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) {
@@ -517,6 +485,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       setEditIdx(null);
       setItemsSaved(true);
       setTimeout(() => setItemsSaved(false), 2500);
+      void refetchFresh();
     } catch {
       setItemsError("Network error — try again.");
     } finally {
@@ -544,7 +513,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     return (
       <main className="min-h-screen bg-[#0a0a0a] text-white">
         <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-          <svg className="w-8 h-8 text-[#00c853] mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <svg aria-hidden="true" className="w-8 h-8 text-[#00c853] mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <p className="font-bold mb-1">{error || "Offer not found"}</p>
@@ -602,7 +571,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#dcdcdc] hover:text-white px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
               title="Share this offer link"
             >
-              <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5m6.656-2.828a4 4 0 015.656 0l-1.5 1.5m-7.656 3.656a4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5" /></svg>
+              <svg aria-hidden="true" className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5m6.656-2.828a4 4 0 015.656 0l-1.5 1.5m-7.656 3.656a4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5" /></svg>
               Share
             </button>
             <button
@@ -611,14 +580,14 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#dcdcdc] hover:text-white px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
               title="Save offer details as PDF via your browser's print dialog"
             >
-              <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              <svg aria-hidden="true" className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               Download
             </button>
           </div>
         </div>
         {shareNotice && (
           <div className="mb-3 px-3 py-2 rounded-lg bg-[#00c853]/15 border border-[#00c853]/40 text-[#00c853] text-xs font-semibold flex items-center justify-center gap-1.5">
-            <svg className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <svg aria-hidden="true" className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             {shareNotice}
           </div>
         )}
@@ -666,7 +635,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         {isPaid && offer.payoutProof && (
           <div className="bg-[#00c853]/[0.06] border border-[#00c853]/40 rounded-2xl p-4 mb-5">
             <div className="flex items-start gap-2.5">
-              <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <svg aria-hidden="true" className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div className="min-w-0">
@@ -691,7 +660,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             front they don't need to keep checking. Skywalker 2026-05-22. */}
         {isShip && !isPaid && !isCancelled && (
           <div className="bg-[#00c853]/[0.06] border border-[#00c853]/30 rounded-2xl p-4 mb-5 flex items-start gap-2.5">
-            <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <svg aria-hidden="true" className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
             </svg>
@@ -706,7 +675,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         {offer.needsReview && (
           <div className="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-4 mb-5">
             <p className="text-amber-200 font-bold text-sm mb-1 flex items-center gap-1.5">
-              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               Your edit needs a manual review
             </p>
@@ -726,8 +695,10 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           </div>
         )}
 
-        {/* Print Label + tracking — ship leads only */}
-        {isShip && offer.fedexLabelUrl && (
+        {/* Print Label + tracking — ship leads only. Hidden once cancelled:
+            the cancel route does NOT void the label (staff do, from the
+            alert), so nothing here may invite a drop-off. 2026-09-25. */}
+        {isShip && !isCancelled && offer.fedexLabelUrl && (
           <div className="bg-[#00c853]/8 border border-[#00c853]/40 rounded-2xl p-5 mb-5">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your FedEx label</p>
             <p className="text-white text-sm font-mono mb-1 break-all">{offer.fedexTracking}</p>
@@ -739,7 +710,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                 rel="noopener noreferrer"
                 className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-3 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-xl text-sm font-extrabold text-center transition"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                <svg aria-hidden="true" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
                 Print label
               </a>
               <a
@@ -753,10 +724,10 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             </div>
           </div>
         )}
-        {isShip && !offer.fedexLabelUrl && offer.fedexErrorKind === "ADDRESS_INVALID" && (
+        {isShip && !isCancelled && !offer.fedexLabelUrl && offer.fedexErrorKind === "ADDRESS_INVALID" && (
           <div className="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-5 mb-5">
             <p className="text-amber-200 font-bold text-sm mb-1 flex items-center gap-1.5">
-              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               Label couldn&apos;t be generated
             </p>
@@ -766,10 +737,10 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             </a>
           </div>
         )}
-        {isShip && !offer.fedexLabelUrl && offer.fedexErrorKind !== "ADDRESS_INVALID" && (
+        {isShip && !isCancelled && !offer.fedexLabelUrl && offer.fedexErrorKind !== "ADDRESS_INVALID" && (
           <div className="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-5 mb-5">
             <p className="text-amber-200 font-bold text-sm mb-1 flex items-center gap-1.5">
-              <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />
+              <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />
               </svg>
               Your label is on the way
             </p>
@@ -815,7 +786,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             {prep.allChecked && pack.allChecked && lbl.allChecked && (
               <div className="mt-4 px-4 py-3 rounded-xl bg-[#00c853]/15 border border-[#00c853]/40 text-center">
                 <p className="text-[#00c853] font-bold text-sm flex items-center justify-center gap-1.5">
-                  <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   You&apos;re ready — drop it at any FedEx
                 </p>
                 <p className="text-[#bdbdbd] text-[11px] mt-1">Your trade must be received within 14 days of submission.</p>
@@ -831,43 +802,11 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         <div className="bg-gradient-to-b from-white/[0.06] to-white/[0.015] border border-white/10 rounded-2xl p-5 mb-5">
           <div className="flex items-center justify-between gap-2 mb-3">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold">Offer items</p>
-            {itemsSaved && <span className="inline-flex items-center gap-1 text-[10px] text-[#00c853] font-semibold"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Saved</span>}
+            {itemsSaved && <span className="inline-flex items-center gap-1 text-[10px] text-[#00c853] font-semibold"><svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Saved</span>}
           </div>
           <div className="space-y-2">
             {items.map((it, i) => {
               const isEditing = editIdx === i;
-              const liveQuote = isEditing
-                ? (() => {
-                    // Prefer the engine step from this line's own offer (see
-                    // tableRequote); fall back to ratio scaling when the
-                    // engine can't answer. Carrier = the lead's, as the
-                    // server's line cap reads it, with its Verizon lock.
-                    const perUnit = tableRequote(
-                      it.model,
-                      { carrier: offer?.carrier, carrierLocked: offer?.carrierLocked },
-                      { storage: it.storage, condition: it.condition, perUnit: it.quote / (it.quantity > 0 ? it.quantity : 1) },
-                      draftStorage,
-                      draftCondition,
-                    );
-                    if (perUnit != null) return Math.round(perUnit * draftQuantity);
-                    return Math.round(requote({
-                      originalQuote: it.quote,
-                      fromCondition: it.condition, toCondition: draftCondition,
-                      fromStorage: it.storage, toStorage: draftStorage,
-                    }) * (it.quantity > 0 ? draftQuantity / it.quantity : 1));
-                  })()
-                : it.quote;
-              const draftBroken = isEditing && matchTier(REQUOTE_CONDITIONS, draftCondition)?.id === "broken";
-              // Broken + not functional → no auto price, goes to manual review.
-              const draftNeedsReview = draftBroken && draftFunctional === false;
-              const condOpts = (() => {
-                const labels = REQUOTE_CONDITIONS.map((t) => t.label);
-                return draftCondition && !labels.includes(draftCondition) ? [draftCondition, ...labels] : labels;
-              })();
-              const storeOpts = (() => {
-                const labels = REQUOTE_STORAGE.map((t) => t.label);
-                return draftStorage && !labels.includes(draftStorage) ? [draftStorage, ...labels] : labels;
-              })();
               return (
                 <div key={i} className="bg-white/[0.03] border border-white/10 rounded-xl p-3">
                   <div className="flex items-center gap-3">
@@ -878,19 +817,12 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                     </div>
                     <div className="text-right shrink-0">
                       {itemNeedsReview(it)
-                        ? <p className="text-amber-300 font-bold text-xs inline-flex items-center gap-1"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>Manual review</p>
+                        ? <p className="text-amber-300 font-bold text-xs inline-flex items-center gap-1"><svg aria-hidden="true" className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>Manual review</p>
                         : <p className="text-[#00c853] font-bold">${it.quote.toLocaleString()}</p>}
                       {canEditItems && !isEditing && (
                         <button
                           type="button"
-                          onClick={() => {
-                            setEditIdx(i);
-                            setDraftCondition(matchTier(REQUOTE_CONDITIONS, it.condition)?.label || it.condition || REQUOTE_CONDITIONS[1].label);
-                            setDraftStorage(matchTier(REQUOTE_STORAGE, it.storage)?.label || it.storage || "");
-                            setDraftQuantity(it.quantity > 0 ? it.quantity : 1);
-                            setDraftFunctional(null);
-                            setItemsError("");
-                          }}
+                          onClick={() => { setEditIdx(i); setItemsError(""); }}
                           className="text-[10px] text-[#00c853] hover:underline font-bold cursor-pointer"
                         >
                           Edit
@@ -900,108 +832,15 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                   </div>
 
                   {isEditing && (
-                    <div className="mt-3 pt-3 border-t border-white/10">
-                      {/* Warning — pops the moment the editor opens. */}
-                      <div className="bg-amber-500/10 border border-amber-500/40 rounded-lg p-2.5 mb-3 flex items-start gap-2">
-                        <svg className="w-4 h-4 shrink-0 text-amber-300 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        <p className="text-amber-200/90 text-[11px] leading-relaxed">
-                          This updates your <span className="font-bold">estimate</span> only. Your final price is confirmed when we inspect the device — change this just to match its real condition.
-                        </p>
-                      </div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Condition</label>
-                      <select
-                        value={draftCondition}
-                        onChange={(e) => setDraftCondition(e.target.value)}
-                        className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#00c853]"
-                      >
-                        {condOpts.map((c) => <option key={c} value={c}>{c}</option>)}
-                      </select>
-                      {/* Broken devices: ask if it still works. Functional →
-                          auto-priced; not functional → manual review. */}
-                      {draftBroken && (
-                        <div className="mb-3">
-                          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Does the device still power on &amp; work?</label>
-                          <div className="grid grid-cols-2 gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setDraftFunctional(true)}
-                              className={`px-2.5 py-2 rounded-lg border text-xs font-bold transition cursor-pointer ${draftFunctional === true ? "bg-[#00c853]/15 border-[#00c853]/50 text-white" : "bg-black/40 border-white/15 text-[#bdbdbd] hover:bg-white/5"}`}
-                            >
-                              Yes — it works
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setDraftFunctional(false)}
-                              className={`px-2.5 py-2 rounded-lg border text-xs font-bold transition cursor-pointer ${draftFunctional === false ? "bg-amber-500/20 border-amber-500/60 text-white" : "bg-black/40 border-white/15 text-[#bdbdbd] hover:bg-white/5"}`}
-                            >
-                              No — won&apos;t power on
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                      {!!it.storage && (
-                        <>
-                          <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Storage</label>
-                          <select
-                            value={draftStorage}
-                            onChange={(e) => setDraftStorage(e.target.value)}
-                            className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#00c853]"
-                          >
-                            {storeOpts.map((s) => <option key={s} value={s}>{s}</option>)}
-                          </select>
-                        </>
-                      )}
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888] mb-1">Quantity</label>
-                      <select
-                        value={draftQuantity}
-                        onChange={(e) => setDraftQuantity(parseInt(e.target.value, 10) || 1)}
-                        className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/15 rounded-lg text-sm text-white focus:outline-none focus:border-[#00c853]"
-                      >
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => <option key={n} value={n}>{n}</option>)}
-                      </select>
-                      {draftBroken && draftFunctional === null ? (
-                        <div className="bg-white/[0.04] border border-white/10 rounded-lg px-3 py-2.5 mb-3">
-                          <p className="text-[11px] text-[#bdbdbd]">Tell us whether the device still works above to see your estimate.</p>
-                        </div>
-                      ) : draftNeedsReview ? (
-                        <div className="bg-amber-500/10 border border-amber-500/40 rounded-lg px-3 py-2.5 mb-3">
-                          <p className="text-amber-200 text-[11px] leading-relaxed">
-                            <span className="font-bold">A device that won&apos;t power on can&apos;t be auto-quoted.</span> We inspect these by hand — saving flags your offer for a manual re-quote, and your price is confirmed after we check the device.
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between bg-white/[0.04] rounded-lg px-3 py-2 mb-3">
-                          <span className="text-[11px] text-[#bdbdbd]">Updated estimate{draftQuantity > 1 ? ` (×${draftQuantity})` : ""}</span>
-                          <span className={`font-extrabold ${liveQuote === it.quote ? "text-white" : "text-[#00c853]"}`}>
-                            ${liveQuote.toLocaleString()}
-                          </span>
-                        </div>
-                      )}
-                      {itemsError && <p className="text-red-300 text-[11px] font-semibold mb-2">{itemsError}</p>}
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          disabled={savingItems || (draftBroken && draftFunctional === null)}
-                          onClick={() => {
-                            const next = items.map((row, idx) => idx === i
-                              ? { ...row, condition: draftCondition, storage: draftStorage, quantity: draftQuantity, quote: draftNeedsReview ? 0 : liveQuote, needsReview: draftNeedsReview }
-                              : row);
-                            doSaveItems(next);
-                          }}
-                          className="flex-1 px-3 py-2 bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] rounded-lg text-xs font-extrabold cursor-pointer disabled:opacity-50 transition"
-                        >
-                          {savingItems ? "Saving…" : draftNeedsReview ? "Request manual review" : "Save changes"}
-                        </button>
-                        <button
-                          type="button"
-                          disabled={savingItems}
-                          onClick={() => { setEditIdx(null); setItemsError(""); }}
-                          className="px-3 py-2 bg-white/5 border border-white/15 rounded-lg text-xs font-semibold cursor-pointer disabled:opacity-50 transition"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
+                    <EditItemPanel
+                      item={it}
+                      index={i}
+                      lead={{ carrier: offer.carrier, carrierLocked: offer.carrierLocked }}
+                      saving={savingItems}
+                      error={itemsError}
+                      onSave={(row) => doSaveItems(items.map((r, idx) => (idx === i ? row : r)))}
+                      onCancel={() => { setEditIdx(null); setItemsError(""); }}
+                    />
                   )}
                 </div>
               );
@@ -1017,7 +856,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           <div className="mt-3 pt-3 border-t border-white/15 flex items-baseline justify-between">
             <span className="text-[11px] uppercase tracking-wider text-[#e6e6e6] font-bold">Total</span>
             {items.some(itemNeedsReview)
-              ? <span className="text-amber-300 font-extrabold text-sm inline-flex items-center gap-1"><svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>Manual review</span>
+              ? <span className="text-amber-300 font-extrabold text-sm inline-flex items-center gap-1"><svg aria-hidden="true" className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>Manual review</span>
               : <span className="text-[#00c853] font-extrabold text-lg">${(items.reduce((s, it) => s + it.quote, 0) + (offer.bonus ?? 0)).toLocaleString()}</span>}
           </div>
 
@@ -1034,7 +873,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             </>
           )}
           {!isCancelled && offer.status !== "quote_requested" && (
-            <p className="text-[#888] text-[11px] mt-2 flex items-start gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg><span>Device details lock once your trade is on its way. Need a change? <a href={`mailto:support@topcashcellular.com?subject=${encodeURIComponent("Offer " + offer.id)}`} className="text-[#00c853] hover:underline">Email us</a>.</span></p>
+            <p className="text-[#888] text-[11px] mt-2 flex items-start gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg><span>Device details lock once your trade is on its way. Need a change? <a href={`mailto:support@topcashcellular.com?subject=${encodeURIComponent("Offer " + offer.id)}`} className="text-[#00c853] hover:underline">Email us</a>.</span></p>
           )}
         </div>
 
@@ -1043,10 +882,10 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-3">Contact info</p>
           {offer.name && <p className="text-sm font-semibold mb-1">{offer.name}</p>}
           {offer.shipAddress && (
-            <p className="text-[#bdbdbd] text-xs leading-relaxed flex items-start gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg><span>Ships from: {offer.shipAddress}</span></p>
+            <p className="text-[#bdbdbd] text-xs leading-relaxed flex items-start gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" /></svg><span>Ships from: {offer.shipAddress}</span></p>
           )}
           {offer.localSlot && (
-            <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg><span>Local meetup · {offer.localSlot}</span></p>
+            <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg><span>Local meetup · {offer.localSlot}</span></p>
           )}
           <div className="mt-2 flex flex-col gap-1.5">
             {/* Phone — editable by the signed-in owner. Name and email
@@ -1079,13 +918,13 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                     Cancel
                   </button>
                 </div>
-                {phoneError && <p className="text-red-300 text-[11px] font-semibold">{phoneError}</p>}
+                {phoneError && <p role="alert" className="text-red-300 text-[11px] font-semibold">{phoneError}</p>}
               </div>
             ) : (
               <div className="flex items-center gap-2 flex-wrap">
                 {offer.phone
-                  ? <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg><span>{offer.phone}</span></p>
-                  : !isCancelled && <p className="text-[#888] text-xs flex items-center gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg><span>No phone on file</span></p>}
+                  ? <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg><span>{offer.phone}</span></p>
+                  : !isCancelled && <p className="text-[#888] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg><span>No phone on file</span></p>}
                 {!isCancelled && (
                   <button
                     type="button"
@@ -1095,10 +934,10 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                     {offer.phone ? "Edit" : "+ Add phone number"}
                   </button>
                 )}
-                {phoneSaved && <span className="inline-flex items-center gap-1 text-[10px] text-[#00c853] font-semibold"><svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Saved</span>}
+                {phoneSaved && <span className="inline-flex items-center gap-1 text-[10px] text-[#00c853] font-semibold"><svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Saved</span>}
               </div>
             )}
-            {offer.email && <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg><span>{offer.email}</span></p>}
+            {offer.email && <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg><span>{offer.email}</span></p>}
           </div>
         </div>
 
@@ -1126,7 +965,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                     <p className="text-sm font-bold text-white mb-1">Found a better quote elsewhere?</p>
                     <p className="text-[#bdbdbd] text-xs leading-relaxed">Tell us where — we aim to match or beat any honest comparable quote.</p>
                   </div>
-                  <svg className="w-5 h-5 shrink-0 text-[#00c853] mt-1 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                  <svg aria-hidden="true" className="w-5 h-5 shrink-0 text-[#00c853] mt-1 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </button>
 
                 {/* Lighter "just not happy" path — no competitor needed,
@@ -1168,7 +1007,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                           className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none"
                         />
                       </div>
-                      {coError && <p className="text-red-300 text-[11px] font-semibold">{coError}</p>}
+                      {coError && <p role="alert" className="text-red-300 text-[11px] font-semibold">{coError}</p>}
                       <div className="flex gap-2">
                         <button
                           type="button"
@@ -1238,7 +1077,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                       className="w-full px-3 py-2 bg-black/40 border border-white/15 rounded-lg text-sm text-white placeholder:text-[#777] focus:outline-none focus:border-[#00c853] resize-none"
                     />
                   </div>
-                  {pmError && <p className="text-red-300 text-[11px] font-semibold">{pmError}</p>}
+                  {pmError && <p role="alert" className="text-red-300 text-[11px] font-semibold">{pmError}</p>}
                   <div className="flex gap-2">
                     <button
                       type="button"
@@ -1272,7 +1111,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           <div className="bg-gradient-to-br from-[#00c853]/[0.07] to-transparent border border-[#00c853]/25 rounded-2xl p-5 mb-5">
             <div className="flex items-start gap-3">
               <div className="shrink-0 w-9 h-9 rounded-full bg-[#00c853]/15 border border-[#00c853]/30 flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                <svg aria-hidden="true" className="w-5 h-5 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-1">Refer a friend</p>
@@ -1331,7 +1170,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             ) : (
               <div className="bg-red-500/10 border border-red-500/40 rounded-xl p-4">
                 <p className="text-red-200 font-bold text-sm mb-2">Cancel offer #{formatOfferNumber(offer.id)}?</p>
-                <p className="text-red-200/80 text-[11px] mb-3">{isShip ? "Your shipping label will stop working. You can always start a new offer from the home page." : "Your meetup slot will be released. You can always start a new offer."}</p>
+                <p className="text-red-200/80 text-[11px] mb-3">{isShip ? "Please don't use the prepaid label — we'll cancel it on our side. You can always start a new offer from the home page." : "Your meetup slot will be released. You can always start a new offer."}</p>
                 <textarea
                   value={cancelNote}
                   onChange={(e) => setCancelNote(e.target.value.slice(0, 200))}
@@ -1340,7 +1179,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                   className="w-full px-3 py-2 mb-3 bg-black/40 border border-white/10 rounded-lg text-xs text-white placeholder:text-[#888] focus:outline-none focus:border-red-400 resize-none"
                 />
                 {cancelError && (
-                  <p className="text-red-300 text-[11px] font-semibold mb-2">{cancelError}</p>
+                  <p role="alert" className="text-red-300 text-[11px] font-semibold mb-2">{cancelError}</p>
                 )}
                 <div className="flex gap-2">
                   <button
@@ -1438,7 +1277,7 @@ function StatusBanner({ status, cancelled, isShip, hasLabel }: { status: string;
   return (
     <div className={`rounded-2xl px-5 py-4 mb-5 border ${tone}`}>
       <p className="font-extrabold text-base mb-1 flex items-center gap-2">
-        <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d={iconPath} /></svg>
+        <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d={iconPath} /></svg>
         {title}
       </p>
       <p className="text-xs leading-relaxed opacity-90">{detail}</p>
@@ -1462,7 +1301,7 @@ function StatusPipeline({ status, isShip }: { status: string; isShip: boolean })
                 current ? "bg-[#00c853] text-[#0a0a0a] ring-4 ring-[#00c853]/30 animate-pulse" :
                 "bg-white/5 border border-white/10 text-[#888]"
               }`}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                <svg aria-hidden="true" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d={done ? "M5 13l4 4L19 7" : step.icon} />
                 </svg>
               </div>

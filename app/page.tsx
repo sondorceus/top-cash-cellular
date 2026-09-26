@@ -6510,7 +6510,7 @@ export default function Home() {
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-      window.location.href = `/offer/${encodeURIComponent(addToOrderId)}`;
+      window.location.href = `/offer/${encodeURIComponent(addToOrderId)}?fresh=1`; // fresh: read past the offer API's memo so the added device shows
     } catch {
       setAddError("Couldn't reach the server — please try again.");
       setAddingToOrder(false);

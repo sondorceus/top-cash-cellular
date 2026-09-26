@@ -6,7 +6,7 @@ import { lookupAtlasResell, type AtlasReference } from "../../../lib/atlas-looku
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
 import { parseDollarAmount } from "../../../lib/lead-money";
 import { fetchCommsRead } from "../../../lib/mc-comms";
-import { parseOfferBonus, isCustomerLeadPost, ITEM_UPDATE_BONUS_EXCLUDED } from "../../../lib/lead-devices";
+import { parseOfferBonus, isCustomerLeadPost, ITEM_UPDATE_BONUS_EXCLUDED, latestContactUpdates } from "../../../lib/lead-devices";
 import { findDuplicates } from "../../../lib/lead-dupes";
 import skuLabelsJson from "../../../data/sku-labels.json";
 
@@ -387,6 +387,13 @@ interface AdminLead {
     respondedAt?: string;
     customerNote?: string;
   };
+  // Latest customer REQUEST from the offer page — a competitor quote to
+  // match ("[PRICE-MATCH-REQUEST: leadId=…]") or their own number
+  // ("[COUNTER-REQUEST: leadId=…]"). The route that posts them said the
+  // admin row badged them; nothing read them, only the owner alert carried
+  // them, and a missed alert lost the request. Staff answer through the
+  // counter-offer flow. 2026-09-25.
+  customerRequest?: { kind: "price-match" | "counter"; at: string; amount?: number; competitor?: string; note?: string };
   // AI verdicts on this lead, parsed from [AI-FLAG: leadId] /
   // [AI-NOTE: leadId] / [AI-SUMMARY: leadId] markers. Most-recent of
   // each KIND wins (not just one across all kinds), so the photo-check
@@ -537,6 +544,12 @@ export async function GET(req: NextRequest) {
   // response (if any). Re-minting an offer overrides the prior one.
   const counterOfferByLead = new Map<string, { originalQuote: number; offer: number; reason: string; timestamp: string }>();
   const counterResponseByLead = new Map<string, { response: "accept" | "decline"; timestamp: string; note?: string }>();
+  // Latest customer price-match / counter REQUEST per lead (AdminLead.customerRequest).
+  const customerRequestByLead = new Map<string, { kind: "price-match" | "counter"; at: string; amount?: number; competitor?: string; note?: string }>();
+  // Customer phone edits from the offer page ([CONTACT-UPDATE]) — overlaid on
+  // the body's Phone: line below, so the console (and every send that takes
+  // the phone from this row) reaches the number the customer corrected to.
+  const contactUpdateByLead = latestContactUpdates(messages);
   // AI markers per lead, tracked PER KIND so a photo-check FLAG and
   // Theot's channel-rec SUMMARY can both surface on the lead row
   // instead of the latter hiding the former. Most-recent wins per kind.
@@ -706,6 +719,31 @@ export async function GET(req: NextRequest) {
       const prev = labelErrorByLead.get(lid);
       if (!prev || m.timestamp > prev.timestamp) {
         labelErrorByLead.set(lid, { kind, reason, timestamp: m.timestamp });
+      }
+    }
+    // Customer price-match / counter REQUEST markers — the offer page's
+    // "Best Price Guarantee" form and "Make a counter offer". Self-contained
+    // (no [LEAD:] tag), latest per lead wins:
+    //   "[PRICE-MATCH-REQUEST: leadId=<id> competitor=<c> amount=<n> at=<iso>]\nUrl: …\nNote: …"
+    //   "[COUNTER-REQUEST: leadId=<id> amount=<n> at=<iso>]\nNote: …"
+    // competitor/note are bracket- and newline-stripped at post time.
+    const reqMarker = m.body.match(/\[(PRICE-MATCH-REQUEST|COUNTER-REQUEST):\s*leadId=([\w-]+)([^\]\n]*)\]/i);
+    if (reqMarker) {
+      const lid = reqMarker[2];
+      const attrs = reqMarker[3];
+      const amountRaw = attrs.match(/\bamount=([\d,]+(?:\.\d+)?)/i)?.[1];
+      const amount = amountRaw ? Math.round(parseFloat(amountRaw.replace(/,/g, ""))) : NaN;
+      const competitor = attrs.match(/\bcompetitor=(.+?)(?=\s+amount=|$)/i)?.[1]?.trim();
+      const note = m.body.match(/(?:^|\n)Note:[ \t]*([^\n]+)/)?.[1]?.trim();
+      const prev = customerRequestByLead.get(lid);
+      if (!prev || m.timestamp > prev.at) {
+        customerRequestByLead.set(lid, {
+          kind: reqMarker[1].toUpperCase() === "COUNTER-REQUEST" ? "counter" : "price-match",
+          at: m.timestamp,
+          amount: Number.isFinite(amount) ? amount : undefined,
+          competitor: competitor || undefined,
+          note: note || undefined,
+        });
       }
     }
     // Customer device-edit marker — self-contained, posted by the
@@ -1068,7 +1106,11 @@ export async function GET(req: NextRequest) {
       id: m.id,
       timestamp: m.timestamp,
       name: parseField(m.body, "Name"),
-      phone: parseField(m.body, "Phone"),
+      // The customer's latest offer-page phone edit wins over the immutable
+      // body: the status / label / SMS routes take the phone from this row,
+      // and kept texting a number the customer had already corrected.
+      // 2026-09-25.
+      phone: contactUpdateByLead.get(m.id)?.phone || parseField(m.body, "Phone"),
       email: parseField(m.body, "Email"),
       device: deviceLine?.split(" — ")[0],
       model: modelOverride ?? deviceLine?.split(" — ")[1],
@@ -1169,6 +1211,7 @@ export async function GET(req: NextRequest) {
         const hours = Math.floor(ageMs / (60 * 60 * 1000));
         return hours >= 168 ? hours : undefined; // 7 days
       })(),
+      customerRequest: customerRequestByLead.get(m.id),
       fedexTracking: labelByLead.get(m.id)?.tracking,
       fedexLabelUrl: labelByLead.get(m.id)?.url,
       fedexService: labelByLead.get(m.id)?.service,

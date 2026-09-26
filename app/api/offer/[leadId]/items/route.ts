@@ -19,14 +19,15 @@
 // as JSON; the offer GET + admin leads routes apply the latest one.
 // Skywalker 2026-05-20.
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
+import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
 import {
-  field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES, parseOfferBonus, isCustomerLeadPost,
+  field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES, parseOfferBonus, isDeleted,
   nextItemUpdateVersion,
 } from "../../../../lib/lead-devices";
 
@@ -87,16 +88,21 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (devices.some((d) => !d.model)) {
     return NextResponse.json({ error: "Every device needs a model." }, { status: 400 });
   }
+  // Per-lead cap shared by every customer write on this offer — see the
+  // cancel route. After validation so a rejected body doesn't spend it.
+  // 2026-09-25.
+  const rlLead = rateLimit(`offer-lead:${leadId}`, 10, 600_000);
+  if (!rlLead.ok) return rateLimitResponse(rlLead.retryAfterMs);
 
   // Pull the lead to verify ownership + check it's still editable. limit=5000
   // (full live cap, was 1000) so an older offer still resolves by id.
-  const r = await fetch(`${MC_API}/api/comms?limit=5000`, {
-    headers: { "x-api-key": MC_KEY },
-    cache: "no-store",
-  });
-  if (!r.ok) return NextResponse.json({ error: "Couldn't reach service — try again shortly." }, { status: 502 });
-  const data = await r.json();
-  const messages: { id: string; body?: string; timestamp: string }[] = data.messages || [];
+  // Shared reader — 15 s timeout, no memo; a failed or empty read is
+  // "unknown", never "not found" (the bare fetch had no timeout). 2026-09-25.
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 1, includeArchive: false });
+  if (!read.complete || read.messages.length === 0) {
+    return NextResponse.json({ error: "Mission Control is unavailable — nothing was changed." }, { status: 502 });
+  }
+  const messages = read.messages;
   const leadMsg = messages.find((m) => m.id === leadId);
   if (!leadMsg?.body) {
     return NextResponse.json({ error: "Offer not found" }, { status: 404 });
@@ -190,7 +196,8 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // force a manual staff re-quote instead of silently accepting it.
   const unverifiable = ceiling === 0 && total > 0;
 
-  const cancelled = messages.some((m) => !isCustomerLeadPost(m.body) && !!m.body?.includes(`[DELETED-LEAD: ${leadId}]`));
+  // Restore-aware — a lead staff trashed and restored is live again.
+  const cancelled = isDeleted(messages, leadId);
   if (cancelled) {
     return NextResponse.json({ error: "This offer was cancelled." }, { status: 409 });
   }
@@ -225,8 +232,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     method: "POST",
     headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: "topcash-web",
-      fromName: "Customer Device Edit",
+      // Own MC sender bucket for customer-originated posts — see the cancel
+      // route. 2026-09-25.
+      from: "topcash-customer",
+      fromName: "Top Cash Cellular (customer)",
       role: "system",
       body: updateBody,
       tags: anyReview ? ["item-update", "needs-review"] : ["item-update"],
@@ -236,17 +245,17 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!postRes.ok) {
     return NextResponse.json({ error: "Couldn't save your changes — try again shortly." }, { status: 502 });
   }
+  invalidateCommsMemo();
 
   // Owner alert — the re-quote is an estimate; staff confirm at inspection.
+  // After the response; nothing in it reads the alert's outcome. 2026-09-25.
   {
-    try {
-      const customerName = field(leadMsg.body, "Name") || "Customer";
-      const summary = devices.map((d) => `${d.model} (${d.condition || "?"}${d.storage ? ", " + d.storage : ""})`).join("; ");
-      // `total` is the device subtotal; the order figure (what the offer
-      // page shows) adds the coupon/referral bonus back.
-      const text = `${anyReview ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total + bodyBonus}. ${summary}`;
-      await notifyOwnerSms(text.slice(0, 480));
-    } catch { /* SMS non-fatal */ }
+    const customerName = field(leadMsg.body, "Name") || "Customer";
+    const summary = devices.map((d) => `${d.model} (${d.condition || "?"}${d.storage ? ", " + d.storage : ""})`).join("; ");
+    // `total` is the device subtotal; the order figure (what the offer
+    // page shows) adds the coupon/referral bonus back.
+    const text = `${anyReview ? "⚠️ NEEDS MANUAL REVIEW — " : ""}EDIT: ${customerName} changed offer ${leadId.slice(0, 10).toUpperCase()} → est. $${total + bodyBonus}. ${summary}`;
+    after(() => notifyOwnerSms(text.slice(0, 480)).catch(() => {}));
   }
 
   return NextResponse.json({ ok: true, devices, total });

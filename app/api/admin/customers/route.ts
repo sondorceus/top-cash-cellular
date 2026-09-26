@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
 import { parseDollarAmount, parseTotalPayoutLine } from "../../../lib/lead-money";
+import { latestContactUpdates } from "../../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -125,6 +126,9 @@ export async function GET(req: NextRequest) {
   const internalView = req.nextUrl.searchParams.get("internal") || "hide";
   let internalSkipped = 0;
   const customers = new Map<string, CustomerRow>();
+  // Customer phone edits from the offer page — the console shows (and keys
+  // the customer on) the number the customer corrected to. 2026-09-25.
+  const contactUpdates = latestContactUpdates(messages);
   for (const m of messages) {
     if (!m.body || !m.body.includes("[NEW BUYBACK LEAD")) continue;
     if (deletedLeads.has(m.id)) continue;
@@ -137,7 +141,7 @@ export async function GET(req: NextRequest) {
       internalSkipped++;
       continue;
     }
-    const phoneRaw = parseField(m.body, "Phone");
+    const phoneRaw = contactUpdates.get(m.id)?.phone || parseField(m.body, "Phone");
     const emailRaw = parseField(m.body, "Email")?.toLowerCase();
     const phoneN = normalizePhone(phoneRaw);
     // Identity preference: phone first, then email. A customer who
