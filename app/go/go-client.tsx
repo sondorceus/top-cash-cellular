@@ -186,10 +186,12 @@ function rowSearchKey(r: BoardRow): string[] {
   if (r.label.startsWith("MacBook")) extra.push("mac");
   return [...base, ...extra];
 }
-function matchTyped(rows: BoardRow[], draft: string): BoardRow[] {
+// `keyed` = rows with their search keys precomputed (once per board, not per
+// keystroke — the keys never change).
+function matchTyped(keyed: { r: BoardRow; key: string[] }[], draft: string): BoardRow[] {
   const toks = normalizeTyped(draft).replace(/[^a-z0-9+&.\- ]/g, " ").split(/\s+/).filter((t) => t && !TYPE_NOISE.has(t) && !TYPE_SPEC.test(t));
   if (!toks.length) return [];
-  const out = rows.filter((r) => { const key = rowSearchKey(r); return toks.every((t) => key.some((k) => k.startsWith(t))); });
+  const out = keyed.filter(({ key }) => toks.every((t) => key.some((k) => k.startsWith(t)))).map(({ r }) => r);
   // One bare word ("iphone", "macbook") is too broad to be a pick; a specific
   // family word ("ps5", "xbox", "switch") that lands on a handful is fine.
   if (toks.length === 1 && (toks[0].length < 3 || out.length > 6)) return [];
@@ -217,7 +219,9 @@ const CATEGORIES: { key: string; label: string; img: string; deterministic?: Gro
 type Msg =
   // tap: the bubble is a chip/tile choice, not typed text (history tags it
   // "(tapped on the page)" so the chat brain reads it as a selection).
-  | { from: "user" | "bot" | "owner"; text: string; tap?: true }
+  // preview/pending: a photo bubble keeps its local preview after the upload
+  // (the CDN copy is never re-downloaded) and reads "sending…" until then.
+  | { from: "user" | "bot" | "owner"; text: string; tap?: true; preview?: string; pending?: true }
   // Local-only error bubble: rendered like a bot message but NEVER included
   // in the history sent to /api/chat (the kind filter drops it) — a client
   // hiccup line must not ride into the model as a real bot turn.
@@ -277,8 +281,10 @@ const SESSION_KEY = "tcc-go-session";
 // anyone who shares a crafted /go link plant their own (readable) session in
 // a victim's browser.
 const GO_SID_SHAPE = /^go(-[a-z0-9]{1,10})?-[a-z0-9]{2,12}$/i;
-function persistentSessionId(src: string): string {
-  if (typeof window === "undefined") return newSessionId(src);
+// fresh: minted on this page load — nothing is stored for it, so there is
+// nothing to restore.
+function persistentSessionId(src: string): { sid: string; fresh: boolean } {
+  if (typeof window === "undefined") return { sid: newSessionId(src), fresh: true };
   try {
     const raw = localStorage.getItem(SESSION_KEY);
     if (raw) {
@@ -286,13 +292,13 @@ function persistentSessionId(src: string): string {
       // GO_SID_SHAPE, not a looser pattern: an id the /go endpoints refuse
       // (an older "go-fb-rt-…" tag) is replaced instead of kept for a week.
       if (typeof sid === "string" && sid.length <= 32 && GO_SID_SHAPE.test(sid) && typeof ts === "number" && Date.now() - ts < 7 * 24 * 3600_000) {
-        return sid;
+        return { sid, fresh: false };
       }
     }
   } catch { /* fall through to a fresh id */ }
   const sid = newSessionId(src);
   try { localStorage.setItem(SESSION_KEY, JSON.stringify({ sid, ts: Date.now() })); } catch { /* private mode */ }
-  return sid;
+  return { sid, fresh: true };
 }
 
 // A real photo of the owner for the proof row + his chat messages. Gated on
@@ -328,7 +334,6 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // board stays the first paint). X returns to the page with the thread
   // intact.
   const [chatOpen, setChatOpen] = useState(false);
-  const overlayInputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     document.body.style.overflow = chatOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -387,7 +392,13 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       });
       setFabLift(lift);
     };
-    const schedule = () => { if (!raf) raf = requestAnimationFrame(measure); };
+    // Throttled: the host page's own DOM churn (funnel steps, carousels)
+    // used to force a layout measure every frame while the pill just sat there.
+    let timer = 0;
+    const schedule = () => {
+      if (timer || document.hidden) return;
+      timer = window.setTimeout(() => { timer = 0; if (!raf) raf = requestAnimationFrame(measure); }, 150);
+    };
     measure();
     // Bars come and go with the funnel step (React state, no resize event).
     const mo = new MutationObserver(schedule);
@@ -396,6 +407,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     return () => {
       mo.disconnect();
       window.removeEventListener("resize", schedule);
+      clearTimeout(timer);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [mode, fabPos, chatOpen]);
@@ -419,53 +431,62 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     const vv = typeof window !== "undefined" ? window.visualViewport : null;
     const el = overlayRef.current;
     if (!vv || !el) return;
+    // One style write per frame: iOS fires a burst of these during the
+    // keyboard animation and on every pan or zoom.
+    let raf = 0;
     const apply = () => {
+      raf = 0;
       el.style.height = `${Math.round(vv.height)}px`;
       el.style.top = `${Math.round(vv.offsetTop)}px`;
       // the thread shrank — keep the newest message in view
       if (nearBottomRef.current) threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight });
     };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(apply); };
     apply();
-    vv.addEventListener("resize", apply);
-    vv.addEventListener("scroll", apply);
+    vv.addEventListener("resize", schedule);
+    vv.addEventListener("scroll", schedule);
     return () => {
-      vv.removeEventListener("resize", apply);
-      vv.removeEventListener("scroll", apply);
+      vv.removeEventListener("resize", schedule);
+      vv.removeEventListener("scroll", schedule);
+      if (raf) cancelAnimationFrame(raf);
       el.style.height = "";
       el.style.top = "";
     };
   }, [chatOpen]);
   const [msgs, setMsgs] = useState<Msg[]>([]);
+  // The current thread for handlers that must not read it through a state
+  // updater (the comeback nudge decides AND posts a note — a side effect
+  // inside setMsgs runs twice in dev and is undefined-order by contract).
+  const msgsRef = useRef<Msg[]>([]);
+  useEffect(() => { msgsRef.current = msgs; }, [msgs]);
+  // Stable keys: every bubble was keyed by its index, and the restore PREPENDS
+  // the stored thread — so a lock/ship/number form the seller was typing into
+  // was handed another message's slot (or remounted) when a slow restore
+  // landed. Keys follow the message object instead; pushMsgs keeps identity
+  // for anything it doesn't retire.
+  const msgKeys = useRef(new WeakMap<object, number>());
+  const msgSeq = useRef(0);
+  const keyOf = (m: Msg): number => {
+    let k = msgKeys.current.get(m);
+    if (!k) { k = ++msgSeq.current; msgKeys.current.set(m, k); }
+    return k;
+  };
   // Guided in-chat funnel (Messenger-style quick selects) — deterministic,
   // engine-priced, zero AI calls. gRow/gSpec track the device being walked.
   const [gRow, setGRow] = useState<BoardRow | null>(null);
   const [gSpec, setGSpec] = useState<{ storage?: string; condition?: string; carrier?: string; connectivity?: string; disc?: string; processor?: string; memory?: string; extras?: string }>({});
   const [gBusy, setGBusy] = useState(false);
-  const [draft, setDraft] = useState("");
-  // Composer placeholder — rotates through things a seller can actually type
-  // (Sonny 2026-09-12: "remove the 'i got 4 phones' and do something
-  // better"). A model name lights up the tap-to-price chips; the others
-  // show that lots, cracked units and locked phones are welcome.
-  const PLACEHOLDERS = lot
-    ? ["i got 15 phones, need cash today…", "2 iphone 14s and a galaxy s23…", "type the models — we price each one"]
-    : ["type your model — iphone 15 pro…", "galaxy s24 ultra, 256gb, unlocked…", "iphone 13 cracked screen, still works…", "2 phones and an ipad…", "still making payments on it? we buy those…", "macbook air m2, 8gb…"];
-  const [phIdx, setPhIdx] = useState(0);
-  useEffect(() => {
-    if (draft) return; // a typed draft hides the placeholder anyway — don't tick
-    const t = setInterval(() => setPhIdx((i) => (i + 1) % PLACEHOLDERS.length), 3200);
-    return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draft, lot]);
-  const placeholder = PLACEHOLDERS[phIdx % PLACEHOLDERS.length];
   const [sending, setSending] = useState(false);
-  const typedMatches = useMemo(() => matchTyped(rows, draft), [rows, draft]);
   // Photo attach — the flaw a phone-buyback chat can't have: sellers WANT to
-  // show the crack. File input is hidden; the camera button triggers it.
+  // show the crack. The picker lives in the Composer; this is the upload state.
   const [uploading, setUploading] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
   // Settable: the restore effect swaps in a server-verified ?sid= session
-  // from the owner's SMS deep-link.
-  const [sessionId, setSessionId] = useState(() => persistentSessionId(src));
+  // from the owner's SMS deep-link. Read once per mount: a second call on a
+  // fresh visit would mint a second id.
+  const initialSession = useRef<{ sid: string; fresh: boolean } | null>(null);
+  if (initialSession.current === null) initialSession.current = persistentSessionId(src);
+  const initial = initialSession.current;
+  const [sessionId, setSessionId] = useState(initial.sid);
   // Effects with [] deps (the comeback nudge) read this, not the state, so a
   // breadcrumb written after an SMS deep-link adoption lands in the adopted
   // thread instead of the abandoned local one.
@@ -501,11 +522,17 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // position; opening the chat resets it so a fresh open still lands at the
   // latest message.
   const nearBottomRef = useRef(true);
+  // While our own smooth scroll is animating, the scroll events it emits must
+  // not flip nearBottom off — a second batch landing mid-animation used to
+  // read as "the seller scrolled up" and autoscroll stayed off until they
+  // scrolled by hand.
+  const programmaticUntilRef = useRef(0);
   useEffect(() => {
     if (chatOpen) nearBottomRef.current = true;
   }, [chatOpen]);
   useEffect(() => {
     if (!nearBottomRef.current) return;   // they scrolled up on purpose — never yank
+    programmaticUntilRef.current = Date.now() + 700;
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, sending, chatOpen]);
 
@@ -541,31 +568,79 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     if (next > lastSyncRef.current) lastSyncRef.current = next;
   };
   const hasActivity = msgs.length > 0;
+  // When the thread last changed (either side) — polling slows down after a
+  // quiet minute and speeds back up on the next message.
+  const lastActivityRef = useRef(Date.now());
+  useEffect(() => { lastActivityRef.current = Date.now(); }, [msgs]);
   useEffect(() => {
     if (!chatOpen || !hasActivity) return; // nothing stored server-side until the seller does something
-    const iv = setInterval(async () => {
+    // One poll at a time, scheduled after the previous one RETURNS: a fixed
+    // 4 s interval fired regardless, so on a slow connection polls stacked up
+    // and tripped the per-IP budget — and the client ignores non-ok bodies,
+    // so Sonny's replies simply stopped arriving. Hidden tab = no polls; the
+    // next visible moment polls at once. Aborted on close so a late response
+    // can't touch state.
+    const ac = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let stopped = false;
+    const poll = async () => {
+      if (stopped) return;
+      if (document.visibilityState === "hidden") return; // resumed by onVis
       try {
-        const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=${lastSyncRef.current}`, { cache: "no-store" });
-        if (!r.ok) return; // a rate-limited tick must never flip UI state
-        const d = await r.json();
-        if (Array.isArray(d?.msgs) && d.msgs.length) {
-          const fresh = (d.msgs as { ts?: unknown; text?: unknown }[]).filter((m) => {
-            if (typeof m?.ts !== "number") return false;
-            const key = `${m.ts}|${String(m.text)}`;
-            if (seenOwnerRef.current.has(key)) return false;
-            seenOwnerRef.current.add(key);
-            return true;
-          });
-          if (fresh.length) {
-            setMsgs((cur) => [...cur, ...fresh.map((m) => ({ from: "owner" as const, text: String(m.text) }))]);
+        const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=${lastSyncRef.current}`, { cache: "no-store", signal: ac.signal });
+        if (r.ok) { // a rate-limited tick must never flip UI state
+          const d = await r.json();
+          if (Array.isArray(d?.msgs) && d.msgs.length) {
+            const fresh = (d.msgs as { ts?: unknown; text?: unknown }[]).filter((m) => {
+              if (typeof m?.ts !== "number") return false;
+              const key = `${m.ts}|${String(m.text)}`;
+              if (seenOwnerRef.current.has(key)) return false;
+              seenOwnerRef.current.add(key);
+              return true;
+            });
+            if (fresh.length) {
+              setMsgs((cur) => [...cur, ...fresh.map((m) => ({ from: "owner" as const, text: String(m.text) }))]);
+            }
           }
+          advanceSyncCursor(d?.lastTs, r);
+          if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
         }
-        advanceSyncCursor(d?.lastTs, r);
-        if (typeof d?.takeover === "boolean") setTakeover(d.takeover);
       } catch { /* next tick */ }
-    }, 4000);
-    return () => clearInterval(iv);
+      if (stopped) return;
+      const quiet = Date.now() - lastActivityRef.current > 60_000;
+      timer = setTimeout(poll, quiet ? 10_000 : 4_000);
+    };
+    const onVis = () => {
+      if (document.visibilityState !== "visible") return;
+      clearTimeout(timer);
+      void poll();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    timer = setTimeout(poll, 4_000);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      ac.abort();
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, [chatOpen, hasActivity, sessionId]);
+
+  // Android's Back gesture (and the Facebook in-app browser's) is how a
+  // phone closes a full-screen view — without a history entry it left the ad
+  // page mid-quote. Opening the chat pushes one; Back pops it and closes the
+  // chat; the ✕ goes through history so the two stay in step.
+  useEffect(() => {
+    if (!chatOpen) return;
+    try { window.history.pushState({ tccChat: 1 }, ""); } catch { /* sandboxed webview */ }
+    const onPop = () => setChatOpen(false);
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [chatOpen]);
+  function closeChat() {
+    const st = typeof window !== "undefined" ? (window.history.state as { tccChat?: number } | null) : null;
+    if (st?.tccChat) window.history.back(); // popstate → setChatOpen(false)
+    else setChatOpen(false);
+  }
 
   // Thread restore, once per page load: a returning seller (persisted
   // session id) gets their conversation back — bot replies and anything
@@ -577,6 +652,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   const interactedRef = useRef(false);
   useEffect(() => {
     if (restoredRef.current) return;
+    // A session minted on this page load has nothing stored — skip the read.
+    // It was one store list per visitor on EVERY page carrying the site-wide
+    // widget, and on every first /go click. A deep link (?sid= / ?ship=)
+    // names a session and always restores.
+    if (initial.fresh && !/[?&](sid|ship)=/.test(window.location.search)) { restoredRef.current = true; return; }
     restoredRef.current = true;
     void (async () => {
       // Owner SMS deep-link adoption: ?sid=&k= — the server checks k (an
@@ -706,29 +786,29 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       // Never talk over a live takeover, and never ask for a number we have.
       if (takeoverRef.current || contactCapturedRef.current) return;
       if (!hiddenAtRef.current || Date.now() - hiddenAtRef.current < 30_000) return;
-      setMsgs((cur) => {
-        if (awayNudgedRef.current) return cur;
-        const hasQuote = aiQuotedRef.current || cur.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform"));
-        const isLocked = cur.some((m) => "kind" in m && m.kind === "locked");
-        // AI-path threads (MacBook / iPad / console / "something else") never
-        // get a quote card, so the old quote-only gate left the largest
-        // uncovered segment with no catch at all. Any thread the seller
-        // actually typed in counts.
-        const hasThread = cur.some((m) => !("kind" in m) && m.from === "user");
-        if (isLocked || (!hasQuote && !hasThread)) return cur;
-        awayNudgedRef.current = true;
-        logNote(`seller left and came back${hasQuote ? "" : " (no quote yet)"} — nudged for number` + (MSGR_HANDLE && hasQuote ? " + messenger" : ""));
-        return [
-          ...cur,
-          {
-            from: "bot",
-            text: hasQuote
-              ? "welcome back — your number’s still good. drop your phone number and we’ll text it to you so it’s saved even if you head out."
-              : "still here — drop your phone number and we’ll text you the offer so it’s saved even if you head out.",
-          },
-          ...(MSGR_HANDLE && hasQuote ? [{ from: "bot" as const, kind: "msgr" as const }] : []),
-        ];
-      });
+      // Decided from the current thread OUTSIDE the state updater (an updater
+      // must be pure — this one also posted a note).
+      const cur = msgsRef.current;
+      const hasQuote = aiQuotedRef.current || cur.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform"));
+      const isLocked = cur.some((m) => "kind" in m && m.kind === "locked");
+      // AI-path threads (MacBook / iPad / console / "something else") never
+      // get a quote card, so the old quote-only gate left the largest
+      // uncovered segment with no catch at all. Any thread the seller
+      // actually typed in counts.
+      const hasThread = cur.some((m) => !("kind" in m) && m.from === "user");
+      if (isLocked || (!hasQuote && !hasThread)) return;
+      awayNudgedRef.current = true;
+      logNote(`seller left and came back${hasQuote ? "" : " (no quote yet)"} — nudged for number` + (MSGR_HANDLE && hasQuote ? " + messenger" : ""));
+      setMsgs((list) => [
+        ...list,
+        {
+          from: "bot",
+          text: hasQuote
+            ? "welcome back — your number’s still good. drop your phone number and we’ll text it to you so it’s saved even if you head out."
+            : "still here — drop your phone number and we’ll text you the offer so it’s saved even if you head out.",
+        },
+        ...(MSGR_HANDLE && hasQuote ? [{ from: "bot" as const, kind: "msgr" as const }] : []),
+      ]);
     };
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
@@ -740,7 +820,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // real quote; the only client-side ask left is the comeback bubble when a
   // seller with a number on screen leaves the tab and returns, plus the
   // standing note at the top of the chat and the save-this-chat bar.
-  const hasUserMsg = msgs.some((m) => !("kind" in m) && m.from === "user");
+  // A photo is in the thread (sent or restored) — the composer's camera
+  // affordance and button styling key on it. Scanned once per render, not
+  // twice inside the JSX.
+  const hasPhoto = msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::"));
   // The tiles + starter chips stay until the seller actually starts: a
   // "leave my number" card, a bare number and the bot's ack to it don't count
   // (tapping the chip used to make the tiles vanish).
@@ -748,8 +831,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   const threadStarted = msgs.some((m) => ("kind" in m ? m.kind !== "numberform" : m.from === "user" && !looksLikeContact(m.text)));
 
   // Retire interactivity on every previous rich message; append new ones.
+  // Only the kinds that carry `done` are rewritten (and only while live), so
+  // every other message keeps its object — and its key — across pushes.
+  const DONE_KINDS = new Set(["models", "chips", "quote", "lockform", "numberform", "shipform"]);
   function pushMsgs(...add: Msg[]) {
-    setMsgs((m) => [...m.map((x) => ("kind" in x ? { ...x, done: true } : x)), ...add]);
+    setMsgs((m) => [...m.map((x) => ("kind" in x && DONE_KINDS.has(x.kind) && !("done" in x && x.done) ? { ...x, done: true } : x)), ...add]);
   }
 
   // The message button just opens the chat. NO programmatic focus anywhere in
@@ -1220,8 +1306,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     // as junk the model can't read.
     if (!t || sending || uploading) return;
     interactedRef.current = true;
-    setDraft("");
-    const history = historyFor(msgs);
+    // The server keeps the newest 40 turns; sending the whole thread was
+    // several KB of mobile uplink per message on a long chat, for nothing.
+    const history = historyFor(msgs).slice(-40);
+    // Stamped on both attempts below: the server answers a repeat of the same
+    // id with the first run's reply instead of running the turn twice.
+    const turnId = `${sessionId}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
     setMsgs((m) => [...m, { from: "user", text: t }]);
     setSending(true);
     try {
@@ -1233,7 +1323,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: t, history, sessionId, src, landed, ...fbCookies() }),
+          body: JSON.stringify({ message: t, history, sessionId, src, landed, turnId, ...fbCookies() }),
           signal: chatTimeout(),
         });
       } catch (e) {
@@ -1245,7 +1335,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: t, history, sessionId, src, landed, ...fbCookies() }),
+          body: JSON.stringify({ message: t, history, sessionId, src, landed, turnId, ...fbCookies() }),
           signal: chatTimeout(),
         });
       }
@@ -1354,11 +1444,14 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // photos instead of narrating each. During owner takeover the bot stays
   // silent and Sonny sees the photos in the console instead.
   async function sendPhotos(files: File[]) {
-    if (uploading || files.length === 0) return;
+    // `sending` too: a photo turn and a text turn share the typing dots and
+    // the composer lock — two in flight cleared the dots early and appended
+    // the two replies in completion order.
+    if (uploading || sending || files.length === 0) return;
     interactedRef.current = true;
     const MAX_BATCH = 6;
     const batch = files.slice(0, MAX_BATCH); // per-pick cap; they can attach again
-    const history = historyFor(msgs);
+    const history = historyFor(msgs).slice(-40);
     // A number is ACTIVELY on screen (un-retired guided quote/lock card) — a
     // photo must NOT trigger an AI reply that could name a DIFFERENT number
     // under it (the two-numbers bait-and-switch this page exists to avoid).
@@ -1368,7 +1461,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     // forever-sticky and muted every photo after any lock.
     const quoteOnScreen = msgs.some((m) => "kind" in m && (m.kind === "quote" || m.kind === "lockform") && !m.done);
     const locals = batch.map((f) => URL.createObjectURL(f));
-    setMsgs((m) => [...m, ...locals.map((u) => ({ from: "user" as const, text: `IMG::${u}` }))]);
+    // The local preview STAYS on the bubble after the upload: swapping the
+    // <img> to the CDN URL re-downloaded the 200-500 KB photo the seller had
+    // just sent (on cell data) and the bubble flashed blank, shifting the
+    // thread, while it loaded.
+    setMsgs((m) => [...m, ...locals.map((u) => ({ from: "user" as const, text: `IMG::${u}`, preview: u, pending: true as const }))]);
     setUploading(true);
     const uploaded: string[] = [];
     for (let i = 0; i < batch.length; i++) {
@@ -1383,8 +1480,14 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         if (r.ok && d?.ok && typeof d.url === "string") {
           const url: string = d.url;
           uploaded.push(url);
-          setMsgs((cur) => cur.map((m) => (!("kind" in m) && m.text === `IMG::${localUrl}` ? { ...m, text: `IMG::${url}` } : m)));
+          setMsgs((cur) => cur.map((m) => {
+            if ("kind" in m || m.text !== `IMG::${localUrl}`) return m;
+            const { pending: _done, ...rest } = m;
+            void _done;
+            return { ...rest, text: `IMG::${url}` }; // preview kept; the CDN url is what history and the store carry
+          }));
         } else {
+          URL.revokeObjectURL(localUrl); // bubble removed below — free the original File
           // Drop the failed preview and add a bot-styled error (NOT a fake
           // user bubble — that read as the seller's own text and rode history).
           setMsgs((cur) => [
@@ -1393,12 +1496,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           ]);
         }
       } catch {
+        URL.revokeObjectURL(localUrl);
         setMsgs((cur) => [
           ...cur.filter((m) => !(!("kind" in m) && m.text === `IMG::${localUrl}`)),
           { from: "bot", text: "that photo didn’t go through — try again." },
         ]);
       }
-      URL.revokeObjectURL(localUrl); // the bubble now holds the CDN url (or is gone) — free the original File
     }
     if (batch.length < files.length) {
       setMsgs((m) => [...m, { from: "bot", text: `got the first ${MAX_BATCH} — tap the camera again to send the rest.` }]);
@@ -1470,7 +1573,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
               : <span className="text-white/45">{status || "quotes live 24/7"}</span>}
           </div>
         </div>
-        <button type="button" onClick={() => setChatOpen(false)} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[19px] flex items-center justify-center active:scale-95">
+        <button type="button" onClick={closeChat} aria-label="close chat" className="w-[38px] h-[38px] rounded-full border border-white/15 text-white/70 text-[19px] flex items-center justify-center active:scale-95">
           ✕
         </button>
       </header>
@@ -1481,6 +1584,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         aria-live="polite"
         className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3"
         onScroll={(e) => {
+          if (Date.now() < programmaticUntilRef.current) return; // our own smooth scroll
           const el = e.currentTarget;
           nearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
         }}
@@ -1516,12 +1620,14 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             // restored/forged IMG:: pointing elsewhere renders as text, not
             // an external beacon.
             const raw = m.text.startsWith("IMG::") ? m.text.slice(5) : null;
-            const img = raw && (raw.startsWith("blob:") || /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/gochat-img\//i.test(raw)) ? raw : null;
+            // The local preview wins while we have it (no re-download of the
+            // photo just uploaded); a restored bubble shows the store copy.
+            const img = m.preview || (raw && (raw.startsWith("blob:") || /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/gochat-img\//i.test(raw)) ? raw : null);
             const body = img ? (
               <span className="relative block">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={img} alt="device photo" className="block max-w-full rounded-xl" style={{ maxHeight: 260 }} />
-                {img.startsWith("blob:") && (
+                {m.pending && (
                   <span className="absolute bottom-1.5 right-2 rounded-full bg-black/55 px-2 py-[2px] text-[11px] text-white/85">sending…</span>
                 )}
               </span>
@@ -1533,7 +1639,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
               // Sonny live — visually distinct from the bot on purpose:
               // the seller must always know when a human took over.
               return (
-                <div key={i} className="go-msg flex items-end gap-2">
+                <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                   <img src={OWNER_PHOTO || "/icon-192.png"} alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
                   <div className="max-w-[85%]">
                     <div className="text-[12px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
@@ -1545,14 +1651,14 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
               );
             }
             return m.from === "user" ? (
-              <div key={i} className="go-msg flex items-end gap-2 justify-end">
+              <div key={keyOf(m)} className="go-msg flex items-end gap-2 justify-end">
                 <div className={`max-w-[80%] rounded-2xl rounded-br-md ${pad} text-[15px] bg-[#132018] border border-[#00c853]/30`}>
                   {body}
                 </div>
                 <SellerAvatar />
               </div>
             ) : (
-              <div key={i} className="go-msg flex items-end gap-2">
+              <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                 <div className={`max-w-[85%] rounded-2xl rounded-bl-md ${pad} text-[15px] bg-white/[0.06] border border-white/10`}>
                   {body}
@@ -1563,7 +1669,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           if (m.kind === "err") {
             // Local-only error bubble — bot-styled, never sent as history.
             return (
-              <div key={i} className="go-msg flex items-end gap-2">
+              <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                 <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.06] border border-white/10">
                   {m.text}
@@ -1573,7 +1679,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "models") {
             return (
-              <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+              <div key={keyOf(m)} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
                 <ModelPicker
                   rows={rowsFor(rows, m.group)}
                   line={m.line}
@@ -1600,7 +1706,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "numberform") {
             return (
-              <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+              <div key={keyOf(m)} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
                 <NumberForm
                   disabled={!!m.done}
                   onSave={(v) => {
@@ -1613,7 +1719,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "chips") {
             return (
-              <div key={i} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+              <div key={keyOf(m)} className={"go-msg ml-10 " + (m.done ? "opacity-40 pointer-events-none" : "")}>
                 {m.q && <div className="text-[14px] text-white/60 mb-2">{m.q}</div>}
                 <div className="flex flex-wrap gap-2">
                   {m.options.map((o) => (
@@ -1629,7 +1735,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "quote") {
             return (
-              <div key={i} className="go-msg flex items-end gap-2">
+              <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                 <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/30">
                   <div className="text-[14px] text-white/60">{m.label}</div>
@@ -1642,7 +1748,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "lockform") {
             return (
-              <div key={i} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+              <div key={keyOf(m)} className={"go-msg ml-10 max-w-[85%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
                 <LockForm manual={m.manual} disabled={!!m.done} onLock={(c, n) => guidedLock(c, m.manual, n)} defaultContact={lastLockRef.current?.contact || ""} defaultName={lastLockRef.current?.name || ""} />
               </div>
             );
@@ -1650,7 +1756,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           if (m.kind === "shipform") {
             const lk = lastLockRef.current;
             return (
-              <div key={i} className={"go-msg ml-10 max-w-[92%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
+              <div key={keyOf(m)} className={"go-msg ml-10 max-w-[92%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
                 <ShipForm
                   sessionId={sessionId}
                   defaultName={lk?.name || ""}
@@ -1663,7 +1769,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "label") {
             return (
-              <div key={i} className="go-msg ml-10 max-w-[85%]">
+              <div key={keyOf(m)} className="go-msg ml-10 max-w-[85%]">
                 <div className="rounded-2xl border border-[#00c853]/40 bg-[#00c853]/[0.08] px-4 py-3">
                   <div className="text-[15px] font-bold text-white">your FedEx label is ready</div>
                   <div className="text-[13px] text-white/70 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
@@ -1675,7 +1781,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "msgr") {
             return (
-              <div key={i} className="go-msg ml-10 max-w-[85%]">
+              <div key={keyOf(m)} className="go-msg ml-10 max-w-[85%]">
                 <a
                   href={`https://m.me/${MSGR_HANDLE}`}
                   target="_blank"
@@ -1695,7 +1801,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           }
           if (m.kind === "locked") {
             return (
-              <div key={i} className="go-msg flex items-end gap-2">
+              <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                 <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.06] border border-[#00c853]/40">
                   <div className="text-[16px] font-semibold text-[#00c853]">
@@ -1756,95 +1862,18 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         )}
       </div>
 
-      {/* tap-to-price suggestions for a typed model */}
-      {typedMatches.length > 0 && !takeover && !gBusy && (
-        <div className="mx-4 mb-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }} aria-label="tap your model to price it">
-          {typedMatches.map((r) => (
-            <button
-              key={r.id}
-              type="button"
-              onClick={() => { const pre = parseTypedSpec(draft); setDraft(""); deviceTap(r, pre); }}
-              className="shrink-0 rounded-full border border-[#00c853]/45 bg-white/[0.06] px-3 py-[8px] text-[14px] text-white/90 active:scale-95 transition-transform"
-            >
-              {r.label} <span className="text-[#00c853] font-semibold">up to ${r.upTo.toLocaleString("en-US")}</span>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Photo affordance — stays until they've sent one, so the option is
-          discoverable even after the greeting scrolls away. Tapping it opens
-          the picker too. */}
-      {!msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) && (
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-          className="mx-4 mb-1 flex items-center justify-center gap-1.5 text-[12px] text-white/50 py-1 active:scale-[0.98] disabled:opacity-40"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
-            <circle cx="12" cy="13" r="3.6" />
-          </svg>
-          tap to add a photo of your device — helps us price it
-        </button>
-      )}
-
-      <form
-        className="flex gap-2 items-center px-4 py-3 border-t border-white/10"
-        style={{ background: "#0e0e0f", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
-        onSubmit={(e) => { e.preventDefault(); void send(draft); }}
-      >
-        {/* photo attach — sellers WANT to show the crack; on phones this
-            opens camera-or-gallery. Hidden input, camera button triggers. */}
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          onChange={(e) => {
-            const fs = Array.from(e.target.files || []);
-            e.target.value = "";
-            if (fs.length) void sendPhotos(fs);
-          }}
-        />
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          disabled={uploading}
-          aria-label="send a photo of your device"
-          className={`w-[46px] h-[46px] shrink-0 rounded-full bg-white/[0.06] border flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform ${msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::")) ? "border-white/15 text-white/75" : "border-[#00c853]/45 text-[#00c853]"}`}
-          style={{ borderRadius: "50%" }}
-        >
-          {uploading ? (
-            <span className="go-dot" />
-          ) : (
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
-              <circle cx="12" cy="13" r="3.6" />
-            </svg>
-          )}
-        </button>
-        <input
-          id="go-composer-input"
-          ref={overlayInputRef}
-          className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
-          placeholder={placeholder}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          aria-label="tell us what you're selling"
-        />
-        <button
-          type="submit"
-          disabled={sending || uploading || !draft.trim()}
-          style={{ borderRadius: "50%" }}
-          className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[21px] font-bold disabled:opacity-40 flex items-center justify-center"
-          aria-label="send"
-        >
-          ↑
-        </button>
-      </form>
+      <Composer
+        rows={rows}
+        lot={lot}
+        sending={sending}
+        uploading={uploading}
+        takeover={takeover}
+        gBusy={gBusy}
+        hasPhoto={hasPhoto}
+        onSend={(t) => void send(t)}
+        onPhotos={(fs) => void sendPhotos(fs)}
+        onPickModel={deviceTap}
+      />
     </div>
   )}
 
@@ -2063,6 +2092,133 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
 
       {overlayEl}
     </main>
+  );
+}
+
+// The message box, its typeahead chips and the photo picker. The draft is
+// LOCAL state: typing used to re-render the whole overlay — every bubble,
+// form and picker — on each keystroke, which lagged on cheap phones once a
+// thread had twenty messages. Mounted only while the chat is open, so the
+// placeholder ticker runs only then (it used to tick on every site page for
+// the whole visit, chat closed).
+function Composer({ rows, lot, sending, uploading, takeover, gBusy, hasPhoto, onSend, onPhotos, onPickModel }: {
+  rows: BoardRow[]; lot: boolean; sending: boolean; uploading: boolean; takeover: boolean; gBusy: boolean; hasPhoto: boolean;
+  onSend: (text: string) => void; onPhotos: (files: File[]) => void; onPickModel: (r: BoardRow, prefill: TypedSpec) => void;
+}) {
+  const [draft, setDraft] = useState("");
+  // Composer placeholder — rotates through things a seller can actually type
+  // (Sonny 2026-09-12: "remove the 'i got 4 phones' and do something
+  // better"). A model name lights up the tap-to-price chips; the others
+  // show that lots, cracked units and locked phones are welcome.
+  const PLACEHOLDERS = lot
+    ? ["i got 15 phones, need cash today…", "2 iphone 14s and a galaxy s23…", "type the models — we price each one"]
+    : ["type your model — iphone 15 pro…", "galaxy s24 ultra, 256gb, unlocked…", "iphone 13 cracked screen, still works…", "2 phones and an ipad…", "still making payments on it? we buy those…", "macbook air m2, 8gb…"];
+  const [phIdx, setPhIdx] = useState(0);
+  useEffect(() => {
+    if (draft) return; // a typed draft hides the placeholder anyway — don't tick
+    const t = setInterval(() => setPhIdx((i) => (i + 1) % PLACEHOLDERS.length), 3200);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft, lot]);
+  const placeholder = PLACEHOLDERS[phIdx % PLACEHOLDERS.length];
+  // Search keys once per board, not once per keystroke.
+  const keyed = useMemo(() => rows.map((r) => ({ r, key: rowSearchKey(r) })), [rows]);
+  const typedMatches = useMemo(() => matchTyped(keyed, draft), [keyed, draft]);
+  // File input is hidden; the camera button triggers it.
+  const fileRef = useRef<HTMLInputElement>(null);
+  const cameraSvg = (size: number) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M14.5 4h-5L7.8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.8L14.5 4z" />
+      <circle cx="12" cy="13" r="3.6" />
+    </svg>
+  );
+  return (
+    <>
+      {/* tap-to-price suggestions for a typed model */}
+      {typedMatches.length > 0 && !takeover && !gBusy && (
+        <div className="mx-4 mb-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }} aria-label="tap your model to price it">
+          {typedMatches.map((r) => (
+            <button
+              key={r.id}
+              type="button"
+              onClick={() => { const pre = parseTypedSpec(draft); setDraft(""); onPickModel(r, pre); }}
+              className="shrink-0 rounded-full border border-[#00c853]/45 bg-white/[0.06] px-3 py-[8px] text-[14px] text-white/90 active:scale-95 transition-transform"
+            >
+              {r.label} <span className="text-[#00c853] font-semibold">up to ${r.upTo.toLocaleString("en-US")}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Photo affordance — stays until they've sent one, so the option is
+          discoverable even after the greeting scrolls away. Tapping it opens
+          the picker too. */}
+      {!hasPhoto && (
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading || sending}
+          className="mx-4 mb-1 flex items-center justify-center gap-1.5 text-[12px] text-white/50 py-1 active:scale-[0.98] disabled:opacity-40"
+        >
+          {cameraSvg(14)}
+          tap to add a photo of your device — helps us price it
+        </button>
+      )}
+
+      <form
+        className="flex gap-2 items-center px-4 py-3 border-t border-white/10"
+        style={{ background: "#0e0e0f", paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const t = draft.trim();
+          if (!t || sending || uploading) return;
+          setDraft("");
+          onSend(t);
+        }}
+      >
+        {/* photo attach — sellers WANT to show the crack; on phones this
+            opens camera-or-gallery. Hidden input, camera button triggers. */}
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            const fs = Array.from(e.target.files || []);
+            e.target.value = "";
+            if (fs.length) onPhotos(fs);
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={uploading || sending}
+          aria-label="send a photo of your device"
+          className={`w-[46px] h-[46px] shrink-0 rounded-full bg-white/[0.06] border flex items-center justify-center disabled:opacity-40 active:scale-95 transition-transform ${hasPhoto ? "border-white/15 text-white/75" : "border-[#00c853]/45 text-[#00c853]"}`}
+          style={{ borderRadius: "50%" }}
+        >
+          {uploading ? <span className="go-dot" /> : cameraSvg(21)}
+        </button>
+        <input
+          id="go-composer-input"
+          className="flex-1 px-4 py-3 rounded-full bg-white/[0.06] border border-white/15 text-[17px] text-white placeholder-white/40 focus:outline-none focus:border-[#00c853]"
+          placeholder={placeholder}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          aria-label="tell us what you're selling"
+        />
+        <button
+          type="submit"
+          disabled={sending || uploading || !draft.trim()}
+          style={{ borderRadius: "50%" }}
+          className="tcc-button-primary w-[46px] h-[46px] shrink-0 text-[21px] font-bold disabled:opacity-40 flex items-center justify-center"
+          aria-label="send"
+        >
+          ↑
+        </button>
+      </form>
+    </>
   );
 }
 

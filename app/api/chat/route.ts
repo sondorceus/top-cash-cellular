@@ -240,14 +240,42 @@ const INSTANT_CATALOG = (() => {
   return ["iPhone", "Galaxy S", "Galaxy Z", "Galaxy Note", "Pixel"].filter((f) => fam[f]).map((f) => `${f}: ${fam[f].sort((a, b) => gen(b) - gen(a) || a.localeCompare(b)).join(", ")}`).join(" · ");
 })();
 
+type ChatPayload = { message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown; fbp?: unknown; fbc?: unknown; src?: unknown; landed?: unknown; turnId?: unknown };
+
+// One reply per client turn. The /go client retries a dropped fetch once,
+// and on a phone a request that reached us but lost its response looks
+// exactly like one that never arrived — so the retry re-ran the turn: the
+// seller's line stored twice, two model replies, two bills. The client
+// stamps every turn with an id and reuses it on the retry; a repeat waits
+// for (or gets) the first run's reply. Per instance, best-effort — a retry
+// that lands on another instance runs as before.
+const TURN_MAX = 300;
+const turns = new Map<string, Promise<unknown>>();
+
 export async function POST(req: NextRequest) {
-  const turnDeadline = Date.now() + TURN_BUDGET_MS;
-  let payload:{ message?: unknown; history?: unknown; contact?: unknown; mode?: unknown; sessionId?: unknown; fbp?: unknown; fbc?: unknown; src?: unknown; landed?: unknown; };
+  let payload: ChatPayload;
   try {
     payload = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
+  const turnId = typeof payload.turnId === "string" ? payload.turnId.replace(/[^\w-]/g, "").slice(0, 64) : "";
+  const seen = turnId ? turns.get(turnId) : undefined;
+  if (seen) {
+    const body = await seen;
+    if (body) return NextResponse.json(body);
+  }
+  const run = handleTurn(req, payload);
+  if (turnId) {
+    if (turns.size >= TURN_MAX) turns.delete(turns.keys().next().value as string);
+    // Only a good reply is worth replaying; a failure lets the retry run.
+    turns.set(turnId, run.then((r) => (r.ok ? r.clone().json() : null)).catch(() => null));
+  }
+  return run;
+}
+
+async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextResponse> {
+  const turnDeadline = Date.now() + TURN_BUDGET_MS;
   const rawMessage = typeof payload.message === "string" ? payload.message : "";
   if (!rawMessage.trim()) {
     return NextResponse.json({ error: "message required" }, { status: 400 });
