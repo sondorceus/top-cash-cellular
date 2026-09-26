@@ -40,6 +40,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { appendChatMsg, readChat, validSession, validGoSession, rememberPhoneSession, phoneKey, type StoredMsg } from "../../../lib/gochat-store";
+import { needsBinding, setOwnerCookie } from "../../../lib/go-owner";
 import { sendCapiLead, isTestConversion } from "../../../lib/meta-capi";
 import { sendSellerSms, looksLikePhone, notesHaveOptOut, toE164 } from "../../../lib/seller-sms";
 import { after } from "next/server";
@@ -198,9 +199,19 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
   // already on file.
   let notes: StoredMsg[] = [];
   let notesRead = false;
+  // BINDING (2026-09-26): a lock on a session with no records yet is the
+  // browser that minted the id — the reply sets its owner cookie
+  // (app/lib/go-owner). Read from the same store call as the notes.
+  let bindFresh = false;
   if (validSession(sessionId)) {
-    try { notes = (await readChat(sessionId, 0)).msgs.filter((m) => m.role === "note"); notesRead = true; } catch { /* no notes */ }
+    try {
+      const st = await readChat(sessionId, 0);
+      notes = st.msgs.filter((m) => m.role === "note");
+      notesRead = true;
+      bindFresh = st.lastTs === 0 && validGoSession(sessionId) && needsBinding(req, sessionId);
+    } catch { /* no notes */ }
   }
+  const bound = (res: NextResponse) => { if (bindFresh) setOwnerCookie(res, sessionId); return res; };
   // SAME LOCK TWICE (2026-09-26): a retap after a lost response — or the
   // same eventId landing on another instance — must not write a second
   // lead, alert the owner again or text the seller again. A LOCKED note for
@@ -247,7 +258,7 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
         await appendChatMsg(sessionId, "note", `QSPEC: ${spec.entry.id}|${spec.storage}|${spec.condition}|${spec.secondary}|${offer}`);
       });
     }
-    return NextResponse.json({ ok: false, moved: true, offer });
+    return bound(NextResponse.json({ ok: false, moved: true, offer }));
   }
 
   // ONE NUMBER, THREE LOCKS A DAY across every session (2026-09-26). The
@@ -456,5 +467,5 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
     });
   });
 
-  return NextResponse.json({ ok: true, offer, lockUntil, confirmed, ...(leadId ? { leadId } : {}) });
+  return bound(NextResponse.json({ ok: true, offer, lockUntil, confirmed, ...(leadId ? { leadId } : {}) }));
 }

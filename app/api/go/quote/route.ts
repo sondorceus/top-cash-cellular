@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { appendChatMsg, readChat, takeoverStale, validGoSession } from "../../../lib/gochat-store";
+import { needsBinding, setOwnerCookie } from "../../../lib/go-owner";
 import { clientGeo } from "../../../lib/geo";
 import { resolveGoSpec, goQuote } from "../../../go/spec";
 
@@ -33,13 +34,19 @@ export async function POST(req: NextRequest) {
   // ts/role/ctl ride in the pathname, so this is one list() and no fetches.
   // The client already understands takeover:true (from /api/chat); it
   // routes the tap through the chat so his console sees what they picked.
+  // BINDING (2026-09-26): a quote on a session with no records yet is the
+  // browser that minted the id — the reply sets its owner cookie
+  // (app/lib/go-owner). The same flags read tells both.
+  let bindFresh = false;
   if (validGoSession(sessionId)) {
     const flags = await readChat(sessionId, Date.now()).catch(() => null);
     if (flags?.takeover && !takeoverStale(flags)) return NextResponse.json({ ok: false, takeover: true }, { status: 409 });
+    bindFresh = !!flags && flags.lastTs === 0 && needsBinding(req, sessionId);
   }
+  const bound = (res: NextResponse) => { if (bindFresh) setOwnerCookie(res, sessionId); return res; };
   const offer = await goQuote(spec);
   if (offer == null) {
-    return NextResponse.json({ ok: false, manualReview: true });
+    return bound(NextResponse.json({ ok: false, manualReview: true }));
   }
   // Chat-funnel breadcrumbs, written SERVER-SIDE with the engine result in
   // hand — the chat brain's FUNNEL STATE context and the restore-time
@@ -61,5 +68,5 @@ export async function POST(req: NextRequest) {
       }
     });
   }
-  return NextResponse.json({ ok: true, offer });
+  return bound(NextResponse.json({ ok: true, offer }));
 }

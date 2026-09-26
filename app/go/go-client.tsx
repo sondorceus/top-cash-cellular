@@ -469,6 +469,23 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // thread instead of the abandoned local one.
   const sessionIdRef = useRef(sessionId);
   useEffect(() => { sessionIdRef.current = sessionId; }, [sessionId]);
+  // The texted link's adoption proof (?k=), kept once the server vouched
+  // for it (2026-09-26): it rides on every chat-sync poll and on the label
+  // and confirm-email posts, so a browser that can't keep the owner cookie
+  // (blocked cookies, a webview that drops them) still reaches its thread.
+  const [adoptK, setAdoptK] = useState("");
+  const adoptKRef = useRef("");
+  useEffect(() => { adoptKRef.current = adoptK; }, [adoptK]);
+  // chat-sync answered `unbound`: this browser holds neither the owner
+  // cookie nor a link for the session. Polling stops (nothing would come
+  // back), one line under the composer says so, and the bot's replies still
+  // arrive with each POST. A later bound answer clears it; bindTick re-arms
+  // the poll after a request that could have bound the browser.
+  const [unbound, setUnbound] = useState(false);
+  const unboundRef = useRef(false);
+  useEffect(() => { unboundRef.current = unbound; }, [unbound]);
+  const [bindTick, setBindTick] = useState(0);
+  const rearmSync = () => { if (unboundRef.current) setBindTick((t) => t + 1); };
   const threadRef = useRef<HTMLDivElement>(null);
   // What the seller just locked — the handoff chips POST it to /api/delivery
   // after the lock form (and its contact) is gone.
@@ -566,9 +583,13 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       if (stopped) return;
       if (document.visibilityState === "hidden") return; // resumed by onVis
       try {
-        const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=${lastSyncRef.current}`, { cache: "no-store", signal: ac.signal });
+        const r = await fetch(`/api/go/chat-sync?session=${sessionId}&after=${lastSyncRef.current}${adoptKRef.current ? `&k=${adoptKRef.current}` : ""}`, { cache: "no-store", signal: ac.signal });
         if (r.ok) { // a rate-limited tick must never flip UI state
           const d = await r.json();
+          // Not this browser's thread (no owner cookie, no link): stop here —
+          // nothing would ever come back — and say so under the composer.
+          if (d?.unbound) { setUnbound(true); return; }
+          if (unboundRef.current) setUnbound(false);
           if (Array.isArray(d?.msgs) && d.msgs.length) {
             const fresh = (d.msgs as { role?: unknown; ts?: unknown; text?: unknown }[]).filter((m) => {
               if (typeof m?.ts !== "number") return false;
@@ -606,7 +627,8 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       ac.abort();
       document.removeEventListener("visibilitychange", onVis);
     };
-  }, [chatOpen, hasActivity, sessionId]);
+    // bindTick: re-armed after a request that may have bound this browser.
+  }, [chatOpen, hasActivity, sessionId, bindTick]);
 
   // Android's Back gesture (and the Facebook in-app browser's) is how a
   // phone closes a full-screen view — without a history entry it left the ad
@@ -659,6 +681,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       // anything else is ignored and we restore the local session as usual.
       let sid = sessionId;
       let adoptParam = "";
+      let adoptKey = "";
       let wantShip = false;
       try {
         const qs = new URLSearchParams(window.location.search);
@@ -668,6 +691,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         if (GO_SID_SHAPE.test(urlSid) && urlSid.length <= 32 && /^[a-f0-9]{20}$/i.test(urlK)) {
           sid = urlSid;
           adoptParam = `&k=${urlK}`;
+          adoptKey = urlK;
         }
       } catch { /* local session */ }
       try {
@@ -676,10 +700,14 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         const d = await r.json();
         if (adoptParam) {
           if (!d?.adopt) return; // server refused the deep-link — keep the local session untouched
+          setAdoptK(adoptKey); // the link keeps proving ownership for the rest of the visit
           setSessionId(sid);
           try { localStorage.setItem(SESSION_KEY, JSON.stringify({ sid, ts: Date.now() })); } catch { /* private mode */ }
           setChatOpen(true); // the SMS said "reply in your chat" — the board would be a dead end
         }
+        // A local session this browser can't prove it owns (cookie gone):
+        // nothing to restore, the line under the composer says why.
+        if (d?.unbound) setUnbound(true);
         if (Array.isArray(d?.msgs) && d.msgs.length) {
           // Owner and bot replies are keyed like the poll's, so a tick that
           // already rendered one (seller tapped before this resolved) isn't
@@ -759,7 +787,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session: sessionIdRef.current, text }),
-    }).catch(() => {});
+    }).then((r) => { if (r.ok) rearmSync(); }).catch(() => {});
   }
 
   // COMEBACK NUDGE: a seller who had a real number on screen, left the tab for
@@ -1002,6 +1030,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         }),
       });
       const d = await res.json();
+      rearmSync();
       if (d?.ok && typeof d.offer === "number") {
         // Quote + capture in ONE beat — the form rides with the number, no
         // extra tap. InitiateCheckout marks quote-viewers on the pixel so
@@ -1270,6 +1299,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       });
       const d = await res.json();
       setGBusy(false);
+      rearmSync();
       if (d?.ok) {
         const offer: number | null = typeof d.offer === "number" ? d.offer : null;
         lastLockRef.current = { model: quoteLabel(gRow, gSpec.storage ?? gRow.storages[0]), contact: c, offer, name: gName.trim() };
@@ -1350,6 +1380,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         });
       }
       const d = await res.json();
+      rearmSync();
       // Close-signal tracking for the nudges: an engine number was named /
       // a contact landed.
       if (Array.isArray(d?.quoted) && d.quoted.length) setAiQuoted(true);
@@ -1545,6 +1576,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           signal: chatTimeout(),
         });
         const dd = await res.json();
+        rearmSync();
         if (Array.isArray(dd?.quoted) && dd.quoted.length) setAiQuoted(true);
         if (dd?.contactOnFile) setContactCaptured(true);
         if (dd?.leadCaptured) {
@@ -1780,6 +1812,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
               <div key={keyOf(m)} className={"go-msg ml-10 max-w-[92%] " + (m.done ? "opacity-40 pointer-events-none" : "")}>
                 <ShipForm
                   sessionId={sessionId}
+                  adoptK={adoptK}
                   defaultName={lk?.name || ""}
                   defaultPhone={lk && !lk.contact.includes("@") ? lk.contact : ""}
                   disabled={!!m.done}
@@ -1837,6 +1870,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   {m.confirmed === "failed" && m.contact && !m.contact.includes("@") && i === lastLockedIdx(msgs) && (
                     <EmailFallbackForm
                       sessionId={sessionId}
+                      adoptK={adoptK}
                       onDone={() => setMsgs((cur) => cur.map((x, j) => (j === i && "kind" in x && x.kind === "locked" ? { ...x, confirmed: "email" as const } : x)))}
                     />
                   )}
@@ -1895,6 +1929,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         onPhotos={(fs) => void sendPhotos(fs)}
         onPickModel={deviceTap}
       />
+      {unbound && (
+        <p role="status" className="px-4 pb-2 text-[12px] text-white/50 leading-snug" style={{ background: "#0e0e0f", paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}>
+          To see replies here, open the link from your text &mdash; or keep chatting; the bot&rsquo;s replies still show.
+        </p>
+      )}
     </div>
   )}
 
@@ -2290,7 +2329,7 @@ function lastLockedIdx(list: Msg[]): number {
 // was down for a week and the card had promised a text): one email field →
 // /api/go/confirm-email sends the same confirmation by email and parks the
 // address for the team. Phone contacts only — an email contact already got it.
-function EmailFallbackForm({ sessionId, onDone }: { sessionId: string; onDone: () => void }) {
+function EmailFallbackForm({ sessionId, adoptK, onDone }: { sessionId: string; adoptK: string; onDone: () => void }) {
   const [v, setV] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -2307,11 +2346,12 @@ function EmailFallbackForm({ sessionId, onDone }: { sessionId: string; onDone: (
           const r = await fetch("/api/go/confirm-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ sessionId, email: v.trim() }),
+            body: JSON.stringify({ sessionId, email: v.trim(), ...(adoptK ? { k: adoptK } : {}) }),
           });
           const d = await r.json().catch(() => ({}));
           if (r.ok && d?.ok) onDone();
-          else setErr(typeof d?.error === "string" ? d.error : "couldn\u2019t send that \u2014 try once more");
+          // UNBOUND (403) carries its own line: open the texted link.
+          else setErr(typeof d?.hint === "string" ? d.hint : typeof d?.error === "string" ? d.error : "couldn\u2019t send that \u2014 try once more");
         } catch {
           setErr("couldn\u2019t send that \u2014 try once more");
         }
@@ -2372,8 +2412,8 @@ function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: strin
 // Shipping address → /api/go/label mints the FedEx label on the spot. FedEx
 // prints a name and phone on every label, so both are required here (the
 // name pre-fills from the lock when they gave one).
-function ShipForm({ sessionId, defaultName, defaultPhone, disabled, onDone }: {
-  sessionId: string; defaultName: string; defaultPhone: string; disabled: boolean;
+function ShipForm({ sessionId, adoptK, defaultName, defaultPhone, disabled, onDone }: {
+  sessionId: string; adoptK: string; defaultName: string; defaultPhone: string; disabled: boolean;
   onDone: (r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string; texted?: boolean; emailed?: boolean; devices?: number }) => void;
 }) {
   const [f, setF] = useState({ name: defaultName, phone: defaultPhone, street: "", unit: "", city: "", state: "", zip: "" });
@@ -2387,10 +2427,12 @@ function ShipForm({ sessionId, defaultName, defaultPhone, disabled, onDone }: {
     if (!f.street.trim() || !f.city.trim() || f.state.trim().length !== 2 || !/^\d{5}(-\d{4})?$/.test(f.zip.trim())) return setErr("street, city, 2-letter state and 5-digit ZIP");
     setBusy(true); setErr("");
     try {
-      const res = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: sessionId, ...f, state: f.state.trim().toUpperCase() }) });
+      const res = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: sessionId, ...(adoptK ? { k: adoptK } : {}), ...f, state: f.state.trim().toUpperCase() }) });
       const d = await res.json().catch(() => ({}));
       if (d?.ok) onDone({ ok: true, tracking: String(d.tracking), url: String(d.url), texted: d.texted === true, emailed: d.emailed === true, devices: typeof d.devices === "number" ? d.devices : undefined });
-      else if (d?.kind === "ADDRESS_INVALID") setErr(String(d.hint || "check the address and try again"));
+      // UNBOUND (403, 2026-09-26): not this browser's thread — the hint says
+      // to open the texted link; the form stays up.
+      else if (d?.kind === "ADDRESS_INVALID" || d?.kind === "UNBOUND") setErr(String(d.hint || "check the address and try again"));
       else onDone({ ok: false, kind: String(d?.kind || "SERVICE_UNAVAILABLE"), hint: typeof d?.hint === "string" ? d.hint : undefined });
     } catch {
       setErr("that didn\u2019t go through \u2014 try again");

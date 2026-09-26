@@ -8,7 +8,8 @@ import { after } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { clientIp, rateLimit } from "../../lib/rate-limit";
 import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk, slugToDisplay, luhnValid } from "../../lib/sell-tools";
-import { appendChatMsg, readChat, takeoverStale, validSession } from "../../lib/gochat-store";
+import { appendChatMsg, readChat, takeoverStale, validSession, validGoSession } from "../../lib/gochat-store";
+import { needsBinding, setOwnerCookie } from "../../lib/go-owner";
 import { sendCapiLead, isTestConversion } from "../../lib/meta-capi";
 import { normalizeStorage } from "../../lib/quote";
 
@@ -355,6 +356,16 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     if (!isImgMsg) await appendChatMsg(sessionId, "user", message);
     return NextResponse.json({ takeover: true, reply: null });
   }
+
+  // BINDING (2026-09-26): a first turn on a session with no records — or
+  // with only this turn's own photo(s), stored by the upload route a moment
+  // ago — comes from the browser that minted the id, and the reply sets its
+  // owner cookie (app/lib/go-owner). A session anyone else has written to
+  // is never handed out here.
+  const bindFirstTurn = !!live && validGoSession(sessionId)
+    && (live.lastTs === 0 || (live.msgs.length > 0 && live.msgs.every((m) => m.role === "user" && m.text.startsWith("IMG::"))))
+    && needsBinding(req, sessionId);
+  const bound = (res: NextResponse) => { if (bindFirstTurn) setOwnerCookie(res, sessionId); return res; };
 
   // Throttle the AI path BEFORE any costly work (Anthropic tokens, an MC
   // post per message, an owner SMS). On a soft trip we return a friendly 200
@@ -1000,7 +1011,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     }
     // Same signal on the fallback path — the lead still reached MC and Sonny's
     // phone, so Meta should still hear about it.
-    return NextResponse.json({
+    return bound(NextResponse.json({
       reply,
       replyTs,
       contactOnFile: !!(contact || storeContactNote),
@@ -1009,7 +1020,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
       ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
       ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
       ...(lastQuoteSpec && lastQuoteSpec.model && !(lastQuoteKey ? lockedKeys.has(lastQuoteKey) : hasLock) ? { quoteSpec: lastQuoteSpec } : {}),
-    });
+    }));
   };
 
   // AI spend backstop on top of the per-IP bucket (which rotating IPs walk
@@ -1470,7 +1481,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     // campaign optimized exclusively toward iPhone/Samsung carousel lockers.
     // Fires on the turn a contact FIRST appears, so it's once per session.
     await Promise.all(pendingNotes).catch(() => {});
-    return NextResponse.json({
+    return bound(NextResponse.json({
       reply,
       replyTs,
       // A contact is on file for this session (this turn, an earlier turn, or
@@ -1485,7 +1496,7 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
       ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
       ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
       ...(lastQuoteSpec && lastQuoteSpec.model && !(lastQuoteKey ? lockedKeys.has(lastQuoteKey) : hasLock) ? { quoteSpec: lastQuoteSpec } : {}),
-    });
+    }));
   } catch (e) {
     // A revoked key, empty credits or a bad vision fetch used to land here
     // silently and turn the bot into a canned loop for every seller. Log it,

@@ -10,6 +10,7 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
+import { linkBinds, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
 import { sendLockConfirmationEmail, LOCK_DAYS } from "../../../lib/lock-confirmation";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
   if (!rateLimit(`goconfirm:${ip}`, 8, 30 * 60_000).ok || !rateLimit("goconfirm:global", 60, 10 * 60_000).ok) {
     return NextResponse.json({ ok: false, error: "too many tries — give it a minute" }, { status: 429 });
   }
-  let body: { sessionId?: unknown; email?: unknown };
+  let body: { sessionId?: unknown; email?: unknown; k?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -30,6 +31,12 @@ export async function POST(req: NextRequest) {
   const sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
   const email = String(body.email || "").trim().toLowerCase().slice(0, 120);
   if (!validGoSession(sessionId)) return NextResponse.json({ ok: false, error: "start from your quote" }, { status: 400 });
+  // OWNERSHIP (2026-09-26): only the browser that started this thread (its
+  // tcc_go_owner cookie) or a texted link's k may mail the offer anywhere —
+  // before any read, same shape as the label route's refusal.
+  const k = typeof body.k === "string" ? body.k : "";
+  if (!sessionOwned(req, sessionId, k)) return NextResponse.json({ ok: false, kind: "UNBOUND", hint: "Open the link from your text to add an email." }, { status: 403 });
+  const bound = (res: NextResponse) => { if (linkBinds(req, sessionId, k)) setOwnerCookie(res, sessionId); return res; };
   if (!EMAIL_RE.test(email)) return NextResponse.json({ ok: false, error: "that email doesn't look right" }, { status: 400 });
 
   const state = await readChat(sessionId, 0);
@@ -40,7 +47,7 @@ export async function POST(req: NextRequest) {
   const sinceLock = noteMsgs.filter((m) => m.ts >= lockedNote.ts).map((m) => m.text);
   // One fallback per lock — a second tap says "sent", it doesn't resend.
   if (sinceLock.some((t) => /^Email sent to .* \(lock confirmation/.test(t))) {
-    return NextResponse.json({ ok: true, sent: true, already: true });
+    return bound(NextResponse.json({ ok: true, sent: true, already: true }));
   }
   const leadId = [...sinceLock].reverse().find((t) => t.startsWith("LEAD-ID: "))?.slice("LEAD-ID: ".length).trim() || "";
 
@@ -74,5 +81,5 @@ export async function POST(req: NextRequest) {
       leadId ? { leadId } : undefined,
     ).catch(() => false),
   );
-  return NextResponse.json({ ok: true, sent: r.sent });
+  return bound(NextResponse.json({ ok: true, sent: r.sent }));
 }

@@ -15,6 +15,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendChatMsg, readChat, takeoverStale, validGoSession } from "../../../lib/gochat-store";
 import { sidTokenValid } from "../../../lib/go-sid-token";
+import { linkBinds, needsBinding, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 
 // One store read (bounded) — a poll never needs more than this.
@@ -40,6 +41,17 @@ export async function GET(req: NextRequest) {
   const k = req.nextUrl.searchParams.get("k");
   const adopt = k !== null ? sidTokenValid(sid, k) : undefined;
   if (adopt === false) return NextResponse.json({ msgs: [], takeover: false, lastTs: 0, adopt: false });
+  // OWNERSHIP (2026-09-26): a thread with records is read only by the
+  // browser that started it (tcc_go_owner cookie, app/lib/go-owner) or by a
+  // texted link's k. Anyone else gets no thread content and no notes — a
+  // bare session id used to hand out the whole conversation and the label
+  // URL. Flags only for the check (one list, no fetches); a session with
+  // nothing stored yet answers as it always did, so a poll that beats the
+  // binding request by a moment is not told "unbound".
+  if (!sessionOwned(req, sid, k)) {
+    const flags = await readChat(sid, Date.now());
+    if (flags.lastTs > 0) return NextResponse.json({ msgs: [], takeover: false, lastTs: after || 0, unbound: true });
+  }
   const state = await readChat(sid, after);
   // Polls carry owner AND bot records (2026-09-26): a bot reply whose POST
   // response the webview dropped was stored but never shown, and the seller
@@ -85,7 +97,11 @@ export async function GET(req: NextRequest) {
       }
     }
   }
-  return NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}), ...(label ? { label } : {}) });
+  const res = NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}), ...(label ? { label } : {}) });
+  // A valid link binds this browser too: the cookie is absent, or names the
+  // session the browser had before the texted link brought it here.
+  if (linkBinds(req, sid, k)) setOwnerCookie(res, sid);
+  return res;
 }
 
 export async function POST(req: NextRequest) {
@@ -120,6 +136,14 @@ export async function POST(req: NextRequest) {
   // "price moved at lock" is written by the lock route now (the page no
   // longer posts it) — a forged one would show the console a fake repricing.
   if (/^\s*(CONTACT|EMAIL-FALLBACK|QSPEC|LOCKED|LOCK-EVENT|HANDOFF|quote shown|price moved|SMS|Email sent|Email FAILED|LEAD-ID|LABEL|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
+  // BINDING (2026-09-26): the breadcrumb is the first thing a session
+  // writes when a tap opens it, so this is where the browser that minted the
+  // id gets its owner cookie — only while the session has no records yet
+  // (one flags-only list). A session someone else already wrote to is never
+  // handed out here.
+  const fresh = (await readChat(sid, Date.now())).lastTs === 0;
   await appendChatMsg(sid, "note", text);
-  return NextResponse.json({ ok: true });
+  const res = NextResponse.json({ ok: true });
+  if (fresh && needsBinding(req, sid)) setOwnerCookie(res, sid);
+  return res;
 }

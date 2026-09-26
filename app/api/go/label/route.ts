@@ -15,6 +15,7 @@
 // Labels cost money, so this is rate-limited harder than the chat.
 import { NextRequest, NextResponse } from "next/server";
 import { appendChatMsg, readChat, validGoSession } from "../../../lib/gochat-store";
+import { linkBinds, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { mintGoLabel } from "../../../lib/go-label";
 import { deviceKindFromString } from "../../../lib/fedex";
@@ -45,6 +46,15 @@ export async function POST(req: NextRequest) {
   try { body = await req.json(); } catch { return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "bad request" }, { status: 400 }); }
   const sid = typeof body.session === "string" ? body.session : "";
   if (!validGoSession(sid)) return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "start from your quote" }, { status: 400 });
+  // OWNERSHIP (2026-09-26): only the browser that started this thread (its
+  // tcc_go_owner cookie) or a texted link's k may print a label — checked
+  // before any read or validation, so a bare session id in a stranger's
+  // hands can't spend a FedEx label on their own address.
+  const k = typeof body.k === "string" ? body.k : "";
+  if (!sessionOwned(req, sid, k)) return NextResponse.json({ ok: false, kind: "UNBOUND", hint: "Open the link from your text to print your label." }, { status: 403 });
+  // A link that just proved ownership binds this browser for the rest of
+  // the visit (the reply carries the cookie).
+  const bound = (res: NextResponse) => { if (linkBinds(req, sid, k)) setOwnerCookie(res, sid); return res; };
 
   const state = await readChat(sid, 0);
   const noteMsgs = state.msgs.filter((m) => m.role === "note");
@@ -67,7 +77,7 @@ export async function POST(req: NextRequest) {
   const prior = [...sinceLock].reverse().find((t) => t.startsWith("LABEL: "));
   if (prior) {
     const m = prior.match(/tracking=(\S+) url=(\S+)/);
-    if (m) return NextResponse.json({ ok: true, tracking: m[1], url: m[2], service: "FedEx", existing: true });
+    if (m) return bound(NextResponse.json({ ok: true, tracking: m[1], url: m[2], service: "FedEx", existing: true }));
   }
   const contact = contactNote.slice("CONTACT: ".length).trim();
   // "LOCKED: iPhone 17 Pro 256 good unlocked $560 — 512…" → device + value
@@ -187,5 +197,5 @@ export async function POST(req: NextRequest) {
   }
   await appendChatMsg(sid, "note", texted || emailed ? `SMS/email sent (label)` : `label delivery FAILED (page card only)`);
   await notifyOwnerSms(`📦 GO seller shipping: ${boxLabel}${boxValue ? ` $${boxValue}` : ""}${multi ? ` (${box.length} devices, one box)` : ""} — label minted, ${result.tracking} · ${name} ${phoneDigits}\n${link}`).catch(() => {});
-  return NextResponse.json({ ok: true, tracking: result.tracking, url: result.url, service: result.service, texted, emailed, devices: box.length });
+  return bound(NextResponse.json({ ok: true, tracking: result.tracking, url: result.url, service: result.service, texted, emailed, devices: box.length }));
 }
