@@ -21,6 +21,9 @@ export async function registerEasyPostTracker(trackingCode: string): Promise<boo
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ tracker: { tracking_code: trackingCode, carrier: "FedEx" } }),
+      // Runs in after() once the label is out; bounded so a stalled EasyPost
+      // can't keep the function alive.
+      signal: AbortSignal.timeout(8_000),
     });
     return r.ok;
   } catch {

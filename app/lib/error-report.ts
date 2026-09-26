@@ -77,6 +77,9 @@ export async function reportError(
           tags: ["error", opts.critical ? "critical" : "warn"],
           priority: opts.critical ? "high" : "normal",
         }),
+        // Bounded: an MC outage is one of the things being reported, and an
+        // unbounded post here held the caller (or its after() slot) open.
+        signal: AbortSignal.timeout(8_000),
       });
     } catch {
       // Swallow — see comment above.

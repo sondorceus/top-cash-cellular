@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { mailLogo, mailButton, mailDeviceImg } from "../../lib/email-shell";
 import { reportError } from "../../lib/error-report";
 import { formatOfferNumber } from "../../lib/offer-number";
@@ -8,6 +9,7 @@ import { validPromoCode, weeklyPromoTerms, widenUnitCap, promoRoom } from "../..
 import { readPriceOverrides } from "../../lib/quote";
 import { field, parseOfferBonus } from "../../lib/lead-devices";
 import { REFERRAL_REFEREE_BONUS } from "../../lib/referral";
+import { ownBlobStoreHost } from "../../lib/owner-sms";
 
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
@@ -18,12 +20,13 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const MAX_COUPON_BONUS = 25;
 
 // What the lead this confirmation is for recorded: its [OFFER-BONUS] amount
-// (0 when absent) and its Quote figure (bonus included); "foreign" when it
+// (0 when absent), its Quote figure (bonus included) and whether the phone
+// consented to texts ("SMS opt-in: YES"); "foreign" when it
 // is a lead for a different contact; null when it can't be verified (MC
 // unreadable, no/garbled id, not a lead, or older than the newest 500 — the
 // funnel calls us right after /api/lead returns the id, so an honest lead is
 // always there; paging back would only let this public route drive MC reads).
-async function leadRecord(leadId: unknown, email: unknown, phone: unknown): Promise<{ bonus: number; quote: number } | "foreign" | null> {
+async function leadRecord(leadId: unknown, email: unknown, phone: unknown): Promise<{ bonus: number; quote: number; smsOptIn: boolean } | "foreign" | null> {
   if (!MC_KEY || typeof leadId !== "string" || !/^[\w-]+$/.test(leadId)) return null;
   try {
     const r = await fetch(`${MC_API}/api/comms?limit=500`, {
@@ -52,7 +55,10 @@ async function leadRecord(leadId: unknown, email: unknown, phone: unknown): Prom
     // figure at all: 0, and the email says a custom quote is coming.
     const qm = (field(b, "Quote") || "").match(/^\$([0-9,]+(?:\.\d+)?)/);
     const quote = qm ? parseFloat(qm[1].replace(/,/g, "")) : 0;
-    return { bonus: parseOfferBonus(b), quote: Number.isFinite(quote) ? quote : 0 };
+    // The lead's TCPA disposition — the only server-held record of whether
+    // this phone may be texted (a ship handoff records "no": the phone is
+    // for the FedEx label, not for texts).
+    return { bonus: parseOfferBonus(b), quote: Number.isFinite(quote) ? quote : 0, smsOptIn: /^yes$/i.test(field(b, "SMS opt-in") || "") };
   } catch {
     return null;
   }
@@ -99,6 +105,14 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
+  // `null` parses as valid JSON; the destructuring below threw on it. A
+  // numeric phone/email threw at the first .replace — say what to fix.
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
+  }
+  if ((body.phone != null && typeof body.phone !== "string") || (body.email != null && typeof body.email !== "string")) {
+    return NextResponse.json({ ok: false, error: "Phone number and email must be text." }, { status: 400 });
+  }
   const { name, email, phone, devices, handoffMethod, fedexLabel, leadId } = body;
   let { payout } = body;
   // Coupon/referral bonus ($) applied at submission — surfaced as its own
@@ -135,9 +149,16 @@ export async function POST(req: NextRequest) {
   // a fixed Vercel blob path (fedex-labels/...pdf); anything else is
   // either tampered or stale. Tracking similarly restricted to the
   // shape FedEx actually returns (digits + a few letters).
+  // OUR store's host, not any *.public.blob.vercel-storage.com: every free
+  // Vercel account has a public blob store, so the generic host let a
+  // stranger's fedex-labels/….pdf ride into our email as the label button.
+  // Generic host only when no token is configured to read our store id from
+  // (same fallback as /api/lead's photo whitelist).
+  const blobHost = ownBlobStoreHost();
+  const blobHostRe = blobHost ? blobHost.replace(/\./g, "\\.") : "[a-z0-9]+\\.public\\.blob\\.vercel-storage\\.com";
   const isVercelBlobUrl = (u: unknown): u is string =>
     typeof u === "string" &&
-    /^https:\/\/[a-z0-9]+\.public\.blob\.vercel-storage\.com\/fedex-labels\/[\w.\-/]+\.pdf$/i.test(u);
+    new RegExp(`^https://${blobHostRe}/fedex-labels/[\\w.\\-/]+\\.pdf$`, "i").test(u);
   const isValidTracking = (t: unknown): t is string =>
     typeof t === "string" && /^[A-Z0-9]{8,30}$/i.test(t);
   const labelUrlOk = !!fedexLabel && isVercelBlobUrl(fedexLabel.url);
@@ -436,7 +457,7 @@ ${hasLabel ? `
 <tr><td style="padding:18px 20px">
 <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#00c853;font-weight:800;margin-bottom:6px">Tracking</div>
 <div style="font-size:16px;color:#fff;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace">${fedexLabel.tracking}</div>
-<div style="font-size:12px;color:#b8b8b8;margin-top:4px">${String(fedexLabel.service || "").replace(/_/g, " ")} · prepaid · drop at any FedEx location</div>
+<div style="font-size:12px;color:#b8b8b8;margin-top:4px">${esc(String(fedexLabel.service || "").replace(/_/g, " "))} · prepaid · drop at any FedEx location</div>
 <div style="margin-top:14px;text-align:center">
 ${mailButton(fedexLabel.url, "Download label PDF", "green")}
 </div>
@@ -756,23 +777,32 @@ ${YELP_URL ? `<a href="${YELP_URL}" style="display:inline-block;margin:0 4px;pad
       emailSent = !!(result?.data?.id);
       // Resend can 200-OK without an id when the API key is invalid
       // or the domain is unverified. Treat no-id as a soft failure.
+      // Critical reports fan out to the owner's three channels (8 s each):
+      // after the response, and kept alive to completion — floating here,
+      // they could be cut off with the function.
       if (!emailSent) {
-        reportError("confirm.email.no-id", new Error("Resend returned no message id"), {
+        after(() => reportError("confirm.email.no-id", new Error("Resend returned no message id"), {
           customerEmail: email,
           critical: true,
           extra: { quote: String(quote), model: model || "" },
-        });
+        }));
       }
     } catch (err) {
-      reportError("confirm.email.send", err, {
+      after(() => reportError("confirm.email.send", err, {
         customerEmail: email,
         critical: true,
         extra: { quote: String(quote), model: model || "" },
-      });
+      }));
     }
   }
 
-  if (phone) {
+  // TCPA: text only a phone that consented. The lead record's "SMS opt-in"
+  // line is the disposition /api/lead saved (the funnel confirms with the id
+  // it just got back); a request that carries smsOptIn: true counts too. A
+  // ship handoff collects the phone for the FedEx label, not for texts — its
+  // lead says "no", and this used to text it anyway.
+  const smsConsent = body.smsOptIn === true || !!lead?.smsOptIn;
+  if (phone && smsConsent) {
     const smsBody = isPending
       ? `Top Cash Cellular: We got your request for ${model}! Our team will text or email your custom quote within the hour. Questions? Just reply to this text.`
       : hasLabel

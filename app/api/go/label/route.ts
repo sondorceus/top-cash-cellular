@@ -36,9 +36,6 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 
 export async function POST(req: NextRequest) {
   const ip = clientIp(req);
-  if (!rateLimit(`golabel:${ip}`, 6, 60 * 60_000).ok) {
-    return NextResponse.json({ ok: false, kind: "SERVICE_UNAVAILABLE", hint: "too many tries — give it a few minutes" }, { status: 429 });
-  }
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "bad request" }, { status: 400 }); }
   const sid = typeof body.session === "string" ? body.session : "";
@@ -102,6 +99,14 @@ export async function POST(req: NextRequest) {
   if (phoneDigits.length !== 10) return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "FedEx needs a 10-digit phone number for the label" }, { status: 400 });
   if (!street || !city || stateCode.length !== 2 || !/^\d{5}(-\d{4})?$/.test(zip)) {
     return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "street, city, 2-letter state and 5-digit ZIP, please" }, { status: 400 });
+  }
+
+  // Labels cost money: 6 mints per IP per hour. Charged HERE — past the
+  // name/phone/ZIP validation and the existing-label shortcut, so a typo'd
+  // ZIP or re-opening a label already issued no longer spends a try — and
+  // before the delivery comm below, so a 429 leaves nothing half-written.
+  if (!rateLimit(`golabel:${ip}`, 6, 60 * 60_000).ok) {
+    return NextResponse.json({ ok: false, kind: "SERVICE_UNAVAILABLE", hint: "too many tries — give it a few minutes" }, { status: 429 });
   }
 
   // The same [DELIVERY OPTION] SHIPPING comm the homepage funnel writes, so

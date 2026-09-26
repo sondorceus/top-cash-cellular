@@ -39,6 +39,9 @@ export async function logComm(args: LogArgs): Promise<void> {
         tags: ["comm-sent", args.channel, args.kind],
         priority: "low",
       }),
+      // Bounded — the message already went out; a stalled MC must not hold
+      // the admin action that sent it.
+      signal: AbortSignal.timeout(8_000),
     });
   } catch {
     // Non-fatal — the underlying message already went out.

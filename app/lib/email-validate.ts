@@ -8,6 +8,31 @@ export { normalizeEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from 
 
 export type EmailCheck = { ok: boolean; reason?: string; suggestion?: string };
 
+// Bounded lookups. The default resolver retries each nameserver for ~20 s
+// before giving up, and /api/lead awaits this with the seller waiting; a
+// lookup that timed out then fell into the "domain can't receive mail" 400.
+// Every query races a 2 s ceiling, and only a definite "no such records"
+// (ENOTFOUND / ENODATA, or an empty answer) may reject — a timeout or any
+// other error is "unknown" and fails OPEN.
+const DNS_TIMEOUT_MS = 2_000;
+const resolver = new dns.Resolver({ timeout: DNS_TIMEOUT_MS, tries: 1 });
+type DnsOutcome = "found" | "empty" | "nx" | "unknown";
+async function lookup(kind: "MX" | "A", domain: string): Promise<DnsOutcome> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const query: Promise<unknown[]> = kind === "MX" ? resolver.resolveMx(domain) : resolver.resolve(domain);
+  try {
+    return await Promise.race([
+      query.then((rows): DnsOutcome => (Array.isArray(rows) && rows.length > 0 ? "found" : "empty")),
+      new Promise<DnsOutcome>((resolve) => { timer = setTimeout(() => resolve("unknown"), DNS_TIMEOUT_MS); }),
+    ]);
+  } catch (e) {
+    const code = (e as { code?: string })?.code || "";
+    return code === "ENOTFOUND" || code === "ENODATA" ? "nx" : "unknown";
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Full check. Pass { checkMx: true } on real submissions (it does a DNS lookup).
 export async function validateEmail(emailRaw: string, opts: { checkMx?: boolean } = {}): Promise<EmailCheck> {
   const email = normalizeEmail(emailRaw);
@@ -26,18 +51,19 @@ export async function validateEmail(emailRaw: string, opts: { checkMx?: boolean 
 
   if (opts.checkMx) {
     const domain = email.split("@")[1];
-    try {
-      const mx = await dns.resolveMx(domain);
-      if (!mx || mx.length === 0) {
-        try { await dns.resolve(domain); } catch { return { ok: false, reason: "That email domain can't receive mail — please double-check it." }; }
+    const mx = await lookup("MX", domain);
+    if (mx === "empty" || mx === "nx") {
+      const a = await lookup("A", domain);
+      if (a === "empty" || a === "nx") {
+        return {
+          ok: false,
+          reason: mx === "nx"
+            ? "That email domain doesn't exist — please double-check it."
+            : "That email domain can't receive mail — please double-check it.",
+        };
       }
-    } catch (e) {
-      const code = (e as { code?: string })?.code || "";
-      if (code === "ENOTFOUND" || code === "ENODATA") {
-        try { await dns.resolve(domain); } catch { return { ok: false, reason: "That email domain doesn't exist — please double-check it." }; }
-      }
-      // Any other (transient) DNS error: fail open, don't block a real customer.
     }
+    // "unknown" (timeout, transient DNS error): fail open, don't block a real customer.
   }
 
   return { ok: true };

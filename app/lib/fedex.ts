@@ -89,6 +89,9 @@ async function getAccessToken(): Promise<string> {
         client_secret: clientSecret,
       }),
       cache: "no-store",
+      // Bounded: every label and track call waits on this, and a seller is
+      // waiting on the label. A timeout rejects like any other OAuth failure.
+      signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
       const body = await res.text().catch(() => "");
@@ -324,18 +327,27 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
     },
     body: JSON.stringify(b),
     cache: "no-store",
+    // FedEx's ship call is the slow one (rating + label render). Bounded so a
+    // hung upstream surfaces as SERVICE_UNAVAILABLE to the seller instead of
+    // holding the request until the function itself is killed.
+    signal: AbortSignal.timeout(25_000),
   });
 
   let res = await postShip(makeBody(true));
+  let errBody = res.ok ? "" : await res.text().catch(() => "");
   // SAFETY NET: the email-notification block is the ONLY non-essential part
-  // of this request. If FedEx rejects the request while it's present, retry
-  // ONCE without it so a bad notification structure can NEVER stop a label
-  // from minting. A non-2xx means FedEx created nothing and billed nothing,
-  // so the retry cannot double-mint. On fallback we best-effort ping MC so a
-  // broken structure is visible (and I can fix the field shape) rather than
-  // silently degrading back to "no delivery emails".
-  if (!res.ok && emailNotificationDetail) {
-    const firstErr = await res.text().catch(() => "");
+  // of this request. If FedEx rejects THAT block, retry ONCE without it so a
+  // bad notification structure can NEVER stop a label from minting. A non-2xx
+  // means FedEx created nothing and billed nothing, so the retry cannot
+  // double-mint. Only when the error names the notification, though: every
+  // other rejection (a bad address, an expired account) used to re-post the
+  // identical failing request — a second 25 s wait for the seller and a
+  // misleading "fix the emailNotificationDetail shape" ping on MC for a
+  // label that was never going to mint. On fallback we best-effort ping MC
+  // so a broken structure is visible (and I can fix the field shape) rather
+  // than silently degrading back to "no delivery emails".
+  if (!res.ok && emailNotificationDetail && /notification|emailNotificationDetail/i.test(errBody)) {
+    const firstErr = errBody;
     console.warn(`[fedex] label email-notification rejected (${res.status}) — retrying without it: ${firstErr.slice(0, 300)}`);
     try {
       const mcApi = "https://missioncontrolsdjg-production.up.railway.app";
@@ -349,13 +361,14 @@ export async function createReturnLabel(input: LabelInputs): Promise<LabelResult
             fromName: "Powerhouse",
             body: `[FEDEX-EMAILNOTIFY-REJECTED] FedEx rejected the label's email-notification block (${res.status}); label re-minted WITHOUT it, so no FedEx delivery email will fire for this shipment. Fix the emailNotificationDetail shape. First error: ${firstErr.replace(/[\[\]]/g, " ").slice(0, 300)}`,
           }),
+          signal: AbortSignal.timeout(8_000),
         });
       }
     } catch { /* best-effort */ }
     res = await postShip(makeBody(false));
+    if (!res.ok) errBody = await res.text().catch(() => "");
   }
   if (!res.ok) {
-    const errBody = await res.text().catch(() => "");
     throw new Error(`FedEx Ship API ${res.status}${errBody ? " — " + errBody.slice(0, 500) : ""}`);
   }
   type RateDetail = { totalNetCharge?: number | { amount?: number }; totalNetChargeAmount?: number };
@@ -511,6 +524,8 @@ export async function getTracking(trackingNumber: string): Promise<TrackingResul
       trackingInfo: [{ trackingNumberInfo: { trackingNumber } }],
     }),
     cache: "no-store",
+    // Bounded: the poll cron walks every open shipment through here.
+    signal: AbortSignal.timeout(15_000),
   });
   if (!res.ok) {
     // 404 = unknown tracking number, 401 = expired token (refresh next call).

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { notifyOwnerSms } from "../../lib/owner-sms";
 import { rateLimit, rateLimitResponse, clientIp } from "../../lib/rate-limit";
 import { appendChatMsg, validGoSession } from "../../lib/gochat-store";
+import { cleanField } from "../../lib/lead-devices";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -17,9 +18,12 @@ const MC_KEY = process.env.MC_API_KEY || "";
 // in any comm body — without this sanitization an attacker hitting
 // /api/delivery with `name: "[NEW BUYBACK LEAD]\nName: Fake..."` would
 // spoof a lead into the admin panel. Same defuse pattern as /api/chat.
+// Line breaks too (U+2028/U+2029 included — the shared cleanField): every
+// field below is a "Key: value" line of the comm, and the admin parser is
+// line-anchored + first-match, so a name carrying "\nQuote: $99999" forged
+// a Quote line above the real one.
 function clean(s: unknown, max = 200): string {
-  if (typeof s !== "string") return "";
-  return s.replace(/[\[\]]/g, "").slice(0, max);
+  return typeof s === "string" ? cleanField(s, max) : "";
 }
 
 export async function POST(req: NextRequest) {

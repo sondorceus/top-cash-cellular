@@ -4,7 +4,7 @@ import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFor, aggregateWeight, shouldBlockAutoShip } from "../../lib/fedex";
 import { reportError } from "../../lib/error-report";
 import { REFERRAL_REFEREE_BONUS, REFERRAL_CODE_RE } from "../../lib/referral";
-import { fetchCommsPaged } from "../../lib/mc-comms";
+import { fetchCommsRead } from "../../lib/mc-comms";
 import { isCustomerLeadPost } from "../../lib/lead-devices";
 import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle } from "../../lib/payout-verify";
 import { validateEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from "../../lib/email-validate";
@@ -158,7 +158,15 @@ async function isDuplicateMC(email: string, contact: string, device: string, mod
   const windowMs = isCustom ? DEDUP_CUSTOM_MS : DEDUP_REGULAR_MS;
   const cutoff = Date.now() - windowMs;
   try {
-    const r = await fetch(`${MC_API}/api/comms?limit=200`, { headers: { "x-api-key": MC_KEY }, cache: "no-store" });
+    // Only the window itself (MC's ?since=), and bounded: the seller is
+    // waiting on this read, and a stalled MC must not hold the submit — a
+    // timeout lands in the catch below and reads as "not a duplicate", the
+    // same fail-open as every other MC error here.
+    const r = await fetch(`${MC_API}/api/comms?limit=200&since=${encodeURIComponent(new Date(cutoff).toISOString())}`, {
+      headers: { "x-api-key": MC_KEY },
+      cache: "no-store",
+      signal: AbortSignal.timeout(2_500),
+    });
     if (!r.ok) return false;
     const data = await r.json().catch(() => ({}));
     const msgs: { body?: string; timestamp?: string }[] = Array.isArray(data.messages) ? data.messages : [];
@@ -172,13 +180,71 @@ async function isDuplicateMC(email: string, contact: string, device: string, mod
       const contactMatch = (!!e && bodyEmail === e) || (!!c && !!bodyPhone && bodyPhone === c);
       if (!contactMatch) continue;
       // Product match mirrors the in-memory key: regular → model, custom →
-      // device-category. Empty productKey falls back to contact-in-window.
-      if (!productKey || b.toLowerCase().includes(productKey)) return true;
+      // device-category — read from the lead's own "Device: <category> —
+      // <model>" line and compared whole. A substring test over the body
+      // made "Galaxy S24" a duplicate of the "Galaxy S24 Ultra" sold a
+      // minute earlier (and any custom iPhone inquiry a duplicate of any
+      // priced iPhone lead); the funnel shows `deduped: true` as the done
+      // screen, so the seller's second phone was silently dropped. A
+      // bundle's line is its summary model with no category ("3 devices —
+      // iPhone … + 2 more"), so the whole line counts as the model there.
+      // Empty productKey falls back to contact-in-window.
+      if (!productKey) return true;
+      const line = (b.match(/(?:^|\n)Device:[ \t]*([^\n]*)/i)?.[1] || "").toLowerCase().trim();
+      const sep = line.indexOf(" — ");
+      const category = sep >= 0 ? line.slice(0, sep).trim() : "";
+      const bodyModel = sep >= 0 ? line.slice(sep + 3).trim() : line;
+      if (isCustom ? category === productKey : (bodyModel === productKey || line === productKey)) return true;
     }
     return false;
   } catch {
     return false;
   }
+}
+
+// The lead write itself, shared by the priced/custom path and the recycle
+// path. Two attempts (MC restarts on every deploy) with a bounded wait each —
+// the seller is holding on this — and no retry on a 4xx other than 408/429
+// (a rotated key or rejected body won't fix itself). A network error IS
+// retried: MC may have accepted the first post, and a visible duplicate
+// beats an invisible lost lead. `failure` names the last error for the
+// owner alert.
+async function postLeadToMc(body: string, tags: string[], priority: "urgent" | "normal"): Promise<{ saved: boolean; leadId: string | null; failure: string }> {
+  let failure = "";
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const r = await fetch(`${MC_API}/api/comms`, {
+        method: "POST",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ from: "topcash-web", fromName: "Top Cash Cellular", role: "system", body, tags, priority }),
+        signal: AbortSignal.timeout(8_000),
+      });
+      if (r.ok) {
+        const data = await r.json().catch(() => ({}));
+        return { saved: true, leadId: data?.message?.id || null, failure: "" };
+      }
+      failure = `HTTP ${r.status}`;
+      if (r.status >= 400 && r.status < 500 && r.status !== 408 && r.status !== 429) break;
+    } catch (e) {
+      failure = e instanceof Error ? e.message : String(e);
+    }
+    if (attempt < 2) await new Promise((res) => setTimeout(res, 1000));
+  }
+  return { saved: false, leadId: null, failure: failure || "unknown" };
+}
+
+// Admin-row marker post ([LABEL…]). Nothing in the response reads it, so
+// callers hand it to after(); best-effort and bounded so a stalled MC can't
+// hold the function open once the seller has their answer.
+async function postMarker(body: string, tags: string[], priority: "low" | "normal" | "high"): Promise<void> {
+  try {
+    await fetch(`${MC_API}/api/comms`, {
+      method: "POST",
+      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ from: "topcash-web", fromName: "Top Cash Cellular", role: "system", body, tags, priority }),
+      signal: AbortSignal.timeout(8_000),
+    });
+  } catch {}
 }
 
 // Resell values from Swappa (real market data, scraped 2026-05-12).
@@ -207,7 +273,9 @@ function needsManualReview(modelName: string, _quoteAmt: number): boolean {
   // even though we have a firm price. Skywalker 2026-07-05: don't review
   // devices we've priced — only the ones I list. (Quote-tamper + missing
   // 18+/ownership attestation are still flagged separately in reviewRequired.)
-  if (REVIEW_KEYWORDS.some(kw => modelName?.includes(kw))) return true;
+  // modelName is client JSON: a number here threw at .includes — a 500 that
+  // also left the dedup key behind for the retry.
+  if (typeof modelName === "string" && REVIEW_KEYWORDS.some(kw => modelName.includes(kw))) return true;
   // Also consult MANUAL_REVIEW_DEVICES by resolved model ID — the
   // authoritative set quote.ts uses. REVIEW_KEYWORDS is a hand-kept label
   // list that drifts against it, and the cap path can't carry the signal:
@@ -219,20 +287,52 @@ function needsManualReview(modelName: string, _quoteAmt: number): boolean {
   return id != null && MANUAL_REVIEW_DEVICES.has(id);
 }
 
+// Per-IP submit budget. It used to be charged at the top of POST — before the
+// previewSave/recycle fork and before validation — so the quote-step "Save",
+// the account-step preview and every 400 (a typo'd email, a bare payout
+// method) each consumed one of the seller's 5 per 5 min, and a real second
+// device could 429. Now: previews get their own bucket (handleQuoteSave), and
+// the lead bucket is charged only once a submission has passed every
+// validation gate (just before the dedup check + MC post), at 10 per 5 min. A
+// normal customer submits 1–2 leads in a session even when comparison-
+// shopping; a CSRF-driven hijack or scripted spammer still hits this at once.
+const LEAD_RL_MAX = 10;
+const LEAD_RL_WINDOW_MS = 5 * 60_000;
+const LEAD_RL_MESSAGE = "Too many submissions — please wait a few minutes before trying again.";
+
 export async function POST(req: NextRequest) {
-  // Per-IP rate limit: 5 lead submissions per 5 min. A normal customer
-  // submits 1–2 leads in a session even when comparison-shopping; a
-  // CSRF-driven hijack attempt or scripted spammer hits this immediately.
-  // Sits BEFORE JSON parse so malformed-body floods are throttled too.
-  // 2026-05-24.
+  // The in-memory dedup key is written BEFORE the lead is posted (fast path
+  // for a double-click). A throw anywhere after that — a numeric field, a
+  // provider SDK, an unexpected body shape — used to leave the key behind, so
+  // the seller's retry was answered `{ ok: true, deduped: true }`, which the
+  // funnel shows as the done screen: a 500 followed by a silently lost lead.
+  // The handler records the key it wrote; a throw drops it and answers with
+  // the funnel's "try again" error instead of an opaque 500.
+  const held: { dedupKey: string | null } = { dedupKey: null };
+  try {
+    return await handleLead(req, held);
+  } catch (err) {
+    if (held.dedupKey) recentLeads.delete(held.dedupKey);
+    after(() => reportError("lead.unhandled", err, { extra: { dedupCleared: !!held.dedupKey } }));
+    return NextResponse.json(
+      { error: "We couldn't save your trade-in just now. Please try again in a minute — or call or text us and we'll finish it for you." },
+      { status: 500 },
+    );
+  }
+}
+
+async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
   const rlIp = clientIp(req);
-  const rl = rateLimit(`lead:${rlIp}`, 5, 5 * 60_000);
-  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many submissions — please wait a few minutes before trying again.");
 
   let data;
   try {
     data = await req.json();
   } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  // `null` / a bare string parses as valid JSON; the destructuring below
+  // threw on it (a 500 where a 400 is the truth).
+  if (!data || typeof data !== "object" || Array.isArray(data)) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
   // Free-recycling fork — Skywalker 2026-05-22. When recycle:true the
@@ -261,6 +361,12 @@ export async function POST(req: NextRequest) {
   // it does not set previewSave, so it still flows through the main path.
   if (data?.previewSave === true) {
     return handleQuoteSave(req, data);
+  }
+  // Client JSON. A numeric phone or email (a hand-built client; the funnel
+  // sends strings) threw at the first .replace / .toLowerCase below — a 500
+  // that also left the dedup key behind. Say what to fix instead.
+  if ((data.phone != null && typeof data.phone !== "string") || (data.email != null && typeof data.email !== "string")) {
+    return NextResponse.json({ error: "Phone number and email must be entered as text." }, { status: 400 });
   }
   let { payout } = data;
   // SINGLE-ELEMENT devices[] HYDRATION (deferred bug hunt #5 "finding E"):
@@ -418,11 +524,18 @@ export async function POST(req: NextRequest) {
   const isPreviewSave = (!handoff || (typeof handoff === "object" && !(handoff as { method?: string }).method))
     && (!payout || payout === "TBD");
   const isCustom = !quote || quote === 0 || quote === "0";
+  // Every 400 gate is behind us: this is a real submission, charge it. Before
+  // the dedup write, so a 429 leaves no key for the seller's retry to trip on.
+  const rl = rateLimit(`lead:${rlIp}`, LEAD_RL_MAX, LEAD_RL_WINDOW_MS);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, LEAD_RL_MESSAGE);
   // In-memory fast path first (instant, side-effect records the key), then
   // the MC cross-instance authority for the cold-start/concurrent case.
   if (!isPreviewSave && (isDuplicate(email, phone, device, model, isCustom) || await isDuplicateMC(email, phone, device, model, isCustom))) {
     return NextResponse.json({ ok: true, deduped: true });
   }
+  // Remembered for the top-level catch (see POST): a throw from here on must
+  // not leave this key answering the seller's retry as a duplicate.
+  if (!isPreviewSave) held.dedupKey = dedupKey(email, phone, device, model, isCustom);
 
   // Coupon — Skywalker 2026-05-18 review-reward feature. We VALIDATE the
   // customer's $25 thank-you code here (read-only) to fold its value into
@@ -444,6 +557,9 @@ export async function POST(req: NextRequest) {
       const cr = await fetch(`${MC_API}/api/coupons?status=active`, {
         headers: { "x-api-key": MC_KEY },
         cache: "no-store",
+        // The seller waits on this read; a stall lands in the catch below as
+        // "Coupon service unavailable" and the lead still saves.
+        signal: AbortSignal.timeout(4_000),
       });
       const cd = await cr.json().catch(() => ({}));
       const c = cr.ok
@@ -497,8 +613,12 @@ export async function POST(req: NextRequest) {
         // through the archive the way the admin leads view does. Only
         // referral submissions pay for this; pages are 5000 so the common
         // case is still one round-trip. Empty = MC unreachable → skip.
-        const refMsgs: { body?: string }[] = await fetchCommsPaged({ apiKey: MC_KEY, includeArchive: true, pageSize: 5000, maxPages: 4 });
-        if (refMsgs.length > 0) {
+        // A read that broke off early (MC restarting mid-page) is only the
+        // newer part of the window: the prior lead that makes this customer
+        // a returning one may sit in the part never read, so "not found" is
+        // "unknown" — skip the bonus rather than grant it.
+        const { messages: refMsgs, complete } = await fetchCommsRead({ apiKey: MC_KEY, includeArchive: true, pageSize: 5000, maxPages: 4 });
+        if (complete && refMsgs.length > 0) {
           let referrerEmail: string | null = null;
           for (const m of refMsgs) {
             // A code marker is its own system post; a copy inside a lead
@@ -517,10 +637,15 @@ export async function POST(req: NextRequest) {
           // First-trade gate. The referee bonus is a NEW-customer incentive;
           // without this a repeat customer could paste a friend's code on
           // EVERY trade and collect +$10 each time. Reuse the comms we already
-          // pulled: if this email is on a prior buyback lead, skip the bonus.
-          const isReturning = !!ownEmail && refMsgs.some((m) =>
+          // pulled: if this email OR this phone (last 10 digits) is on a prior
+          // buyback lead, skip the bonus. Email alone let every phone-only
+          // submission through — including the code's own owner, whom the
+          // marker names only by email but whose prior leads carry the phone.
+          const ownPhone = (typeof phone === "string" ? phone : "").replace(/\D/g, "").slice(-10);
+          const isReturning = (!!ownEmail || ownPhone.length === 10) && refMsgs.some((m) =>
             !!m.body && /\[NEW BUYBACK LEAD/i.test(m.body) &&
-            (m.body.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i)?.[1] || "").toLowerCase().trim() === ownEmail);
+            ((!!ownEmail && (m.body.match(/(?:^|\n)Email:[ \t]*([^\n]*)/i)?.[1] || "").toLowerCase().trim() === ownEmail) ||
+             (ownPhone.length === 10 && (m.body.match(/(?:^|\n)Phone:[ \t]*([^\n]*)/i)?.[1] || "").replace(/\D/g, "").slice(-10) === ownPhone)));
           if (referrerEmail && referrerEmail !== ownEmail && !isReturning) {
             referralApplied = { code: cleanRef, referrerEmail };
           }
@@ -1173,69 +1298,47 @@ export async function POST(req: NextRequest) {
   // Post the lead to MC and capture the assigned message ID — used as the
   // leadId for the [LABEL: <id>] marker below so the admin lead row picks
   // up tracking automatically.
-  let leadId: string | null = null;
   // MC is the ONLY place the full lead lives (payout handle, address/slot,
   // specs, IMEI, coupon, referral). A failed write used to be swallowed by an
   // empty catch and the customer still got ok:true, the done screen and a
-  // confirmation email for an offer number that maps to nothing. Retry once
-  // (MC restarts on every deploy), and remember the failure so it is handled
-  // after the label block below. A 4xx other than 408/429 won't fix itself.
-  let mcSaved = false;
-  let mcFailure = "";
-  for (let attempt = 1; attempt <= 2; attempt++) {
-    try {
-      const r = await fetch(`${MC_API}/api/comms`, {
-        method: "POST",
-        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: "topcash-web",
-          fromName: "Top Cash Cellular",
-          role: "system",
-          body: leadBody,
-          // needs-review tag matches the items/append convention so tag-based
-          // tooling and the admin queue see funnel review-leads the same way.
-          tags: reviewRequired ? ["lead", "buyback", "needs-review"] : ["lead", "buyback"],
-          priority: "urgent",
-        }),
-      });
-      if (r.ok) {
-        mcSaved = true;
-        const data = await r.json().catch(() => ({}));
-        leadId = data?.message?.id || null;
-        break;
-      }
-      mcFailure = `HTTP ${r.status}`;
-      // A 4xx (rotated key, rejected body) won't fix itself on a retry.
-      if (r.status >= 400 && r.status < 500 && r.status !== 408 && r.status !== 429) break;
-    } catch (e) {
-      // Network error. A retry could in rare cases double-post a lead MC
-      // did accept — a visible duplicate beats an invisible lost lead.
-      mcFailure = e instanceof Error ? e.message : String(e);
-    }
-    if (attempt < 2) await new Promise((res) => setTimeout(res, 1000));
-  }
+  // confirmation email for an offer number that maps to nothing. Two bounded
+  // attempts (postLeadToMc), and the failure is remembered so it is handled
+  // after the label block below. The needs-review tag matches the
+  // items/append convention so tag-based tooling and the admin queue see
+  // funnel review-leads the same way.
+  const mcWrite = await postLeadToMc(leadBody, reviewRequired ? ["lead", "buyback", "needs-review"] : ["lead", "buyback"], "urgent");
+  const leadId: string | null = mcWrite.leadId;
+  const mcSaved = mcWrite.saved;
+  const mcFailure = mcWrite.failure;
   // Commit the coupon burn NOW that the lead is safely recorded — never
   // before (a pre-post redeem burns the one-time code even if this POST
   // fails). Best-effort: if the burn itself fails, the lead still stands
   // with its credit and staff reconcile from the "Coupon applied" line —
   // far better than silently eating the customer's code. MC re-checks
   // identity + already-used server-side, so this stays authoritative.
+  // Nothing in the response depends on the burn, so it runs after the
+  // response is sent (the seller is waiting on this POST) — bounded, so a
+  // stalled MC can't hold the function open either.
   if (mcSaved && couponApplied) {
-    try {
-      const rdm = await fetch(`${MC_API}/api/coupons`, {
-        method: "PATCH",
-        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: couponApplied.code,
-          action: "redeem",
-          email: (email || "").toLowerCase().trim(),
-          phone: (phone || "").replace(/\D/g, ""),
-        }),
-      });
-      if (!rdm.ok) console.warn(`[lead] coupon ${couponApplied.code} applied to lead ${leadId} but redeem-commit failed (${rdm.status}) — reconcile manually.`);
-    } catch (e) {
-      console.warn(`[lead] coupon ${couponApplied.code} redeem-commit threw for lead ${leadId}:`, e instanceof Error ? e.message : e);
-    }
+    const redeem = couponApplied;
+    after(async () => {
+      try {
+        const rdm = await fetch(`${MC_API}/api/coupons`, {
+          method: "PATCH",
+          headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: redeem.code,
+            action: "redeem",
+            email: (email || "").toLowerCase().trim(),
+            phone: (phone || "").replace(/\D/g, ""),
+          }),
+          signal: AbortSignal.timeout(4_000),
+        });
+        if (!rdm.ok) console.warn(`[lead] coupon ${redeem.code} applied to lead ${leadId} but redeem-commit failed (${rdm.status}) — reconcile manually.`);
+      } catch (e) {
+        console.warn(`[lead] coupon ${redeem.code} redeem-commit threw for lead ${leadId}:`, e instanceof Error ? e.message : e);
+      }
+    });
   }
 
   // FedEx label minting must NOT depend on MC being reachable — the
@@ -1510,20 +1613,7 @@ Pick the best channel per device. Be concise.`;
       if (!hasFullAddress) missing.push("address");
       if (phoneDigits.length < 10) missing.push("phone");
       if (missing.length > 0) {
-        try {
-          await fetch(`${MC_API}/api/comms`, {
-            method: "POST",
-            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              from: "topcash-web",
-              fromName: "Top Cash Cellular",
-              role: "system",
-              body: `[LABEL-WITHHELD: ${leadId}] reason=missing_${missing.join("_and_")}`,
-              tags: ["fedex-label", "withheld"],
-              priority: "normal",
-            }),
-          });
-        } catch {}
+        after(() => postMarker(`[LABEL-WITHHELD: ${leadId}] reason=missing_${missing.join("_and_")}`, ["fedex-label", "withheld"], "normal"));
       }
     }
     if (needsLabel && hasFullAddress && phoneDigits.length >= 10) {
@@ -1563,20 +1653,7 @@ Pick the best channel per device. Be concise.`;
         .map((d) => shouldBlockAutoShip(d.deviceKind))
         .find((r) => r);
       if (blockedReason) {
-        try {
-          await fetch(`${MC_API}/api/comms`, {
-            method: "POST",
-            headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-            body: JSON.stringify({
-              from: "topcash-web",
-              fromName: "Top Cash Cellular",
-              role: "system",
-              body: `[LABEL-WITHHELD: ${leadId}] reason=${blockedReason}`,
-              tags: ["fedex-label", "blocked"],
-              priority: "normal",
-            }),
-          });
-        } catch {}
+        after(() => postMarker(`[LABEL-WITHHELD: ${leadId}] reason=${blockedReason}`, ["fedex-label", "blocked"], "normal"));
         fedexError = { kind: "SERVICE_UNAVAILABLE", hint: blockedReason };
         // Don't try {} below — go straight to the catch path equivalent.
       } else { try {
@@ -1619,30 +1696,22 @@ Pick the best channel per device. Be concise.`;
         const blob = await put(`fedex-labels/${effectiveLeadId}-${Date.now()}.pdf`, pdfBytes, {
           access: "public",
           contentType: "application/pdf",
+          // The label is already bought; a stalled upload lands in the catch
+          // below rather than holding the seller until the function itself
+          // times out.
+          abortSignal: AbortSignal.timeout(10_000),
         });
         fedexLabel = { tracking: label.trackingNumber, url: blob.url, service: label.serviceType, cost: label.cost };
         // Register with EasyPost (if configured) so it pushes real-time scan
-        // webhooks to /api/webhook/fedex. Best-effort, never blocks the label.
-        registerEasyPostTracker(label.trackingNumber).catch(() => {});
+        // webhooks to /api/webhook/fedex. Best-effort, after the response — as
+        // a floating promise it could be cut off when the function froze.
+        after(() => registerEasyPostTracker(label.trackingNumber).catch(() => {}));
         // Post the [LABEL: <leadId>] marker so the admin GET parser
         // attaches tracking + URL to the lead row. Gated on a REAL
         // leadId — when MC is down there's nothing to attach it to;
         // the label is still returned to the customer regardless.
         if (leadId) {
-          try {
-            await fetch(`${MC_API}/api/comms`, {
-              method: "POST",
-              headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-              body: JSON.stringify({
-                from: "topcash-web",
-                fromName: "Top Cash Cellular",
-                role: "system",
-                body: `[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType}${label.cost != null ? ` cost=$${label.cost}` : ""}`,
-                tags: ["fedex-label", "auto-generated"],
-                priority: "low",
-              }),
-            });
-          } catch {}
+          after(() => postMarker(`[LABEL: ${leadId}] tracking=${label.trackingNumber} url=${blob.url} service=${label.serviceType}${label.cost != null ? ` cost=$${label.cost}` : ""}`, ["fedex-label", "auto-generated"], "low"));
         }
       } catch (err) {
         // Classify so the done page can show actionable feedback.
@@ -1654,33 +1723,24 @@ Pick the best channel per device. Be concise.`;
         fedexError = addressy
           ? { kind: "ADDRESS_INVALID", hint: "FedEx couldn't validate your shipping address. Please double-check the street, city, state, and ZIP — then email support@topcashcellular.com with the correction and we'll resend your label." }
           : { kind: "SERVICE_UNAVAILABLE", hint: "We couldn't print your FedEx label right now. Your trade-in is saved — we'll email your label as soon as the issue clears (usually within an hour)." };
+        const failKind = fedexError.kind;
         // Address-invalid is a customer-data issue — staff doesn't need
         // a 3am SMS. Service-unavailable means our FedEx integration is
         // broken (key expired, API down, account suspended); SMS owner
-        // immediately so we can fix before more leads pile up.
-        reportError("fedex.label.mint", err, {
+        // immediately so we can fix before more leads pile up. After the
+        // response: the critical alert fans out to three channels (up to 8 s
+        // each) while the seller waits — and as a floating promise it could
+        // be cut off with the function; after() keeps it alive to completion.
+        after(() => reportError("fedex.label.mint", err, {
           leadId: leadId || effectiveLeadId,
           critical: !addressy,
-          extra: { kind: fedexError.kind, weight: totalWeight, deviceCount: deviceList.length || 1 },
-        });
+          extra: { kind: failKind, weight: totalWeight, deviceCount: deviceList.length || 1 },
+        }));
         // Post a marker so admin can see which leads need a manual
         // label generation. Sanitized message — no FedEx key leakage.
         // Gated on a real leadId — without MC there's no row to flag.
         if (leadId) {
-          try {
-            await fetch(`${MC_API}/api/comms`, {
-              method: "POST",
-              headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-              body: JSON.stringify({
-                from: "topcash-web",
-                fromName: "Top Cash Cellular",
-                role: "system",
-                body: `[LABEL-FAILED: ${leadId}] kind=${fedexError.kind} reason=${raw.replace(/[\n\r]/g, " ").slice(0, 300)}`,
-                tags: ["fedex-label", "failed"],
-                priority: "high",
-              }),
-            });
-          } catch {}
+          after(() => postMarker(`[LABEL-FAILED: ${leadId}] kind=${failKind} reason=${raw.replace(/[\n\r]/g, " ").slice(0, 300)}`, ["fedex-label", "failed"], "high"));
         }
       }
       }
@@ -1767,9 +1827,9 @@ Pick the best channel per device. Be concise.`;
     // Customer fields go through alertText(): no line breaks, no links — the
     // only URL in this alert is our own (whitelisted) photo.
     const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${alertText(name)} wants to sell ${alertText(model)} (${alertText(condition)})${quoteNum > 0 ? ` for $${quoteNum}${quoteTampered ? " (CLAMPED — tamper flag)" : ""}` : " — custom quote needed"}. Phone: ${alertText(phone) || "N/A"} Email: ${alertText(email) || "N/A"}${photoNote}${labelNote}`;
-    try {
-      await notifyOwnerSms(ownerSms);
-    } catch {}
+    // After the response: three channels at up to 8 s each, and nothing in
+    // the response reads the outcome.
+    after(() => notifyOwnerSms(ownerSms).catch(() => {}));
   }
 
   // Auto-scheduling outreach — Skywalker 2026-05-28. A local/mixed lead
@@ -1787,90 +1847,99 @@ Pick the best channel per device. Be concise.`;
   const schedMethod = schedHandoff?.method || "";
   const alreadyScheduled = !!(schedHandoff?.slot && schedHandoff.slot.id);
   const needsScheduling = (schedMethod === "local" || schedMethod === "mixed") && !alreadyScheduled;
-  let schedulingEmailSent = false;
-  if (needsScheduling && email && typeof email === "string" && process.env.RESEND_API_KEY) {
-    try {
-      const escS = (s: unknown) => String(s ?? "").replace(/[<>&]/g, (ch) => (ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : "&amp;"));
-      const offerHref = `https://topcashcellular.com/offer/${encodeURIComponent(effectiveLeadId)}`;
-      const offerRef = formatOfferNumber(effectiveLeadId);
-      const firstName = (typeof name === "string" ? name.trim().split(/\s+/)[0] : "") || "there";
-      const deviceLabel = cleanField(model, 120) || cleanField(device, 80) || "your device";
-      const lockLine = quoteNum > 0
-        ? `Your offer of $${quoteNum} for ${deviceLabel} is locked in for 14 days.`
-        : `We've got your request for ${deviceLabel}.`;
-      const schedHtml = mailShell({
-        preheader: `Pick a time for your Austin payout — Offer #${offerRef}`,
-        eyebrow: "Local meetup",
-        title: "Let's set up your Austin meetup",
-        introHtml: `Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b style="color:#fff">reply to this email with a couple of times that work this week</b> and we'll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).`,
-        buttonHref: offerHref,
-        buttonLabel: "View your offer →",
-        afterButtonHtml: `<div style="font-size:12px;color:#8a8fa3;text-align:center;">Reference: Offer #${escS(offerRef)}</div>`,
-      });
-      const schedText = `Hi ${firstName}, ${lockLine} To get paid, reply with a couple of times that work this week and we'll confirm a quick Austin meetup. View your offer: ${offerHref} — Offer #${offerRef}`;
-      const { Resend } = await import("resend");
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      const sr = await resend.emails.send({
-        from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "support@topcashcellular.com",
-        to: email,
-        subject: `Pick a time for your Top Cash payout — Offer #${offerRef}`,
-        html: schedHtml,
-        text: schedText,
-      });
-      schedulingEmailSent = !!(sr?.data?.id);
-    } catch {}
-  }
+  // Both customer/owner emails run AFTER the response: neither feeds it, the
+  // Resend SDK takes no abort signal, and the seller is waiting on this POST.
+  // One callback, in order — the owner alert reports whether the scheduling
+  // email went out (schedulingEmailSent), so it must see that result.
+  after(async () => {
+    let schedulingEmailSent = false;
+    if (needsScheduling && email && typeof email === "string" && process.env.RESEND_API_KEY) {
+      try {
+        const escS = (s: unknown) => String(s ?? "").replace(/[<>&]/g, (ch) => (ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : "&amp;"));
+        const offerHref = `https://topcashcellular.com/offer/${encodeURIComponent(effectiveLeadId)}`;
+        const offerRef = formatOfferNumber(effectiveLeadId);
+        const firstName = (typeof name === "string" ? name.trim().split(/\s+/)[0] : "") || "there";
+        const deviceLabel = cleanField(model, 120) || cleanField(device, 80) || "your device";
+        const lockLine = quoteNum > 0
+          ? `Your offer of $${quoteNum} for ${deviceLabel} is locked in for 14 days.`
+          : `We've got your request for ${deviceLabel}.`;
+        const schedHtml = mailShell({
+          preheader: `Pick a time for your Austin payout — Offer #${offerRef}`,
+          eyebrow: "Local meetup",
+          title: "Let's set up your Austin meetup",
+          introHtml: `Hi ${escS(firstName)},<br><br>${escS(lockLine)}<br><br>To get you paid, just <b style="color:#fff">reply to this email with a couple of times that work this week</b> and we'll confirm a quick Austin meetup — most wrap in under 15 minutes, paid on the spot (cash, Zelle, Cash App, or Venmo).`,
+          buttonHref: offerHref,
+          buttonLabel: "View your offer →",
+          afterButtonHtml: `<div style="font-size:12px;color:#8a8fa3;text-align:center;">Reference: Offer #${escS(offerRef)}</div>`,
+        });
+        const schedText = `Hi ${firstName}, ${lockLine} To get paid, reply with a couple of times that work this week and we'll confirm a quick Austin meetup. View your offer: ${offerHref} — Offer #${offerRef}`;
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const sr = await resend.emails.send({
+          from: "Top Cash Cellular <noreply@topcashcellular.com>",
+          replyTo: "support@topcashcellular.com",
+          to: email,
+          subject: `Pick a time for your Top Cash payout — Offer #${offerRef}`,
+          html: schedHtml,
+          text: schedText,
+        });
+        schedulingEmailSent = !!(sr?.data?.id);
+      } catch {}
+    }
 
-  // Owner alert via EMAIL — the Twilio SMS above is dead until 10DLC
-  // lands, so email is the working channel. Goes to OWNER_EMAIL; point
-  // that env at a personal inbox (or a carrier SMS gateway) to be pinged
-  // personally on every new lead. Customer-supplied values are HTML-
-  // escaped before they enter the template.
-  if (process.env.RESEND_API_KEY) {
-    try {
-      // Shared esc() also escapes `"` — this value lands inside href="…".
-      const esc = escHtml;
-      const oneLine = (s: unknown) => String(s ?? "").replace(/[\r\n]+/g, " ").trim();
-      const handoffMethodStr = (handoff && typeof handoff === "object") ? String((handoff as { method?: string }).method || "") : "";
-      const handoffTag = handoffMethodStr === "ship" ? "📦 SHIP" : handoffMethodStr === "local" ? "🤝 LOCAL" : handoffMethodStr === "mixed" ? "📦+🤝 MIXED" : "";
-      const firstPhoto = safePhotos[0] || "";
-      const rows: [string, string][] = [
-        ["Customer", oneLine(name) || "—"],
-        ["Device", `${oneLine(model)} · ${oneLine(condition)}`],
-        ["Quote", quote ? `$${quote}` : "Custom / manual quote"],
-        ["Phone", oneLine(phone) || "N/A"],
-        ["Email", oneLine(email) || "N/A"],
-      ];
-      if (handoffTag) rows.push(["Handoff", handoffTag]);
-      // Confirm the auto-scheduling outreach fired (or flag that it
-      // couldn't) so the owner knows a no-slot lead is already being
-      // chased — no manual "did we reach out yet?" guessing.
-      if (needsScheduling) rows.push(["Auto-scheduling", schedulingEmailSent ? "✅ emailed customer to pick a time" : (email ? "⚠️ email failed — reach out manually" : "⚠️ no email on file — text/call to schedule")]);
-      if (firstPhoto) rows.push(["Photo", firstPhoto]);
-      const subject = oneLine(`${reviewRequired ? "⚠️ REVIEW · " : ""}New lead: ${oneLine(name)} — ${oneLine(model)}${quote ? ` ($${quote})` : " (custom)"}`).slice(0, 180);
-      const html = mailShell({
-        preheader: subject,
-        eyebrow: reviewRequired ? "⚠️ Needs review" : "New lead",
-        eyebrowColor: reviewRequired ? MAIL.yellow : MAIL.green,
-        title: "New buyback lead",
-        contentHtml: mailDetails(rows.map(([k, v]) => [k, k === "Photo" ? `<a href="${esc(v)}" style="color:${MAIL.green};text-decoration:none;">View photo →</a>` : esc(v)] as [string, string])),
-        buttonHref: "https://topcashcellular.com/admin",
-        buttonLabel: "Open admin",
-      });
-      const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n") + "\n\nhttps://topcashcellular.com/admin";
-      const { Resend } = await import("resend");
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
-        from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "support@topcashcellular.com",
-        to: OWNER_EMAIL,
-        subject,
-        html,
-        text,
-      });
-    } catch {}
-  }
+    // Owner alert via EMAIL — the Twilio SMS above is dead until 10DLC
+    // lands, so email is the working channel. Goes to OWNER_EMAIL; point
+    // that env at a personal inbox (or a carrier SMS gateway) to be pinged
+    // personally on every new lead. Customer-supplied values are HTML-
+    // escaped before they enter the template.
+    if (process.env.RESEND_API_KEY) {
+      try {
+        // Shared esc() also escapes `"` — this value lands inside href="…".
+        const esc = escHtml;
+        const oneLine = (s: unknown) => String(s ?? "").replace(/[\r\n]+/g, " ").trim();
+        const handoffMethodStr = (handoff && typeof handoff === "object") ? String((handoff as { method?: string }).method || "") : "";
+        const handoffTag = handoffMethodStr === "ship" ? "📦 SHIP" : handoffMethodStr === "local" ? "🤝 LOCAL" : handoffMethodStr === "mixed" ? "📦+🤝 MIXED" : "";
+        const firstPhoto = safePhotos[0] || "";
+        const rows: [string, string][] = [
+          ["Customer", oneLine(name) || "—"],
+          ["Device", `${oneLine(model)} · ${oneLine(condition)}`],
+          // quoteNum = the server-validated payout (tamper-clamped + coupon/
+          // referral), as the SMS alert above already uses; the raw client
+          // `quote` showed the inflated figure on a tampered lead.
+          ["Quote", quoteNum > 0 ? `$${quoteNum}${quoteTampered ? " (clamped — tamper flag)" : ""}` : "Custom / manual quote"],
+          ["Phone", oneLine(phone) || "N/A"],
+          ["Email", oneLine(email) || "N/A"],
+        ];
+        if (handoffTag) rows.push(["Handoff", handoffTag]);
+        // Confirm the auto-scheduling outreach fired (or flag that it
+        // couldn't) so the owner knows a no-slot lead is already being
+        // chased — no manual "did we reach out yet?" guessing.
+        if (needsScheduling) rows.push(["Auto-scheduling", schedulingEmailSent ? "✅ emailed customer to pick a time" : (email ? "⚠️ email failed — reach out manually" : "⚠️ no email on file — text/call to schedule")]);
+        if (firstPhoto) rows.push(["Photo", firstPhoto]);
+        const subject = oneLine(`${reviewRequired ? "⚠️ REVIEW · " : ""}New lead: ${oneLine(name)} — ${oneLine(model)}${quoteNum > 0 ? ` ($${quoteNum})` : " (custom)"}`).slice(0, 180);
+        const html = mailShell({
+          preheader: subject,
+          eyebrow: reviewRequired ? "⚠️ Needs review" : "New lead",
+          eyebrowColor: reviewRequired ? MAIL.yellow : MAIL.green,
+          title: "New buyback lead",
+          contentHtml: mailDetails(rows.map(([k, v]) => [k, k === "Photo" ? `<a href="${esc(v)}" style="color:${MAIL.green};text-decoration:none;">View photo →</a>` : esc(v)] as [string, string])),
+          buttonHref: "https://topcashcellular.com/admin",
+          buttonLabel: "Open admin",
+        });
+        const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n") + "\n\nhttps://topcashcellular.com/admin";
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        await resend.emails.send({
+          from: "Top Cash Cellular <noreply@topcashcellular.com>",
+          replyTo: "support@topcashcellular.com",
+          to: OWNER_EMAIL,
+          subject,
+          html,
+          text,
+        });
+      } catch {}
+    }
+  });
 
   return NextResponse.json({
     ok: true, leadId, fedexLabel, fedexError, couponApplied, couponError,
@@ -1964,27 +2033,28 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
     "Action: Customer is shipping or dropping off for free responsible recycling. No payout, no FedEx label auto-mint. E-waste certificate emailed at submit.",
   ].filter(Boolean).join("\n");
 
-  // Post the lead to MC. Best-effort — if MC is down we still send the
-  // certificate email so the customer isn't left in limbo.
-  let leadId: string | null = null;
-  try {
-    const r = await fetch(`${MC_API}/api/comms`, {
-      method: "POST",
-      headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: "topcash-web",
-        fromName: "Top Cash Cellular",
-        role: "system",
-        body: leadBody,
-        tags: ["lead", "buyback", "recycle"],
-        priority: "normal",
-      }),
-    });
-    if (r.ok) {
-      const d = await r.json().catch(() => ({}));
-      leadId = d?.message?.id || null;
-    }
-  } catch {}
+  // A recycle submission is a real lead (a device is on its way), so it is
+  // charged to the same submit budget as a priced one — here, past the
+  // validation gates, like the main path.
+  const rl = rateLimit(`lead:${clientIp(req)}`, LEAD_RL_MAX, LEAD_RL_WINDOW_MS);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, LEAD_RL_MESSAGE);
+
+  // Post the lead to MC — the same two-attempt write as the main path. When
+  // both attempts fail we still send the certificate (the device is coming
+  // regardless, and the customer must not be left in limbo), but the owner
+  // has to know: a single swallowed attempt used to answer ok:true and mail
+  // a certificate with a synthetic number for a lead that existed nowhere.
+  const mcWrite = await postLeadToMc(leadBody, ["lead", "buyback", "recycle"], "normal");
+  const leadId = mcWrite.leadId;
+  if (!mcWrite.saved) {
+    // Links in customer text (name, model) never ride into an owner alert.
+    const alertBody = leadBody.replace(/https?:\/\/\S+/gi, "(link removed)");
+    after(() => notifyOwnerSms(
+      `🚨 RECYCLE LEAD NOT SAVED — Mission Control write failed (${mcWrite.failure}). ` +
+      "The customer was emailed an e-waste certificate (synthetic number) and told it went through — add this lead by hand.\n" +
+      alertBody,
+    ).catch(() => {}));
+  }
 
   // E-waste certificate email — branded HTML matching the existing
   // /api/confirm aesthetic (dark theme, green accent, gradient header).
@@ -2074,6 +2144,11 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
 // happen for a half-finished funnel. Best-effort — never blocks the UI
 // (the funnel calls this fire-and-forget).
 async function handleQuoteSave(req: NextRequest, data: Record<string, unknown>) {
+  // Own bucket: the funnel fires this on every email entry, and it used to
+  // eat the seller's lead allowance. Generous — one MC post per call, no
+  // email, no label — but a floor against a scripted [QUOTE SAVED] flood.
+  const rl = rateLimit(`lead-preview:${clientIp(req)}`, 20, 5 * 60_000);
+  if (!rl.ok) return rateLimitResponse(rl.retryAfterMs, "Too many saves — please wait a few minutes before trying again.");
   const email = typeof data.email === "string" ? data.email : "";
   // Nothing to capture without a GOOD email — the whole point is to be able to
   // follow up later. Skip saving when it's malformed, an obvious typo, or a
@@ -2129,6 +2204,9 @@ async function handleQuoteSave(req: NextRequest, data: Record<string, unknown>) 
         tags: ["quote-saved"],
         priority: "normal",
       }),
+      // The funnel fires this fire-and-forget, but the function still runs
+      // until it settles.
+      signal: AbortSignal.timeout(8_000),
     });
     if (r.ok) {
       const d = await r.json().catch(() => ({}));

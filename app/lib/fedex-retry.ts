@@ -127,13 +127,20 @@ export async function retryFedexLabel(leadId: string): Promise<RetryResult> {
   }
 
   // Address lives in the body as either separate Street/City/State/Zip
-  // lines or as a single Address: line. /api/lead emits the separate
-  // form, so that's what we look for first.
-  const street = field(body, "Street") || field(body, "Address");
-  const unit = field(body, "Unit") || undefined;
-  const city = field(body, "City");
-  const state = field(body, "State");
-  const zip = field(body, "Zip") || field(body, "ZIP");
+  // lines or as /api/lead's single line — "Address: <street>[, <unit>],
+  // <city>, <ST> <zip>". Only the separate form was read, so admin
+  // Regenerate answered ADDRESS_INVALID for every funnel lead. The one-line
+  // parse anchors on the trailing ", <ST> <zip>" and the city before it;
+  // whatever precedes the city is the street, with an optional unit after
+  // the street's last comma. Separate lines still win when present.
+  const oneLine = (field(body, "Address") || "").match(/^(.*?),\s*([^,]+),\s*([A-Za-z]{2})\s+(\d{5})/);
+  const oneStreet = (oneLine?.[1] || "").trim();
+  const unitAt = oneStreet.lastIndexOf(",");
+  const street = field(body, "Street") || (oneLine ? (unitAt > 0 ? oneStreet.slice(0, unitAt).trim() : oneStreet) : field(body, "Address"));
+  const unit = field(body, "Unit") || (oneLine && unitAt > 0 ? oneStreet.slice(unitAt + 1).trim() || undefined : undefined);
+  const city = field(body, "City") || oneLine?.[2]?.trim();
+  const state = field(body, "State") || oneLine?.[3];
+  const zip = field(body, "Zip") || field(body, "ZIP") || oneLine?.[4];
   if (!street || !city || !state || !zip) {
     return { ok: false, kind: "ADDRESS_INVALID", error: "Lead is missing a complete shipping address.", leadId };
   }
