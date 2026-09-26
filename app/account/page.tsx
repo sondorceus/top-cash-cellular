@@ -18,6 +18,9 @@ import { useContinueArm } from "./continue-arm";
 
 type Trade = {
   id: string;
+  // Signed offer link from /api/account/me (a bare /offer/<id> opens the
+  // redacted view). Optional only for a response from before the field.
+  offerPath?: string;
   timestamp: string;
   device?: string;
   model?: string;
@@ -795,7 +798,7 @@ export default function AccountPage() {
               {open.map(t => {
                 const meta = STATUS_DISPLAY[t.status] || STATUS_DISPLAY.quote_requested;
                 return (
-                  <a key={t.id} href={`/offer/${encodeURIComponent(t.id)}`} className="block bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-[#00c853]/40 hover:bg-white/[0.07] transition">
+                  <a key={t.id} href={t.offerPath ?? `/offer/${encodeURIComponent(t.id)}`} className="block bg-white/5 border border-white/10 rounded-2xl p-4 hover:border-[#00c853]/40 hover:bg-white/[0.07] transition">
                     <div className="flex items-start justify-between gap-3 flex-wrap">
                       <div className="min-w-0 flex-1">
                         <p className="text-base font-bold">{t.model || t.device || "Device"}</p>
@@ -832,7 +835,7 @@ export default function AccountPage() {
                 const meta = STATUS_DISPLAY[t.status] || STATUS_DISPLAY.quote_requested;
                 return (
                   <div key={t.id} className="bg-white/5 border border-white/10 rounded-xl p-3">
-                    <a href={`/offer/${encodeURIComponent(t.id)}`} className="flex items-center justify-between gap-3 hover:opacity-80 transition">
+                    <a href={t.offerPath ?? `/offer/${encodeURIComponent(t.id)}`} className="flex items-center justify-between gap-3 hover:opacity-80 transition">
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold truncate">{t.model || t.device || "Device"}</p>
                         <p className="text-[11px] text-[#888]">{[t.storage, t.condition].filter(Boolean).join(" · ")} · {timeAgo(t.timestamp)}</p>

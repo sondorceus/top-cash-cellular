@@ -30,6 +30,12 @@ const EditItemPanel = dynamic(() => import("./EditItem"), {
 
 type Offer = {
   found: boolean;
+  // True when the URL carried no valid `k` (app/lib/offer-link.ts): the API
+  // answered the shared view — no phone / e-mail / address / payout handle /
+  // label — and refuses every write, so the page hides its controls.
+  redacted?: boolean;
+  // The shared view's stand-in for `email` ("j***@gmail.com").
+  emailMasked?: string;
   id: string;
   timestamp: string;
   name?: string;
@@ -231,6 +237,9 @@ function useChecklist(leadId: string, keys: string[]) {
 export default function OfferPage({ params }: { params: Promise<{ leadId: string }> }) {
   const { leadId } = use(params);
   const [offer, setOffer] = useState<Offer | null>(null);
+  // The link's `k` (offer-link.ts) — sent with every read and write; "" on
+  // a shared (bare) link. Read once on mount from the URL. 2026-09-26.
+  const [linkKey, setLinkKey] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [shareNotice, setShareNotice] = useState("");
@@ -285,16 +294,25 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
     // still show the order without it. Ask for a fresh read, then drop the
     // param so a reload or a bookmark doesn't keep forcing one. 2026-09-25.
     let fresh = false;
+    let k = "";
     try {
       const url = new URL(window.location.href);
+      // `k` is the credential — it stays in the URL (only `fresh` is scrubbed)
+      // so a reload or a bookmark keeps the full view.
+      k = url.searchParams.get("k") || "";
       if (url.searchParams.get("fresh") === "1") {
         fresh = true;
         url.searchParams.delete("fresh");
         window.history.replaceState(null, "", url.toString());
       }
     } catch { /* nothing to inspect — a plain read is fine */ }
+    setLinkKey(k);
+    const qs = new URLSearchParams();
+    if (k) qs.set("k", k);
+    if (fresh) qs.set("fresh", "1");
+    const q = qs.toString();
     // Bounded: a stalled read used to leave "Loading your offer…" up forever.
-    fetch(`/api/offer/${encodeURIComponent(leadId)}${fresh ? "?fresh=1" : ""}`, { cache: "no-store", signal: AbortSignal.timeout(20_000) })
+    fetch(`/api/offer/${encodeURIComponent(leadId)}${q ? `?${q}` : ""}`, { cache: "no-store", signal: AbortSignal.timeout(20_000) })
       .then(async (r) => {
         if (cancelled) return;
         if (r.status === 404) { setError("We couldn't find this offer. Double-check the link."); setOffer(null); return; }
@@ -321,7 +339,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
   const refetchFresh = async () => {
     const seq = ++refetchSeq.current;
     try {
-      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}?fresh=1`, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
+      const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}?fresh=1${linkKey ? `&k=${encodeURIComponent(linkKey)}` : ""}`, { cache: "no-store", signal: AbortSignal.timeout(20_000) });
       if (!r.ok) return;
       const data: Offer = await r.json();
       if (seq !== refetchSeq.current || !data?.found) return;
@@ -337,7 +355,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/cancel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ note: cancelNote.trim() || undefined }),
+        body: JSON.stringify({ note: cancelNote.trim() || undefined, k: linkKey || undefined }),
         signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
@@ -379,6 +397,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           amount,
           url: pmUrl.trim() || undefined,
           note: pmNote.trim() || undefined,
+          k: linkKey || undefined,
         }),
         signal: AbortSignal.timeout(20_000),
       });
@@ -410,6 +429,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           kind: "counter",
           amount,
           note: coReason.trim() || undefined,
+          k: linkKey || undefined,
         }),
         signal: AbortSignal.timeout(20_000),
       });
@@ -434,7 +454,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: phoneDraft.trim() }),
+        body: JSON.stringify({ phone: phoneDraft.trim(), k: linkKey || undefined }),
         signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
@@ -463,7 +483,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
       const r = await fetch(`/api/offer/${encodeURIComponent(leadId)}/items`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ devices: next }),
+        body: JSON.stringify({ devices: next, k: linkKey || undefined }),
         signal: AbortSignal.timeout(20_000),
       });
       const d = await r.json().catch(() => ({}));
@@ -535,10 +555,13 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         : (offer.quote && /\$/.test(offer.quote) ? offer.quote : (offer.quote ? `$${offer.quote}` : "—")));
   const isPaid = offer.status === "paid" || offer.status === "met";
   const isCancelled = offer.cancelled || offer.status === "rejected";
-  // Devices are editable by anyone on this offer's private link, up
-  // until the trade ships. Editing only changes a customer-facing
-  // estimate (final price is set at inspection), so no sign-in gate.
-  const canEditItems = offer.status === "quote_requested" && !isCancelled;
+  // A bare link (no `k`) is a shared quote: the API redacted the private
+  // fields and refuses writes, so no control that writes is offered.
+  const redacted = !!offer.redacted;
+  // Devices are editable on the customer's SIGNED link, up until the trade
+  // ships. Editing only changes a customer-facing estimate (final price is
+  // set at inspection), so no sign-in gate beyond the link itself.
+  const canEditItems = offer.status === "quote_requested" && !isCancelled && !redacted;
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white">
@@ -555,7 +578,9 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             <button
               type="button"
               onClick={() => {
-                const url = typeof window !== "undefined" ? window.location.href : "";
+                // The BARE link — never `k`. What gets shared is the quote; the
+                // signed link that shows the customer's details stays theirs.
+                const url = typeof window !== "undefined" ? `${window.location.origin}/offer/${encodeURIComponent(offer.id)}` : "";
                 const title = `Top Cash Cellular Offer #${formatOfferNumber(offer.id)}`;
                 if (typeof navigator !== "undefined" && navigator.share) {
                   navigator.share({ title, url }).catch(() => {});
@@ -574,7 +599,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               <svg aria-hidden="true" className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5m6.656-2.828a4 4 0 015.656 0l-1.5 1.5m-7.656 3.656a4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5" /></svg>
               Share
             </button>
-            <button
+            {!redacted && <button
               type="button"
               onClick={() => { if (typeof window !== "undefined") window.print(); }}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#dcdcdc] hover:text-white px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
@@ -582,7 +607,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             >
               <svg aria-hidden="true" className="w-4 h-4 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               Download
-            </button>
+            </button>}
           </div>
         </div>
         {shareNotice && (
@@ -592,11 +617,24 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           </div>
         )}
 
+        {/* Shared-link view — the URL carried no `k`, so the API answered
+            the redacted quote and this page shows no control that writes.
+            The customer's own link (e-mail, account) carries the key. */}
+        {redacted && (
+          <div className="bg-white/[0.04] border border-white/15 rounded-2xl p-4 mb-4 flex items-start gap-2.5">
+            <svg aria-hidden="true" className="w-5 h-5 shrink-0 text-[#00c853] mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            <p className="text-[#bdbdbd] text-xs leading-relaxed">
+              <span className="text-white font-semibold">You&apos;re viewing a shared link.</span> Open the link from your confirmation e-mail — or <Link href="/account" className="text-[#00c853] font-semibold hover:underline">sign in</Link> to your account — to see your payout and shipping details or make changes.
+            </p>
+          </div>
+        )}
+
         {/* "A copy has been sent" confirmation line — mirrors IWM's
-            post-submit reassurance. Only shows when we have the email. */}
-        {offer.email && !isCancelled && (
+            post-submit reassurance. Only shows when we have the email
+            (masked on the shared view). */}
+        {(offer.email || offer.emailMasked) && !isCancelled && (
           <p className="text-center text-[#bdbdbd] text-xs mb-4">
-            A copy of this information has been sent to <span className="text-white font-semibold">{offer.email}</span>
+            A copy of this information has been sent to <span className="text-white font-semibold">{offer.email || offer.emailMasked}</span>
           </p>
         )}
 
@@ -626,7 +664,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         {/* Big prominent status banner — mirrors IWM's "Awaiting Shipment"
             block. Visual hierarchy: this is what the customer should see
             at a glance, not the pipeline above it. */}
-        <StatusBanner status={offer.status} cancelled={isCancelled} isShip={isShip} hasLabel={!!offer.fedexLabelUrl} />
+        <StatusBanner status={offer.status} cancelled={isCancelled} isShip={isShip} hasLabel={!!offer.fedexLabelUrl} redacted={redacted} />
 
         {/* Payout receipt — once paid/met, show proof of the transfer so a
             remote customer can self-confirm it landed (method · amount ·
@@ -698,7 +736,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
         {/* Print Label + tracking — ship leads only. Hidden once cancelled:
             the cancel route does NOT void the label (staff do, from the
             alert), so nothing here may invite a drop-off. 2026-09-25. */}
-        {isShip && !isCancelled && offer.fedexLabelUrl && (
+        {isShip && !isCancelled && !redacted && offer.fedexLabelUrl && (
           <div className="bg-[#00c853]/8 border border-[#00c853]/40 rounded-2xl p-5 mb-5">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[#00c853] font-bold mb-2">Your FedEx label</p>
             <p className="text-white text-sm font-mono mb-1 break-all">{offer.fedexTracking}</p>
@@ -724,7 +762,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             </div>
           </div>
         )}
-        {isShip && !isCancelled && !offer.fedexLabelUrl && offer.fedexErrorKind === "ADDRESS_INVALID" && (
+        {isShip && !isCancelled && !redacted && !offer.fedexLabelUrl && offer.fedexErrorKind === "ADDRESS_INVALID" && (
           <div className="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-5 mb-5">
             <p className="text-amber-200 font-bold text-sm mb-1 flex items-center gap-1.5">
               <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -737,7 +775,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             </a>
           </div>
         )}
-        {isShip && !isCancelled && !offer.fedexLabelUrl && offer.fedexErrorKind !== "ADDRESS_INVALID" && (
+        {isShip && !isCancelled && !redacted && !offer.fedexLabelUrl && offer.fedexErrorKind !== "ADDRESS_INVALID" && (
           <div className="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-5 mb-5">
             <p className="text-amber-200 font-bold text-sm mb-1 flex items-center gap-1.5">
               <svg aria-hidden="true" className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4" />
@@ -863,7 +901,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
           {canEditItems && (
             <>
               <a
-                href={`/?addToOrder=${encodeURIComponent(leadId)}${offer.handoffMethod ? `&via=${offer.handoffMethod}` : ""}`}
+                href={`/?addToOrder=${encodeURIComponent(leadId)}${offer.handoffMethod ? `&via=${offer.handoffMethod}` : ""}${linkKey ? `&k=${encodeURIComponent(linkKey)}` : ""}`}
                 className="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-3 rounded-xl font-bold text-sm cursor-pointer transition hover:brightness-110"
                 style={{ background: "rgba(0,200,83,0.12)", border: "1px solid rgba(0,200,83,0.40)", color: "#00c853" }}
               >
@@ -924,8 +962,8 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
               <div className="flex items-center gap-2 flex-wrap">
                 {offer.phone
                   ? <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg><span>{offer.phone}</span></p>
-                  : !isCancelled && <p className="text-[#888] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg><span>No phone on file</span></p>}
-                {!isCancelled && (
+                  : !isCancelled && !redacted && <p className="text-[#888] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg><span>No phone on file</span></p>}
+                {!isCancelled && !redacted && (
                   <button
                     type="button"
                     onClick={() => { setPhoneDraft(offer.phone || ""); setEditingPhone(true); setPhoneError(""); }}
@@ -937,7 +975,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
                 {phoneSaved && <span className="inline-flex items-center gap-1 text-[10px] text-[#00c853] font-semibold"><svg aria-hidden="true" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Saved</span>}
               </div>
             )}
-            {offer.email && <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg><span>{offer.email}</span></p>}
+            {(offer.email || offer.emailMasked) && <p className="text-[#bdbdbd] text-xs flex items-center gap-1.5"><svg aria-hidden="true" className="w-4 h-4 shrink-0 text-[#00c853]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg><span>{offer.email || offer.emailMasked}</span></p>}
           </div>
         </div>
 
@@ -945,7 +983,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             Submitting posts a [PRICE-MATCH-REQUEST:] marker to MC and
             owner-SMSes staff; the honoring itself runs through the
             existing counter-offer flow. Skywalker 2026-05-22. */}
-        {!isPaid && !isCancelled && (
+        {!isPaid && !isCancelled && !redacted && (
           <div className="bg-white/[0.02] border border-white/8 rounded-2xl p-5 mb-5">
             {pmSubmitted ? (
               <div className="text-center">
@@ -1144,7 +1182,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
             modals will come later; for now the modify path routes
             through email-staff. The cancel path is real (auth-gated)
             for signed-in owners. */}
-        {!isPaid && !isCancelled && (
+        {!isPaid && !isCancelled && !redacted && (
           <div className="bg-white/[0.02] border border-white/8 rounded-2xl p-5 mb-5">
             <div className="flex items-center justify-between gap-3 flex-wrap mb-3">
               <div className="min-w-0">
@@ -1157,8 +1195,8 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
 
 
             {/* Cancel — a real self-serve action, open to anyone on the
-                offer's private link (leadId is the secret; staff get an
-                SMS on cancel). No sign-in required. */}
+                offer's SIGNED link (the `k` is the secret — offer-link.ts;
+                staff get an SMS on cancel). No sign-in required. */}
             {!cancelConfirmOpen ? (
               <button
                 type="button"
@@ -1217,7 +1255,7 @@ export default function OfferPage({ params }: { params: Promise<{ leadId: string
 // Big prominent status banner under the pipeline. Mirrors the IWM
 // "Awaiting Shipment" callout — one strong sentence telling the
 // customer exactly where their offer stands right now.
-function StatusBanner({ status, cancelled, isShip, hasLabel }: { status: string; cancelled: boolean; isShip: boolean; hasLabel: boolean }) {
+function StatusBanner({ status, cancelled, isShip, hasLabel, redacted }: { status: string; cancelled: boolean; isShip: boolean; hasLabel: boolean; redacted: boolean }) {
   let title = "";
   let iconPath = "";
   let detail = "";
@@ -1264,14 +1302,17 @@ function StatusBanner({ status, cancelled, isShip, hasLabel }: { status: string;
   } else if (isShip) {
     title = "Awaiting Shipment";
     iconPath = "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z";
-    detail = hasLabel
-      ? "We're waiting for your offer to be shipped to our warehouse. Print your label below and drop off when you're ready — 14 days from offer creation."
-      : "We're waiting on your prepaid label. Check your email — it usually lands within the hour.";
+    // The shared view carries no label, so it must not talk about one.
+    detail = redacted
+      ? "This trade is waiting to be shipped to our Austin warehouse."
+      : hasLabel
+        ? "We're waiting for your offer to be shipped to our warehouse. Print your label below and drop off when you're ready — 14 days from offer creation."
+        : "We're waiting on your prepaid label. Check your email — it usually lands within the hour.";
     tone = "bg-[#00c853]/10 border-[#00c853]/40 text-[#00c853]";
   } else {
     title = "Awaiting Meetup";
     iconPath = "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z";
-    detail = "Watch your texts — we'll confirm a public Austin spot shortly.";
+    detail = redacted ? "A public Austin meetup is being arranged." : "Watch your texts — we'll confirm a public Austin spot shortly.";
     tone = "bg-[#00c853]/10 border-[#00c853]/40 text-[#00c853]";
   }
   return (

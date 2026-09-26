@@ -3,6 +3,7 @@ import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { logComm } from "../../../lib/comms-log";
 import { duplicatesFromComms } from "../../../lib/lead-dupes";
 import { SEQUENCES, cumulativeDelayDays, type SeqVars } from "../../../lib/email-sequences";
+import { offerUrl } from "../../../lib/offer-link";
 
 // Email-sequence engine (ported from its-official-notary's sequences cron).
 // Drives multi-touch follow-ups; the only sequence today is abandoned-quote
@@ -28,7 +29,6 @@ import { SEQUENCES, cumulativeDelayDays, type SeqVars } from "../../../lib/email
 export const maxDuration = 300;
 
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
-const SITE = "https://topcashcellular.com";
 const INTERNAL_EMAILS = (process.env.TCC_INTERNAL_EMAILS || "sondorceus@gmail.com,sellurcell@topcashcells.com")
   .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
@@ -163,7 +163,8 @@ export async function GET(req: NextRequest) {
       firstName: (field(lead.body, "Name") || "there").split(/\s+/)[0],
       device: field(lead.body, "Device").split(" — ").slice(-1)[0] || "device",
       quote: field(lead.body, "Quote").replace(/\s*\(clamped from[^)]*\)/i, "").trim(),
-      offerUrl: `${SITE}/offer/${leadId}`,
+      // Signed (offer-link.ts) — a bare /offer/<id> opens the redacted view.
+      offerUrl: offerUrl(leadId),
     };
 
     const ok = await sendEmail(email, next.subject(vars), next.html(vars), next.text(vars));

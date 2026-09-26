@@ -12,7 +12,7 @@ export type SeqVars = {
   firstName: string;
   device: string;   // clean model, e.g. "iPhone 15 Pro"
   quote: string;    // formatted, e.g. "$420" (already $-prefixed) or ""
-  offerUrl: string; // https://topcashcellular.com/offer/<leadId>
+  offerUrl: string; // the SIGNED offer link — offerUrl(leadId) from app/lib/offer-link
 };
 
 export type SeqStep = {

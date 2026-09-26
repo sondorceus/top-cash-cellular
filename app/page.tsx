@@ -4621,6 +4621,10 @@ export default function Home() {
   // priced device to that offer (POST /api/offer/<id>/append) instead of the
   // normal new-lead/cart checkout flow, then returns to the offer page.
   const [addToOrderId, setAddToOrderId] = useState<string | null>(null);
+  // The offer link's signature (?k=…, app/lib/offer-link.ts) — the append
+  // route refuses a write without it. Carried in from the offer page's
+  // "+ Add another device" link. 2026-09-26.
+  const [addToOrderKey, setAddToOrderKey] = useState<string>("");
   // The existing offer's handoff method — added devices INHERIT it (one trade =
   // one handoff), so we skip re-asking ship/local and avoid a mismatch.
   const [addToOrderVia, setAddToOrderVia] = useState<"ship" | "local" | null>(null);
@@ -5485,6 +5489,7 @@ export default function Home() {
     const v = sp.get("addToOrder");
     if (v && /^[\w-]+$/.test(v)) {
       setAddToOrderId(v);
+      setAddToOrderKey(sp.get("k") || "");
       // Start the add-a-device flow CLEAN: drop any persisted cart + session so
       // a stale cart/step can't jump the funnel past the quote step (where the
       // "Add to offer" CTA lives). This effect is declared before the cart/
@@ -5577,6 +5582,10 @@ export default function Home() {
   // page (status, print label, shipping checklist, modify/cancel).
   // Skywalker 2026-05-19.
   const [submittedLeadId, setSubmittedLeadId] = useState<string | null>(null);
+  // The signed offer link /api/lead answers with (app/lib/offer-link.ts) —
+  // the done screen's buttons use it; a bare /offer/<id> is the redacted
+  // view. 2026-09-26.
+  const [submittedOfferPath, setSubmittedOfferPath] = useState<string | null>(null);
   // FedEx label info returned from /api/lead when a ship lead was submitted.
   // Used by the done page to render a Print-your-label CTA for shipping
   // customers. Skywalker 2026-05-17.
@@ -6501,7 +6510,7 @@ export default function Home() {
       const r = await fetch(`/api/offer/${encodeURIComponent(addToOrderId)}/append`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ devices }),
+        body: JSON.stringify({ devices, k: addToOrderKey || undefined }),
       });
       if (!r.ok) {
         const d = await r.json().catch(() => ({}));
@@ -6510,7 +6519,11 @@ export default function Home() {
         if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
-      window.location.href = `/offer/${encodeURIComponent(addToOrderId)}?fresh=1`; // fresh: read past the offer API's memo so the added device shows
+      // The signed path the route answers with (offer-link.ts): `k` for the
+      // full view, `fresh` to read past the offer API's memo so the added
+      // device shows. The bare fallback still shows the device, redacted.
+      const done = await r.json().catch(() => ({}));
+      window.location.href = typeof done?.offerPath === "string" ? done.offerPath : `/offer/${encodeURIComponent(addToOrderId)}?fresh=1`;
     } catch {
       setAddError("Couldn't reach the server — please try again.");
       setAddingToOrder(false);
@@ -13448,7 +13461,7 @@ export default function Home() {
                   const d = await r.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
-                  if (d?.leadId) { setSubmittedLeadId(d.leadId); leadIdLocal = d.leadId; }
+                  if (d?.leadId) { setSubmittedLeadId(d.leadId); setSubmittedOfferPath(typeof d.offerPath === "string" ? d.offerPath : null); leadIdLocal = d.leadId; }
                 } else {
                   const singleKey = model && condition ? `${model.id}-${storage?.label || 'N/A'}-${condition.label}` : "";
                   const singlePhotos = (singleKey && liveMap[singleKey]) || photoUrls;
@@ -13461,7 +13474,7 @@ export default function Home() {
                   const d = await res.json().catch(() => ({}));
                   if (d?.fedexLabel) leadLabel = d.fedexLabel;
                   if (d?.fedexError) setSubmittedLabelError(d.fedexError);
-                  if (d?.leadId) { setSubmittedLeadId(d.leadId); leadIdLocal = d.leadId; }
+                  if (d?.leadId) { setSubmittedLeadId(d.leadId); setSubmittedOfferPath(typeof d.offerPath === "string" ? d.offerPath : null); leadIdLocal = d.leadId; }
                 }
                 setSubmittedLabel(leadLabel);
                 // Lead saved — the slot hold is now this lead's booking (a
@@ -14874,7 +14887,7 @@ export default function Home() {
                     : "See your meetup slot, live status, contact info, or modify the offer — everything's on your offer page."}
                 </p>
                 <a
-                  href={`/offer/${encodeURIComponent(submittedLeadId)}`}
+                  href={submittedOfferPath || `/offer/${encodeURIComponent(submittedLeadId)}`}
                   className="inline-flex items-center justify-center gap-2 w-full max-w-md mx-auto bg-[#00c853] hover:bg-[#00e676] text-[#0a0a0a] font-extrabold text-base px-6 py-4 rounded-full transition cursor-pointer shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
                 >
                   {handoffMethod === "ship" ? (
@@ -14937,7 +14950,7 @@ export default function Home() {
           {submittedLeadId && (
             <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-[rgba(10,10,10,0.95)] backdrop-blur-md border-t border-white/10 px-4 pt-4 cta-bar-ios">
               <a
-                href={`/offer/${encodeURIComponent(submittedLeadId)}`}
+                href={submittedOfferPath || `/offer/${encodeURIComponent(submittedLeadId)}`}
                 className="tcc-button-primary no-underline flex items-center justify-center gap-2 w-full py-5 text-base font-extrabold"
               >
                 {handoffMethod === "ship" ? "Open offer + print label →" : "Open my offer page →"}

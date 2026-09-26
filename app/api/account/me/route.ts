@@ -18,11 +18,16 @@ import {
 import { isCustomerLeadPost } from "../../../lib/lead-devices";
 import { fetchCommsRead } from "../../../lib/mc-comms";
 import { rateLimit, clientIp } from "../../../lib/rate-limit";
+import { offerPath } from "../../../lib/offer-link";
 
 const MC_KEY = process.env.MC_API_KEY || "";
 
 type Trade = {
   id: string;
+  // The signed offer link (app/lib/offer-link.ts) — a bare /offer/<id> opens
+  // the redacted view; the account is a verified inbox, so its links carry
+  // the customer's key. 2026-09-26.
+  offerPath: string;
   timestamp: string;
   device?: string;
   model?: string;
@@ -171,6 +176,7 @@ export async function GET(req: NextRequest) {
     const zip = parseField(m.body, "Zip") || parseField(m.body, "ZIP");
     trades.push({
       id: m.id,
+      offerPath: offerPath(m.id),
       timestamp: m.timestamp,
       device: parseField(m.body, "Device"),
       model: parseField(m.body, "Model"),

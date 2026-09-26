@@ -3,6 +3,12 @@
 // FedEx label + tracking. Public — the leadId itself (a UUID-shaped MC
 // message id) is the secret. Follows the same trust model as FedEx
 // tracking-number links. Skywalker 2026-05-19.
+//
+// 2026-09-26: the id is no longer the secret — it is the public Offer # on
+// the done screen, in every e-mail and on the receipt. `?k=<hmac>` (see
+// app/lib/offer-link.ts) opens the full view; a bare id gets the redacted
+// quote (device, price, status — nothing that identifies or pays the
+// customer) and can't write.
 
 import { NextRequest, NextResponse, after } from "next/server";
 import { referralCodeForEmail, referralLinkForCode, referralCodeMarker, hasReferralCodeMarker } from "../../../lib/referral";
@@ -10,15 +16,29 @@ import { field, DEVICE_LINE_RE, OFFER_STATUSES, parseOfferBonus, isCustomerLeadP
 import { canonicalCarrier, carrierLockedFromText } from "../../../lib/quote-engine";
 import { fetchCommsRead } from "../../../lib/mc-comms";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../lib/rate-limit";
+import { offerKeyValid } from "../../../lib/offer-link";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
+
+// "j***@gmail.com" — enough for the customer to recognise their own address
+// on a shared view, useless to anyone else.
+function maskEmail(email: string | undefined): string | undefined {
+  if (!email) return undefined;
+  const at = email.indexOf("@");
+  if (at < 1) return undefined;
+  return `${email[0]}***${email.slice(at)}`;
+}
 
 export async function GET(req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
   const { leadId } = await ctx.params;
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
   }
+  // Signed link (offer-link.ts, 2026-09-26): `?k=<hmac over the id>` is the
+  // customer's own link; a bare id is a shared quote and gets the redacted
+  // view below. No secret configured → never a full view (fail closed).
+  const full = offerKeyValid(leadId, req.nextUrl.searchParams.get("k"));
   // The id is the only credential and this payload is the customer's PII
   // (address, payout handle, label URL), yet the 404/200 answer was an
   // unthrottled oracle for testing ids. Same helper and per-IP shape as the
@@ -289,7 +309,8 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ leadId: str
   // isn't in this same newest-5000 window (which also re-posts one that has
   // aged out). After the response, so the page never waits on it.
   // (The page hides the link on a cancelled/rejected offer — skip those.)
-  if (referralCode && customerEmail && !cancelled && status !== "rejected" && !hasReferralCodeMarker(messages, referralCode)) {
+  // Full views only — a shared link must not write on the customer's behalf.
+  if (full && referralCode && customerEmail && !cancelled && status !== "rejected" && !hasReferralCodeMarker(messages, referralCode)) {
     const marker = referralCodeMarker(referralCode, customerEmail);
     if (marker) {
       after(async () => {
@@ -311,15 +332,20 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ leadId: str
     }
   }
 
-  return NextResponse.json({
+  // Two views of one payload (2026-09-26). `shared` is what a shared quote
+  // may show; `privateView` is the customer's own — phone, e-mail, address,
+  // meetup slot, referral link, payout reference, label URL and tracking —
+  // and exists only behind a valid `k`. Without it the name shrinks to its
+  // first word, the payout line to its method (the funnel writes
+  // "Zelle: handle"), and the e-mail to a mask the customer still recognises.
+  const customerName = field(body, "Name");
+  const payoutLine = field(body, "Payout");
+  const shared = {
     found: true,
+    redacted: !full,
     id: leadId,
     timestamp: leadMsg.timestamp,
-    name: field(body, "Name"),
-    phone: phoneOverride || field(body, "Phone"),
-    email: customerEmail,
-    referralCode,
-    referralLink,
+    name: full ? customerName : customerName?.trim().split(/\s+/)[0] || undefined,
     device: field(body, "Device"),
     // The lead body has no standalone "Model:" line — the model is the
     // second half of the "Device: <type> — <model>" line. Parse it out
@@ -351,10 +377,10 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ leadId: str
     // "Quote: $500 (clamped from $700)" on a clamp, and this string is shown
     // to the customer as their payout. Never leak the fraud-flag language.
     quote: field(body, "Quote")?.replace(/\s*\(clamped from[^)]*\)/i, "").trim(),
-    payout: field(body, "Payout"),
+    // Method only on the shared view: the text before the first ":" (a
+    // value with no ":" carries no handle and stays as it is).
+    payout: full ? payoutLine : payoutLine?.split(":")[0].trim() || undefined,
     handoffMethod,
-    shipAddress,
-    localSlot,
     devices,
     deviceCount,
     totalPayout,
@@ -368,25 +394,40 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ leadId: str
     offerRevised,
     status: cancelled ? "rejected" : status,
     statusAt,
-    // Customer-visible payout receipt — present once a lead is paid/met and
-    // staff recorded a confirmation. Lets the customer self-verify the
-    // transfer (method + reference + amount + when) without contacting us.
-    payoutProof: !cancelled && (status === "paid" || status === "met") && (payoutMethod || payoutRef || payoutAmount != null)
-      ? {
-          method: payoutMethod || undefined,
-          reference: payoutRef || undefined,
-          amount: payoutAmount ?? undefined,
-          at: statusAt || undefined,
-        }
-      : undefined,
-    fedexTracking: fedexTracking || undefined,
-    fedexLabelUrl: fedexLabelUrl || undefined,
     fedexService: fedexService || undefined,
     fedexErrorKind: fedexErrorKind || undefined,
-    fedexErrorReason: fedexErrorReason || undefined,
     cancelled,
     // True when a customer edit flagged a device for manual review
     // (broken + won't power on) — it can't be auto-quoted.
     needsReview: !!itemUpdate && (itemUpdate.devices || []).some((d) => !!d.needsReview),
+  };
+  const privateView = full
+    ? {
+        phone: phoneOverride || field(body, "Phone"),
+        email: customerEmail,
+        referralCode,
+        referralLink,
+        shipAddress,
+        localSlot,
+        // Customer-visible payout receipt — present once a lead is paid/met and
+        // staff recorded a confirmation. Lets the customer self-verify the
+        // transfer (method + reference + amount + when) without contacting us.
+        payoutProof: !cancelled && (status === "paid" || status === "met") && (payoutMethod || payoutRef || payoutAmount != null)
+          ? {
+              method: payoutMethod || undefined,
+              reference: payoutRef || undefined,
+              amount: payoutAmount ?? undefined,
+              at: statusAt || undefined,
+            }
+          : undefined,
+        fedexTracking: fedexTracking || undefined,
+        fedexLabelUrl: fedexLabelUrl || undefined,
+        fedexErrorReason: fedexErrorReason || undefined,
+      }
+    : { emailMasked: maskEmail(customerEmail) };
+
+  return NextResponse.json({
+    ...shared,
+    ...privateView,
   }, { headers: { "Cache-Control": "no-store" } });
 }

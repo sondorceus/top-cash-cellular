@@ -10,6 +10,7 @@ import { validateBtcAddress, cashtagFormatValid, normalizeCashtag, validateZelle
 import { validateEmail, looksLikeEmail, suggestEmail, isDisposableEmail } from "../../lib/email-validate";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { formatOfferNumber } from "../../lib/offer-number";
+import { offerPath, offerUrl } from "../../lib/offer-link";
 import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../lib/resell-estimates";
 import { mailShell, mailDetails, MAIL, mailLogo, esc as escHtml } from "../../lib/email-shell";
 import { registerEasyPostTracker } from "../../lib/easypost";
@@ -1862,7 +1863,8 @@ Pick the best channel per device. Be concise.`;
         // failed) exists for the label's PO number, and the "View your offer"
         // button + "Offer #OFFLINE-…" reference this mail printed for it led
         // straight to a 404 receipt. Keep the meetup ask either way. 2026-09-25.
-        const offerHref = leadId ? `https://topcashcellular.com/offer/${encodeURIComponent(leadId)}` : null;
+        // Signed (offer-link.ts) — a bare /offer/<id> opens the redacted view.
+        const offerHref = leadId ? offerUrl(leadId) : null;
         const offerRef = leadId ? formatOfferNumber(leadId) : "";
         const refSuffix = offerRef ? ` — Offer #${offerRef}` : "";
         const firstName = (typeof name === "string" ? name.trim().split(/\s+/)[0] : "") || "there";
@@ -1957,7 +1959,11 @@ Pick the best channel per device. Be concise.`;
   });
 
   return NextResponse.json({
-    ok: true, leadId, fedexLabel, fedexError, couponApplied, couponError,
+    ok: true, leadId,
+    // The signed offer link for the done screen (offer-link.ts): a bare
+    // /offer/<id> now opens the redacted view. 2026-09-26.
+    offerPath: leadId ? offerPath(leadId) : null,
+    fedexLabel, fedexError, couponApplied, couponError,
     // Surface the referral outcome so the funnel can confirm the bonus
     // landed. Only the code is echoed — not the referrer's email.
     referralApplied: referralApplied ? { code: referralApplied.code, bonus: REFERRAL_REFEREE_BONUS } : null,
@@ -2143,7 +2149,9 @@ async function handleRecycleLead(req: NextRequest, data: Record<string, unknown>
     }
   }
 
-  return NextResponse.json({ ok: true, recycle: true, leadId, emailSent });
+  // offerPath: the signed offer link (offer-link.ts) — a recycle lead is a
+  // real [NEW BUYBACK LEAD] the offer page serves. 2026-09-26.
+  return NextResponse.json({ ok: true, recycle: true, leadId, offerPath: leadId ? offerPath(leadId) : null, emailSent });
 }
 
 // ---------------------------------------------------------------------------

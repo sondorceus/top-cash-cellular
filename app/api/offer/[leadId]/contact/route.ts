@@ -3,6 +3,9 @@
 // Customer-side contact-info edit. Currently scoped to the phone number
 // only — name and email are fixed (email is the account identity).
 //
+// 2026-09-26: the signed link's `k` (app/lib/offer-link.ts) is the access
+// control for every write here; the id alone gets the redacted read. The
+// access-model paragraph below predates that.
 // Access model: the leadId is the secret — same as the public offer
 // GET route and the device-edit route, since the customer reaches this
 // from their own private offer link. No sign-in required; the owner
@@ -19,12 +22,16 @@ import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-lim
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import { isDeleted } from "../../../../lib/lead-devices";
 import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
+import { offerKeyValid } from "../../../../lib/offer-link";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
+// Every write needs the link's `k` (app/lib/offer-link.ts, 2026-09-26): the
+// bare id is the public Offer #, so on its own it may only read.
+const UNSIGNED_LINK = "This link isn't signed — open your offer from your confirmation e-mail or your account to make changes.";
 
 function field(body: string, key: string): string | undefined {
   const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
@@ -36,8 +43,19 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
   }
-  // Throttle — leadId is the only access control; don't let a leaked link
-  // flood MC / owner SMS.
+  // Signed-link gate — before the body is trusted and before any MC read, so
+  // an unsigned request costs nothing. The key rides in the JSON body (the
+  // offer page) or the query (the funnel's add-to-order flow). 2026-09-26.
+  let bodyIn: Record<string, unknown> | null = null;
+  try {
+    const j = await req.json();
+    if (j && typeof j === "object" && !Array.isArray(j)) bodyIn = j as Record<string, unknown>;
+  } catch { /* no body / not JSON — each field is validated below */ }
+  const k = typeof bodyIn?.k === "string" ? bodyIn.k : req.nextUrl.searchParams.get("k");
+  if (!offerKeyValid(leadId, k)) {
+    return NextResponse.json({ error: UNSIGNED_LINK }, { status: 403 });
+  }
+  // Throttle — don't let a leaked signed link flood MC / owner SMS.
   const rl = rateLimit(`offer:${clientIp(req)}`, 20, 60_000);
   if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
   if (!MC_KEY) {
@@ -47,10 +65,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // Parse + validate the new phone. Digits-only must be at least 10 —
   // matches the shipping-label guard on the lead form.
   let phone = "";
-  try {
-    const body = await req.json();
-    if (typeof body?.phone === "string") phone = body.phone.trim();
-  } catch { /* handled below */ }
+  if (typeof bodyIn?.phone === "string") phone = bodyIn.phone.trim();
   const digits = phone.replace(/\D/g, "");
   if (digits.length < 10 || digits.length > 15) {
     return NextResponse.json({ error: "Enter a valid phone number." }, { status: 400 });

@@ -4,6 +4,9 @@
 // condition / storage on their offer page before the trade ships,
 // with the re-quoted (estimate) total.
 //
+// 2026-09-26: the signed link's `k` (app/lib/offer-link.ts) is the access
+// control for every write here; the id alone gets the redacted read. The
+// access-model paragraph below predates that.
 // Access model: the leadId is the secret — same trust model as the
 // public offer GET route, since the customer reaches this from their
 // own private offer link. No sign-in required: an edit only changes a
@@ -23,6 +26,7 @@ import { NextRequest, NextResponse, after } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
+import { offerKeyValid } from "../../../../lib/offer-link";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
@@ -38,6 +42,9 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
+// Every write needs the link's `k` (app/lib/offer-link.ts, 2026-09-26): the
+// bare id is the public Offer #, so on its own it may only read.
+const UNSIGNED_LINK = "This link isn't signed — open your offer from your confirmation e-mail or your account to make changes.";
 
 type InDevice = { model?: unknown; storage?: unknown; condition?: unknown; carrier?: unknown; quote?: unknown; quantity?: unknown; needsReview?: unknown };
 
@@ -46,9 +53,20 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
   }
-  // Throttle — the only access control is the leadId, and this posts to MC +
-  // can fire owner SMS, so a leaked offer link must not be loopable into a
-  // MC-flood / owner-SMS bomb.
+  // Signed-link gate — before the body is trusted and before any MC read, so
+  // an unsigned request costs nothing. The key rides in the JSON body (the
+  // offer page) or the query (the funnel's add-to-order flow). 2026-09-26.
+  let bodyIn: Record<string, unknown> | null = null;
+  try {
+    const j = await req.json();
+    if (j && typeof j === "object" && !Array.isArray(j)) bodyIn = j as Record<string, unknown>;
+  } catch { /* no body / not JSON — each field is validated below */ }
+  const k = typeof bodyIn?.k === "string" ? bodyIn.k : req.nextUrl.searchParams.get("k");
+  if (!offerKeyValid(leadId, k)) {
+    return NextResponse.json({ error: UNSIGNED_LINK }, { status: 403 });
+  }
+  // Throttle — this posts to MC + can fire owner SMS, so a leaked signed link
+  // must not be loopable into a MC-flood / owner-SMS bomb.
   const rl = rateLimit(`offer:${clientIp(req)}`, 20, 60_000);
   if (!rl.ok) return rateLimitResponse(rl.retryAfterMs);
   if (!MC_KEY) {
@@ -57,10 +75,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
 
   // Parse + validate the edited device list.
   let raw: InDevice[] = [];
-  try {
-    const body = await req.json();
-    if (Array.isArray(body?.devices)) raw = body.devices;
-  } catch { /* handled below */ }
+  if (Array.isArray(bodyIn?.devices)) raw = bodyIn.devices as InDevice[];
   if (raw.length === 0 || raw.length > 10) {
     return NextResponse.json({ error: "Send 1–10 devices." }, { status: 400 });
   }

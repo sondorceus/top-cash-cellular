@@ -9,6 +9,7 @@ import { REFERRAL_REFERRER_REWARD } from "../../../../lib/referral";
 import { isCustomerLeadPost } from "../../../../lib/lead-devices";
 import { formatOfferNumber } from "../../../../lib/offer-number";
 import { fetchCommsRead } from "../../../../lib/mc-comms";
+import { offerUrl } from "../../../../lib/offer-link";
 
 // The two paid/met lookups below (review token, referral) each read the
 // live feed; a short memo lets one request's pair share a single read, and
@@ -770,7 +771,8 @@ export async function POST(req: NextRequest) {
   const receipt: Receipt | undefined = conf && ((conf.amount !== null && conf.amount > 0) || !!conf.method)
     ? {
         number: formatOfferNumber(leadId),
-        url: `https://topcashcellular.com/offer/${leadId}`,
+        // Signed (offer-link.ts) — a bare /offer/<id> opens the redacted view.
+        url: offerUrl(leadId),
         date: new Date().toLocaleDateString("en-US", { timeZone: "America/Chicago", month: "short", day: "numeric", year: "numeric" }),
         amount: conf.amount !== null && conf.amount > 0 ? conf.amount : undefined,
         method: payoutMethodLabel(conf.method) || knownPayout(payout) || undefined,

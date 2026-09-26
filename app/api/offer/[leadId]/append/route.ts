@@ -7,6 +7,9 @@
 // price overrides + the margin guardrail), then hands the priced line
 // here on submit.
 //
+// 2026-09-26: the signed link's `k` (app/lib/offer-link.ts) is the access
+// control for every write here; the id alone gets the redacted read. The
+// access-model paragraph below predates that.
 // TRUST MODEL — this is the important bit. The leadId is the only access
 // control (same as the offer GET / items / cancel routes). So:
 //   - The NEW devices' quotes are funnel-computed and TRUSTED, exactly
@@ -28,6 +31,7 @@ import { NextRequest, NextResponse, after } from "next/server";
 import { parseTotalPayoutLine, parseDollarAmount } from "../../../../lib/lead-money";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
+import { offerKeyValid, offerPath } from "../../../../lib/offer-link";
 import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../../../lib/resell-estimates";
 import { authoritativeLineCap, macSpecUnclaimed } from "../../../../lib/server-quote-cap";
 import { readPriceOverrides } from "../../../../lib/quote";
@@ -52,6 +56,9 @@ const MC_KEY = process.env.MC_API_KEY || "";
 const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID || "";
 const TWILIO_AUTH = process.env.TWILIO_AUTH_TOKEN || "";
 const OWNER_PHONE = process.env.OWNER_PHONE || "+15129609256";
+// Every write needs the link's `k` (app/lib/offer-link.ts, 2026-09-26): the
+// bare id is the public Offer #, so on its own it may only read.
+const UNSIGNED_LINK = "This link isn't signed — open your offer from your confirmation e-mail or your account to make changes.";
 
 const LOCKED = new Set(["shipped", "received", "tested", "paid", "met"]);
 
@@ -148,6 +155,18 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   if (!leadId || !/^[\w-]+$/.test(leadId)) {
     return NextResponse.json({ error: "Invalid offer id" }, { status: 400 });
   }
+  // Signed-link gate — before the body is trusted and before any MC read, so
+  // an unsigned request costs nothing. The key rides in the JSON body (the
+  // offer page) or the query (the funnel's add-to-order flow). 2026-09-26.
+  let bodyIn: Record<string, unknown> | null = null;
+  try {
+    const j = await req.json();
+    if (j && typeof j === "object" && !Array.isArray(j)) bodyIn = j as Record<string, unknown>;
+  } catch { /* no body / not JSON — each field is validated below */ }
+  const k = typeof bodyIn?.k === "string" ? bodyIn.k : req.nextUrl.searchParams.get("k");
+  if (!offerKeyValid(leadId, k)) {
+    return NextResponse.json({ error: UNSIGNED_LINK }, { status: 403 });
+  }
   // Rate limit (same guard the sibling offer routes use) — a leaked offer link
   // posts an MC comm + fires an owner SMS, so cap the abuse / Twilio cost.
   const rl = rateLimit(`offer:${clientIp(req)}`, 20, 60_000);
@@ -158,10 +177,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
 
   // Parse the NEW devices being added (funnel-priced).
   let raw: InDevice[] = [];
-  try {
-    const body = await req.json();
-    if (Array.isArray(body?.devices)) raw = body.devices;
-  } catch { /* handled below */ }
+  if (Array.isArray(bodyIn?.devices)) raw = bodyIn.devices as InDevice[];
   if (raw.length === 0 || raw.length > 10) {
     return NextResponse.json({ error: "Send 1–10 devices to add." }, { status: 400 });
   }
@@ -307,5 +323,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     after(() => notifyOwnerSms(text.slice(0, 480)).catch(() => {}));
   }
 
-  return NextResponse.json({ ok: true, devices, total, added: added.length });
+  // The funnel lands on the offer page with this: signed, and `fresh` so the
+  // read runs past the API's memo and shows the device just added.
+  return NextResponse.json({ ok: true, devices, total, added: added.length, offerPath: offerPath(leadId, { fresh: true }) });
 }
