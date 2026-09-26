@@ -61,16 +61,11 @@ async function notifyOwner(review: { name: string; rating: number; body: string;
   const excerpt = review.body.slice(0, 140) + (review.body.length > 140 ? "…" : "");
   const ownerSms = `${lowRating ? "⚠️ LOW " : ""}TopCash review ${stars} from ${review.name}${review.device ? ` (${review.device})` : ""}: "${excerpt}"`;
 
-  // SMS — wraps the Twilio call so a single bad call doesn't break the
-  // email send. Owner phone is hardcoded fallback above.
-  {
-    try {
-      await notifyOwnerSms(ownerSms.slice(0, 480));
-    } catch {}
-  }
-
-  // Email — full review body + a link to /reviews so Skywalker can
-  // open + delete (if it's spam) in one click.
+  // Email first — full review body + a link to /reviews so Skywalker can
+  // open + delete (if it's spam) in one click. The text channels follow;
+  // notifyOwnerSms also e-mails, so once this one is in the inbox that
+  // channel is skipped (one review used to arrive as two owner e-mails).
+  let emailSent = false;
   if (process.env.RESEND_API_KEY) {
     try {
       const { Resend } = await import("resend");
@@ -78,7 +73,7 @@ async function notifyOwner(review: { name: string; rating: number; body: string;
       const accent = lowRating ? "#ff5566" : "#ffb400";
       const html = `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="background:linear-gradient(135deg,${accent} 0%,#b07900 100%);padding:24px 28px;color:#1a1100"><div style="font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;opacity:0.7;margin-bottom:4px">Top Cash Cellular · Owner alert</div><div style="font-size:22px;font-weight:800;line-height:1.1">${lowRating ? "⚠️ Low-rating review" : "★ New customer review"}</div></div><div style="padding:28px"><div style="font-size:32px;color:${accent};line-height:1;margin-bottom:8px">${stars}</div><p style="font-size:18px;color:#fff;font-weight:700;margin:0 0 6px">${esc(review.name)}${review.city ? ` <span style="font-weight:400;color:#888">· ${esc(review.city)}</span>` : ""}</p>${review.device ? `<p style="font-size:13px;color:#888;margin:0 0 14px">Sold: ${esc(review.device)}</p>` : ""}${review.title ? `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 8px">${esc(review.title)}</p>` : ""}<p style="font-size:15px;line-height:1.6;color:#e6e6e6;margin:0 0 22px;white-space:pre-wrap">${esc(review.body)}</p><div style="text-align:center">${mailButton("https://topcashcellular.com/reviews", "View all reviews", "green")}</div></div></div></body></html>`;
       const text = `${subject}\n\n${stars}\n${review.name}${review.city ? ` · ${review.city}` : ""}\n${review.device ? `Sold: ${review.device}\n` : ""}${review.title ? `\n${review.title}\n` : ""}\n${review.body}\n\nhttps://topcashcellular.com/reviews`;
-      await resend.emails.send({
+      const r = await resend.emails.send({
         from: "Top Cash Cellular <noreply@topcashcellular.com>",
         replyTo: "support@topcashcellular.com",
         to: OWNER_EMAIL,
@@ -86,8 +81,15 @@ async function notifyOwner(review: { name: string; rating: number; body: string;
         html,
         text,
       });
+      emailSent = !!r?.data?.id;
     } catch {}
   }
+
+  // Text channels — wrapped so a single bad call can't break the caller.
+  // Owner phone is the hardcoded fallback above.
+  try {
+    await notifyOwnerSms(ownerSms.slice(0, 480), { skipEmail: emailSent });
+  } catch {}
 }
 
 // Customer-side coupon email — fires the moment the review is stored

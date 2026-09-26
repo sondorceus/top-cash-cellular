@@ -173,8 +173,15 @@ async function sendRelaySms(body: string): Promise<boolean> {
   return sendSellerSms(OWNER_PHONE, body.replace(/[ \t]+/g, " ").trim().slice(0, 460));
 }
 
-export async function notifyOwnerSms(body: string, opts?: { leadId?: string }): Promise<boolean> {
-  const [sms, mail, relay] = await Promise.allSettled([sendSms(body), sendEmailAlert(body, opts?.leadId), sendRelaySms(body)]);
+// opts.skipEmail: the caller already put this news in the owner's inbox (the
+// watchdog mails its digest first) — text channels only, so one run is one
+// e-mail rather than two carrying the same alert.
+export async function notifyOwnerSms(body: string, opts?: { leadId?: string; skipEmail?: boolean }): Promise<boolean> {
+  const [sms, mail, relay] = await Promise.allSettled([
+    sendSms(body),
+    opts?.skipEmail ? Promise.resolve(false) : sendEmailAlert(body, opts?.leadId),
+    sendRelaySms(body),
+  ]);
   return (
     (sms.status === "fulfilled" && sms.value) ||
     (mail.status === "fulfilled" && mail.value) ||

@@ -1802,6 +1802,9 @@ Pick the best channel per device. Be concise.`;
     }
   }
 
+  // Built here, sent below from the e-mails' after() callback: the alert
+  // e-mails too, and the detailed owner e-mail there carries the same news.
+  let ownerAlert = "";
   {
     const photoNote = safePhotos.length ? ` Photos: ${safePhotos[0]}` : "";
     const reviewTag = reviewRequired ? "⚠️ REVIEW: " : "";
@@ -1827,9 +1830,7 @@ Pick the best channel per device. Be concise.`;
     // Customer fields go through alertText(): no line breaks, no links — the
     // only URL in this alert is our own (whitelisted) photo.
     const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${alertText(name)} wants to sell ${alertText(model)} (${alertText(condition)})${quoteNum > 0 ? ` for $${quoteNum}${quoteTampered ? " (CLAMPED — tamper flag)" : ""}` : " — custom quote needed"}. Phone: ${alertText(phone) || "N/A"} Email: ${alertText(email) || "N/A"}${photoNote}${labelNote}`;
-    // After the response: three channels at up to 8 s each, and nothing in
-    // the response reads the outcome.
-    after(() => notifyOwnerSms(ownerSms).catch(() => {}));
+    ownerAlert = ownerSms;
   }
 
   // Auto-scheduling outreach — Skywalker 2026-05-28. A local/mixed lead
@@ -1853,6 +1854,7 @@ Pick the best channel per device. Be concise.`;
   // email went out (schedulingEmailSent), so it must see that result.
   after(async () => {
     let schedulingEmailSent = false;
+    let ownerEmailSent = false;
     if (needsScheduling && email && typeof email === "string" && process.env.RESEND_API_KEY) {
       try {
         const escS = (s: unknown) => String(s ?? "").replace(/[<>&]/g, (ch) => (ch === "<" ? "&lt;" : ch === ">" ? "&gt;" : "&amp;"));
@@ -1929,7 +1931,7 @@ Pick the best channel per device. Be concise.`;
         const text = rows.map(([k, v]) => `${k}: ${v}`).join("\n") + "\n\nhttps://topcashcellular.com/admin";
         const { Resend } = await import("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
+        const sent = await resend.emails.send({
           from: "Top Cash Cellular <noreply@topcashcellular.com>",
           replyTo: "support@topcashcellular.com",
           to: OWNER_EMAIL,
@@ -1937,8 +1939,16 @@ Pick the best channel per device. Be concise.`;
           html,
           text,
         });
+        ownerEmailSent = !!sent?.data?.id;
       } catch {}
     }
+    // Owner alert — the text channels (Twilio + the Telnyx relay), up to 8 s
+    // each, still after the response. notifyOwnerSms e-mails as well; with
+    // the detailed e-mail above in the inbox that channel is skipped, so a
+    // lead is ONE owner e-mail (it used to be two: this alert's short form
+    // and the card). When the detailed send failed, the e-mail channel stays
+    // on as the fallback.
+    if (ownerAlert) await notifyOwnerSms(ownerAlert, { skipEmail: ownerEmailSent }).catch(() => {});
   });
 
   return NextResponse.json({

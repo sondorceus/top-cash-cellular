@@ -439,6 +439,10 @@ export async function GET(req: NextRequest) {
       goCount && !payCount
         ? `⏰ TCC watchdog: ${goCount} /go lock${goCount === 1 ? "" : "s"} nobody reached out to. e.g. ${lead.device} ${lead.quote} — ${lead.ageDays}d. https://topcashcellular.com/admin/chats`
         : `⏰ TCC watchdog: ${payCount} unpaid trade${payCount === 1 ? "" : "s"} need payout${goCount ? ` + ${goCount} /go lock${goCount === 1 ? "" : "s"} unworked` : ""}. e.g. ${lead.name} (${lead.device}) — ${RULES[lead.cat].label.toLowerCase()} ${lead.ageDays}d. Check the board.`,
+      // The digest above already reached the inbox: text channels only, so a
+      // watchdog run is one e-mail, not two with the same news. When the
+      // digest itself failed to send, the e-mail channel stays on.
+      { skipEmail: emailSent },
     );
   }
 
