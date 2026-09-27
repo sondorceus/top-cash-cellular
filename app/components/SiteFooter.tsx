@@ -24,6 +24,13 @@ const A = ({ href, className, children }: { href: string; className: string; chi
 
 export default function SiteFooter() {
   const [sent, setSent] = useState(false);
+  // Wait for the server before saying "You're on the list" (2026-09-27): the
+  // fire-and-forget form showed success on a 429 and on a rejected address.
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  // The address opted out before: the server sent a confirmation link instead
+  // of enrolling it, so the success copy must say "confirm" (2026-09-27).
+  const [confirm, setConfirm] = useState(false);
 
   return (
     <footer className="mt-auto bg-gradient-to-b from-[#0d1f15] via-[#0a1812] to-[#070d0a] text-[#cfcfcf] py-10 relative">
@@ -34,23 +41,37 @@ export default function SiteFooter() {
           <p className="text-xs text-[#9a9a9a] mb-3">Sign up for deals & sustainability tips.</p>
           {sent ? (
             <div className="bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-4 py-3 max-w-sm mx-auto">
-              <p className="text-[#00c853] text-sm font-bold">You&apos;re on the list. Check your inbox.</p>
-              <p className="text-[#9a9a9a] text-[11px] mt-1">If it isn&apos;t there in a minute, peek in spam — first emails from new senders sometimes land there.</p>
+              <p className="text-[#00c853] text-sm font-bold">{confirm ? "Check your inbox to confirm." : "You’re on the list. Check your inbox."}</p>
+              <p className="text-[#9a9a9a] text-[11px] mt-1">
+                {confirm
+                  ? "This address unsubscribed before, so we sent a confirmation link — tap it and you’re back on the list."
+                  : "If it isn’t there in a minute, peek in spam — first emails from new senders sometimes land there."}
+              </p>
             </div>
           ) : (
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const form = e.currentTarget;
                 const name = (form.elements.namedItem("footerNlName") as HTMLInputElement | null)?.value.trim();
                 const email = (form.elements.namedItem("footerNlEmail") as HTMLInputElement | null)?.value.trim();
-                if (!email) return;
-                fetch("/api/newsletter", {
-                  method: "POST",
-                  headers: { "content-type": "application/json" },
-                  body: JSON.stringify({ email, name: name || undefined }),
-                }).catch(() => {});
-                setSent(true);
+                if (!email || busy) return;
+                setBusy(true);
+                setError("");
+                try {
+                  const r = await fetch("/api/newsletter", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ email, name: name || undefined }),
+                  });
+                  const d = await r.json().catch(() => ({}));
+                  if (r.ok && d.ok) { setConfirm(!!d.confirm); setSent(true); }
+                  else setError(typeof d.error === "string" && d.error ? d.error : "Couldn't sign you up — check the address and try again.");
+                } catch {
+                  setError("Couldn't sign you up — check your connection and try again.");
+                } finally {
+                  setBusy(false);
+                }
               }}
               className="flex flex-col items-stretch gap-2 max-w-sm mx-auto"
             >
@@ -71,8 +92,9 @@ export default function SiteFooter() {
                   aria-label="Email address"
                   className="flex-1 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs placeholder:text-[#888] focus:outline-none focus:border-[#00c853]/50"
                 />
-                <button type="submit" className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition">Sign up</button>
+                <button type="submit" disabled={busy} className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition disabled:opacity-60">{busy ? "…" : "Sign up"}</button>
               </div>
+              {error && <p role="status" aria-live="polite" className="text-xs text-[#ff6b6b] mt-1">{error}</p>}
             </form>
           )}
         </div>

@@ -13,6 +13,10 @@ export type SeqVars = {
   device: string;   // clean model, e.g. "iPhone 15 Pro"
   quote: string;    // formatted, e.g. "$420" (already $-prefixed) or ""
   offerUrl: string; // the SIGNED offer link — offerUrl(leadId) from app/lib/offer-link
+  // The signed newsletter opt-out link — newsletterUnsubUrl(email). Every
+  // nudge carries it in the footer and the text part (2026-09-27): these are
+  // marketing touches, and "just ignore this" was the only way out.
+  unsubUrl: string;
 };
 
 export type SeqStep = {
@@ -35,16 +39,21 @@ export type Sequence = {
 // button) to every other TCC email.
 import { mailShell, esc } from "./email-shell";
 
-function shell(opts: { heading: string; bodyHtml: string; ctaUrl: string; ctaLabel: string }): string {
+function shell(opts: { heading: string; bodyHtml: string; ctaUrl: string; ctaLabel: string; unsubUrl: string }): string {
   return mailShell({
     preheader: opts.heading,
     title: opts.heading,
     contentHtml: opts.bodyHtml,
     buttonHref: opts.ctaUrl,
     buttonLabel: opts.ctaLabel,
-    footerHtml: "Not looking to sell anymore? Just ignore this — we won't keep nudging.",
+    footerHtml:
+      `Not looking to sell anymore? Just ignore this — we won't keep nudging. ` +
+      `<a href="${opts.unsubUrl}" style="color:#7d8099;text-decoration:underline;">Unsubscribe</a> to stop every Top Cash Cellular email.`,
   });
 }
+
+// Plain-text footer line, same link (2026-09-27).
+const unsubLine = (v: SeqVars) => `Not selling anymore? Just ignore this.\nUnsubscribe from all our emails: ${v.unsubUrl}`;
 
 const p = (s: string) => `<p style="font-size:15px;line-height:1.6;color:#cfd2e0;margin:0 0 14px">${s}</p>`;
 
@@ -69,11 +78,12 @@ export const SEQUENCES: Sequence[] = [
               p(`Your offer page has everything in one place:`),
             ctaUrl: v.offerUrl,
             ctaLabel: "View my offer",
+            unsubUrl: v.unsubUrl,
           }),
         text: (v) =>
           `Hi ${v.firstName}, your ${v.device} offer${v.quote ? ` of ${v.quote}` : ""} is still good.\n\n` +
           `Cashing out is quick — prepaid label or local Austin meetup, and you're paid the day your device checks out (Zelle/Cash App/Venmo/PayPal/BTC/cash).\n\n` +
-          `View your offer: ${v.offerUrl}\n\nNot selling anymore? Just ignore this.\n\n— Top Cash Cellular`,
+          `View your offer: ${v.offerUrl}\n\n${unsubLine(v)}\n\n— Top Cash Cellular`,
       },
       {
         position: 2,
@@ -88,11 +98,12 @@ export const SEQUENCES: Sequence[] = [
               p(`Otherwise your offer's right here whenever you're ready:`),
             ctaUrl: v.offerUrl,
             ctaLabel: "Finish my sale",
+            unsubUrl: v.unsubUrl,
           }),
         text: (v) =>
           `Hi ${v.firstName} — last check-in on your ${v.device}${v.quote ? ` (${v.quote})` : ""}.\n\n` +
           `Prices move with the market, so locking in now is usually the safe bet. Anything holding you up — price, shipping, payout? Just reply and a real person will help.\n\n` +
-          `Your offer: ${v.offerUrl}\n\nNot selling anymore? Just ignore this.\n\n— Top Cash Cellular`,
+          `Your offer: ${v.offerUrl}\n\n${unsubLine(v)}\n\n— Top Cash Cellular`,
       },
     ],
   },

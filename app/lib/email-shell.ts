@@ -68,6 +68,17 @@ export function esc(s: unknown): string {
     .replace(/"/g, "&quot;");
 }
 
+// Postal line for every footer (2026-09-27): CAN-SPAM wants a physical
+// address on commercial mail and no template carried one. TCC_POSTAL_ADDRESS
+// holds it (one line, e.g. "123 Main St Suite 4, Austin, TX 78701"); unset
+// renders the city alone, exactly what the footers said before.
+export function mailPostalText(): string {
+  return (process.env.TCC_POSTAL_ADDRESS || "").trim() || "Austin, TX";
+}
+export function mailPostal(): string {
+  return esc(mailPostalText());
+}
+
 // CTA button with a VML fallback so Outlook (mso) renders a real rounded
 // button instead of a bare blue link. Every other client gets the modern
 // border-radius anchor. This is the single source of truth for buttons.
@@ -142,7 +153,7 @@ export function mailShell(a: MailShellArgs): string {
     (a.afterButtonHtml ? `<tr><td style="padding:6px 30px 10px;">${a.afterButtonHtml}</td></tr>` : "") +
     // footer
     `<tr><td style="padding:18px 30px 24px;border-top:1px solid ${MAIL.border};">` +
-    `<div style="color:${MAIL.muted};font-size:12px;line-height:1.7;">Top Cash Cellular · Austin, TX · <a href="mailto:support@topcashcellular.com" style="color:${MAIL.green};text-decoration:none;">support@topcashcellular.com</a><br>Questions? Just reply to this email — a real person reads it.</div>` +
+    `<div style="color:${MAIL.muted};font-size:12px;line-height:1.7;">Top Cash Cellular · ${mailPostal()} · <a href="mailto:support@topcashcellular.com" style="color:${MAIL.green};text-decoration:none;">support@topcashcellular.com</a><br>Questions? Just reply to this email — a real person reads it.</div>` +
     `</td></tr></table></td></tr>` +
     (a.footerHtml ? `<tr><td style="padding:14px 10px 0;"><div style="color:${MAIL.faint};font-size:11px;line-height:1.6;">${a.footerHtml}</div></td></tr>` : "") +
     `</table></div></body></html>`

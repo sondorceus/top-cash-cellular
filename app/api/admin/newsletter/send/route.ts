@@ -24,13 +24,27 @@
 //     (hashes, never addresses) so a retry with the same client-minted
 //     sendId skips everyone already mailed;
 //   • `testOnly: true` mails OWNER_EMAIL alone.
+//
+// 2026-09-27 — audit follow-ups:
+//   • the opt-out store is read ONCE into a set (was one Blob list per
+//     recipient), and every candidate digest/hash is checked so a key
+//     rotation neither re-mails nor forgets anyone;
+//   • deadline checked per recipient (240 s) with the batch marker flushed on
+//     an early stop; one retry on a Resend 429; real error names in failures;
+//   • footer: postal address, source-honest reason line, "Promotional
+//     message" for lead recipients, https-only List-Unsubscribe; the test
+//     send carries the same headers and text footer;
+//   • {firstName} in subject/preheader too, lead names title-cased and
+//     placeholders → "there"; internal test addresses never mailed; a
+//     truncated comms read is refused like an incomplete one.
 
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo } from "../../../../lib/email-shell";
+import type { CreateEmailOptions, Resend as ResendClient } from "resend";
+import { mailLogo, mailPostal, mailPostalText } from "../../../../lib/email-shell";
 import { safeEqual } from "../../../../lib/admin-auth";
-import { signNewsletterToken } from "../../../../lib/newsletter-token";
+import { newsletterUnsubUrl } from "../../../../lib/newsletter-token";
 import { fetchCommsRead, type McMessage } from "../../../../lib/mc-comms";
-import { isNewsletterUnsubbed, newsletterEmailHash } from "../../../../lib/newsletter-unsub";
+import { isUnsubbedIn, listNewsletterUnsubDigests, newsletterEmailHashes } from "../../../../lib/newsletter-unsub";
 
 // A blast can run for minutes — the default function budget cut long sends
 // off mid-list with no resume (2026-09-26).
@@ -40,6 +54,10 @@ const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
 const RESEND_KEY = process.env.RESEND_API_KEY || "";
+// Our own test addresses (the list the crons already use) never receive a
+// blast (2026-09-27): a test lead had joined the roster via includeLeads.
+const INTERNAL_EMAILS = (process.env.TCC_INTERNAL_EMAILS || "sondorceus@gmail.com,sellurcell@topcashcells.com")
+  .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
 
 function checkAuth(req: NextRequest): boolean {
   // Header only (2026-09-26): a ?token= in the URL put the admin secret in
@@ -101,7 +119,15 @@ function wrap(opts: {
   first: string;
   bodyHtml: string;
   unsubUrl: string;
+  // Why this address is on the list (2026-09-27): a lead never "signed up",
+  // they asked for a quote — the footer says so and marks the mail
+  // promotional (CAN-SPAM identification for a recipient who did not opt in).
+  source: Subscriber["source"];
 }): string {
+  const promo = opts.source === "lead";
+  const reason = promo
+    ? "You're getting this because you got a quote from Top Cash Cellular — this is a promotional message."
+    : "You're getting this because you signed up at topcashcellular.com.";
   // Preheader is the hidden snippet email clients show in the inbox
   // preview row — set it explicitly or it falls back to the first
   // visible line of body.
@@ -124,10 +150,10 @@ ${preheaderBlock}
 <tr><td style="padding:18px 28px 28px;border-top:1px solid rgba(255,255,255,0.06)">
 <div style="font-size:12px;color:#888;line-height:1.6;text-align:center">
 Reply directly or write to <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a><br>
-<span style="color:#666">Top Cash Cellular · Austin, TX · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span>
+<span style="color:#666">Top Cash Cellular · ${mailPostal()} · <a href="https://topcashcellular.com" style="color:#666;text-decoration:none">topcashcellular.com</a></span>
 </div>
 <div style="margin-top:10px;font-size:11px;color:#666;text-align:center">
-<a href="${opts.unsubUrl}" style="color:#666;text-decoration:underline">Unsubscribe in one click</a> · You're getting this because you signed up at topcashcellular.com.
+${promo ? `<span style="font-weight:700;letter-spacing:0.5px;text-transform:uppercase">Promotional message</span> · ` : ""}<a href="${opts.unsubUrl}" style="color:#666;text-decoration:underline">Unsubscribe in one click</a> · ${reason}
 </div>
 </td></tr>
 </table>
@@ -137,13 +163,18 @@ Reply directly or write to <a href="mailto:support@topcashcellular.com" style="c
 // Inline implementation rather than importing — keeps the send route
 // independent of /api/admin/newsletter so a failure in one doesn't
 // break the other.
-async function fetchSubscribers(includeLeads: boolean): Promise<{ subscribers: Subscriber[]; messages: McMessage[] }> {
-  // Full history, archive included, no memo (2026-09-26): the recipient
-  // list is authoritative for a blast, so an incomplete read throws (the
-  // caller answers 502) instead of mailing a shorter list. The same
-  // messages carry the [NEWSLETTER-SENT] markers the dedupe reads.
-  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 0 });
-  if (!read.complete || read.messages.length === 0) throw new Error("MC read incomplete");
+async function fetchSubscribers(includeLeads: boolean, memoMs: number): Promise<{ subscribers: Subscriber[]; messages: McMessage[] }> {
+  // Full history, archive included (2026-09-26): the recipient list is
+  // authoritative for a blast, so an incomplete read throws (the caller
+  // answers 502) instead of mailing a shorter list. The same messages carry
+  // the [NEWSLETTER-SENT] markers the dedupe reads. A real send reads fresh
+  // (memoMs 0) so its own markers are seen; a preview may share the list
+  // route's 30 s memo (2026-09-27).
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs });
+  if (!read.complete || read.messages.length === 0) throw new Error("incomplete");
+  // Every page full with none left (2026-09-27): the window is too small for
+  // the history and the oldest signups are missing — refused like a bad read.
+  if (read.truncated) throw new Error("truncated");
   const messages = read.messages;
   const signups = new Map<string, Subscriber>();
   const unsubAt = new Map<string, string>();
@@ -197,6 +228,7 @@ async function fetchSubscribers(includeLeads: boolean): Promise<{ subscribers: S
   for (const [, sub] of signups) {
     const unsub = unsubAt.get(sub.email);
     if (unsub && unsub > sub.signedUpAt) continue;
+    if (INTERNAL_EMAILS.includes(sub.email)) continue;
     out.push(sub);
   }
   return { subscribers: out, messages };
@@ -209,6 +241,58 @@ function personalize(bodyText: string, first: string): string {
     .replace(/\{firstName\}/g, first)
     .replace(/\{first_name\}/g, first)
     .replace(/\{name\}/g, first);
+}
+
+// First name for "Hi {firstName}," (2026-09-27). Lead rows arrive as "N/A",
+// "(not provided yet)", "SUSAN" or "susan davis": placeholders read as
+// "there"; one token, title-cased when it is all caps or all lower (mixed
+// case like "DeShawn" is kept).
+function firstNameOf(name?: string): string {
+  const full = (name || "").trim();
+  if (!full || full.startsWith("(")) return "there";
+  const raw = (full.split(/\s+/)[0] || "").replace(/^[^A-Za-zÀ-ɏ]+|[^A-Za-zÀ-ɏ'’.-]+$/g, "");
+  if (!raw || /^(n\/?a|none|null|undefined|unknown|test|anonymous|customer|seller|user|me)$/i.test(raw)) return "there";
+  const t = raw.slice(0, 60);
+  if (t === t.toUpperCase() || t === t.toLowerCase()) return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase();
+  return t;
+}
+
+// RFC-8058 one-click, https URI only (2026-09-27): the mailto: alternative
+// pointed at unsubscribe@topcashcellular.com, which nothing reads — a
+// mailbox provider that picked it would send an opt-out nobody honored.
+function unsubHeaders(unsubUrl: string): Record<string, string> {
+  return {
+    "List-Unsubscribe": `<${unsubUrl}>`,
+    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+  };
+}
+
+// Plain-text twin of wrap()'s footer (2026-09-27).
+function textFooter(source: Subscriber["source"], unsubUrl: string): string {
+  const promo = source === "lead";
+  return `— The Top Cash Cellular team\nTop Cash Cellular · ${mailPostalText()}\n${promo ? "Promotional message. You're getting this because you got a quote from Top Cash Cellular." : "You're getting this because you signed up at topcashcellular.com."}\nUnsubscribe: ${unsubUrl}`;
+}
+
+// One Resend call with the real failure reason (2026-09-27). The SDK (6.x)
+// returns { data: null, error } instead of throwing, so every 422 and 429
+// used to be logged as "Resend returned no id"; a rate_limit_exceeded gets
+// one retry after a second (the default tier is 2 req/s, not the ~10 the
+// old throttle comment assumed).
+async function deliver(resend: ResendClient, msg: CreateEmailOptions): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  let last = "Resend returned no id";
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const r = await resend.emails.send(msg);
+      if (r?.data?.id) return { ok: true, id: r.data.id };
+      const name = r?.error?.name || "unknown_error";
+      last = `${name}: ${r?.error?.message || "no detail"}`;
+      if (name !== "rate_limit_exceeded") break;
+      await sleep(1000);
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : "send failed" };
+    }
+  }
+  return { ok: false, error: last };
 }
 
 // One comms line; bounded so a hung MC can't eat the send budget.
@@ -256,34 +340,38 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "OWNER_EMAIL is not configured — nowhere to send the test." }, { status: 400 });
     }
     const first = "there";
-    const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${signNewsletterToken(ownerEmail)}`;
+    const unsubUrl = newsletterUnsubUrl(ownerEmail);
     const personalizedBody = personalize(bodyText, first);
-    const testSubject = `[TEST] ${subject}`;
-    const html = wrap({ subject: testSubject, preheader, first, bodyHtml: bodyToHtml(personalizedBody), unsubUrl });
-    try {
-      const { Resend } = await import("resend");
-      const resend = new Resend(RESEND_KEY);
-      const r = await resend.emails.send({
-        from: "Top Cash Cellular <noreply@topcashcellular.com>",
-        replyTo: "support@topcashcellular.com",
-        to: ownerEmail,
-        subject: testSubject,
-        html,
-        text: `Hi ${first},\n\n${personalizedBody}\n\n— The Top Cash Cellular team\nAustin, TX`,
-      });
-      if (!r?.data?.id) return NextResponse.json({ error: "Resend returned no id for the test send" }, { status: 502 });
-    } catch (e) {
-      return NextResponse.json({ error: e instanceof Error ? e.message : "Test send failed" }, { status: 502 });
-    }
+    const testSubject = `[TEST] ${personalize(subject, first)}`;
+    const html = wrap({ subject: testSubject, preheader: personalize(preheader, first), first, bodyHtml: bodyToHtml(personalizedBody), unsubUrl, source: "signup" });
+    // Same headers and text footer as the real blast (2026-09-27): the test
+    // used to omit both, so the owner could not see Gmail's one-click chip or
+    // the unsubscribe line — the two things the test exists to check.
+    const { Resend } = await import("resend");
+    const r = await deliver(new Resend(RESEND_KEY), {
+      from: "Top Cash Cellular <noreply@topcashcellular.com>",
+      replyTo: "support@topcashcellular.com",
+      to: ownerEmail,
+      subject: testSubject,
+      html,
+      text: `Hi ${first},\n\n${personalizedBody}\n\n${textFooter("signup", unsubUrl)}`,
+      headers: unsubHeaders(unsubUrl),
+    });
+    if (!r.ok) return NextResponse.json({ error: `Test send failed — ${r.error}` }, { status: 502 });
     return NextResponse.json({ ok: true, testOnly: true, to: ownerEmail });
   }
 
   let subscribers: Subscriber[];
   let feed: McMessage[];
   try {
-    ({ subscribers, messages: feed } = await fetchSubscribers(includeLeads));
-  } catch {
-    return NextResponse.json({ error: "Couldn't load the subscriber list from Mission Control (incomplete read) — nothing was sent. Try again." }, { status: 502 });
+    ({ subscribers, messages: feed } = await fetchSubscribers(includeLeads, dryRun ? 30_000 : 0));
+  } catch (e) {
+    const truncated = e instanceof Error && e.message === "truncated";
+    return NextResponse.json({
+      error: truncated
+        ? "Mission Control history is larger than the 30,000-message read window — the oldest signups would be missing. Nothing was sent; raise maxPages in the newsletter routes."
+        : "Couldn't load the subscriber list from Mission Control (incomplete read) — nothing was sent. Try again.",
+    }, { status: 502 });
   }
   if (subscribers.length === 0) {
     return NextResponse.json({ ok: false, error: "No subscribers yet" }, { status: 400 });
@@ -299,10 +387,10 @@ export async function POST(req: NextRequest) {
   // Dry-run: render preview for the first recipient + return list.
   if (dryRun) {
     const sample = subscribers[0];
-    const first = (sample?.name?.split(/\s+/)[0] || "there").slice(0, 60);
-    const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${signNewsletterToken(sample.email)}`;
+    const first = firstNameOf(sample?.name);
+    const unsubUrl = newsletterUnsubUrl(sample.email);
     const bodyHtml = bodyToHtml(personalize(bodyText, first));
-    const html = wrap({ subject, preheader, first, bodyHtml, unsubUrl });
+    const html = wrap({ subject: personalize(subject, first), preheader: personalize(preheader, first), first, bodyHtml, unsubUrl, source: sample.source });
     return NextResponse.json({
       ok: true,
       dryRun: true,
@@ -322,72 +410,73 @@ export async function POST(req: NextRequest) {
     if (sm) for (const h of sm[1].split(",")) if (h) alreadySent.add(h);
   }
 
-  // Real send. Resend's default tier is ~10 req/sec — 100 ms between sends
-  // inside a batch, a pause between batches of 25, and a soft deadline so
-  // the response (with the resume count) always lands inside maxDuration.
+  // Every durable opt-out in one walk (2026-09-27) — this was one Blob
+  // list() per recipient, 100-300 ms each, most of the send budget at a few
+  // hundred addresses. An unreadable store aborts before any send.
+  const unsubSet = await listNewsletterUnsubDigests();
+  if (!unsubSet) {
+    return NextResponse.json({ error: "Couldn't read the opt-out store — nothing was sent. Try again." }, { status: 502 });
+  }
+
+  // Real send. Resend's default tier is 2 req/sec (not the ~10 assumed before
+  // 2026-09-27) — 100 ms between sends, a pause between batches of 25, one
+  // retry on a 429, and a soft deadline checked before EVERY recipient with
+  // headroom: the batch-start check let a batch begun at 269 s run past the
+  // 300 s cap, losing its marker (re-mailed on retry) and the response.
   const { Resend } = await import("resend");
   const resend = new Resend(RESEND_KEY);
   const BATCH = 25;
   const BATCH_PAUSE_MS = 500;
-  const softDeadline = Date.now() + 270_000;
-  let sent = 0, failed = 0, skippedAlreadySent = 0, skippedUnsub = 0, skippedBlobError = 0, batches = 0;
+  const softDeadline = Date.now() + 240_000;
+  let sent = 0, failed = 0, skippedAlreadySent = 0, skippedUnsub = 0, batches = 0;
   let partial = false;
-  let index = 0;
+  let index = 0; // next recipient not yet considered
   const failures: { email: string; error: string }[] = [];
-  while (index < subscribers.length) {
+  while (index < subscribers.length && !partial) {
     if (Date.now() > softDeadline) { partial = true; break; }
-    const batch = subscribers.slice(index, index + BATCH);
-    index += BATCH;
     batches += 1;
+    const batchEnd = Math.min(index + BATCH, subscribers.length);
     const batchHashes: string[] = [];
-    for (const sub of batch) {
-      const hash = newsletterEmailHash(sub.email);
-      if (alreadySent.has(hash)) { skippedAlreadySent += 1; continue; }
-      // Durable opt-out check per recipient, failing CLOSED: an unreadable
-      // store skips the address rather than risk mailing someone who left.
-      const unsub = await isNewsletterUnsubbed(sub.email);
-      if (unsub === true) { skippedUnsub += 1; continue; }
-      if (unsub === null) { skippedBlobError += 1; continue; }
-      const first = (sub.name?.split(/\s+/)[0] || "there").slice(0, 60);
-      const unsubUrl = `https://topcashcellular.com/api/newsletter/unsubscribe?token=${signNewsletterToken(sub.email)}`;
+    while (index < batchEnd) {
+      if (Date.now() > softDeadline) { partial = true; break; }
+      const sub = subscribers[index];
+      index += 1;
+      const hashes = newsletterEmailHashes(sub.email);
+      if (hashes.some((h) => alreadySent.has(h))) { skippedAlreadySent += 1; continue; }
+      if (isUnsubbedIn(unsubSet, sub.email)) { skippedUnsub += 1; continue; }
+      const first = firstNameOf(sub.name);
+      const unsubUrl = newsletterUnsubUrl(sub.email);
+      const subj = personalize(subject, first);
       const personalizedBody = personalize(bodyText, first);
-      const html = wrap({ subject, preheader, first, bodyHtml: bodyToHtml(personalizedBody), unsubUrl });
-      const text = `Hi ${first},\n\n${personalizedBody}\n\n— The Top Cash Cellular team\nAustin, TX\n\nUnsubscribe: ${unsubUrl}`;
-      try {
-        // Set List-Unsubscribe + List-Unsubscribe-Post per RFC-8058
-        // so Gmail/Outlook show the inbox 1-click unsubscribe button.
-        const r = await resend.emails.send({
-          from: "Top Cash Cellular <noreply@topcashcellular.com>",
-          replyTo: "support@topcashcellular.com",
-          to: sub.email,
-          subject,
-          html,
-          text,
-          headers: {
-            "List-Unsubscribe": `<${unsubUrl}>, <mailto:unsubscribe@topcashcellular.com?subject=unsubscribe>`,
-            "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-          },
-        });
-        if (r?.data?.id) {
-          sent += 1;
-          batchHashes.push(hash);
-          alreadySent.add(hash);
-        } else {
-          failed += 1;
-          failures.push({ email: sub.email, error: "Resend returned no id" });
-        }
-      } catch (e) {
+      const html = wrap({ subject: subj, preheader: personalize(preheader, first), first, bodyHtml: bodyToHtml(personalizedBody), unsubUrl, source: sub.source });
+      const text = `Hi ${first},\n\n${personalizedBody}\n\n${textFooter(sub.source, unsubUrl)}`;
+      const r = await deliver(resend, {
+        from: "Top Cash Cellular <noreply@topcashcellular.com>",
+        replyTo: "support@topcashcellular.com",
+        to: sub.email,
+        subject: subj,
+        html,
+        text,
+        headers: unsubHeaders(unsubUrl),
+      });
+      if (r.ok) {
+        sent += 1;
+        batchHashes.push(hashes[0]);
+        alreadySent.add(hashes[0]);
+      } else {
         failed += 1;
-        failures.push({ email: sub.email, error: e instanceof Error ? e.message : "send failed" });
+        failures.push({ email: sub.email, error: r.error });
       }
       await sleep(100);
     }
     // Per-batch marker: hashes only (never addresses). Failures are not
-    // marked, so a retry reaches them again.
+    // marked, so a retry reaches them again. Flushed even when the deadline
+    // cut the batch short (2026-09-27) — an unmarked send is a duplicate on
+    // "Continue".
     if (batchHashes.length > 0) {
       await postMarker(`[NEWSLETTER-SENT: ${sendId}] batch=${batches} to=${batchHashes.join(",")}`);
     }
-    if (index < subscribers.length) await sleep(BATCH_PAUSE_MS);
+    if (!partial && index < subscribers.length) await sleep(BATCH_PAUSE_MS);
   }
   const remaining = partial ? subscribers.length - index : 0;
 
@@ -395,7 +484,7 @@ export async function POST(req: NextRequest) {
   // what went out; "=" is stripped from it so the dedupe's `to=` scan can't
   // pick up subject text.
   await postMarker(
-    `[NEWSLETTER-SENT: ${sendId}] subject=${subject.replace(/[\[\]\r\n=]+/g, " ").slice(0, 200)} sent=${sent} failed=${failed} alreadySent=${skippedAlreadySent} unsubscribed=${skippedUnsub} storeErrors=${skippedBlobError} totalSubscribers=${subscribers.length} includeLeads=${includeLeads}${partial ? ` partial=1 remaining=${remaining}` : ""}`,
+    `[NEWSLETTER-SENT: ${sendId}] subject=${subject.replace(/[\[\]\r\n=]+/g, " ").slice(0, 200)} sent=${sent} failed=${failed} alreadySent=${skippedAlreadySent} unsubscribed=${skippedUnsub} totalSubscribers=${subscribers.length} includeLeads=${includeLeads}${partial ? ` partial=1 remaining=${remaining}` : ""}`,
   );
 
   return NextResponse.json({
@@ -406,7 +495,6 @@ export async function POST(req: NextRequest) {
     failed,
     skippedAlreadySent,
     skippedUnsub,
-    skippedBlobError,
     batches,
     partial,
     remaining,

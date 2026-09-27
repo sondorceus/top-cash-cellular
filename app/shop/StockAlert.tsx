@@ -9,12 +9,18 @@ import { track } from "@vercel/analytics";
 // devices just dropped" is exactly that email.
 export default function StockAlert({ context }: { context: string }) {
   const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "busy" | "done" | "error">("idle");
+  // "confirm" (2026-09-27): the address opted out before, so the server sent a
+  // confirmation link instead of enrolling it — not on the list yet.
+  const [state, setState] = useState<"idle" | "busy" | "done" | "confirm" | "error">("idle");
+  // The server's own reason when it has one (2026-09-27): a 429 or a
+  // rejected address read as "check the address" before.
+  const [errMsg, setErrMsg] = useState("");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || state === "busy") return;
     setState("busy");
+    setErrMsg("");
     try {
       const r = await fetch("/api/newsletter", {
         method: "POST",
@@ -22,10 +28,13 @@ export default function StockAlert({ context }: { context: string }) {
         body: JSON.stringify({ email: email.trim() }),
       });
       const d = await r.json().catch(() => ({}));
-      if (r.ok && d.ok) {
+      if (r.ok && d.ok && d.confirm) {
+        setState("confirm");
+      } else if (r.ok && d.ok) {
         setState("done");
         track("shop_stock_alert_signup", { context });
       } else {
+        if (typeof d.error === "string" && d.error) setErrMsg(d.error);
         setState("error");
       }
     } catch {
@@ -37,6 +46,13 @@ export default function StockAlert({ context }: { context: string }) {
     return (
       <p className="text-sm font-semibold text-[#00c853] mt-5">
         You&apos;re on the list — first to know when stock lands.
+      </p>
+    );
+  }
+  if (state === "confirm") {
+    return (
+      <p className="text-sm font-semibold text-[#00c853] mt-5">
+        Check your inbox to confirm — this address unsubscribed before, so tap the link we just sent and you&apos;re on the list.
       </p>
     );
   }
@@ -64,7 +80,7 @@ export default function StockAlert({ context }: { context: string }) {
       {/* Visible AND announced — the old sr-only span left sighted users
           watching the button reset with no clue the signup failed. */}
       <p role="status" aria-live="polite" className={`text-xs text-[#ff6b6b] ${state === "error" ? "mt-2" : ""}`}>
-        {state === "error" ? "Couldn't sign you up — check the address and try again." : ""}
+        {state === "error" ? errMsg || "Couldn't sign you up — check the address and try again." : ""}
       </p>
     </form>
   );

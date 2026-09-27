@@ -8,9 +8,10 @@
 // GET response is a friendly confirmation page.
 
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo, esc as shellEsc } from "../../../lib/email-shell";
+import { esc as shellEsc } from "../../../lib/email-shell";
 import { verifyNewsletterToken } from "../../../lib/newsletter-token";
 import { markNewsletterUnsub } from "../../../lib/newsletter-unsub";
+import { newsletterPage, tamperedBodyHtml } from "../../../lib/newsletter-page";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -19,7 +20,9 @@ async function postUnsubMarker(email: string): Promise<boolean> {
   // Durable copy first (2026-09-26): the blob outlives every comms window
   // (a marker older than the reader's window used to be forgotten and the
   // address mailed again); the marker stays as the audit trail. Either
-  // landing counts as recorded — the send route checks the blob.
+  // landing counts as recorded — the send route checks the blob. The MC post
+  // is bounded (2026-09-27; it had no timeout at all) and a false here means
+  // NEITHER landed, which the page now says instead of "You're unsubscribed".
   const durable = await markNewsletterUnsub(email);
   if (!MC_KEY) return durable;
   try {
@@ -34,6 +37,7 @@ async function postUnsubMarker(email: string): Promise<boolean> {
         tags: ["newsletter", "unsubscribe"],
         priority: "low",
       }),
+      signal: AbortSignal.timeout(8_000),
     });
     return r.ok || durable;
   } catch {
@@ -41,41 +45,35 @@ async function postUnsubMarker(email: string): Promise<boolean> {
   }
 }
 
-function confirmationHtml(email: string, success: boolean): string {
-  const title = success ? "You're unsubscribed" : "Couldn't unsubscribe";
-  const body = success
+// done = recorded; bad-token = the link failed verification; not-recorded =
+// a good link but neither the blob nor the marker could be written (2026-09-27).
+type UnsubOutcome = "done" | "bad-token" | "not-recorded";
+
+function confirmationHtml(email: string, outcome: UnsubOutcome): string {
+  const title = outcome === "done" ? "You're unsubscribed" : outcome === "not-recorded" ? "Not saved yet — please try again" : "Couldn't unsubscribe";
+  const body = outcome === "done"
     ? `<p>${shellEsc(email)} won't get any more emails from Top Cash Cellular. Changed your mind later? <a href="https://topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">Re-subscribe at our home page</a>.</p>`
-    : `<p>The unsubscribe link looks tampered or expired. Email <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a> and we'll handle it manually.</p>`;
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${title}</title></head>
-<body style="margin:0;padding:0;background:#13142b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#e6e6e6">
-<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 16px">
-<div style="max-width:520px;width:100%;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden;text-align:center">
-<div style="padding:26px 28px;border-bottom:1px solid rgba(255,255,255,0.08);color:#ffffff">
-<div style="margin:0 0 16px">${mailLogo()}</div>
-<div style="font-size:22px;font-weight:700;line-height:1.3;color:#ffffff">${title}</div>
-</div>
-<div style="padding:28px;font-size:15px;line-height:1.6;color:#dcdcdc">
-${body}
-</div>
-<div style="padding:18px 28px 24px;border-top:1px solid rgba(255,255,255,0.06);font-size:12px;color:#888">
-Top Cash Cellular · Austin, TX
-</div>
-</div>
-</div></body></html>`;
+    : outcome === "not-recorded"
+      ? `<p>Your link is fine, but we couldn't save the opt-out for ${shellEsc(email)} just now. Please tap the link again in a minute, or email <a href="mailto:support@topcashcellular.com" style="color:#00c853;text-decoration:none;font-weight:600">support@topcashcellular.com</a> and we'll remove you by hand.</p>`
+      : tamperedBodyHtml("The unsubscribe link");
+  // Shared shell (2026-09-27) — the re-subscribe confirmation renders the same page.
+  return newsletterPage(title, body);
 }
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token") || "";
   const payload = verifyNewsletterToken(token);
   if (!payload) {
-    return new NextResponse(confirmationHtml("", false), {
+    return new NextResponse(confirmationHtml("", "bad-token"), {
       status: 400,
       headers: { "Content-Type": "text/html; charset=utf-8" },
     });
   }
-  await postUnsubMarker(payload.email);
-  return new NextResponse(confirmationHtml(payload.email, true), {
-    status: 200,
+  // The page tells the truth (2026-09-27): it used to say "You're
+  // unsubscribed" even when nothing had been written anywhere.
+  const recorded = await postUnsubMarker(payload.email);
+  return new NextResponse(confirmationHtml(payload.email, recorded ? "done" : "not-recorded"), {
+    status: recorded ? 200 : 500,
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
 }
@@ -100,5 +98,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Invalid token" }, { status: 400 });
   }
   const ok = await postUnsubMarker(payload.email);
-  return NextResponse.json({ ok, email: payload.email });
+  // Non-2xx when nothing landed (2026-09-27) — an honest signal to the
+  // mailbox provider's one-click POST instead of a 200 that recorded nothing.
+  return NextResponse.json(ok ? { ok, email: payload.email } : { ok, email: payload.email, error: "Could not record the unsubscribe — try again" }, { status: ok ? 200 : 500 });
 }

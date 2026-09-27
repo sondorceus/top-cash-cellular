@@ -24,6 +24,8 @@ const SAMPLE: SeqVars = {
   device: "iPhone 15 Pro",
   quote: "$420",
   offerUrl: "https://topcashcellular.com/offer/sample",
+  // Every nudge carries the newsletter opt-out link (2026-09-27); display only.
+  unsubUrl: "https://topcashcellular.com/api/newsletter/unsubscribe?token=sample",
 };
 
 export async function GET(req: NextRequest) {

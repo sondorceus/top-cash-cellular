@@ -13,7 +13,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-black text-white flex flex-col">
       <div className="px-6 py-16 max-w-3xl mx-auto w-full">
       <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
-      <p className="text-sm text-gray-400 mb-8">Last updated: April 18, 2026</p>
+      <p className="text-sm text-gray-400 mb-8">Last updated: September 27, 2026</p>
 
       <div className="space-y-8 text-sm text-gray-300 leading-relaxed">
         <section>
@@ -35,6 +35,8 @@ export default function PrivacyPage() {
             <li>To improve our website and services</li>
             <li>To analyze site traffic and usage patterns</li>
           </ul>
+          {/* 2026-09-27: the newsletter can include past quote/trade customers, and the policy said nothing about marketing mail. */}
+          <p className="mt-3">If you have asked us for a quote or sold us a device, we may occasionally email you about offers and price changes; every such message carries an unsubscribe link, and opting out is honored immediately.</p>
         </section>
 
         <section>

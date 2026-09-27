@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
 type Subscriber = {
   email: string;
@@ -15,7 +15,24 @@ type SubsResp = {
   explicitCount: number;
   fromLeadsCount: number;
   subscribers: Subscriber[];
+  recentSends?: RecentSend[];
 };
+
+// One past blast, from its [NEWSLETTER-SENT] summary marker (2026-09-27).
+type RecentSend = {
+  sendId: string;
+  subject: string;
+  sent: number;
+  failed: number;
+  total: number;
+  includeLeads: boolean;
+  partial: boolean;
+  at: string;
+};
+
+// What a blast was composed of. "Continue" is offered only for the exact
+// composition that stopped early (2026-09-27).
+type Composition = { subject: string; body: string; preheader: string; includeLeads: boolean };
 
 type DryRunResp = {
   ok: true;
@@ -39,6 +56,7 @@ type SendResp = {
   partial?: boolean;
   remaining?: number;
   failures: { email: string; error: string }[];
+  composition?: Composition;
 };
 
 // Session path (2026-09-26): proxy.ts swaps this placeholder header for the
@@ -51,6 +69,26 @@ const AUTH_HEADERS = { "x-admin-token": "session" } as const;
 // at the time budget — skips everyone already sent. Editing the text is a
 // new blast and gets a new id.
 const mintSendId = () => `n${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+
+// Draft + send id survive a reload (2026-09-27): a mid-send reload used to
+// lose the composition while the server finished the blast — and a partial
+// run's "Continue" with it. Cleared by a complete run.
+const DRAFT_KEY = "tcc-newsletter-draft";
+type Draft = Composition & { sendId: string; partial: SendResp | null };
+
+const sameComposition = (a: Composition | undefined, b: Composition): boolean =>
+  !!a && a.subject === b.subject && a.body === b.body && a.preheader === b.preheader && a.includeLeads === b.includeLeads;
+
+// The summary marker strips [ ] = and newlines from the subject; compare the
+// current subject the same way so the repeat warning matches like with like.
+const normSubject = (s: string) => s.replace(/[\[\]\r\n=]+/g, " ").slice(0, 200).replace(/\s+/g, " ").trim().toLowerCase();
+
+const ago = (iso: string): string => {
+  const mins = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000));
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.round(mins / 60);
+  return hrs < 48 ? `${hrs} h ago` : `${Math.round(hrs / 24)} d ago`;
+};
 
 /* one-off form label styles (colors via --tadm-* vars only) */
 const lbl: CSSProperties = {
@@ -87,16 +125,76 @@ export default function NewsletterAdminPage() {
   const [sendId, setSendId] = useState("");
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState("");
+  const [recentSends, setRecentSends] = useState<RecentSend[]>([]);
+  // localStorage is read once after mount (no SSR mismatch) and nothing is
+  // written back until then (2026-09-27).
+  const [hydrated, setHydrated] = useState(false);
+  const skipMintRef = useRef(false);
 
-  // A run that stopped early keeps its id so "Continue" resumes; any other
-  // change to the composition is a new blast.
+  // A run that stopped early keeps its id so "Continue" resumes — but only
+  // for the exact composition it stopped on (2026-09-27): before this, editing
+  // the body or ticking "include leads" after a partial run rode the old id
+  // (and its skipped confirm) to everyone. Any edit is a new blast: new id,
+  // partial state dropped. Declared before the restore effect so the
+  // restore's skip flag is consumed on the right commit.
   useEffect(() => {
-    if (sendResult?.partial) return;
+    if (skipMintRef.current) { skipMintRef.current = false; return; }
+    const now: Composition = { subject, body, preheader, includeLeads };
+    if (sendResult?.partial && sameComposition(sendResult.composition, now)) return;
+    if (sendResult?.partial) setSendResult(null);
     setSendId(mintSendId());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subject, body, preheader, includeLeads]);
 
-  const continuing = !!(sendResult?.partial && sendResult.sendId === sendId);
+  // Restore the saved draft once (2026-09-27). A saved partial run comes back
+  // only with its own send id, so "Continue" can never pair with a fresh id.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const d = JSON.parse(raw) as Partial<Draft>;
+        if (d && (d.subject || d.body || d.preheader)) {
+          setSubject(d.subject || "");
+          setBody(d.body || "");
+          setPreheader(d.preheader || "");
+          setIncludeLeads(!!d.includeLeads);
+          if (typeof d.sendId === "string" && /^[\w-]{6,64}$/.test(d.sendId)) {
+            // The composition change just queued would mint a fresh id; keep the saved one.
+            skipMintRef.current = true;
+            setSendId(d.sendId);
+            if (d.partial && d.partial.partial && d.partial.sendId === d.sendId) setSendResult(d.partial);
+          }
+        }
+      }
+    } catch {}
+    setHydrated(true);
+  }, []);
+
+  // Persist the draft; an empty composition clears it (2026-09-27).
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      if (!subject && !body && !preheader) {
+        localStorage.removeItem(DRAFT_KEY);
+      } else {
+        const draft: Draft = { subject, body, preheader, includeLeads, sendId, partial: sendResult?.partial ? sendResult : null };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+      }
+    } catch {}
+  }, [hydrated, subject, body, preheader, includeLeads, sendId, sendResult]);
+
+  const composition: Composition = { subject, body, preheader, includeLeads };
+  const continuing = !!(sendResult?.partial && sendResult.sendId === sendId && sameComposition(sendResult.composition, composition));
+
+  // A blast with this subject already went out in the last 48 h (2026-09-27):
+  // the dedupe only covers the same send id, so a re-typed composition would
+  // mail everyone twice. The partial run's own summary is not a repeat.
+  const repeatOf = useMemo(() => {
+    const n = normSubject(subject);
+    if (!n) return null;
+    const cutoff = Date.now() - 48 * 60 * 60 * 1000;
+    return recentSends.find((s) => s.sendId !== sendId && normSubject(s.subject) === n && new Date(s.at).getTime() > cutoff) || null;
+  }, [subject, recentSends, sendId]);
 
   const recipientCount = useMemo(() => {
     return includeLeads ? counts.total : counts.explicit;
@@ -112,11 +210,15 @@ export default function NewsletterAdminPage() {
         return;
       }
       if (!r.ok) {
-        setAuthError(`HTTP ${r.status}`);
+        // The route explains its 502s (incomplete or truncated history);
+        // show that rather than the bare status (2026-09-27).
+        const d = (await r.json().catch(() => ({}))) as { error?: string };
+        setAuthError(d.error || `HTTP ${r.status}`);
         return;
       }
       const data = (await r.json()) as SubsResp;
       setSubs(data.subscribers || []);
+      setRecentSends(data.recentSends || []);
       setCounts({
         total: data.count || 0,
         explicit: data.explicitCount || 0,
@@ -196,7 +298,9 @@ export default function NewsletterAdminPage() {
     }
     setSending(true);
     setError("");
-    setSendResult(null);
+    // A partial result stays on screen while its continuation runs: if the
+    // request fails, "Continue" is still there (2026-09-27).
+    if (!continuing) setSendResult(null);
     try {
       const r = await fetch(`/api/admin/newsletter/send`, {
         method: "POST",
@@ -209,10 +313,12 @@ export default function NewsletterAdminPage() {
         setConfirmSend(false);
         return;
       }
-      setSendResult(d as SendResp);
+      // The composition rides with the result so "Continue" can insist on it.
+      setSendResult({ ...(d as SendResp), composition });
       setConfirmSend(false);
       // A run that stopped at the time budget keeps the composition and the
-      // sendId so "Continue" resumes where it stopped; a complete run clears.
+      // sendId so "Continue" resumes where it stopped; a complete run clears
+      // (and, through the persist effect, the saved draft).
       if (!(d as SendResp).partial) {
         setSubject("");
         setBody("");
@@ -317,8 +423,14 @@ export default function NewsletterAdminPage() {
             onChange={(e) => setIncludeLeads(e.target.checked)}
             style={{ width: 15, height: 15, cursor: "pointer", accentColor: "var(--tadm-green)" }}
           />
-          Include past buyback customers (CAN-SPAM existing-business-relationship — adds {counts.fromLeads} recipients)
+          Include past buyback customers (marketing to past quote/trade customers — every mail is marked promotional and carries unsubscribe — adds {counts.fromLeads} recipients)
         </label>
+
+        {repeatOf && !continuing && (
+          <p style={{ margin: "0 0 10px", fontSize: 12, fontWeight: 600, color: "var(--tadm-warn)" }}>
+            A newsletter with this subject already went out {ago(repeatOf.at)} ({repeatOf.sent} sent, id {repeatOf.sendId}). Sending again mails everyone a second copy — the dedupe only covers the same send id.
+          </p>
+        )}
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button
@@ -383,7 +495,7 @@ export default function NewsletterAdminPage() {
             <span className="right">{sendResult.partial ? <span className="tadm-pill warn">PARTIAL</span> : <span className="tadm-pill on">SENT</span>}</span>
           </h3>
           <p style={{ margin: "0 0 6px", fontSize: 13, color: "var(--tadm-text)" }}>
-            <strong>{sendResult.sent}</strong> delivered · <strong>{sendResult.failed}</strong> failed (out of {sendResult.count} total)
+            <strong>{sendResult.sent}</strong> accepted by Resend · <strong>{sendResult.failed}</strong> failed (out of {sendResult.count} total)
             {(sendResult.skippedUnsub || 0) > 0 && <> · {sendResult.skippedUnsub} unsubscribed (skipped)</>}
             {(sendResult.skippedAlreadySent || 0) > 0 && <> · {sendResult.skippedAlreadySent} already mailed under this send (skipped)</>}
             {(sendResult.skippedBlobError || 0) > 0 && <> · {sendResult.skippedBlobError} skipped — opt-out store unreadable, not mailed to be safe</>}
@@ -411,6 +523,30 @@ export default function NewsletterAdminPage() {
           )}
         </div>
       )}
+
+      {/* Recent sends (2026-09-27) — the [NEWSLETTER-SENT] summary markers */}
+      <div className="tadm-card" style={{ marginTop: 10 }}>
+        <h3>
+          Recent sends
+          <span className="right">{recentSends.length}</span>
+        </h3>
+        {recentSends.length === 0 ? (
+          <div className="tadm-empty">No blasts recorded yet.</div>
+        ) : (
+          <div className="tadm-rows" style={{ maxHeight: 260, overflowY: "auto" }}>
+            {recentSends.map((s) => (
+              <div key={`${s.sendId}-${s.at}`} className="tadm-row">
+                <span className="main">
+                  {s.subject || "(no subject)"}
+                  <span className="dim"> · {s.sent} sent · {s.failed} failed · {s.total} on list{s.includeLeads ? " · incl. leads" : ""}</span>
+                </span>
+                <span className="meta">{new Date(s.at).toLocaleString()}</span>
+                <span className={`tadm-pill ${s.partial ? "warn" : "on"}`}>{s.partial ? "partial" : "sent"}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Subscriber list */}
       <div className="tadm-card" style={{ marginTop: 10 }}>

@@ -4,6 +4,8 @@ import { logComm } from "../../../lib/comms-log";
 import { duplicatesFromComms } from "../../../lib/lead-dupes";
 import { SEQUENCES, cumulativeDelayDays, type SeqVars } from "../../../lib/email-sequences";
 import { offerUrl } from "../../../lib/offer-link";
+import { isNewsletterUnsubbed } from "../../../lib/newsletter-unsub";
+import { newsletterUnsubUrl } from "../../../lib/newsletter-token";
 
 // Email-sequence engine (ported from its-official-notary's sequences cron).
 // Drives multi-touch follow-ups; the only sequence today is abandoned-quote
@@ -19,6 +21,13 @@ import { offerUrl } from "../../../lib/offer-link";
 // holds a FedEx label, is a re-submission of an open trade (lib/lead-dupes),
 // has no email, is an internal/test email, was unsubscribed, or all steps
 // already fired.
+//
+// "Unsubscribed" is two things (2026-09-27): the per-lead [SEQUENCE-UNSUB]
+// marker (kept; nothing writes it yet — the unsubscribe token carries only an
+// address, no lead id) AND the durable newsletter opt-out blob, which every
+// nudge now checks right before Resend and which its own footer link feeds.
+// The mail carries List-Unsubscribe headers so Gmail shows the one-click
+// chip. An unreadable store skips the lead, never mails it.
 //
 // Auth: Authorization: Bearer ${CRON_SECRET}. Held behind
 // CRON_SEQUENCES_ENABLED=1 (notary's pattern) — it emails real customers, so
@@ -41,7 +50,7 @@ function field(body: string, key: string): string {
   return body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"))?.[1]?.trim() || "";
 }
 
-async function sendEmail(to: string, subject: string, html: string, text: string): Promise<boolean> {
+async function sendEmail(to: string, subject: string, html: string, text: string, unsubUrl: string): Promise<boolean> {
   if (!RESEND_KEY) return false;
   try {
     const { Resend } = await import("resend");
@@ -53,6 +62,11 @@ async function sendEmail(to: string, subject: string, html: string, text: string
       subject,
       html,
       text,
+      // RFC-8058 one-click, https only (2026-09-27) — same as the newsletter.
+      headers: {
+        "List-Unsubscribe": `<${unsubUrl}>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+      },
     });
     return !!r?.data?.id;
   } catch {
@@ -126,7 +140,7 @@ export async function GET(req: NextRequest) {
   // since) is the same trade — nudging it would double up (lib/lead-dupes).
   const dupes = duplicatesFromComms(messages);
 
-  let sent = 0, failed = 0, checked = 0;
+  let sent = 0, failed = 0, checked = 0, skippedUnsub = 0, skippedStore = 0;
   // The [SEQUENCE-SENT] marker is the only record of a send: an email whose
   // marker didn't land would go out again tomorrow (3-day due window), so a
   // marker miss halts the run — the rest wait for one that can record them.
@@ -159,15 +173,26 @@ export async function GET(req: NextRequest) {
     // 21-day fetch window. A lead that missed its window is simply skipped.
     if (now >= dueAt + 3 * D) continue;
 
+    // The durable newsletter opt-out is honored here too (2026-09-27): the
+    // address must be known NOT to have unsubscribed — true skips, and an
+    // unreadable store (null) skips as well rather than mail someone who left.
+    const optOut = await isNewsletterUnsubbed(email);
+    if (optOut !== false) {
+      if (optOut === true) skippedUnsub++; else skippedStore++;
+      continue;
+    }
+    const unsubUrl = newsletterUnsubUrl(email);
+
     const vars: SeqVars = {
       firstName: (field(lead.body, "Name") || "there").split(/\s+/)[0],
       device: field(lead.body, "Device").split(" — ").slice(-1)[0] || "device",
       quote: field(lead.body, "Quote").replace(/\s*\(clamped from[^)]*\)/i, "").trim(),
       // Signed (offer-link.ts) — a bare /offer/<id> opens the redacted view.
       offerUrl: offerUrl(leadId),
+      unsubUrl,
     };
 
-    const ok = await sendEmail(email, next.subject(vars), next.html(vars), next.text(vars));
+    const ok = await sendEmail(email, next.subject(vars), next.html(vars), next.text(vars), unsubUrl);
     if (!ok) { failed++; continue; }
     sent++;
 
@@ -194,5 +219,5 @@ export async function GET(req: NextRequest) {
     if (!marked) { markerDown = true; break; }
   }
 
-  return NextResponse.json({ ok: true, sequence: SEQ_SLUG, checked, sent, failed, haltedOnMarker: markerDown || undefined });
+  return NextResponse.json({ ok: true, sequence: SEQ_SLUG, checked, sent, failed, skippedUnsub, skippedStore, haltedOnMarker: markerDown || undefined });
 }

@@ -72,6 +72,11 @@ export type CommsRead = {
   // `messages` is then only the newer part of the window, so "not found in
   // it" must read as "unknown", not "none" — e.g. a customer's trade list.
   complete: boolean;
+  // true = every page was full when `maxPages` ran out, so history older than
+  // the window was never asked for (2026-09-27). A roster or recipient list
+  // built from it is short, not wrong-looking: the newsletter routes refuse
+  // it like an incomplete read. Best-effort callers ignore it.
+  truncated: boolean;
 };
 
 /** fetchCommsPaged, plus whether every page it asked for was read. */
@@ -114,8 +119,11 @@ async function readPages(opts: FetchCommsOpts): Promise<CommsRead> {
   const byId = new Map<string, McMessage>();
   let before: string | undefined;
   let complete = true;
+  // Stays 0 while pages remain to read; a loop that runs out of `maxPages`
+  // without breaking leaves it equal to maxPages (2026-09-27).
+  let page = 0;
 
-  for (let page = 0; page < maxPages; page++) {
+  for (; page < maxPages; page++) {
     const qs = new URLSearchParams({ limit: String(pageSize) });
     if (includeArchive) qs.set("includeArchive", "true");
     if (before) qs.set("before", before);
@@ -155,5 +163,8 @@ async function readPages(opts: FetchCommsOpts): Promise<CommsRead> {
 
   const messages = [...byId.values()].sort((a, b) =>
     String(a.timestamp).localeCompare(String(b.timestamp)));
-  return { messages, complete };
+  // Every break above means "reached the end" or "failed"; only a full last
+  // page with no pages left means "there may be more" (2026-09-27).
+  const truncated = complete && page >= maxPages;
+  return { messages, complete, truncated };
 }

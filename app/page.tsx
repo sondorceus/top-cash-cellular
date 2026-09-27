@@ -15550,23 +15550,53 @@ export default function Home() {
             <p className="text-white font-semibold text-sm mb-1">Smart tech. Smarter savings.</p>
             <p className="text-xs text-[#9a9a9a] mb-3">Sign up for deals & sustainability tips.</p>
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const form = e.currentTarget;
                 const nameInput = form.querySelector("input[name=footerNlName]") as HTMLInputElement | null;
                 const emailInput = form.querySelector("input[type=email]") as HTMLInputElement | null;
+                const submitBtn = form.querySelector("button[type=submit]") as HTMLButtonElement | null;
+                const errEl = form.parentElement?.querySelector(".nl-err") as HTMLElement | null;
                 const email = emailInput?.value.trim();
                 const name = nameInput?.value.trim();
                 if (!email) return;
-                fetch("/api/newsletter", {
-                  method: "POST",
-                  headers: { "content-type": "application/json" },
-                  body: JSON.stringify({ email, name: name || undefined }),
-                }).catch(() => {});
+                // Wait for the server (2026-09-27): fire-and-forget showed "You're
+                // on the list" on a 429 and on an address Resend rejected.
+                if (submitBtn) submitBtn.disabled = true;
+                if (errEl) errEl.classList.add("hidden");
+                let ok = false;
+                // confirm (2026-09-27): the address opted out before, so the server
+                // sent a confirmation link instead of enrolling it.
+                let confirm = false;
+                let msg = "Couldn't sign you up — check the address and try again.";
+                try {
+                  const r = await fetch("/api/newsletter", {
+                    method: "POST",
+                    headers: { "content-type": "application/json" },
+                    body: JSON.stringify({ email, name: name || undefined }),
+                  });
+                  const d = await r.json().catch(() => ({}));
+                  ok = r.ok && !!d.ok;
+                  confirm = ok && !!d.confirm;
+                  if (!ok && typeof d.error === "string" && d.error) msg = d.error;
+                } catch {
+                  msg = "Couldn't sign you up — check your connection and try again.";
+                }
+                if (submitBtn) submitBtn.disabled = false;
+                if (!ok) {
+                  if (errEl) { errEl.textContent = msg; errEl.classList.remove("hidden"); }
+                  return;
+                }
                 if (emailInput) emailInput.value = "";
                 if (nameInput) nameInput.value = "";
                 form.classList.add("hidden");
-                form.parentElement?.querySelector(".nl-ok")?.classList.remove("hidden");
+                const okBlock = form.parentElement?.querySelector(".nl-ok") as HTMLElement | null;
+                if (okBlock && confirm) {
+                  const lines = okBlock.querySelectorAll("p");
+                  if (lines[0]) lines[0].textContent = "Check your inbox to confirm.";
+                  if (lines[1]) lines[1].textContent = "This address unsubscribed before, so we sent a confirmation link — tap it and you're back on the list.";
+                }
+                okBlock?.classList.remove("hidden");
               }}
               className="flex flex-col items-stretch gap-2 max-w-sm mx-auto"
             >
@@ -15586,9 +15616,11 @@ export default function Home() {
                   placeholder="Email address"
                   className="flex-1 px-3 py-2 rounded-full bg-white/5 border border-white/10 text-white text-xs placeholder:text-[#888] focus:outline-none focus:border-[#00c853]/50"
                 />
-                <button type="submit" className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition">Sign up</button>
+                <button type="submit" className="px-4 py-2 rounded-full bg-[#00c853] text-[#0a0a0a] text-xs font-extrabold hover:bg-[#00e676] transition disabled:opacity-60">Sign up</button>
               </div>
             </form>
+            {/* Server-side failure line for the form above (2026-09-27). */}
+            <p className="nl-err hidden text-xs text-[#ff6b6b] mt-2 max-w-sm mx-auto" role="status" aria-live="polite"></p>
             <div className="nl-ok hidden bg-[#00c853]/10 border border-[#00c853]/30 rounded-xl px-4 py-3 max-w-sm mx-auto">
               <p className="text-[#00c853] text-sm font-bold">You're on the list. Check your inbox.</p>
               <p className="text-[#9a9a9a] text-[11px] mt-1">If it isn't there in a minute, peek in spam — first emails from new senders sometimes land there.</p>
