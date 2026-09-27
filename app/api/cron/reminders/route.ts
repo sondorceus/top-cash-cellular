@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mailLogo, mailButton } from "../../../lib/email-shell";
+import { mailShell, esc } from "../../../lib/email-shell";
 import { randomBytes } from "crypto";
 import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { sendSellerSms, optedOutIn, looksLikePhone } from "../../../lib/seller-sms";
@@ -7,6 +7,9 @@ import { sidToken } from "../../../lib/go-sid-token";
 import { readChat, validGoSession, phoneKey, appendChatMsg, rememberPhoneSession } from "../../../lib/gochat-store";
 import { duplicatesFromComms } from "../../../lib/lead-dupes";
 import { latestContactUpdates } from "../../../lib/lead-devices";
+import { isNewsletterUnsubbed } from "../../../lib/newsletter-unsub";
+import { newsletterUnsubUrl } from "../../../lib/newsletter-token";
+import { parseDollarQuote, formatDollars } from "../../../lib/sequence-eligibility";
 
 // Hourly reminder cron — Skywalker 2026-05-18 "remind 24hr after they
 // get quote to meet/respond/ship, make custom depending on shipping
@@ -37,6 +40,15 @@ import { latestContactUpdates } from "../../../lib/lead-devices";
 // [SMS-OPT-OUT: <number>] marker the inbound route writes.
 //
 // ?dry=1 → compute every candidate, send nothing, list what WOULD go.
+//
+// E-mail compliance (2026-09-27): every reminder mail renders through the
+// shared mailShell (postal line in the footer) with an unsubscribe link and
+// RFC-8058 List-Unsubscribe headers. The review ask and the chat "still want
+// to sell" are marketing-ish, so by e-mail they require the durable newsletter
+// opt-out to read "not unsubscribed" — an unreadable store skips too (fail
+// closed); both are counted as skippedUnsub / skippedStore, in the dry run as
+// well. The quote and expiry notes are about the seller's own pending quote
+// and keep going; they carry the same footer.
 //
 // Auth: CRON_SECRET on the Authorization header. Vercel auto-sends
 // this on cron-fired requests. Manual hits get 401.
@@ -75,7 +87,10 @@ async function sendSms(to: string, body: string): Promise<boolean> {
   return sendSellerSms(to, body);
 }
 
-async function sendEmail(to: string, subject: string, html: string, text: string): Promise<boolean> {
+// unsubUrl (2026-09-27): the recipient's signed opt-out link — the one the
+// footer shows — as RFC-8058 headers (https only) so Gmail/Outlook offer the
+// one-click chip, plus a plain-text line. Empty = no headers (no address).
+async function sendEmail(to: string, subject: string, html: string, text: string, unsubUrl?: string): Promise<boolean> {
   if (!RESEND_KEY) return false;
   try {
     const { Resend } = await import("resend");
@@ -86,7 +101,10 @@ async function sendEmail(to: string, subject: string, html: string, text: string
       to,
       subject,
       html,
-      text,
+      text: unsubUrl ? `${text}\n\nUnsubscribe from our marketing emails: ${unsubUrl}` : text,
+      ...(unsubUrl
+        ? { headers: { "List-Unsubscribe": `<${unsubUrl}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } }
+        : {}),
     });
     return !!(r?.data?.id);
   } catch {
@@ -132,26 +150,25 @@ async function logReminderSent(leadId: string, kind: Kind): Promise<boolean> {
   return false;
 }
 
-// Email template wrapper. Sonny's 2026-05-29 design (PNG logo,
-// indigo card #1b1d39) is preserved — Skywalker's "logo messed up"
-// screenshot was actually Gmail iOS auto-inverting the dark card to a
-// light pinkish bg, which left the dark PNG sitting in a near-white
-// frame with the body-text contrast inverted. Fix: declare the email
-// as `color-scheme: light dark` + matching <meta> so Gmail honors the
-// authored palette instead of re-tinting it. The dark header/card now
-// renders dark on every client.
-function wrapEmail(opts: { title: string; bodyHtml: string; ctaHref?: string; ctaLabel?: string; accent?: string }): string {
-  const accent = opts.accent || "#00c853";
-  const cta = opts.ctaHref && opts.ctaLabel
-    ? `<div style="text-align:center;margin:24px 0 12px">${mailButton(opts.ctaHref, opts.ctaLabel, accent.toLowerCase() === "#00c853" ? "green" : "yellow")}</div>`
-    : "";
-  // Logo: transparent glass wordmark (`/logo-wordmark-glass.png`) at 150px.
-  // The old `email-logo.png` carried a grungy distressed black texture and
-  // `logo-email.png` baked in a dark-navy badge plate that didn't match the
-  // #1b1d39 card — both read as "not clean / not seamless". The transparent
-  // wordmark has no plate and no grunge, so it sits seamlessly on the card
-  // in every client. Unified across all email routes.
-  return `<!doctype html><html><head><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"></head><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#13142b;color:#e6e6e6;margin:0;padding:32px 16px;color-scheme:light dark;supported-color-schemes:light dark"><div style="max-width:600px;margin:0 auto;background:#1b1d39;border:1px solid rgba(255,255,255,0.08);border-radius:18px;overflow:hidden"><div style="padding:24px 28px;color:#ffffff;background:#1b1d39"><div style="margin:0 0 16px">${mailLogo()}</div><div style="font-size:22px;font-weight:800;line-height:1.2;color:#ffffff">${opts.title}</div></div><div style="padding:28px;background:#1b1d39">${opts.bodyHtml}${cta}<p style="font-size:12px;color:#9a9bb0;line-height:1.6;margin:24px 0 0;text-align:center;border-top:1px solid rgba(255,255,255,0.08);padding-top:18px">Questions? Reply or write to <a href="mailto:support@topcashcellular.com" style="color:${accent};text-decoration:none">support@topcashcellular.com</a></p></div></div></body></html>`;
+// Email template wrapper — the unified mailShell (2026-09-27), so a reminder
+// renders like every other TCC mail: Outlook-safe table layout, the text
+// lockup header, the footer with the postal line and the support address.
+// The hand-rolled card that lived here (Sonny's 2026-05-29 design) was the one
+// TCC mail without a postal line or an unsubscribe link; mailShell's
+// color-scheme meta keeps the dark card dark in Gmail iOS as that fix did.
+// `unsubUrl` adds the opt-out line under the card.
+function wrapEmail(opts: { title: string; bodyHtml: string; ctaHref?: string; ctaLabel?: string; accent?: string; unsubUrl?: string }): string {
+  const yellow = (opts.accent || "").toLowerCase() === "#ffb400";
+  return mailShell({
+    title: opts.title,
+    contentHtml: opts.bodyHtml,
+    buttonHref: opts.ctaHref || null,
+    buttonLabel: opts.ctaLabel,
+    buttonColor: yellow ? "yellow" : "green",
+    footerHtml: opts.unsubUrl
+      ? `Not for you? <a href="${opts.unsubUrl}" style="color:#7d8099;text-decoration:underline;">Unsubscribe</a> to stop our marketing emails.`
+      : undefined,
+  });
 }
 
 type LeadShape = {
@@ -196,10 +213,22 @@ function dateLabel(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" });
 }
 
+// The recipient's opt-out link for the footer + headers (2026-09-27); "" when
+// the mail has no address to go to (text-only), so nothing is minted for it.
+function unsubFor(email?: string): string {
+  return email ? newsletterUnsubUrl(email) : "";
+}
+
 function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | "none") {
   const first = (lead.name || "there").split(" ")[0];
   const device = lead.model || lead.device || "your device";
   const quoteStr = lead.quote ? `${lead.quote}` : "your locked-in price";
+  // Customer text (name, model) is escaped before it enters the HTML part
+  // (2026-09-27); the plain texts are unchanged.
+  const firstH = esc(first);
+  const deviceH = esc(device);
+  const quoteH = esc(quoteStr);
+  const unsubUrl = unsubFor(lead.email);
   if (handoffKind === "ship") {
     return {
       // Skywalker 2026-06-04: the ship reminder shouldn't re-front the
@@ -211,8 +240,10 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
       emailSubject: `Your quote for ${device} is still locked in`,
       emailHtml: wrapEmail({
         title: "Your quote is still locked in",
-        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Quick reminder — your quote for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still locked in.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Drop your device at any FedEx location whenever you're ready. We'll text you the moment it lands — same business day inspection and payout.</p>`,
+        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Quick reminder — your quote for <span style="color:#00c853;font-weight:600">${deviceH}</span> at <span style="color:#00c853;font-weight:700">${quoteH}</span> is still locked in.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Drop your device at any FedEx location whenever you're ready. We'll text you the moment it lands — same business day inspection and payout.</p>`,
+        unsubUrl,
       }),
+      unsubUrl,
     };
   }
   if (handoffKind === "local") {
@@ -221,8 +252,10 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
       emailSubject: `Reminder: ready to meet for your ${device} trade?`,
       emailHtml: wrapEmail({
         title: "Ready to meet up?",
-        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Just checking in — your quote for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still locked in.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply with a time + neighborhood and we'll meet you anywhere in Austin that works — coffee shop, parking lot, your office, even a curbside curb-pull. Usually 15 min total.</p>`,
+        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Just checking in — your quote for <span style="color:#00c853;font-weight:600">${deviceH}</span> at <span style="color:#00c853;font-weight:700">${quoteH}</span> is still locked in.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply with a time + neighborhood and we'll meet you anywhere in Austin that works — coffee shop, parking lot, your office, even a curbside curb-pull. Usually 15 min total.</p>`,
+        unsubUrl,
       }),
+      unsubUrl,
     };
   }
   if (lead.isGo) {
@@ -236,10 +269,12 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
       emailSubject: `Reminder: your ${device} offer is still locked`,
       emailHtml: wrapEmail({
         title: "Your offer is still locked in",
-        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your offer for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still locked${until}.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply <strong style="color:#fff">MEET</strong> for a cash meetup in the Austin area or <strong style="color:#fff">SHIP</strong> for a free FedEx label — or pick it back up in your chat.</p>`,
+        bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your offer for <span style="color:#00c853;font-weight:600">${deviceH}</span> at <span style="color:#00c853;font-weight:700">${quoteH}</span> is still locked${until}.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply <strong style="color:#fff">MEET</strong> for a cash meetup in the Austin area or <strong style="color:#fff">SHIP</strong> for a free FedEx label — or pick it back up in your chat.</p>`,
         ctaHref: link,
         ctaLabel: "Open my chat →",
+        unsubUrl,
       }),
+      unsubUrl,
     };
   }
   // No handoff picked yet — gentle nudge back to the funnel.
@@ -248,10 +283,12 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
     emailSubject: `Reminder: your ${device} quote is still good`,
     emailHtml: wrapEmail({
       title: "Your quote is still locked in",
-      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your quote for <span style="color:#00c853;font-weight:600">${device}</span> at <span style="color:#00c853;font-weight:700">${quoteStr}</span> is still good.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Local meetup (same-day cash) or free FedEx pickup — pick whichever works.</p>`,
+      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your quote for <span style="color:#00c853;font-weight:600">${deviceH}</span> at <span style="color:#00c853;font-weight:700">${quoteH}</span> is still good.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Local meetup (same-day cash) or free FedEx pickup — pick whichever works.</p>`,
       ctaHref: SITE,
       ctaLabel: "Finish your trade →",
+      unsubUrl,
     }),
+    unsubUrl,
   };
 }
 
@@ -261,47 +298,64 @@ function templateExpiry(lead: LeadShape) {
   const quoteStr = lead.quote ? `${lead.quote}` : "your locked-in price";
   const until = lead.lockUntil ? dateLabel(lead.lockUntil) : "soon";
   const link = goLink(lead.session);
+  const firstH = esc(first);
+  const deviceH = esc(device);
+  const quoteH = esc(quoteStr);
+  const unsubUrl = unsubFor(lead.email);
   return {
     smsBody: `Top Cash: Hi ${first}, heads up — your ${quoteStr} lock on the ${device} ends ${until}. Reply MEET or SHIP to get paid before it does, or pick it back up here: ${link} Reply STOP to opt out.`,
     emailSubject: `Your ${device} lock ends ${until}`,
     emailHtml: wrapEmail({
       title: `Your lock ends ${until}`,
       accent: "#ffb400",
-      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your <span style="color:#00c853;font-weight:700">${quoteStr}</span> offer on the <span style="color:#00c853;font-weight:600">${device}</span> holds until <strong style="color:#fff">${until}</strong>. After that we re-quote at the current market.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply <strong style="color:#fff">MEET</strong> for a cash meetup in the Austin area or <strong style="color:#fff">SHIP</strong> for a free FedEx label.</p>`,
+      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your <span style="color:#00c853;font-weight:700">${quoteH}</span> offer on the <span style="color:#00c853;font-weight:600">${deviceH}</span> holds until <strong style="color:#fff">${until}</strong>. After that we re-quote at the current market.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Reply <strong style="color:#fff">MEET</strong> for a cash meetup in the Austin area or <strong style="color:#fff">SHIP</strong> for a free FedEx label.</p>`,
       ctaHref: link,
       ctaLabel: "Open my chat →",
+      unsubUrl,
     }),
+    unsubUrl,
   };
 }
 
-function templateChat(device: string, session: string) {
+// contactEmail (2026-09-27): set when the chat contact is an address, so the
+// mail carries its opt-out link; a text has none.
+function templateChat(device: string, session: string, contactEmail?: string) {
   const link = goLink(session);
   const dev = device || "your device";
+  const devH = esc(dev);
+  const unsubUrl = unsubFor(contactEmail);
   return {
     smsBody: `Top Cash: still want to sell the ${dev}? any number we gave you holds 14 days — pick it back up here and we'll get you paid: ${link} Reply STOP to opt out.`,
     emailSubject: `Still want to sell your ${dev}?`,
     emailHtml: wrapEmail({
-      title: `Still want to sell your ${dev}?`,
+      title: `Still want to sell your ${devH}?`,
       bodyHtml: `<p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your chat with us is saved and any number we gave you holds 14 days.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Pick it back up whenever you're ready — cash meetup in the Austin area or a free FedEx label, your pick.</p>`,
       ctaHref: link,
       ctaLabel: "Open my chat →",
+      unsubUrl,
     }),
+    unsubUrl,
   };
 }
 
 function templateReviewReminder(lead: LeadShape, reviewUrl: string) {
   const first = (lead.name || "there").split(" ")[0];
   const device = lead.model || lead.device || "your device";
+  const firstH = esc(first);
+  const deviceH = esc(device);
+  const unsubUrl = unsubFor(lead.email);
   return {
     smsBody: `Top Cash: Hi ${first}, hope you enjoyed selling ${device}. Quick favor — mind leaving a 30-sec review? ${reviewUrl} Reply STOP to opt out.`,
     emailSubject: `One quick favor — review your trade?`,
     emailHtml: wrapEmail({
       title: "★ Leave a quick review?",
       accent: "#ffb400",
-      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${first},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Yesterday we paid out your ${device} trade — hope it was a good experience.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">If it was, it would mean a ton if you could drop a 30-second review. It helps the next person find us instead of getting lowballed by a faceless website.</p><p style="font-size:13px;color:#888;line-height:1.5;margin:0">Single-use link — only works once.</p>`,
+      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Yesterday we paid out your ${deviceH} trade — hope it was a good experience.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">If it was, it would mean a ton if you could drop a 30-second review. It helps the next person find us instead of getting lowballed by a faceless website.</p><p style="font-size:13px;color:#888;line-height:1.5;margin:0">Single-use link — only works once.</p>`,
       ctaHref: reviewUrl,
       ctaLabel: "★ Leave a review",
+      unsubUrl,
     }),
+    unsubUrl,
   };
 }
 
@@ -475,17 +529,20 @@ export async function GET(req: NextRequest) {
         : undefined;
     const source = parseField(m.body, "Source") || "";
     const session = parseField(m.body, "Session");
-    // The internal "(clamped from $X)" tamper note never reaches a seller
-    // text (watchdog/sequences strip it the same way).
-    const quoteRaw = (parseField(m.body, "Quote") || "").replace(/\s*\(clamped from[^)]*\)/i, "").trim();
-    // A real dollar figure or nothing. "TBD (custom)" is a hand quote
-    // (won't-turn-on/parts locks, manual-review MacBooks) and "$0" a
-    // recycle-only donor: no number to remind about, no lock to expire —
-    // the seller is waiting on the OWNER (the go_unworked watchdog nudges
-    // him). Before this the texts read "your iPhone 17 Pro offer (TBD
-    // (custom)) is still locked", and a recycle donor got "your quote is
-    // still good".
-    const quoteNum = Number(quoteRaw.replace(/,/g, "").match(/\$\s*(\d+)/)?.[1] || 0);
+    // A real dollar figure or nothing (2026-09-27: the line must START with
+    // "$N" — lib/sequence-eligibility.parseDollarQuote, as confirm/route.ts
+    // has always read it). The unanchored match passed "TBD (custom) —
+    // submitted $900 for a config we don't auto-quote" on its embedded $900
+    // and the seller was texted that whole internal line as the quote; the
+    // "(clamped from $X)" tamper note trailed the figure the same way. Only
+    // the formatted figure ("$1,250") reaches a template now — see `quote`
+    // below. "TBD (custom)" is a hand quote (won't-turn-on/parts locks,
+    // manual-review MacBooks) and "$0" a recycle-only donor: no number to
+    // remind about, no lock to expire — the seller is waiting on the OWNER
+    // (the go_unworked watchdog nudges him). Before the TBD/$0 rule the texts
+    // read "your iPhone 17 Pro offer (TBD (custom)) is still locked", and a
+    // recycle donor got "your quote is still good".
+    const quoteNum = parseDollarQuote(parseField(m.body, "Quote") || "");
     const isGo = /source=go\b/i.test(source);
     // TCPA: text only numbers we have consent for. Main-funnel leads carry
     // "SMS opt-in: YES" when the seller ticked the consent box; ship/mixed
@@ -505,7 +562,7 @@ export async function GET(req: NextRequest) {
       email,
       device: deviceLine.split(" — ")[0],
       model: deviceLine.split(" — ")[1],
-      quote: quoteNum > 0 ? quoteRaw : undefined,
+      quote: quoteNum > 0 ? formatDollars(quoteNum) : undefined,
       manual: !(quoteNum > 0),
       handoffMethod: handoffMethod ?? (session ? handoffBySession.get(session) : undefined),
       session,
@@ -575,6 +632,11 @@ export async function GET(req: NextRequest) {
   // Chat candidates: skip threads Sonny already worked (an owner message),
   // threads that locked after the chat lead posted, and threads where the
   // seller already picked a handoff by text. Bounded per run.
+  // Marketing-ish mail (chat "still want to sell", review ask) held back by
+  // the durable newsletter opt-out (2026-09-27): true = unsubscribed, null =
+  // the store could not be read — both skip, both counted.
+  let skippedUnsub = 0;
+  let skippedStore = 0;
   const chatReady: ChatLead[] = [];
   for (const cl of chatCandidates.slice(0, MAX_CHAT_CHECKS)) {
     // Newest record + the notes only: the milestones live in notes and
@@ -583,7 +645,29 @@ export async function GET(req: NextRequest) {
     const notes = state.msgs.filter((x) => x.role === "note").map((x) => x.text);
     if (state.lastOwnerTs > 0) continue;
     if (notes.some((t) => t.startsWith("LOCKED:") || t.startsWith("HANDOFF-CHOICE:") || t.startsWith("SMS-STOP"))) continue;
+    // By e-mail this is a marketing touch: the address must be known NOT to
+    // have opted out (2026-09-27). A text rides its own STOP.
+    if (cl.contact.includes("@")) {
+      const optOut = await isNewsletterUnsubbed(cl.contact);
+      if (optOut !== false) {
+        if (optOut === true) skippedUnsub++; else skippedStore++;
+        continue;
+      }
+    }
     chatReady.push(cl);
+  }
+
+  // The review ask by e-mail honors the same opt-out (2026-09-27). A seller who
+  // left the list keeps only the text channel they consented to; with no such
+  // channel the ask is dropped for good (no marker, nothing to retry).
+  for (let i = reviewCandidates.length - 1; i >= 0; i--) {
+    const l = reviewCandidates[i].lead;
+    if (!l.email) continue;
+    const optOut = await isNewsletterUnsubbed(l.email);
+    if (optOut === false) continue;
+    if (optOut === true) skippedUnsub++; else skippedStore++;
+    l.email = undefined;
+    if (!(l.phone && l.smsOptIn)) reviewCandidates.splice(i, 1);
   }
 
   if (dryRun) {
@@ -596,6 +680,8 @@ export async function GET(req: NextRequest) {
       skippedLabelBlind,
       chat: chatReady.map((c) => ({ id: c.id, session: c.session, device: c.device, channel: c.contact.includes("@") ? "email" : "sms" })),
       review: reviewCandidates.map((r) => ({ id: r.lead.id, sms: !!(r.lead.phone && r.lead.smsOptIn), email: !!r.lead.email })),
+      skippedUnsub,
+      skippedStore,
       skippedChatChecks: Math.max(0, chatCandidates.length - MAX_CHAT_CHECKS),
     });
   }
@@ -623,7 +709,7 @@ export async function GET(req: NextRequest) {
       const tmpl = templateQuoteReminder(lead, handoffKind);
       const tasks: Promise<boolean>[] = [];
       if (lead.phone) tasks.push(sendSms(lead.phone, tmpl.smsBody));
-      if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
+      if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody, tmpl.unsubUrl));
       const results = await Promise.all(tasks);
       // Only mark reminded if a channel actually delivered. sendSms/sendEmail
       // return false (they don't throw) on a relay/Resend failure, so the old
@@ -647,7 +733,7 @@ export async function GET(req: NextRequest) {
       const tmpl = templateExpiry(lead);
       const tasks: Promise<boolean>[] = [];
       if (lead.phone) tasks.push(sendSms(lead.phone, tmpl.smsBody));
-      if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
+      if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody, tmpl.unsubUrl));
       const results = await Promise.all(tasks);
       if (results.some(Boolean)) {
         expirySent++;
@@ -665,10 +751,10 @@ export async function GET(req: NextRequest) {
   for (const cl of chatReady) {
     if (markerDown) break;
     try {
-      const tmpl = templateChat(cl.device, cl.session);
       const byEmail = cl.contact.includes("@");
+      const tmpl = templateChat(cl.device, cl.session, byEmail ? cl.contact : undefined);
       const ok = byEmail
-        ? await sendEmail(cl.contact, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody)
+        ? await sendEmail(cl.contact, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody, tmpl.unsubUrl)
         : await sendSms(cl.contact, tmpl.smsBody);
       if (ok) {
         chatSent++;
@@ -730,7 +816,7 @@ export async function GET(req: NextRequest) {
       const tmpl = templateReviewReminder(lead, reviewUrl);
       const tasks: Promise<boolean>[] = [];
       if (lead.phone && lead.smsOptIn) tasks.push(sendSms(lead.phone, tmpl.smsBody));
-      if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody));
+      if (lead.email) tasks.push(sendEmail(lead.email, tmpl.emailSubject, tmpl.emailHtml, tmpl.smsBody, tmpl.unsubUrl));
       const results = await Promise.all(tasks);
       // Only mark reminded if a channel actually delivered (see quote loop).
       if (results.some(Boolean)) {
@@ -757,6 +843,8 @@ export async function GET(req: NextRequest) {
     chatSent,
     reviewCandidates: reviewCandidates.length,
     reviewSent,
+    skippedUnsub,
+    skippedStore,
     errors: errors.length > 0 ? errors : undefined,
   });
 }

@@ -17,7 +17,21 @@ export type SeqVars = {
   // nudge carries it in the footer and the text part (2026-09-27): these are
   // marketing touches, and "just ignore this" was the only way out.
   unsubUrl: string;
+  // When the promise on the quote ends (2026-09-27), as a "Mon D" label —
+  // lockUntilLabel() of the lead's Lock-Until: line, else its post + 14 days
+  // (lib/sequence-eligibility). Every writer promises 14 days (confirm mail,
+  // /go lock, chat), so step 2 names the date instead of "prices move, lock
+  // in now", which read as if the number could move before it.
+  lockUntil: string;
 };
+
+// "Oct 11" in the shop's time zone (the reminders' dateLabel); "soon" for a
+// date that doesn't parse, so a template never prints "Invalid Date".
+export function lockUntilLabel(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "soon";
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" });
+}
 
 export type SeqStep = {
   position: number;
@@ -46,14 +60,17 @@ function shell(opts: { heading: string; bodyHtml: string; ctaUrl: string; ctaLab
     contentHtml: opts.bodyHtml,
     buttonHref: opts.ctaUrl,
     buttonLabel: opts.ctaLabel,
+    // "our marketing emails", not "every" (2026-09-27): the link records the
+    // newsletter opt-out, which the drip and the review/chat reminders honor —
+    // mail about a customer's own order (labels, payout, quote notes) goes on.
     footerHtml:
       `Not looking to sell anymore? Just ignore this — we won't keep nudging. ` +
-      `<a href="${opts.unsubUrl}" style="color:#7d8099;text-decoration:underline;">Unsubscribe</a> to stop every Top Cash Cellular email.`,
+      `<a href="${opts.unsubUrl}" style="color:#7d8099;text-decoration:underline;">Unsubscribe</a> to stop our marketing emails.`,
   });
 }
 
 // Plain-text footer line, same link (2026-09-27).
-const unsubLine = (v: SeqVars) => `Not selling anymore? Just ignore this.\nUnsubscribe from all our emails: ${v.unsubUrl}`;
+const unsubLine = (v: SeqVars) => `Not selling anymore? Just ignore this.\nUnsubscribe from our marketing emails: ${v.unsubUrl}`;
 
 const p = (s: string) => `<p style="font-size:15px;line-height:1.6;color:#cfd2e0;margin:0 0 14px">${s}</p>`;
 
@@ -88,22 +105,26 @@ export const SEQUENCES: Sequence[] = [
       {
         position: 2,
         delayDays: 4, // ~day 7
+        // The date, not "prices move" (2026-09-27): the customer already holds
+        // a 14-day promise (confirm mail, /go lock, chat, the offer page), so
+        // "locking in now is the safe bet" read as if the number could move
+        // first. The honest nudge is when the promise ends — v.lockUntil.
         subject: (v) => `Anything holding up your ${v.device} sale?`,
         html: (v) =>
           shell({
             heading: `Still want to sell your ${esc(v.device)}?`,
             bodyHtml:
               p(`Hi ${esc(v.firstName)} — checking in one last time on your ${esc(v.device)}${v.quote ? ` (${esc(v.quote)})` : ""}.`) +
-              p(`Prices move with the market, so locking in now is usually the safe bet. If something's holding you up — a question on the price, how shipping works, or how you get paid — just reply and a real person will help.`) +
+              p(`Your offer is locked through <strong style="color:#fff">${esc(v.lockUntil)}</strong>. After that date we re-quote at the market rate. If something's holding you up — a question on the price, how shipping works, or how you get paid — just reply and a real person will help.`) +
               p(`Otherwise your offer's right here whenever you're ready:`),
             ctaUrl: v.offerUrl,
-            ctaLabel: "Finish my sale",
+            ctaLabel: `Finish my sale before ${v.lockUntil}`,
             unsubUrl: v.unsubUrl,
           }),
         text: (v) =>
           `Hi ${v.firstName} — last check-in on your ${v.device}${v.quote ? ` (${v.quote})` : ""}.\n\n` +
-          `Prices move with the market, so locking in now is usually the safe bet. Anything holding you up — price, shipping, payout? Just reply and a real person will help.\n\n` +
-          `Your offer: ${v.offerUrl}\n\n${unsubLine(v)}\n\n— Top Cash Cellular`,
+          `Your offer is locked through ${v.lockUntil}. After that date we re-quote at the market rate. Anything holding you up — price, shipping, payout? Just reply and a real person will help.\n\n` +
+          `Finish your sale before ${v.lockUntil}: ${v.offerUrl}\n\n${unsubLine(v)}\n\n— Top Cash Cellular`,
       },
     ],
   },
