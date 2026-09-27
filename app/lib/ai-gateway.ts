@@ -75,10 +75,11 @@ async function callAnthropicDirect(req: AIRequest, model: string): Promise<AIRes
         ? m.content
         : m.content.map((p): Block => (p.type === "text" ? { type: "text", text: p.text } : { type: "image", source: { type: "url", url: p.image_url.url } })),
     }));
+  // No `temperature`: the Claude 5 family rejects it ("`temperature` is
+  // deprecated for this model", 400) — the chat route sends none either.
   const res = await client.messages.create({
     model,
     max_tokens: req.maxTokens ?? 1024,
-    temperature: req.temperature ?? 0.3,
     ...(system || jsonHint ? { system: `${system}${jsonHint}`.trim() } : {}),
     messages,
   });
