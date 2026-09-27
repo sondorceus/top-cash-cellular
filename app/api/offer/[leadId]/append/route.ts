@@ -34,7 +34,9 @@ import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
 import { offerKeyValid, offerPath } from "../../../../lib/offer-link";
 import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "../../../../lib/resell-estimates";
 import { authoritativeLineCap, macSpecUnclaimed } from "../../../../lib/server-quote-cap";
-import { readPriceOverrides } from "../../../../lib/quote";
+// Last-good overrides (2026-09-26): a failed Blob read used to cap every added
+// line off the code table and flag honest adds on overridden models.
+import { cachedOverrides } from "../../../../lib/overrides-cache";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import { parseOfferBonus, isCustomerLeadPost, nextItemUpdateVersion, latestStatus, isDeleted } from "../../../../lib/lead-devices";
 
@@ -252,7 +254,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // stays as the fallback; lines we can't price at all get flagged for a
   // manual staff re-quote and never trusted into the estimate.
   const leadCarrier = field(leadMsg.body, "Carrier");
-  const capOverrides = await readPriceOverrides();
+  const capOverrides = await cachedOverrides();
   for (const [i, d] of added.entries()) {
     if (d.needsReview || d.quote <= 0) continue;
     const line = { model: d.model, storage: d.storage, condition: d.condition, carrier: d.carrier || leadCarrier, ...specs[i] };

@@ -14,7 +14,10 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../lib/admin-auth";
-import { quoteDevice, readPriceOverrides, type QuoteSpec } from "../../lib/quote";
+import { quoteDevice, type QuoteSpec } from "../../lib/quote";
+// Last-good overrides (2026-09-26): a failed Blob read used to quote the whole
+// batch off the code table as if no overrides existed.
+import { cachedOverrides } from "../../lib/overrides-cache";
 import { PRICE_TABLE, BASE_PRICED_MODELS, MACBOOK_SPECS } from "../../data/prices";
 
 export const dynamic = "force-dynamic";
@@ -77,7 +80,7 @@ export async function POST(req: NextRequest) {
     if (specs.length > 200) {
       return NextResponse.json({ error: "max 200 devices per batch" }, { status: 400 });
     }
-    const overrides = await readPriceOverrides();
+    const overrides = await cachedOverrides();
     const results = await Promise.all(
       specs.map((s) =>
         isSpec(s)
@@ -94,6 +97,6 @@ export async function POST(req: NextRequest) {
   if (!isSpec(body)) {
     return NextResponse.json({ error: "body must be a QuoteSpec (modelId + condition) or { devices: [...] }" }, { status: 400 });
   }
-  const result = await quoteDevice(body);
+  const result = await quoteDevice(body, await cachedOverrides());
   return NextResponse.json(result);
 }

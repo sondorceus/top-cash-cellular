@@ -1,10 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { safeEqual } from "../../../lib/admin-auth";
-import { PRICE_TABLE, CARRIER_DEDUCTIONS, BASE_PRICED_MODELS, MACBOOK_SPECS, carrierGapForCondition, type MacSpec } from "../../../data/prices";
+import { PRICE_TABLE, CARRIER_DEDUCTIONS, CARRIER_GAPS_BY_COND, BASE_PRICED_MODELS, MACBOOK_SPECS, MANUAL_REVIEW_DEVICES, carrierGapForCondition, type MacSpec } from "../../../data/prices";
 import { validatePriceInvariants } from "../../../lib/price-invariants";
 import { getResellEstimate } from "../../../lib/resell-estimates";
 import { lookupAtlasResell } from "../../../lib/atlas-lookup";
 import { ebayGrossToNet, atlasResellToNet } from "../../../lib/comp-economics";
+import { readOverridesDoc, listOverridesVersions, versionedOverridesPathname, type PriceOverrides, type OverridesBlobRef } from "../../../lib/quote";
+import { quoteDeviceSync } from "../../../lib/quote-engine";
+import { tableOfferIgnoringReviewFlag } from "../../../lib/advertised-up-to";
+import { macIsAutoQuotable } from "../../../lib/macbook-quote";
 import skuLabelsJson from "../../../data/sku-labels.json";
 import { put, list, del } from "@vercel/blob";
 import { promises as fs } from "fs";
@@ -106,29 +110,60 @@ async function loadEbayReference(): Promise<EbayReference> {
   }
 }
 
-// Price-editor backend. Stores admin overrides as a single JSON document
-// on Vercel Blob (we already use Blob for FedEx labels, so no new infra).
+// Price-editor backend. Stores admin overrides as ONE JSON document on Vercel
+// Blob (we already use Blob for FedEx labels, so no new infra).
 //
-//   GET    /api/admin/prices            → public; returns
+//   GET    /api/admin/prices            → auth; returns
 //                                          { baseline, overrides, effective,
-//                                            history: [{ url, timestamp }] }
+//                                            effectiveOffer, history, live, … }
 //   POST   /api/admin/prices            → auth; merges { priceTable,
-//                                          carrierDeductions } into stored
-//                                          overrides. Snapshots the previous
-//                                          version into history before
-//                                          overwriting (last 10 kept).
+//                                          carrierDeductions, baseOverrides,
+//                                          conditionAdj } into the live doc;
+//                                          body may carry expectUpdatedAt.
+//   POST   /api/admin/prices?restore=prices/history/<ts>.json
+//                                       → auth; REPLACES the live doc with
+//                                          that snapshot, gated like a save.
 //   DELETE /api/admin/prices            → auth; clear ALL overrides.
 //   DELETE /api/admin/prices?model=ip17p          → auth; clear one model
-//                                          from both price+carrier tables.
+//                                          from every table.
 //   DELETE /api/admin/prices?cell=ip17p/256/sealed → auth; clear one cell.
+//
+// STORAGE (2026-09-26): every write is a NEW versioned pathname
+// (prices/overrides-v<ts>.json — app/lib/quote.ts) and readers take the
+// newest, so the Blob CDN can never hand back a stale copy of a same-path
+// overwrite: that ~60 s staleness had a July-12 clear-all re-run five times
+// against a doc it had already removed (five identical history snapshots in
+// two minutes). Clear-all now WRITES an empty versioned doc for the same
+// reason. The newest VERSIONS_KEEP docs are kept; older ones are pruned after
+// a successful write. History snapshots (prices/history/) are taken AFTER the
+// gate, and a failed snapshot FAILS the save (502).
+//
+// CONCURRENCY: the console sends expectUpdatedAt (the doc it loaded); a live
+// doc with a different updatedAt answers 409 { conflict: true } — two tabs
+// saving within seconds used to drop each other's cells silently.
+//
+// AUDIT: updatedBy (x-admin-email from proxy.ts, else "token") is stored in
+// the doc and every save / clear / restore posts one [PRICE-CHANGE] comm.
 //
 // Auth is the same token used by /api/admin/leads (TCC_ADMIN_TOKEN env —
 // required, no fallback). x-admin-token header only (2026-09-26).
 
 const ADMIN_TOKEN = process.env.TCC_ADMIN_TOKEN;
-const BLOB_KEY = "prices/overrides.json";
 const HISTORY_PREFIX = "prices/history/";
 const HISTORY_LIMIT = 10;
+const VERSIONS_KEEP = 3;
+const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
+const MC_KEY = process.env.MC_API_KEY || "";
+// Models whose carrier gap is CONDITION-dependent and lives in code
+// (CARRIER_GAPS_BY_COND): the engine and the funnel resolve that first, so a
+// flat carrierDeductions override for them changed nothing — the console now
+// disables those inputs and POST refuses the keys (2026-09-26).
+const RULE_BASED_CARRIER_MODELS = new Set(Object.keys(CARRIER_GAPS_BY_COND));
+// The MacBook-calibrated fallback condition adjustments (app/lib/macbook-
+// quote.ts MCOND, not exported): the effective conditionAdj ladder is
+// override ?? spec.condition_adj ?? this.
+const MCOND_FALLBACK: Record<string, number> = { sealed: 50, mint: 0, good: -110, fair: -220 };
+const COND_LADDER = ["sealed", "mint", "good", "fair", "broken"] as const;
 
 function checkAuth(req: NextRequest): boolean {
   // Header only (2026-09-26): a ?token= in the URL put the admin secret in
@@ -137,37 +172,39 @@ function checkAuth(req: NextRequest): boolean {
   return safeEqual(req.headers.get("x-admin-token"), ADMIN_TOKEN);
 }
 
-type OverridesShape = {
-  priceTable: Record<string, Record<string, Record<string, number>>>;
-  carrierDeductions: Record<string, Record<string, number>>;
-  baseOverrides: Record<string, number>;
-  // Per-model condition_adj overrides (sealed / mint / verygood / good /
-  // fair / broken). Applied at customer-funnel lookup time, overriding
-  // the bundled MACBOOK_SPECS[modelId].condition_adj or
-  // pc-laptop-specs[modelId].condition_adj.
-  conditionAdj: Record<string, Record<string, number>>;
-  updatedAt?: string;
-};
+// Who is saving: the allow-listed Google session's email, injected by
+// proxy.ts (which strips a client-sent one when there is no session), else
+// "token" for direct-token automation. An audit label, never authorization.
+function actor(req: NextRequest): string {
+  const e = (req.headers.get("x-admin-email") || "").trim().toLowerCase();
+  return /^[^\s@]{1,80}@[^\s@]{1,80}$/.test(e) ? e : "token";
+}
 
-async function readOverrides(): Promise<OverridesShape> {
-  const empty: OverridesShape = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
-  try {
-    const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });
-    const found = blobs.find((b) => b.pathname === BLOB_KEY);
-    if (!found) return empty;
-    const r = await fetch(found.url, { cache: "no-store" });
-    if (!r.ok) return empty;
-    const d = await r.json();
-    return {
-      priceTable: d.priceTable || {},
-      carrierDeductions: d.carrierDeductions || {},
-      baseOverrides: d.baseOverrides || {},
-      conditionAdj: d.conditionAdj || {},
-      updatedAt: d.updatedAt,
-    };
-  } catch {
-    return empty;
-  }
+// The stored doc: the four override maps + stamps. conditionAdj is the
+// per-model condition_adj override (sealed / mint / good / fair / broken),
+// applied at customer-funnel lookup time over the bundled
+// MACBOOK_SPECS[modelId].condition_adj or pc-laptop-specs[modelId].condition_adj.
+type OverridesShape = PriceOverrides;
+type LiveDoc = { doc: OverridesShape; pathname: string | null };
+
+// null = the read FAILED. Never merge onto — or snapshot — an empty doc then:
+// before 2026-09-26 a failed read looked like "no overrides", and a save on
+// top of it would have replaced the whole live doc with the one edit.
+async function readOverrides(): Promise<LiveDoc | null> {
+  const r = await readOverridesDoc();
+  return r ? { doc: r.overrides, pathname: r.pathname } : null;
+}
+const emptyDoc = (): OverridesShape => ({ priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} });
+const isEmptyDoc = (d: OverridesShape): boolean =>
+  [d.priceTable, d.carrierDeductions, d.baseOverrides || {}, d.conditionAdj || {}].every((m) => Object.keys(m).length === 0);
+// The four maps of a validated body / snapshot as a doc (the writer stamps it).
+function pickDoc(d: Record<string, unknown>): OverridesShape {
+  return {
+    priceTable: (d.priceTable as OverridesShape["priceTable"]) || {},
+    carrierDeductions: (d.carrierDeductions as OverridesShape["carrierDeductions"]) || {},
+    baseOverrides: (d.baseOverrides as OverridesShape["baseOverrides"]) || {},
+    conditionAdj: (d.conditionAdj as OverridesShape["conditionAdj"]) || {},
+  };
 }
 
 // Sparse deep-merge: prefer overlay value, fall back to base. Only used for
@@ -189,30 +226,32 @@ function deepMerge<T>(base: T, overlay: Partial<T>): T {
   return out as T;
 }
 
-// History: list snapshot files under prices/history/, newest first.
-async function readHistory(): Promise<Array<{ url: string; pathname: string; uploadedAt: string }>> {
+// History: snapshot files under prices/history/, newest first. listHistory
+// returns everything it can see (for pruning); readHistory the newest
+// HISTORY_LIMIT. (The old prune sliced the already-truncated list, so it never
+// deleted anything — 2026-09-26.)
+type HistoryRef = { url: string; pathname: string; uploadedAt: string };
+async function listHistory(): Promise<HistoryRef[]> {
+  const { blobs } = await list({ prefix: HISTORY_PREFIX, limit: 200, abortSignal: AbortSignal.timeout(8_000) });
+  return blobs
+    .map((b) => ({ url: b.url, pathname: b.pathname, uploadedAt: b.uploadedAt.toISOString() }))
+    .sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt));
+}
+async function readHistory(): Promise<HistoryRef[]> {
   try {
-    const { blobs } = await list({ prefix: HISTORY_PREFIX, limit: HISTORY_LIMIT * 2 });
-    return blobs
-      .map((b) => ({ url: b.url, pathname: b.pathname, uploadedAt: b.uploadedAt.toISOString() }))
-      .sort((a, b) => b.uploadedAt.localeCompare(a.uploadedAt))
-      .slice(0, HISTORY_LIMIT);
+    return (await listHistory()).slice(0, HISTORY_LIMIT);
   } catch {
     return [];
   }
 }
 
-// Snapshot the current overrides into history before overwriting. Ring-
-// buffer behavior: prune anything beyond HISTORY_LIMIT.
-async function snapshotToHistory(current: OverridesShape) {
-  if (
-    Object.keys(current.priceTable).length === 0 &&
-    Object.keys(current.carrierDeductions).length === 0 &&
-    Object.keys(current.baseOverrides || {}).length === 0 &&
-    Object.keys(current.conditionAdj || {}).length === 0
-  ) {
-    return;
-  }
+// Snapshot the doc being replaced into history. Ring-buffer behavior: prune
+// anything beyond HISTORY_LIMIT (best effort). Returns false when the snapshot
+// could not be written — the caller then FAILS the save (2026-09-26; a
+// swallowed failure used to let the write proceed with no way back). An empty
+// doc needs no snapshot.
+async function snapshotToHistory(current: OverridesShape): Promise<boolean> {
+  if (isEmptyDoc(current)) return true;
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
   try {
     await put(`${HISTORY_PREFIX}${ts}.json`, JSON.stringify(current, null, 2), {
@@ -221,13 +260,273 @@ async function snapshotToHistory(current: OverridesShape) {
       addRandomSuffix: false,
       allowOverwrite: false,
     });
-    // Prune anything beyond the limit (oldest first)
-    const all = await readHistory();
-    const stale = all.slice(HISTORY_LIMIT);
-    for (const s of stale) {
-      try { await del(s.url); } catch {}
+  } catch (e) {
+    console.error("[admin/prices] history snapshot failed:", e);
+    return false;
+  }
+  try {
+    for (const s of (await listHistory()).slice(HISTORY_LIMIT)) {
+      try { await del(s.url); } catch { /* the next save prunes again */ }
     }
-  } catch {}
+  } catch { /* prune is best effort */ }
+  return true;
+}
+
+// Write the doc under a NEW versioned pathname (never an overwrite), wait —
+// bounded — until list() shows it (the console re-reads right after), then
+// prune versions beyond the newest VERSIONS_KEEP. Throws when the put fails.
+async function writeVersionedDoc(doc: OverridesShape, at: Date): Promise<{ pathname: string; url: string }> {
+  const pathname = versionedOverridesPathname(at);
+  const res = await put(pathname, JSON.stringify(doc, null, 2), {
+    access: "public",
+    contentType: "application/json",
+    addRandomSuffix: false,
+    allowOverwrite: false,
+  });
+  let versions: OverridesBlobRef[] = [];
+  for (let i = 0; i < 4; i++) {
+    try { versions = await listOverridesVersions(4_000); } catch { versions = []; }
+    if (versions.some((v) => v.pathname === pathname)) break;
+    await new Promise((r) => setTimeout(r, 400));
+  }
+  for (const v of versions.slice(VERSIONS_KEEP)) {
+    if (v.pathname === pathname) continue;
+    try { await del(v.url); } catch { /* the next write prunes again */ }
+  }
+  return { pathname, url: res.url };
+}
+
+// Every override as "model/storage/cond" (or model/carrier/k, model/condadj/k,
+// model/base) → value, for diffs and counts.
+type Change = { path: string; from: number | undefined; to: number | undefined };
+function flattenDoc(d: OverridesShape): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const [model, st] of Object.entries(d.priceTable || {})) for (const [s, conds] of Object.entries(st || {})) for (const [c, v] of Object.entries(conds || {})) if (typeof v === "number") m.set(`${model}/${s}/${c}`, v);
+  for (const [model, row] of Object.entries(d.carrierDeductions || {})) for (const [k, v] of Object.entries(row || {})) if (typeof v === "number") m.set(`${model}/carrier/${k}`, v);
+  for (const [model, row] of Object.entries(d.conditionAdj || {})) for (const [k, v] of Object.entries(row || {})) if (typeof v === "number") m.set(`${model}/condadj/${k}`, v);
+  for (const [model, v] of Object.entries(d.baseOverrides || {})) if (typeof v === "number") m.set(`${model}/base`, v);
+  return m;
+}
+function diffOverrides(before: OverridesShape, next: OverridesShape): Change[] {
+  const a = flattenDoc(before), b = flattenDoc(next);
+  const out: Change[] = [];
+  for (const [k, v] of a) if (b.get(k) !== v) out.push({ path: k, from: v, to: b.get(k) });
+  for (const [k, v] of b) if (!a.has(k)) out.push({ path: k, from: undefined, to: v });
+  return out.sort((x, y) => x.path.localeCompare(y.path));
+}
+const modelsIn = (paths: Iterable<string>): number => new Set([...paths].map((p) => p.split("/")[0])).size;
+
+// One [PRICE-CHANGE] comm per save / clear / restore: who, how many models and
+// cells, the first 20 cells as old → new. Prices only — never customer data.
+// Fire-and-forget after the response; MC being down never fails a save.
+function postPriceChangeMarker(opts: { by: string; action: string; changes: Change[]; updatedAt: string }): void {
+  if (!MC_KEY) return;
+  const clean = (s: string) => s.replace(/[\[\]\n\r]/g, " ");
+  const money = (v: number | undefined, none: string) => (v === undefined ? none : `$${v}`);
+  const lines = opts.changes.slice(0, 20).map((c) => `${clean(c.path)}: ${money(c.from, "—")} → ${money(c.to, "baseline")}`);
+  if (opts.changes.length > 20) lines.push(`…and ${opts.changes.length - 20} more`);
+  const body = [
+    `[PRICE-CHANGE] by=${clean(opts.by)} action=${clean(opts.action)} models=${modelsIn(opts.changes.map((c) => c.path))} cells=${opts.changes.length} at=${opts.updatedAt}`,
+    ...lines,
+  ].join("\n");
+  after(async () => {
+    try {
+      const r = await fetch(`${MC_API}/api/comms`, {
+        method: "POST",
+        headers: { "x-api-key": MC_KEY, "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(8_000),
+        body: JSON.stringify({ from: "tcc-admin", fromName: "TCC Admin", role: "system", body, tags: ["prices"], priority: "normal" }),
+      });
+      if (!r.ok) console.error(`[admin/prices] MC marker failed: ${r.status}`);
+    } catch (e) {
+      console.error("[admin/prices] MC marker threw:", e);
+    }
+  });
+}
+
+// Snapshots are immutable, so their parsed contents are memoised per pathname
+// (the console reloads after every save; ten fetches each time adds up).
+const snapshotMemo = new Map<string, OverridesShape>();
+async function readSnapshot(ref: HistoryRef): Promise<OverridesShape> {
+  const hit = snapshotMemo.get(ref.pathname);
+  if (hit) return hit;
+  const r = await fetch(ref.url, { cache: "no-store", signal: AbortSignal.timeout(6_000) });
+  if (!r.ok) throw new Error(`snapshot fetch ${r.status}`);
+  const d: unknown = await r.json();
+  const shapeErr = validatePriceShape(d);
+  if (shapeErr) throw new Error(shapeErr);
+  const doc = pickDoc(d as Record<string, unknown>);
+  if (snapshotMemo.size >= 40) snapshotMemo.delete(snapshotMemo.keys().next().value as string);
+  snapshotMemo.set(ref.pathname, doc);
+  return doc;
+}
+
+// History rows for the console: time, how many models / cells the snapshot
+// holds, and how many cells differ from the live doc (what a restore changes).
+type HistoryRow = HistoryRef & { models: number | null; cells: number | null; changesVsLive: number | null };
+async function readHistoryWithCounts(live: OverridesShape): Promise<HistoryRow[]> {
+  const rows = await readHistory();
+  return Promise.all(rows.map(async (h) => {
+    try {
+      const doc = await readSnapshot(h);
+      const flat = flattenDoc(doc);
+      return { ...h, models: modelsIn(flat.keys()), cells: flat.size, changesVsLive: diffOverrides(live, doc).length };
+    } catch {
+      return { ...h, models: null, cells: null, changesVsLive: null };
+    }
+  }));
+}
+
+// What a customer is actually offered for each PRICE_TABLE cell with the live
+// overrides applied — quoteDeviceSync at unlocked / Wi-Fi, exactly as the
+// homepage prices it (MANUAL_REVIEW_DEVICES via tableOfferIgnoringReviewFlag,
+// the way their headline is priced). null = no auto price (manual review).
+// `raw` is cell + the $25 phone bonus: the console shows a "capped" chip when
+// the offer sits below it (NET_PAYOUTS pin, IWM rule, Galaxy drop, resell cap).
+// Additively priced MacBooks are skipped — their table rows are stale
+// base-chip leftovers the funnel never reads. 2026-09-26.
+type EffectiveCell = { offer: number | null; raw: number };
+const PHONE_ID = /^(ip(?!ad)|gs|gz|px|gnote)/;
+function buildEffectiveOffers(
+  effectivePriceTable: Record<string, Record<string, Record<string, number>>>,
+  ov: PriceOverrides,
+): Record<string, Record<string, Record<string, EffectiveCell>>> {
+  const out: Record<string, Record<string, Record<string, EffectiveCell>>> = {};
+  for (const [sku, storages] of Object.entries(effectivePriceTable)) {
+    if (macIsAutoQuotable(sku)) continue;
+    const isPhone = PHONE_ID.test(sku);
+    for (const [stor, conds] of Object.entries(storages)) {
+      for (const [cond, cell] of Object.entries(conds)) {
+        if (typeof cell !== "number") continue;
+        const raw = cell > 0 ? cell + (isPhone ? 25 : 0) : 0;
+        let offer: number | null;
+        if (MANUAL_REVIEW_DEVICES.has(sku)) {
+          offer = tableOfferIgnoringReviewFlag(sku, stor, cond, isPhone, { overrides: ov, label: SKU_LABELS[sku] });
+        } else {
+          const r = quoteDeviceSync({ modelId: sku, modelLabel: SKU_LABELS[sku], storage: stor, condition: cond, carrier: isPhone ? "unlocked" : undefined, isPhone }, ov);
+          offer = r.manualReview ? null : r.offer;
+        }
+        ((out[sku] ??= {})[stor] ??= {})[cond] = { offer, raw };
+      }
+    }
+  }
+  return out;
+}
+
+// GATE, condition adjustments (2026-09-26): the ladder check only covered
+// price cells and carrier gaps, so a MacBook / PC `good` adjustment above
+// `mint` saved fine. Effective adjustment = override ?? spec ?? MCOND; a worse
+// condition must never ADD more than a better one.
+function conditionAdjViolations(
+  mergedAdj: Record<string, Record<string, number>>,
+  models: Iterable<string>,
+  pcSpecs: Record<string, MacSpec>,
+): string[] {
+  const out: string[] = [];
+  const fmt = (v: number) => `${v >= 0 ? "+" : "−"}$${Math.abs(v)}`;
+  for (const id of models) {
+    const spec = MACBOOK_SPECS[id]?.condition_adj ?? pcSpecs[id]?.condition_adj;
+    const ov = mergedAdj[id] || {};
+    let prev: { c: string; v: number } | null = null;
+    for (const c of COND_LADDER) {
+      const v = ov[c] ?? spec?.[c] ?? MCOND_FALLBACK[c];
+      if (v === undefined) continue;
+      if (prev && v > prev.v) out.push(`${id} condition adjustments: ${c} (${fmt(v)}) would add more than ${prev.c} (${fmt(prev.v)}) — a worse condition must never pay more`);
+      prev = { c, v };
+    }
+  }
+  return out;
+}
+
+// Carrier overrides on rule-based models change nothing (see
+// RULE_BASED_CARRIER_MODELS) — refuse them instead of pretending.
+function ruleBasedCarrierError(carrierDeductions: Record<string, unknown> | undefined): string | null {
+  const hit = Object.keys(carrierDeductions || {}).filter((m) => RULE_BASED_CARRIER_MODELS.has(m));
+  if (hit.length === 0) return null;
+  return `Carrier gap for ${hit.join(", ")} is rule-based (condition-dependent — CARRIER_GAPS_BY_COND in app/data/prices.ts); a flat override here changes nothing. Edit the code table instead.`;
+}
+
+// The invariant gate over the models a write touches: cell / carrier ladders
+// via validatePriceInvariants, condition adjustments via
+// conditionAdjViolations. null = clean; else the 422 to return.
+function gateFor(
+  doc: OverridesShape,
+  cellModels: string[],
+  condAdjModels: string[],
+  pcSpecs: Record<string, MacSpec>,
+  headline: string,
+): NextResponse | null {
+  const messages: string[] = [];
+  let violations: ReturnType<typeof validatePriceInvariants> = [];
+  if (cellModels.length > 0) {
+    const effPT = deepMerge(PRICE_TABLE, doc.priceTable);
+    const effCD = deepMerge(CARRIER_DEDUCTIONS, doc.carrierDeductions);
+    violations = validatePriceInvariants(effPT, effCD, carrierGapForCondition, [...new Set(cellModels)]);
+    messages.push(...violations.map((v) => v.message));
+  }
+  if (condAdjModels.length > 0) messages.push(...conditionAdjViolations(doc.conditionAdj, new Set(condAdjModels), pcSpecs));
+  if (messages.length === 0) return null;
+  return NextResponse.json({
+    error:
+      `${headline}. ${messages.length} problem${messages.length === 1 ? "" : "s"}:\n` +
+      messages.slice(0, 8).map((m) => `• ${m}`).join("\n") +
+      (messages.length > 8 ? `\n…and ${messages.length - 8} more.` : ""),
+    violations,
+  }, { status: 422 });
+}
+
+// OPTIMISTIC CONCURRENCY (2026-09-26): the console sends the updatedAt of the
+// doc it loaded; a different live stamp means someone saved in between. null
+// = no conflict; callers that omit the stamp (automation) skip the check.
+function conflict(current: OverridesShape, expect: unknown): NextResponse | null {
+  if (expect === undefined) return null;
+  const liveAt = current.updatedAt ?? null;
+  const want = typeof expect === "string" && expect ? expect : null;
+  if (want === liveAt) return null;
+  return NextResponse.json({
+    error: `The live price document changed since you loaded it${current.updatedBy ? ` (by ${current.updatedBy}` : " ("}${liveAt ? ` at ${liveAt})` : ")"}. The grid was reloaded — your pending edits are still staged; check them against the new numbers and save again.`,
+    conflict: true,
+    updatedAt: liveAt,
+    updatedBy: current.updatedBy ?? null,
+  }, { status: 409 });
+}
+
+// Snapshot the doc being replaced (a failure FAILS the write), write the new
+// versioned doc, post the audit marker, answer. Shared by save / restore /
+// DELETE — the one path a live price change can take.
+async function commit(
+  current: OverridesShape,
+  next: OverridesShape,
+  by: string,
+  action: string,
+  extra: Record<string, unknown> = {},
+): Promise<NextResponse> {
+  if (!(await snapshotToHistory(current))) {
+    return NextResponse.json({ error: "Couldn't snapshot the current prices to history — nothing was saved (there would be no way back). Try again." }, { status: 502 });
+  }
+  const at = new Date();
+  const updatedAt = at.toISOString();
+  const doc: OverridesShape = { ...next, updatedAt, updatedBy: by };
+  let written: { pathname: string; url: string };
+  try {
+    written = await writeVersionedDoc(doc, at);
+  } catch (e) {
+    console.error("[admin/prices] versioned write failed:", e);
+    return NextResponse.json({ error: "Couldn't write the new price document — nothing changed. Try again." }, { status: 502 });
+  }
+  const changes = diffOverrides(current, next);
+  postPriceChangeMarker({ by, action, changes, updatedAt });
+  return NextResponse.json({
+    ok: true,
+    action,
+    overrideModels: Object.keys(doc.priceTable).length,
+    carrierOverrides: Object.keys(doc.carrierDeductions).length,
+    updatedAt,
+    updatedBy: by,
+    pathname: written.pathname,
+    changes: changes.length,
+    ...extra,
+  });
 }
 
 export async function GET(req: NextRequest) {
@@ -238,8 +537,14 @@ export async function GET(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const overrides = await readOverrides();
-  const history = await readHistory();
+  const live = await readOverrides();
+  // A failed read must not render as an empty grid — staff would "save" onto
+  // it and replace the whole live doc with one edit (2026-09-26).
+  if (!live) {
+    return NextResponse.json({ error: "Couldn't read the live price document from Blob — nothing shown, nothing to save onto. Try again in a moment." }, { status: 502 });
+  }
+  const overrides = live.doc;
+  const history = await readHistoryWithCounts(overrides);
   const pcSpecs = await loadPcSpecs();
   const atlasReference = await loadAtlasReference();
   const iwmReference = await loadIwmReference();
@@ -290,6 +595,12 @@ export async function GET(req: NextRequest) {
     ebayReference,
     marginByModel,
     perCellMargin,
+    // What the customer actually sees per cell, the rule-based carrier models
+    // the console must not offer to edit, and the live doc's stamps
+    // (2026-09-26).
+    effectiveOffer: buildEffectiveOffers(effectivePriceTable, overrides),
+    ruleBasedCarrierModels: [...RULE_BASED_CARRIER_MODELS],
+    live: { pathname: live.pathname, updatedAt: overrides.updatedAt ?? null, updatedBy: overrides.updatedBy ?? null },
     skuLabels: SKU_LABELS,
   });
 }
@@ -434,41 +745,62 @@ function makeRow(label: string, payout: number, resell: number | null): MarginRo
   return { label, payout, resell, margin, marginPct };
 }
 
-// Validate every leaf is a finite number in a sane range BEFORE it merges
-// into the live price blob the customer funnel reads. Without this a stray
-// string / NaN / negative / huge object could corrupt live quotes (negative
-// payouts, "$NaN") with no guard. Deductions/adjustments may be negative.
-function validatePriceShape(body: {
-  priceTable?: Record<string, unknown>;
-  carrierDeductions?: Record<string, unknown>;
-  baseOverrides?: Record<string, unknown>;
-  conditionAdj?: Record<string, unknown>;
-}): string | null {
+// Validate every leaf is a finite number in a sane range — and every key a
+// sane slug — BEFORE it merges into the live price doc the customer funnel
+// reads. Without this a stray string / NaN / negative / huge object could
+// corrupt live quotes (negative payouts, "$NaN") with no guard. Deductions and
+// adjustments may be negative. Key check added 2026-09-26: an odd key
+// ("mint ", "[STATUS: x]") never reaches the engine but pollutes the doc and
+// the audit marker. Also validates a whole snapshot document (restore).
+const KEY_RE = /^[a-z0-9_.\-]{1,40}$/i;
+function validatePriceShape(input: unknown): string | null {
   const MAX_KEYS = 2000;
   const numOk = (v: unknown, lo: number, hi: number) =>
     typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi;
   const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
+  if (!isObj(input)) return "body must be an object";
+  const body = input;
+  const keyOk = (k: string, where: string): string | null => (KEY_RE.test(k) ? null : `${where}: key "${k.slice(0, 40)}" is not a valid id`);
 
-  const pt = body.priceTable || {};
+  const pt = body.priceTable ?? {};
+  if (!isObj(pt)) return "priceTable must be an object";
   if (Object.keys(pt).length > MAX_KEYS) return "priceTable too large";
   for (const [model, storages] of Object.entries(pt)) {
+    const km = keyOk(model, "priceTable"); if (km) return km;
     if (!isObj(storages)) return `priceTable.${model} must be an object`;
     for (const [stor, conds] of Object.entries(storages)) {
+      const ks = keyOk(stor, `priceTable.${model}`); if (ks) return ks;
       if (!isObj(conds)) return `priceTable.${model}.${stor} must be an object`;
       for (const [cond, val] of Object.entries(conds)) {
+        const kc = keyOk(cond, `priceTable.${model}.${stor}`); if (kc) return kc;
         if (!numOk(val, 0, 100000)) return `priceTable.${model}.${stor}.${cond} must be a number 0–100000`;
       }
     }
   }
-  for (const [model, m] of Object.entries(body.carrierDeductions || {})) {
+  const cd = body.carrierDeductions ?? {};
+  if (!isObj(cd)) return "carrierDeductions must be an object";
+  for (const [model, m] of Object.entries(cd)) {
+    const km = keyOk(model, "carrierDeductions"); if (km) return km;
     if (!isObj(m)) return `carrierDeductions.${model} must be an object`;
-    for (const [k, v] of Object.entries(m)) if (!numOk(v, -100000, 100000)) return `carrierDeductions.${model}.${k} must be a number -100000–100000`;
+    for (const [k, v] of Object.entries(m)) {
+      const kk = keyOk(k, `carrierDeductions.${model}`); if (kk) return kk;
+      if (!numOk(v, -100000, 100000)) return `carrierDeductions.${model}.${k} must be a number -100000–100000`;
+    }
   }
-  for (const [model, m] of Object.entries(body.conditionAdj || {})) {
+  const ca = body.conditionAdj ?? {};
+  if (!isObj(ca)) return "conditionAdj must be an object";
+  for (const [model, m] of Object.entries(ca)) {
+    const km = keyOk(model, "conditionAdj"); if (km) return km;
     if (!isObj(m)) return `conditionAdj.${model} must be an object`;
-    for (const [k, v] of Object.entries(m)) if (!numOk(v, -100000, 100000)) return `conditionAdj.${model}.${k} must be a number -100000–100000`;
+    for (const [k, v] of Object.entries(m)) {
+      const kk = keyOk(k, `conditionAdj.${model}`); if (kk) return kk;
+      if (!numOk(v, -100000, 100000)) return `conditionAdj.${model}.${k} must be a number -100000–100000`;
+    }
   }
-  for (const [model, v] of Object.entries(body.baseOverrides || {})) {
+  const bo = body.baseOverrides ?? {};
+  if (!isObj(bo)) return "baseOverrides must be an object";
+  for (const [model, v] of Object.entries(bo)) {
+    const km = keyOk(model, "baseOverrides"); if (km) return km;
     if (!numOk(v, 0, 100000)) return `baseOverrides.${model} must be a number 0–100000`;
   }
   return null;
@@ -478,97 +810,127 @@ export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  let body: {
-    priceTable?: OverridesShape["priceTable"];
-    carrierDeductions?: OverridesShape["carrierDeductions"];
-    baseOverrides?: OverridesShape["baseOverrides"];
-    conditionAdj?: OverridesShape["conditionAdj"];
-  };
+  let body: unknown;
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
   }
-  const shapeErr = validatePriceShape(body);
-  if (shapeErr) return NextResponse.json({ error: shapeErr }, { status: 400 });
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Bad JSON" }, { status: 400 });
+  }
+  const raw = body as Record<string, unknown>;
+  const by = actor(req);
+  const restore = req.nextUrl.searchParams.get("restore");
 
-  const current = await readOverrides();
+  const live = await readOverrides();
+  if (!live) {
+    return NextResponse.json({ error: "Couldn't read the live price document from Blob — nothing was saved. Try again in a moment." }, { status: 502 });
+  }
+  const current = live.doc;
+  const clash = conflict(current, raw.expectUpdatedAt);
+  if (clash) return clash;
+  const pcSpecs = await loadPcSpecs();
+
+  // ---- RESTORE (2026-09-26): replace the live doc with a history snapshot ----
+  if (restore != null) {
+    if (!/^prices\/history\/[\w.\-]+\.json$/.test(restore)) {
+      return NextResponse.json({ error: "Bad snapshot pathname" }, { status: 400 });
+    }
+    // Located through OUR listing — never a client-sent URL.
+    let ref: HistoryRef | undefined;
+    try {
+      ref = (await listHistory()).find((h) => h.pathname === restore);
+    } catch {
+      return NextResponse.json({ error: "Couldn't list history — nothing was changed." }, { status: 502 });
+    }
+    if (!ref) return NextResponse.json({ error: "Snapshot not found" }, { status: 404 });
+    let next: OverridesShape;
+    try {
+      next = structuredClone(await readSnapshot(ref));
+    } catch (e) {
+      return NextResponse.json({ error: `Snapshot is not a valid price document: ${e instanceof Error ? e.message : "unreadable"}` }, { status: 422 });
+    }
+    // Carrier overrides on rule-based models are dead weight (see
+    // RULE_BASED_CARRIER_MODELS); older snapshots may carry them — drop them.
+    const stripped = Object.keys(next.carrierDeductions).filter((m) => RULE_BASED_CARRIER_MODELS.has(m));
+    for (const m of stripped) delete next.carrierDeductions[m];
+    const gateErr = gateFor(
+      next,
+      [...Object.keys(next.priceTable), ...Object.keys(next.carrierDeductions)],
+      Object.keys(next.conditionAdj),
+      pcSpecs,
+      "Restore rejected — the snapshot would break price logic",
+    );
+    if (gateErr) return gateErr;
+    return commit(current, next, by, `restore:${restore}`, { stripped });
+  }
+
+  // ---- SAVE: merge the edits into the live doc ----
+  const shapeErr = validatePriceShape(raw);
+  if (shapeErr) return NextResponse.json({ error: shapeErr }, { status: 400 });
+  const edits = pickDoc(raw);
+  const carrierErr = ruleBasedCarrierError(edits.carrierDeductions);
+  if (carrierErr) return NextResponse.json({ error: carrierErr }, { status: 422 });
 
   const merged: OverridesShape = {
-    priceTable: deepMerge(current.priceTable, body.priceTable || {}),
-    carrierDeductions: deepMerge(current.carrierDeductions, body.carrierDeductions || {}),
-    baseOverrides: { ...current.baseOverrides, ...(body.baseOverrides || {}) },
-    conditionAdj: deepMerge(current.conditionAdj, body.conditionAdj || {}),
-    updatedAt: new Date().toISOString(),
+    priceTable: deepMerge(current.priceTable, edits.priceTable),
+    carrierDeductions: deepMerge(current.carrierDeductions, edits.carrierDeductions),
+    baseOverrides: { ...current.baseOverrides, ...edits.baseOverrides },
+    conditionAdj: deepMerge(current.conditionAdj, edits.conditionAdj),
   };
 
   // PRICE-LOGIC GATE (owner 2026-07-14): an edit that would let a better
   // condition quote below a worse one — or a bigger storage below a
-  // smaller one — is rejected BEFORE it reaches the live blob, with the
+  // smaller one — is rejected BEFORE it reaches the live doc, with the
   // exact violations so staff can fix the number. Same validator that
   // gates the build (next.config.ts); only the models this save touches
-  // are re-checked so a one-cell edit stays instant.
-  const touched = new Set([
-    ...Object.keys(body.priceTable || {}),
-    ...Object.keys(body.carrierDeductions || {}),
-  ]);
-  if (touched.size > 0) {
-    const effPT = deepMerge(PRICE_TABLE, merged.priceTable);
-    const effCD = deepMerge(CARRIER_DEDUCTIONS, merged.carrierDeductions);
-    const violations = validatePriceInvariants(effPT, effCD, carrierGapForCondition, [...touched]);
-    if (violations.length > 0) {
-      return NextResponse.json({
-        error:
-          `Price logic violation — save rejected. ${violations.length} problem${violations.length === 1 ? "" : "s"}:\n` +
-          violations.slice(0, 8).map((v) => `• ${v.message}`).join("\n") +
-          (violations.length > 8 ? `\n…and ${violations.length - 8} more.` : ""),
-        violations,
-      }, { status: 422 });
-    }
-  }
-
-  await snapshotToHistory(current);
-
-  await put(BLOB_KEY, JSON.stringify(merged, null, 2), {
-    access: "public",
-    contentType: "application/json",
-    addRandomSuffix: false,
-    allowOverwrite: true,
-  });
-
-  const overrideModels = Object.keys(merged.priceTable).length;
-  const carrierOverrides = Object.keys(merged.carrierDeductions).length;
-  return NextResponse.json({
-    ok: true,
-    overrideModels,
-    carrierOverrides,
-    updatedAt: merged.updatedAt,
-  });
+  // are re-checked so a one-cell edit stays instant. conditionAdj edits get
+  // their own ladder check (2026-09-26).
+  const gateErr = gateFor(
+    merged,
+    [...Object.keys(edits.priceTable), ...Object.keys(edits.carrierDeductions)],
+    Object.keys(edits.conditionAdj),
+    pcSpecs,
+    "Price logic violation — save rejected",
+  );
+  if (gateErr) return gateErr;
+  return commit(current, merged, by, "save");
 }
 
 // DELETE supports these scopes:
-//   no params       → clear ALL overrides (also snapshots first)
+//   no params       → clear ALL overrides (snapshots first, WRITES an empty doc)
 //   ?model=ip17p    → strip every override for one model
 //   ?condModel=ip17p → strip ONLY the condition adjustments for one model
 //   ?cell=ip17p/256/sealed → revert one specific cell
 //   ?carrier=ip17p  → strip carrier deductions for one model
+//   ?base=<id>      → strip one base-price override
+// plus ?expectUpdatedAt=<the stamp the console loaded> → 409 on a concurrent
+// edit (2026-09-26).
 export async function DELETE(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const model = req.nextUrl.searchParams.get("model");
-  const condModel = req.nextUrl.searchParams.get("condModel");
-  const cell = req.nextUrl.searchParams.get("cell");
-  const carrier = req.nextUrl.searchParams.get("carrier");
-  const baseId = req.nextUrl.searchParams.get("base");
+  const q = req.nextUrl.searchParams;
+  const model = q.get("model");
+  const condModel = q.get("condModel");
+  const cell = q.get("cell");
+  const carrier = q.get("carrier");
+  const baseId = q.get("base");
   // ?force=1 skips the invariant gate — removing an override can re-expose
   // a baseline state that a pending code fix supersedes, and staff must be
   // able to unwedge that.
-  const force = req.nextUrl.searchParams.get("force") === "1";
-  const current = await readOverrides();
-  await snapshotToHistory(current);
+  const force = q.get("force") === "1";
+  const live = await readOverrides();
+  if (!live) {
+    return NextResponse.json({ error: "Couldn't read the live price document from Blob — nothing was changed. Try again in a moment." }, { status: 502 });
+  }
+  const current = live.doc;
+  const clash = conflict(current, q.has("expectUpdatedAt") ? (q.get("expectUpdatedAt") ?? "") : undefined);
+  if (clash) return clash;
 
-  let next: OverridesShape = current;
+  // Work on a copy — `current` is what gets snapshotted and diffed.
+  let next: OverridesShape = structuredClone(current);
   let action = "clear-all";
   if (cell) {
     const [m, s, c] = cell.split("/");
@@ -597,9 +959,10 @@ export async function DELETE(req: NextRequest) {
     delete next.conditionAdj[model];
     action = `clear-model:${model}`;
   } else {
-    next = { priceTable: {}, carrierDeductions: {}, baseOverrides: {}, conditionAdj: {} };
+    next = emptyDoc();
   }
-  next.updatedAt = new Date().toISOString();
+  delete next.updatedAt;
+  delete next.updatedBy;
 
   // Same price-logic gate as POST: a partial revert (one cell of a model
   // whose other cells are still overridden) can create an inversion in the
@@ -607,46 +970,12 @@ export async function DELETE(req: NextRequest) {
   // already build-gated.
   if (!force && (cell || condModel || carrier || baseId || model)) {
     const affected = [cell?.split("/")[0], carrier, model].filter(Boolean) as string[];
-    if (affected.length > 0) {
-      const effPT = deepMerge(PRICE_TABLE, next.priceTable);
-      const effCD = deepMerge(CARRIER_DEDUCTIONS, next.carrierDeductions);
-      const violations = validatePriceInvariants(effPT, effCD, carrierGapForCondition, affected);
-      if (violations.length > 0) {
-        return NextResponse.json({
-          error:
-            `Reverting this would break price logic — blocked. Add &force=1 to override.\n` +
-            violations.slice(0, 8).map((v) => `• ${v.message}`).join("\n"),
-          violations,
-        }, { status: 422 });
-      }
-    }
+    const condAffected = [condModel, model].filter(Boolean) as string[];
+    const gateErr = gateFor(next, affected, condAffected, await loadPcSpecs(), "Reverting this would break price logic — blocked. Add &force=1 to override");
+    if (gateErr) return gateErr;
   }
 
-  const empty =
-    Object.keys(next.priceTable).length === 0 &&
-    Object.keys(next.carrierDeductions).length === 0 &&
-    Object.keys(next.baseOverrides).length === 0 &&
-    Object.keys(next.conditionAdj).length === 0;
-  if (empty) {
-    try {
-      const { blobs } = await list({ prefix: BLOB_KEY, limit: 5 });
-      for (const b of blobs.filter((x) => x.pathname === BLOB_KEY)) {
-        await del(b.url);
-      }
-    } catch {}
-  } else {
-    await put(BLOB_KEY, JSON.stringify(next, null, 2), {
-      access: "public",
-      contentType: "application/json",
-      addRandomSuffix: false,
-      allowOverwrite: true,
-    });
-  }
-
-  return NextResponse.json({
-    ok: true,
-    action,
-    overrideModels: Object.keys(next.priceTable).length,
-    carrierOverrides: Object.keys(next.carrierDeductions).length,
-  });
+  // Snapshot → new versioned doc (an EMPTY one for clear-all: deleting the
+  // same-path blob is what the July-12 retry storm kept re-reading as live).
+  return commit(current, next, actor(req), action);
 }

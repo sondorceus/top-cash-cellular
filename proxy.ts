@@ -52,10 +52,20 @@ export function proxy(req: NextRequest) {
       // continue to check this header without knowing anything about
       // Google sessions.
       headers.set("x-admin-token", process.env.TCC_ADMIN_TOKEN || (() => { throw new Error("TCC_ADMIN_TOKEN env required"); })());
+      // Audit identity (2026-09-26): the routes only ever saw the shared
+      // token, so a price change could not be attributed to anyone. The
+      // allow-listed session's email rides along; routes may ignore it.
+      headers.set("x-admin-email", session.email);
       return NextResponse.next({ request: { headers } });
     }
     // No session — let the route's own check handle it (might still
-    // pass via direct token header for curl/automation use).
+    // pass via direct token header for curl/automation use). A caller
+    // without a session must not be able to sign as staff (2026-09-26).
+    if (req.headers.has("x-admin-email")) {
+      const headers = new Headers(req.headers);
+      headers.delete("x-admin-email");
+      return NextResponse.next({ request: { headers } });
+    }
     return NextResponse.next();
   }
 

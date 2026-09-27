@@ -6,7 +6,9 @@ import { formatOfferNumber } from "../../lib/offer-number";
 import { clientIp, rateLimit, rateLimitResponse } from "../../lib/rate-limit";
 import { authoritativeLineCap, macSpecUnclaimed } from "../../lib/server-quote-cap";
 import { validPromoCode, weeklyPromoTerms, widenUnitCap, promoRoom } from "../../lib/lead-promos";
-import { readPriceOverrides } from "../../lib/quote";
+// Last-good overrides (2026-09-26): a failed Blob read used to cap the emailed
+// figure off the code table while the lead had been priced from the blob.
+import { cachedOverrides } from "../../lib/overrides-cache";
 import { field, parseOfferBonus } from "../../lib/lead-devices";
 import { REFERRAL_REFEREE_BONUS } from "../../lib/referral";
 import { ownBlobStoreHost } from "../../lib/owner-sms";
@@ -194,7 +196,7 @@ export async function POST(req: NextRequest) {
   // their top config — the saved lead's figure below bounds both (without
   // a verified lead they state no figure). The actual payout is still
   // governed by the lead-route clamp + inspection.
-  const capOverrides = await readPriceOverrides();
+  const capOverrides = await cachedOverrides();
   // Carrier is per-LINE with the top-level body.carrier as fallback — a
   // mixed cart submits one body.carrier, which capped every line against
   // that single carrier's ceiling (an unlocked line on an AT&T submission
@@ -213,7 +215,10 @@ export async function POST(req: NextRequest) {
     const cap = await authoritativeLineCap(spec, capOverrides);
     if (cap == null || macSpecUnclaimed(spec)) unbounded = true;
     if (cap == null) return lineQuote;
-    const unit = widenUnitCap(cap, validPromoCode(promoCode), weekly, promoRoom({ model: m, storage: s, condition: c }));
+    // A 0 ceiling is a config we deliberately don't auto-quote (2026-09-26,
+    // server-quote-cap.ts): no promo widens it — the page never sweetens a $0
+    // quote — so the emailed figure takes the "custom quote" path.
+    const unit = cap === 0 ? 0 : widenUnitCap(cap, validPromoCode(promoCode), weekly, promoRoom({ model: m, storage: s, condition: c }));
     const allowed = unit * Math.min(50, Math.max(1, Math.round(Number(qty)) || 1));
     return lineQuote > allowed + 5 ? allowed : lineQuote;
   };

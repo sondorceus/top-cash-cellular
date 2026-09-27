@@ -33,6 +33,9 @@ export type PriceOverrides = {
   baseOverrides: Record<string, number>;
   conditionAdj: Record<string, Record<string, number>>;
   updatedAt?: string;
+  // Who saved the doc (admin session email, or "token") — audit label written
+  // by /api/admin/prices, never sent to customers (2026-09-26).
+  updatedBy?: string;
 };
 
 export const EMPTY_OVERRIDES: PriceOverrides = {

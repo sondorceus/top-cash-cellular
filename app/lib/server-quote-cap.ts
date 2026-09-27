@@ -70,8 +70,12 @@ export type LeadLineSpec = {
 
 /**
  * Per-unit ceiling for one lead line, or null when we can't price it
- * server-side. Pass the overrides from ONE readPriceOverrides() call so a
- * multi-device cart doesn't re-read the blob per line.
+ * server-side. 0 = the engine priced this exact config and REFUSED it (an
+ * authored $0 cell, sealed+locked with no per-storage gap, a cap under
+ * MIN_OFFER): the funnel shows "manual quote" there, so a dollar figure posted
+ * for it is clamped to Quote: TBD (2026-09-26). Pass the overrides from ONE
+ * cachedOverrides() call so a multi-device cart doesn't re-read the blob per
+ * line.
  */
 export async function authoritativeLineCap(line: LeadLineSpec, overrides: PriceOverrides): Promise<number | null> {
   const id = resolveModelIdFromLabel(line.model);
@@ -104,6 +108,11 @@ export async function authoritativeLineCap(line: LeadLineSpec, overrides: PriceO
   const storageTxt = typeof line.storage === "string" && line.storage.trim() ? line.storage : undefined;
   const r = await quoteAt(storageTxt);
   let offer = r?.offer ?? null;
+  // MANUAL-REVIEW CELL (2026-09-26): a null ceiling here let a crafted body
+  // post any figure for a config we deliberately don't auto-quote — only the
+  // $3,500 sanity bound in /api/lead remained, and /api/confirm emailed the
+  // figure as "locked". 0 clamps it onto the TBD / manual-review path.
+  if (r && r.offer == null && r.manualReview && r.source === "price-table") return 0;
   // Storage that matched no cell meant NO ceiling — a hand-posted lead could
   // drop the field ("iPhone 17 Pro Max", no storage), garble it ("2 TB
   // (unlocked)") or name a tier the row lacks, and post any price. Fall back

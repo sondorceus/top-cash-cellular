@@ -26,7 +26,10 @@ mkdirSync(out, { recursive: true });
 const FPS = 30;
 const SECONDS = 12;
 
+// null = the Blob read failed (2026-09-26); ads must not be rendered off the
+// code table as if it were the live price list.
 const overrides = await readPriceOverrides();
+if (!overrides) throw new Error("price overrides read failed — not rendering prices off the code table");
 async function upTo(id, label) {
   let best = 0;
   for (const s of Object.keys(PRICE_TABLE[id] || {})) {

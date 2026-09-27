@@ -258,7 +258,10 @@ async function postMarker(body: string, tags: string[], priority: "low" | "norma
 // false-flagged them as tampered. Always import; never re-fork.)
 import { authoritativeLineCap, macSpecUnclaimed, resolveModelIdFromLabel, type LeadLineSpec } from "../../lib/server-quote-cap";
 import { validPromoCode, weeklyPromoTerms, widenUnitCap, promoRoom, describeWeeklyPromo, type PromoCode, type PromoTerms, type PromoRoom } from "../../lib/lead-promos";
-import { readPriceOverrides } from "../../lib/quote";
+// Last-good overrides (2026-09-26): a failed Blob read used to cap every line
+// off the code table — honest customers quoted from live overrides were then
+// clamped and fraud-flagged.
+import { cachedOverrides } from "../../lib/overrides-cache";
 import { MANUAL_REVIEW_DEVICES } from "../../data/prices";
 
 // High-value devices that need manual review before payout
@@ -693,9 +696,32 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
   // Authoritative ceiling: recompute the REAL offer via quoteDevice()
   // (PRICE_TABLE + live blob overrides — covers resell-exempt SKUs) plus
   // headroom for funnel-only bonuses; see app/lib/server-quote-cap.ts.
-  const capOverrides = await readPriceOverrides();
+  let capOverrides = await cachedOverrides();
+  // The seller may have quoted from a NEWER price doc than this instance has
+  // memoised (a save landed within the last minute, 2026-09-26): our cap would
+  // then be the old price and an honest seller quoted at the new one would
+  // read as tamper. A stamp past our doc — or a stamp when we hold no doc at
+  // all — forces one fresh read before any line is capped.
+  {
+    const stampMs = typeof data.priceStamp === "string" && data.priceStamp.length <= 40 ? Date.parse(data.priceStamp) : NaN;
+    const ourMs = capOverrides.updatedAt ? Date.parse(capOverrides.updatedAt) : NaN;
+    if (Number.isFinite(stampMs) && (!Number.isFinite(ourMs) || stampMs > ourMs)) capOverrides = await cachedOverrides(0);
+  }
   const lineCap = async (line: LeadLineSpec): Promise<number | null> =>
     (await authoritativeLineCap(line, capOverrides)) ?? legacyCap(line.model, line.condition, line.brokenGlass);
+  // STALE QUOTE ≠ TAMPER (2026-09-26). The funnel stamps its lead with the
+  // updatedAt of the price doc it quoted from (priceStamp, taken from
+  // /api/prices/overrides). A quote above the cap whose stamp predates the
+  // live doc is a seller who priced before an edit landed: clamp it the same,
+  // but say "PRICE CHANGED since quote" and never fraud-flag or review-tag it.
+  // No stamp, or a stamp at/after the live doc, keeps the tamper path.
+  const priceStampMs = typeof data.priceStamp === "string" && data.priceStamp.length <= 40 ? Date.parse(data.priceStamp) : NaN;
+  const liveStampMs = capOverrides.updatedAt ? Date.parse(capOverrides.updatedAt) : NaN;
+  const quotedBeforeLiveDoc = Number.isFinite(priceStampMs) && Number.isFinite(liveStampMs) && priceStampMs < liveStampMs;
+  // A 0 ceiling is a config the engine refuses to auto-quote (server-quote-
+  // cap.ts): no promo widens it — the page never sweetens a $0 quote.
+  const widenLine = (cap: number, code: PromoCode | null, weekly: PromoTerms | null, room?: PromoRoom): number =>
+    cap === 0 ? 0 : widenUnitCap(cap, code, weekly, room);
   const sanitizeQty = (q: unknown) => Math.min(50, Math.max(1, Math.round(Number(q) || 1)));
   // Quote-step bonuses (lib/lead-promos): the funnel folds a % code
   // (coupons.json) and the weekly promo (promo.json) into a line's price only
@@ -727,7 +753,7 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
       if (cap != null) {
         anyKnown = true;
         const bonus = linePromos.get(d);
-        const lineAllowed = widenUnitCap(cap, bonus?.code ?? null, bonus?.weekly ?? null, bonus?.room) * sanitizeQty(d.quantity);
+        const lineAllowed = widenLine(cap, bonus?.code ?? null, bonus?.weekly ?? null, bonus?.room) * sanitizeQty(d.quantity);
         acc += lineAllowed;
         // Per-LINE clamp (deferred #4): the rendered per-device dollar was
         // never validated, so one inflated line hid inside an honest total.
@@ -752,7 +778,7 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
     promoApplied = validPromoCode(promoCode);
     weeklyApplied = weeklyPromoTerms([{ model, quantity, weeklyPromo }])[0];
     roomApplied = promoRoom({ model, storage, condition, brokenGlass });
-    serverQuoteCap = cap != null ? widenUnitCap(cap, promoApplied, weeklyApplied, roomApplied) * sanitizeQty(quantity) : null;
+    serverQuoteCap = cap != null ? widenLine(cap, promoApplied, weeklyApplied, roomApplied) * sanitizeQty(quantity) : null;
   }
   // A priced MacBook line with no recognizable chip/RAM was capped at the
   // model's TOP config — the funnel always sends both, so a line without
@@ -761,12 +787,19 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
     ? (data as { devices: (LeadLineSpec & { quote?: unknown })[] }).devices.some((d) => !!d && (Number(d.quote) || 0) > 0 && macSpecUnclaimed(d))
     : submittedQuoteNum > 0 && macSpecUnclaimed({ model, processor, memory });
   let quoteTampered = false;
+  // Clamped too, but honestly: the seller's price stamp predates the live doc.
+  let priceChanged = false;
   let baseQuoteNum = submittedQuoteNum;
   if (serverQuoteCap != null && submittedQuoteNum > serverQuoteCap + SERVER_QUOTE_TOLERANCE) {
-    quoteTampered = true;
+    if (quotedBeforeLiveDoc) priceChanged = true; else quoteTampered = true;
     baseQuoteNum = serverQuoteCap;
-    console.warn(`[lead] Quote tamper detected: ${isMultiDeviceCart ? "multi-device" : `model=${String(model).slice(0,60)} condition=${String(condition).slice(0,30)}`} submitted=$${submittedQuoteNum} cap=$${serverQuoteCap} — clamped.`);
+    console.warn(`[lead] ${priceChanged ? "Quote predates a price change" : "Quote tamper detected"}: ${isMultiDeviceCart ? "multi-device" : `model=${String(model).slice(0,60)} condition=${String(condition).slice(0,30)}`} submitted=$${submittedQuoteNum} cap=$${serverQuoteCap} — clamped.`);
   }
+  // Either clamp lands on the server figure; only the wording differs.
+  const quoteClamped = quoteTampered || priceChanged;
+  // Clamped onto a config we don't auto-quote (cap 0, server-quote-cap.ts):
+  // the lead reads as the manual-review TBD quote every custom quote gets.
+  const clampedToTbd = quoteClamped && baseQuoteNum === 0;
   // Bonus from the coupon is applied AFTER margin reference but
   // BEFORE line construction so couponLines can render the totals.
   // The referral referee bonus stacks on top — both may apply, that's
@@ -910,9 +943,11 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
     // the honest figure is the clamped baseQuoteNum — keep this line in
     // sync with the clamped headline above (review note has the detail).
     multiLines.push(
-      quoteTampered
-        ? `Total payout: $${baseQuoteNum + multiBonus} (clamped from $${total})`
-        : `Total payout: $${total + multiBonus}`
+      clampedToTbd
+        ? `Total payout: TBD (custom) — submitted $${total} for a config we don't auto-quote; priced by hand`
+        : quoteClamped
+          ? `Total payout: $${baseQuoteNum + multiBonus} (clamped from $${total})`
+          : `Total payout: $${total + multiBonus}`
     );
   }
 
@@ -1217,6 +1252,10 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
     reviewLines.push(`Submitted: $${submittedQuoteNum} · Server cap: $${serverQuoteCap} · Clamped to: $${baseQuoteNum} (before coupon/referral).`);
     reviewLines.push("Verify funnel integrity / inspect lead source before paying out.");
   }
+  if (priceChanged) {
+    // Honest wording for an honest seller (2026-09-26): not a review flag.
+    reviewLines.push(`ℹ️ PRICE CHANGED since quote — the seller quoted $${submittedQuoteNum} before the price list was updated (quote stamp ${new Date(priceStampMs).toISOString()} < live ${new Date(liveStampMs).toISOString()}); clamped to the live ceiling $${serverQuoteCap}. Not a tamper flag.`);
+  }
   if (highValueReview) {
     reviewLines.push("⚠️ MANUAL REVIEW REQUIRED — high-value device");
     reviewLines.push("Verify: condition matches description, check IMEI, confirm config (chip/RAM/storage)");
@@ -1257,7 +1296,9 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
         // Show the server-VALIDATED total: on tamper the per-device sum
         // is the inflated client value, so fall back to the clamped
         // baseQuoteNum (the summed per-item cap) and note the original.
-        `Quote: $${(quoteTampered ? baseQuoteNum : deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)) + offerBonus}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}`,
+        clampedToTbd
+          ? `Quote: TBD (custom) — submitted $${submittedQuoteNum} for a config we don't auto-quote; priced by hand`
+          : `Quote: $${(quoteClamped ? baseQuoteNum : deviceList.reduce((s, d) => s + (Number(d.quote) || 0), 0)) + offerBonus}${quoteClamped ? ` (clamped from $${submittedQuoteNum})` : ""}`,
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,
@@ -1281,7 +1322,9 @@ async function handleLead(req: NextRequest, held: { dedupKey: string | null }) {
         safeStorage ? `Storage: ${safeStorage}` : null,
         safeCarrier ? `Carrier: ${safeCarrier}` : null,
         `Condition: ${safeCondition}`,
-        quote ? `Quote: $${quoteNum}${quoteTampered ? ` (clamped from $${submittedQuoteNum})` : ""}` : `Quote: TBD (custom)`,
+        quote && !clampedToTbd
+          ? `Quote: $${quoteNum}${quoteClamped ? ` (clamped from $${submittedQuoteNum})` : ""}`
+          : `Quote: TBD (custom)${clampedToTbd ? ` — submitted $${submittedQuoteNum} for a config we don't auto-quote; priced by hand` : ""}`,
         `Payout: ${safePayout}`,
         ...couponLines,
         ...referralLines,
@@ -1830,7 +1873,7 @@ Pick the best channel per device. Be concise.`;
     // tampered lead (deferred bug hunt, fixed 2026-07-14).
     // Customer fields go through alertText(): no line breaks, no links — the
     // only URL in this alert is our own (whitelisted) photo.
-    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${alertText(name)} wants to sell ${alertText(model)} (${alertText(condition)})${quoteNum > 0 ? ` for $${quoteNum}${quoteTampered ? " (CLAMPED — tamper flag)" : ""}` : " — custom quote needed"}. Phone: ${alertText(phone) || "N/A"} Email: ${alertText(email) || "N/A"}${photoNote}${labelNote}`;
+    const ownerSms = `${reviewTag}NEW LEAD${handoffTag}: ${alertText(name)} wants to sell ${alertText(model)} (${alertText(condition)})${quoteNum > 0 ? ` for $${quoteNum}${quoteTampered ? " (CLAMPED — tamper flag)" : priceChanged ? " (re-priced — prices changed since quote)" : ""}` : " — custom quote needed"}. Phone: ${alertText(phone) || "N/A"} Email: ${alertText(email) || "N/A"}${photoNote}${labelNote}`;
     ownerAlert = ownerSms;
   }
 
@@ -1915,7 +1958,7 @@ Pick the best channel per device. Be concise.`;
           // quoteNum = the server-validated payout (tamper-clamped + coupon/
           // referral), as the SMS alert above already uses; the raw client
           // `quote` showed the inflated figure on a tampered lead.
-          ["Quote", quoteNum > 0 ? `$${quoteNum}${quoteTampered ? " (clamped — tamper flag)" : ""}` : "Custom / manual quote"],
+          ["Quote", quoteNum > 0 ? `$${quoteNum}${quoteTampered ? " (clamped — tamper flag)" : priceChanged ? " (re-priced — prices changed since quote)" : ""}` : "Custom / manual quote"],
           ["Phone", oneLine(phone) || "N/A"],
           ["Email", oneLine(email) || "N/A"],
         ];

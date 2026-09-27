@@ -29,7 +29,9 @@ import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
 import { offerKeyValid } from "../../../../lib/offer-link";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
 import { authoritativeLineCap } from "../../../../lib/server-quote-cap";
-import { readPriceOverrides } from "../../../../lib/quote";
+// Last-good overrides (2026-09-26): a failed Blob read used to cap every line
+// off the code table and flag honest edits on overridden models.
+import { cachedOverrides } from "../../../../lib/overrides-cache";
 import {
   field, cleanField, latestStatus, resolveCurrentDevices, devicesTotal, LOCKED_STATUSES, parseOfferBonus, isDeleted,
   nextItemUpdateVersion,
@@ -138,7 +140,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
   // client's math. Clamping (not rejecting) also unblocks honest
   // downgrades on cap-bound models whose raw cell exceeds the ceiling.
   const leadCarrier = field(leadMsg.body, "Carrier");
-  const capOverrides = await readPriceOverrides();
+  const capOverrides = await cachedOverrides();
   // The page re-sends EVERY line on an edit. A priced line the customer
   // didn't touch (same model / storage / condition / qty, quote not raised,
   // not already under review) keeps the number on the order — /api/lead or

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FocusEvent } from "react";
 
 // Price editor — every entry in the PRICE_TABLE and CARRIER_DEDUCTIONS
 // constants becomes an editable cell. Saves go to /api/admin/prices which
@@ -98,9 +98,17 @@ type Payload = {
     baseOverrides?: Record<string, number>;
     conditionAdj?: Record<string, Record<string, number>>;
     updatedAt?: string;
+    updatedBy?: string;
   };
   effective: { priceTable: PriceTable; carrierDeductions: CarrierTable };
-  history?: Array<{ url: string; pathname: string; uploadedAt: string }>;
+  // History snapshots with what a restore would do (2026-09-26).
+  history?: Array<{ url: string; pathname: string; uploadedAt: string; models: number | null; cells: number | null; changesVsLive: number | null }>;
+  // What the customer is actually offered per cell (unlocked / Wi-Fi) and the
+  // raw cell + phone bonus it would be without caps; null offer = manual review.
+  effectiveOffer?: Record<string, Record<string, Record<string, { offer: number | null; raw: number }>>>;
+  // Carrier gap is rule-based (code) for these models — inputs disabled.
+  ruleBasedCarrierModels?: string[];
+  live?: { pathname: string | null; updatedAt: string | null; updatedBy: string | null };
   atlasReference?: AtlasReference;
   iwmReference?: IwmReference;
   ebayReference?: EbayReference;
@@ -136,6 +144,26 @@ function CellMarginChip({ cell }: { cell?: Record<string, CellMarginRow> }) {
   return (
     <span className={`text-[9px] font-mono tabular-nums ${tone}`} title={lines.join("\n")}>
       {pct >= 0 ? "+" : ""}{pct}%
+    </span>
+  );
+}
+
+// What the customer actually sees for a SAVED override (unlocked / Wi-Fi):
+// "→ $X" when nothing caps it, "capped → $X" when the engine's ceilings
+// (NET_PAYOUTS pin, IWM rule, Galaxy drop, resell cap) pull it under the cell
+// + bonus, "manual" when the cell has no instant price. Staff used to raise a
+// cell and see nothing move on the site (2026-09-26).
+function EffectiveChip({ cell }: { cell?: { offer: number | null; raw: number } }) {
+  if (!cell) return null;
+  if (cell.offer == null) {
+    return <span className="text-[9px] text-amber-300" title="No instant price for this cell — the funnel sends this config to manual review.">manual</span>;
+  }
+  if (cell.offer >= cell.raw) {
+    return <span className="text-[9px] text-[#666]" title={`Customer sees $${cell.offer} (cell + phone bonus; no cap binding).`}>→ ${cell.offer}</span>;
+  }
+  return (
+    <span className="text-[9px] text-amber-300 font-semibold" title={`Capped: the cell would pay $${cell.raw}, but the engine's ceiling (owner pin / IWM rule / Galaxy drop / resell cap) holds the customer's number at $${cell.offer}.`}>
+      capped → ${cell.offer}
     </span>
   );
 }
@@ -203,7 +231,12 @@ export default function PricesAdminPage() {
     condAdj: Record<string, Record<string, number>>;
   }>({ price: {}, carrier: {}, base: {}, condAdj: {} });
   const [saving, setSaving] = useState(false);
-  const [lastSaveMsg, setLastSaveMsg] = useState<string | null>(null);
+  // Save / revert feedback: the tone drives the color (errors rendered in
+  // success green until 2026-09-26) and lines render one per row, so a
+  // violation list is readable.
+  const [lastSaveMsg, setLastSaveMsg] = useState<{ tone: "ok" | "error" | "info"; lines: string[] } | null>(null);
+  const say = (tone: "ok" | "error" | "info", text: string) =>
+    setLastSaveMsg({ tone, lines: text.split("\n").filter((l) => l.trim().length > 0) });
   const [filter, setFilter] = useState<string>("");
   const [marginFilter, setMarginFilter] = useState<"all" | "green" | "yellow" | "red" | "nocomp">("all");
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -323,6 +356,59 @@ export default function PricesAdminPage() {
     }));
   };
 
+  // Staging rules (2026-09-26): an emptied field means "no change" (it used to
+  // stage $0), decimals are refused with a message (whole dollars only), and an
+  // explicit 0 on a price / base cell is confirmed on blur — $0 routes that
+  // config to manual review.
+  type Staged = { kind: "set"; value: number } | { kind: "clear" } | { kind: "invalid" };
+  const parseStaged = (raw: string): Staged => {
+    const t = raw.trim();
+    if (t === "") return { kind: "clear" };
+    if (!/^-?\d+$/.test(t)) return { kind: "invalid" };
+    return { kind: "set", value: parseInt(t, 10) };
+  };
+  const rejectDecimal = (what: string) => say("error", `Whole dollars only — ${what} was not staged (remove the decimal).`);
+  const clearPriceCell = (model: string, storage: string, cond: string) => {
+    setEdits((prev) => {
+      const m = { ...(prev.price[model] || {}) };
+      const s = { ...(m[storage] || {}) };
+      delete s[cond];
+      if (Object.keys(s).length) m[storage] = s; else delete m[storage];
+      const price = { ...prev.price };
+      if (Object.keys(m).length) price[model] = m; else delete price[model];
+      return { ...prev, price };
+    });
+  };
+  const clearCarrierCell = (model: string, carrier: string) => {
+    setEdits((prev) => {
+      const m = { ...(prev.carrier[model] || {}) };
+      delete m[carrier];
+      const c = { ...prev.carrier };
+      if (Object.keys(m).length) c[model] = m; else delete c[model];
+      return { ...prev, carrier: c };
+    });
+  };
+  const clearBaseCell = (model: string) => {
+    setEdits((prev) => { const base = { ...prev.base }; delete base[model]; return { ...prev, base }; });
+  };
+  const clearCondAdjCell = (model: string, condId: string) => {
+    setEdits((prev) => {
+      const m = { ...(prev.condAdj[model] || {}) };
+      delete m[condId];
+      const c = { ...prev.condAdj };
+      if (Object.keys(m).length) c[model] = m; else delete c[model];
+      return { ...prev, condAdj: c };
+    });
+  };
+  // Blur on a price / base input staged at 0: ask; on "no" un-stage it and
+  // put the effective value back in the box.
+  const confirmZero = (e: FocusEvent<HTMLInputElement>, staged: number | undefined, what: string, unstage: () => void, restore: number | undefined) => {
+    if (staged !== 0) return;
+    if (window.confirm(`$0 routes ${what} to manual review (no instant quote) — save it as $0?`)) return;
+    unstage();
+    e.currentTarget.value = restore === undefined ? "" : String(restore);
+  };
+
   const effectiveCondAdj = (modelId: string, condId: string, defaultVal: number): number => {
     return edits.condAdj[modelId]?.[condId] ?? data?.overrides.conditionAdj?.[modelId]?.[condId] ?? defaultVal;
   };
@@ -352,6 +438,25 @@ export default function PricesAdminPage() {
     return false;
   };
 
+  // The stamp of the doc this grid was loaded from — every write carries it
+  // and the server answers 409 if the live doc moved (2026-09-26).
+  const stampParam = () => `expectUpdatedAt=${encodeURIComponent(data.overrides.updatedAt ?? "")}`;
+  // 409 = someone saved since this grid loaded. Reload the grid but KEEP the
+  // staged edits so nothing typed is lost; staff re-check and save again.
+  const conflicted = async (r: Response): Promise<boolean> => {
+    if (r.status !== 409) return false;
+    const j = (await r.json().catch(() => ({}))) as { error?: string };
+    say("info", `⚠ ${j.error || "The live price document changed since you loaded it."}${editCount > 0 ? `\n${editCount} pending edit${editCount === 1 ? "" : "s"} kept staged — review against the reloaded numbers, then Save again.` : ""}`);
+    await reload();
+    return true;
+  };
+  // Every non-OK answer is shown, in red, with the server's reason — a silent
+  // return on a failed revert left staff guessing.
+  const failed = async (r: Response, what: string) => {
+    const j = (await r.json().catch(() => ({}))) as { error?: string };
+    say("error", `${what} failed (HTTP ${r.status})${j.error ? `:\n${j.error}` : ""}`);
+  };
+
   const save = async () => {
     const t = getToken();
     if (!t) return;
@@ -366,15 +471,13 @@ export default function PricesAdminPage() {
           carrierDeductions: edits.carrier,
           baseOverrides: edits.base,
           conditionAdj: edits.condAdj,
+          expectUpdatedAt: data.overrides.updatedAt ?? null,
         }),
       });
-      if (!r.ok) {
-        const j = await r.json().catch(() => ({}));
-        setLastSaveMsg(`Save failed: ${r.status} ${j.error || ""}`);
-        return;
-      }
+      if (await conflicted(r)) return;
+      if (!r.ok) { await failed(r, "Save"); return; }
       const j = await r.json();
-      setLastSaveMsg(`✓ Saved at ${new Date(j.updatedAt).toLocaleTimeString()} — ${j.overrideModels} model override(s) live`);
+      say("ok", `✓ Saved at ${new Date(j.updatedAt).toLocaleTimeString()} — ${j.changes} cell${j.changes === 1 ? "" : "s"} changed · ${j.overrideModels} model override(s) live`);
       setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
       await reload();
     } finally {
@@ -389,81 +492,84 @@ export default function PricesAdminPage() {
     setDataVersion((v) => v + 1);
   };
 
+  // One revert path for every scope: stamp, 409 handling, visible failures.
+  // Resolves true only when the server confirmed the change.
+  const revert = async (query: string, okMsg: string): Promise<boolean> => {
+    const t = getToken();
+    if (!t) return false;
+    setSaving(true);
+    try {
+      const r = await fetch(`/api/admin/prices?${query}${query ? "&" : ""}${stampParam()}`, { method: "DELETE", headers: { "x-admin-token": t } });
+      if (await conflicted(r)) return false;
+      if (!r.ok) { await failed(r, "Revert"); return false; }
+      say("ok", okMsg);
+      await reload();
+      return true;
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const resetCondAdj = async (modelId: string) => {
     if (!window.confirm(`Revert ${modelId} condition adjustments back to baseline?`)) return;
-    const t = getToken();
-    if (!t) return;
     // Condition-adjustments-only revert. Uses the dedicated ?condModel=
     // scope so the model's price-cell / carrier / base overrides survive.
     // (Previously this called ?model= and silently wiped ALL overrides.)
-    const r = await fetch(`/api/admin/prices?condModel=${encodeURIComponent(modelId)}`, { method: "DELETE", headers: { "x-admin-token": t } });
-    if (!r.ok) return;
-    setLastSaveMsg(`✓ Reverted ${modelId} condition adjustments`);
-    await reload();
+    await revert(`condModel=${encodeURIComponent(modelId)}`, `✓ Reverted ${modelId} condition adjustments`);
   };
 
   const resetBase = async (modelId: string) => {
     if (!window.confirm(`Revert ${modelId} base price back to the bundled default?`)) return;
-    const t = getToken();
-    if (!t) return;
-    const r = await fetch(`/api/admin/prices?base=${encodeURIComponent(modelId)}`, { method: "DELETE", headers: { "x-admin-token": t } });
-    if (!r.ok) {
-      const j = await r.json().catch(() => ({}));
-      setLastSaveMsg(`Reset failed: ${r.status} ${j.error || ""}`);
-      return;
-    }
-    setLastSaveMsg(`✓ Reverted ${modelId} base price to baseline`);
-    await reload();
+    await revert(`base=${encodeURIComponent(modelId)}`, `✓ Reverted ${modelId} base price to baseline`);
   };
 
   const resetCell = async (model: string, storage: string, cond: string) => {
     if (!window.confirm(`Revert ${model} / ${storage} / ${cond} back to the baseline?`)) return;
-    const t = getToken();
-    if (!t) return;
     const cell = `${model}/${storage}/${cond}`;
-    const r = await fetch(`/api/admin/prices?cell=${encodeURIComponent(cell)}`, { method: "DELETE", headers: { "x-admin-token": t } });
-    if (!r.ok) {
-      const j = await r.json().catch(() => ({}));
-      setLastSaveMsg(`Reset failed: ${r.status} ${j.error || ""}`);
-      return;
-    }
-    setLastSaveMsg(`✓ Reverted ${cell} to baseline`);
-    await reload();
+    await revert(`cell=${encodeURIComponent(cell)}`, `✓ Reverted ${cell} to baseline`);
   };
 
   const resetCarrier = async (model: string) => {
     if (!window.confirm(`Revert carrier deductions for ${model} back to baseline?`)) return;
-    const t = getToken();
-    if (!t) return;
-    const r = await fetch(`/api/admin/prices?carrier=${encodeURIComponent(model)}`, { method: "DELETE", headers: { "x-admin-token": t } });
-    if (!r.ok) return;
-    setLastSaveMsg(`✓ Reverted ${model} carrier deductions to baseline`);
-    await reload();
+    await revert(`carrier=${encodeURIComponent(model)}`, `✓ Reverted ${model} carrier deductions to baseline`);
   };
 
   const resetModel = async (model: string) => {
     if (!window.confirm(`Revert EVERY ${model} cell back to baseline?`)) return;
-    const t = getToken();
-    if (!t) return;
-    const r = await fetch(`/api/admin/prices?model=${encodeURIComponent(model)}`, { method: "DELETE", headers: { "x-admin-token": t } });
-    if (!r.ok) return;
-    setLastSaveMsg(`✓ Reverted all ${model} overrides`);
-    await reload();
+    await revert(`model=${encodeURIComponent(model)}`, `✓ Reverted all ${model} overrides`);
   };
 
   const resetAll = async () => {
-    if (!window.confirm(`⚠️ This wipes EVERY price override on the site and reverts everything to the bundled defaults. Continue?`)) return;
+    if (!window.confirm(`⚠️ This wipes EVERY price override on the site and reverts everything to the bundled defaults. The current overrides are snapshotted to History first. Continue?`)) return;
+    // Staged edits are dropped only once the clear is confirmed — a 409 or a
+    // failure keeps them.
+    if (await revert("", "✓ All overrides cleared (the previous set is in History)")) {
+      setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
+    }
+  };
+
+  // Restore a history snapshot as the live doc (2026-09-26). Confirmed, then
+  // POST ?restore=; the server gates it and snapshots the replaced doc first.
+  const restoreSnapshot = async (h: { pathname: string; uploadedAt: string; changesVsLive: number | null }) => {
+    const when = new Date(h.uploadedAt).toLocaleString();
+    if (!window.confirm(`Restore the price overrides saved ${when}? This REPLACES every live override (${h.changesVsLive ?? "?"} cell(s) change). The current overrides are snapshotted first.`)) return;
     const t = getToken();
     if (!t) return;
-    const r = await fetch(`/api/admin/prices`, { method: "DELETE", headers: { "x-admin-token": t } });
-    if (!r.ok) {
-      const j = await r.json().catch(() => ({}));
-      setLastSaveMsg(`Reset all failed: ${r.status} ${j.error || ""}`);
-      return;
+    setSaving(true);
+    try {
+      const r = await fetch(`/api/admin/prices?restore=${encodeURIComponent(h.pathname)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-token": t },
+        body: JSON.stringify({ expectUpdatedAt: data.overrides.updatedAt ?? null }),
+      });
+      if (await conflicted(r)) return;
+      if (!r.ok) { await failed(r, "Restore"); return; }
+      const j = await r.json();
+      say("ok", `✓ Restored the snapshot from ${when} — ${j.changes} cell${j.changes === 1 ? "" : "s"} changed${Array.isArray(j.stripped) && j.stripped.length ? ` (dropped rule-based carrier rows: ${j.stripped.join(", ")})` : ""}`);
+      await reload();
+    } finally {
+      setSaving(false);
     }
-    setLastSaveMsg(`✓ All overrides cleared`);
-    setEdits({ price: {}, carrier: {}, base: {}, condAdj: {} });
-    await reload();
   };
 
   const groupNames = Array.from(grouped.keys()).sort();
@@ -484,12 +590,18 @@ export default function PricesAdminPage() {
           <input
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            placeholder="Filter by model ID (ip17pm, sgbk_3…)"
+            placeholder="Filter by model ID or name (ip17pm, iPhone 17 Pro Max…)"
+            aria-label="Filter devices by model ID or name"
             className="flex-1 min-w-[200px] px-3 py-1.5 text-sm bg-black/40 border border-white/15 rounded-lg"
           />
           <span className="text-xs text-[#888]">
             {editCount} edit{editCount === 1 ? "" : "s"} pending
           </span>
+          {data.live && (
+            <span className="text-[10px] text-[#666]" title={data.live.pathname ?? "no overrides document — the code table is live"}>
+              Live: {data.live.updatedAt ? `${new Date(data.live.updatedAt).toLocaleString()} by ${data.live.updatedBy ?? "token"}` : "no overrides saved (code table)"}
+            </span>
+          )}
           {editCount > 0 && (
             <button
               onClick={undoAll}
@@ -515,7 +627,12 @@ export default function PricesAdminPage() {
           </button>
         </div>
         {lastSaveMsg && (
-          <div className="max-w-7xl mx-auto px-4 pb-2 text-xs text-[#00c853]">{lastSaveMsg}</div>
+          <div
+            role={lastSaveMsg.tone === "error" ? "alert" : "status"}
+            className={`max-w-7xl mx-auto px-4 pb-2 text-xs space-y-0.5 ${lastSaveMsg.tone === "error" ? "text-red-300" : lastSaveMsg.tone === "info" ? "text-amber-300" : "text-[#00c853]"}`}
+          >
+            {lastSaveMsg.lines.map((l, i) => <div key={i}>{l}</div>)}
+          </div>
         )}
       </div>
 
@@ -523,9 +640,9 @@ export default function PricesAdminPage() {
         <p className="text-[12px] text-[#bdbdbd] leading-snug max-w-3xl">
           Click a group to expand. Edit any cell — changes stay local until you hit{" "}
           <span className="font-bold text-white">Save</span>. Saved overrides go live on the
-          customer funnel within seconds (the funnel fetches{" "}
-          <code className="text-[#00c853]">/api/admin/prices</code> on each visit and merges
-          overrides into the bundled defaults).
+          customer funnel within about a minute (the funnel fetches{" "}
+          <code className="text-[#00c853]">/api/prices/overrides</code> on each visit — a 60 s server
+          memo — and merges overrides into the bundled defaults).
         </p>
 
         {/* HOW THIS WORKS — comprehensive cheat sheet. Collapsible so it
@@ -749,8 +866,15 @@ export default function PricesAdminPage() {
                               <input
                                 key={`${id}-${dataVersion}`}
                                 type="number"
+                                step={1}
+                                aria-label={`${m.label} base price`}
                                 defaultValue={v}
-                                onChange={(e) => setBaseCell(id, parseInt(e.target.value) || 0)}
+                                onChange={(e) => {
+                                  const p = parseStaged(e.target.value);
+                                  if (p.kind === "set") setBaseCell(id, p.value);
+                                  else { clearBaseCell(id); if (p.kind === "invalid") rejectDecimal(`${m.label} base price`); }
+                                }}
+                                onBlur={(e) => confirmZero(e, edits.base[id], m.label, () => clearBaseCell(id), data.overrides.baseOverrides?.[id] ?? m.base)}
                                 className={`w-20 px-1.5 py-0.5 text-right bg-black/60 rounded border ${
                                   ov ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
                                 }`}
@@ -834,8 +958,14 @@ export default function PricesAdminPage() {
                             <input
                               key={`${id}-cond-${c}-${dataVersion}`}
                               type="number"
+                              step={1}
+                              aria-label={`${id} ${CONDITION_LABELS[c] ?? c} condition adjustment`}
                               defaultValue={v}
-                              onChange={(e) => setCondAdjCell(id, c, parseInt(e.target.value) || 0)}
+                              onChange={(e) => {
+                                const p = parseStaged(e.target.value);
+                                if (p.kind === "set") setCondAdjCell(id, c, p.value);
+                                else { clearCondAdjCell(id, c); if (p.kind === "invalid") rejectDecimal(`${id} ${CONDITION_LABELS[c] ?? c} adjustment`); }
+                              }}
                               className={`w-full px-1 py-0.5 text-center bg-black/60 rounded border ${
                                 ov ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
                               }`}
@@ -898,7 +1028,10 @@ export default function PricesAdminPage() {
         })()}
 
         {groupNames.map((gname) => {
-          const ids = grouped.get(gname)!.filter((id) => (!filterLower || id.toLowerCase().includes(filterLower)) && passesMarginFilter(id));
+          // Filter matches the model id OR its label (2026-09-26): staff know
+          // "iPhone 17 Pro Max", not necessarily "ip17pm".
+          const ids = grouped.get(gname)!.filter((id) =>
+            (!filterLower || id.toLowerCase().includes(filterLower) || (data.skuLabels?.[id] || "").toLowerCase().includes(filterLower)) && passesMarginFilter(id));
           if (ids.length === 0) return null;
           const exp = expanded[gname] ?? (!!filterLower);
           return (
@@ -922,6 +1055,10 @@ export default function PricesAdminPage() {
                       return order.indexOf(a) - order.indexOf(b);
                     });
                     const carrier = data.effective.carrierDeductions[modelId];
+                    // Condition-dependent gap in code — an override here is
+                    // ignored by the engine and refused on save (2026-09-26).
+                    const ruleBased = !!data.ruleBasedCarrierModels?.includes(modelId);
+                    const modelLabel = data.skuLabels?.[modelId] ?? modelId;
                     return (
                       <div key={modelId} className="bg-black/30 border border-white/10 rounded-xl p-3">
                         <div className="flex items-center gap-3 mb-2 flex-wrap">
@@ -941,15 +1078,28 @@ export default function PricesAdminPage() {
                                     <input
                                       key={`${modelId}-car-${c}-${dataVersion}`}
                                       type="number"
+                                      step={1}
+                                      aria-label={`${modelLabel} ${c.toUpperCase()} carrier deduction`}
+                                      disabled={ruleBased}
+                                      title={ruleBased ? "Carrier gap is rule-based for this model (condition-dependent, set in code) — an override here is ignored." : undefined}
                                       defaultValue={effectiveCarrier(modelId, c) ?? 0}
-                                      onChange={(e) => setCarrierCell(modelId, c, parseInt(e.target.value) || 0)}
-                                      className={`w-16 px-1.5 py-0.5 text-[11px] text-right bg-black/60 rounded border ${
+                                      onChange={(e) => {
+                                        const p = parseStaged(e.target.value);
+                                        if (p.kind === "set") setCarrierCell(modelId, c, p.value);
+                                        else { clearCarrierCell(modelId, c); if (p.kind === "invalid") rejectDecimal(`${modelLabel} ${c.toUpperCase()} deduction`); }
+                                      }}
+                                      className={`w-16 px-1.5 py-0.5 text-[11px] text-right bg-black/60 rounded border disabled:opacity-40 disabled:cursor-not-allowed ${
                                         ov ? "border-[#00c853]/50" : "border-white/15"
                                       }`}
                                     />
                                   </label>
                                 );
                               })}
+                              {ruleBased && (
+                                <span className="text-[10px] text-amber-300/80" title="CARRIER_GAPS_BY_COND in app/data/prices.ts — the gap depends on condition and storage; the engine resolves it before any flat override, so a value here would change nothing and the server refuses it.">
+                                  carrier gap is rule-based for this model
+                                </span>
+                              )}
                               {data.overrides.carrierDeductions[modelId] && (
                                 <button
                                   type="button"
@@ -1003,8 +1153,15 @@ export default function PricesAdminPage() {
                                             <input
                                               key={`${modelId}-${stor}-${cond}-${dataVersion}`}
                                               type="number"
+                                              step={1}
+                                              aria-label={`${modelLabel} ${stor.toUpperCase()} ${CONDITION_LABELS[cond] ?? cond} price`}
                                               defaultValue={v}
-                                              onChange={(e) => setPriceCell(modelId, stor, cond, parseInt(e.target.value) || 0)}
+                                              onChange={(e) => {
+                                                const p = parseStaged(e.target.value);
+                                                if (p.kind === "set") setPriceCell(modelId, stor, cond, p.value);
+                                                else { clearPriceCell(modelId, stor, cond); if (p.kind === "invalid") rejectDecimal(`${modelLabel} ${stor.toUpperCase()} ${CONDITION_LABELS[cond] ?? cond}`); }
+                                              }}
+                                              onBlur={(e) => confirmZero(e, edits.price[modelId]?.[stor]?.[cond], `${modelLabel} ${stor.toUpperCase()} ${CONDITION_LABELS[cond] ?? cond}`, () => clearPriceCell(modelId, stor, cond), data.effective.priceTable[modelId]?.[stor]?.[cond])}
                                               className={`w-16 px-1.5 py-0.5 text-right bg-black/60 rounded border ${
                                                 overridden ? "border-[#00c853]/50 text-[#00c853]" : "border-white/15"
                                               }`}
@@ -1021,6 +1178,7 @@ export default function PricesAdminPage() {
                                             )}
                                           </div>
                                           <CellMarginChip cell={data.perCellMargin?.[modelId]?.[stor]?.[cond]} />
+                                          {savedOverride && <EffectiveChip cell={data.effectiveOffer?.[modelId]?.[stor]?.[cond]} />}
                                         </div>
                                       )}
                                     </td>
@@ -1039,6 +1197,61 @@ export default function PricesAdminPage() {
             </section>
           );
         })}
+
+        {/* HISTORY + RESTORE (2026-09-26) — the snapshots taken before every
+            save / revert. Restore REPLACES the live overrides with one; the
+            server runs the price-logic gate and snapshots the replaced doc
+            first, so a restore is itself reversible. */}
+        {data.history && data.history.length > 0 && (
+          <section className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setExpanded((p) => ({ ...p, __history: !p.__history }))}
+              className="w-full px-5 py-3 flex items-center justify-between text-left hover:bg-white/[0.04] transition cursor-pointer"
+            >
+              <span className="font-bold text-[15px]">
+                🕘 History <span className="text-[#888] font-normal">· {data.history.length} snapshot{data.history.length === 1 ? "" : "s"} · Restore replaces every live override</span>
+              </span>
+              <span className="text-[#888] text-xs">{expanded.__history ? "▾" : "▸"}</span>
+            </button>
+            {expanded.__history && (
+              <div className="border-t border-white/10 px-5 py-3 overflow-x-auto">
+                <table className="w-full min-w-[520px] text-[12px]">
+                  <thead>
+                    <tr className="text-[#888] text-left">
+                      <th className="pb-1 font-semibold">Taken (Austin)</th>
+                      <th className="pb-1 font-semibold">Models</th>
+                      <th className="pb-1 font-semibold">Cells</th>
+                      <th className="pb-1 font-semibold">Differs from live</th>
+                      <th className="pb-1"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.history.map((h) => (
+                      <tr key={h.pathname} className="border-t border-white/5">
+                        <td className="py-1.5 text-[#dcdcdc]">{new Date(h.uploadedAt).toLocaleString("en-US", { timeZone: "America/Chicago" })}</td>
+                        <td className="py-1.5 font-mono">{h.models ?? "?"}</td>
+                        <td className="py-1.5 font-mono">{h.cells ?? "?"}</td>
+                        <td className="py-1.5 font-mono">{h.changesVsLive == null ? "?" : h.changesVsLive === 0 ? "identical" : `${h.changesVsLive} cell${h.changesVsLive === 1 ? "" : "s"}`}</td>
+                        <td className="py-1.5 text-right">
+                          <button
+                            type="button"
+                            disabled={saving || h.changesVsLive === 0}
+                            onClick={() => restoreSnapshot(h)}
+                            className="px-2 py-0.5 text-[11px] rounded bg-white/5 hover:bg-amber-500/20 hover:text-amber-200 border border-white/10 text-[#bdbdbd] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition"
+                            title="Replace the live overrides with this snapshot (confirmed; gated; the current doc is snapshotted first)"
+                          >
+                            Restore
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* ATLAS REFERENCE — read-only "what Atlas pays us" data, scraped
             via scripts/scrape-atlas-full.py from Atlas Mobile's two

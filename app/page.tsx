@@ -2841,7 +2841,16 @@ const shownTierCeiling = (id: string, dt?: string | null): number | null => {
   const allBest = best(Object.keys(table).filter(k => k !== "base"));
   return shownBest > 0 && shownBest < allBest ? shownBest : null;
 };
+// The engine's live "up to" per model from /api/prices/overrides (set by the
+// fetch in Home right before its state update, so the render that follows
+// reads it). A card shows min(static catalog, live): a lowered override could
+// otherwise leave the card promising more than the funnel pays — the "went
+// down when I engaged" failure /go already guards against (2026-09-26).
+// Module-level because getMaxPrice runs outside the component too.
+let liveUpTo: Record<string, number> | null = null;
 const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): number => {
+  const live = liveUpTo?.[m.id];
+  const withLive = (v: number): number => (typeof live === "number" && live > 0 ? Math.min(v, live) : v);
   // Engine-priced models (every PRICE_TABLE row with an instant number, the
   // additive MacBooks): the catalog headline — advertisedUpTo(), the SAME
   // number /sell/[slug], the landing pages and the /go board show (see
@@ -2849,7 +2858,7 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   // (caps, Galaxy −$75, IWM rule), so it is NOT re-capped below: the old
   // path stored Galaxy headlines $75 high to survive a second drop.
   const catalogPrice = CATALOG_PRICE_BY_MODEL_ID[m.id];
-  if (typeof catalogPrice === "number" && catalogPrice > 0) return catalogPrice;
+  if (typeof catalogPrice === "number" && catalogPrice > 0) return withLive(catalogPrice);
   // Everything else (base-priced laptops/desktops, Surface, rows under the
   // minimum offer) falls through to the computed ceiling below.
   const rawMax = (): number => {
@@ -2887,7 +2896,7 @@ const getMaxPrice = (m: { id: string; base?: number }, dt?: string | null): numb
   const rule = iwmRuleCeiling({ modelId: m.id, condition: "sealed" });
   const ruled = rule != null ? Math.min(dropped, rule) : dropped;
   const shown = shownTierCeiling(m.id, dt);
-  return shown != null ? Math.min(ruled, shown) : ruled;
+  return withLive(shown != null ? Math.min(ruled, shown) : ruled);
 };
 // Series tile "up to" (Galaxy S / Z / Note, MacBook lines): the best
 // headline among the series' quotable variants. The hand-typed topPrice
@@ -4225,6 +4234,11 @@ type PriceOverrides = {
   carrierDeductions: Record<string, Record<string, number>>;
   baseOverrides?: Record<string, number>;
   conditionAdj?: Record<string, Record<string, number>>;
+  // The price doc's stamp — sent with the lead as priceStamp so /api/lead can
+  // tell "quoted before a price change" from tampering (2026-09-26).
+  updatedAt?: string | null;
+  // Live "up to" per model, mirrored into liveUpTo for getMaxPrice.
+  upTo?: Record<string, number>;
 };
 
 export default function Home() {
@@ -4241,7 +4255,13 @@ export default function Home() {
     fetch("/api/prices/overrides")
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
-        if (d?.priceTable) setPriceOverrides(d as PriceOverrides);
+        if (d?.priceTable) {
+          // Live headlines first, then the state update whose render reads
+          // them (getMaxPrice); updatedAt rides on the state as the lead's
+          // priceStamp (2026-09-26).
+          liveUpTo = d.upTo && typeof d.upTo === "object" && !Array.isArray(d.upTo) ? (d.upTo as Record<string, number>) : null;
+          setPriceOverrides(d as PriceOverrides);
+        }
       })
       .catch(() => {});
   }, []);
@@ -13455,6 +13475,8 @@ export default function Home() {
                       couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined),
                       referralCode: referralCode || undefined,
                       attestation: complianceAttested,
+                      // Which price doc this quote came from (2026-09-26).
+                      priceStamp: priceOverrides?.updatedAt ?? undefined,
                     }),
                   });
                   if (!r.ok) throw await leadFailure(r);
@@ -13468,7 +13490,7 @@ export default function Home() {
                   const res = await fetch("/api/lead", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, accessoryBonus: (showAccessoryQuestion && accessoryBonusAmount > 0 && accessoriesIncluded) ? accessoryAdded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponAdded > 0 ? couponLabel : undefined, weeklyPromo: promoAdded > 0 ? true : undefined, referralCode: referralCode || undefined, attestation: complianceAttested }),
+                    body: JSON.stringify({ name, phone, email, device: deviceType, model: model?.label, storage: storage?.label, condition: condition?.label, carrier: carrier?.label, carrierLock: carrierLock?.label, accessoriesIncluded: (showAccessoryQuestion && accessoryBonusAmount > 0) ? accessoriesIncluded : undefined, accessoryBonus: (showAccessoryQuestion && accessoryBonusAmount > 0 && accessoriesIncluded) ? accessoryAdded : undefined, quote: quote * quantity, payout: payoutValue, quantity, photos: singlePhotos, imei: imeiInput.replace(/\D/g, "") || undefined, imeiWarnings: imeiState === "warn" ? imeiResult?.warnings : undefined, handoff: handoffPayload, brokenGlass: (condition?.id === "broken" && isPhoneFlow) ? brokenGlass : undefined, brokenFunctional: condition?.id === "broken" ? brokenFunctional : undefined, brokenFaceId: (condition?.id === "broken" && deviceType === "iphone") ? brokenFaceId : undefined, processor: processor?.label, memory: memory?.label, graphics: graphics?.label, displayResolution: displayResolution?.label, displayGlass: displayGlass?.label, batteryHealth: batteryHealth?.label, charger: charger?.label, connectivity: connectivity?.label, extras: Object.values(extras).map((x) => x.label).filter(Boolean), paidOff, bestContact, notes: customerNote.trim() || undefined, smsOptIn, attribution: readAttribution(), couponCode: couponValid?.code || (couponInput.trim() ? couponInput.trim().toUpperCase() : undefined), promoCode: couponAdded > 0 ? couponLabel : undefined, weeklyPromo: promoAdded > 0 ? true : undefined, referralCode: referralCode || undefined, attestation: complianceAttested, priceStamp: priceOverrides?.updatedAt ?? undefined }),
                   });
                   if (!res.ok) throw await leadFailure(res);
                   const d = await res.json().catch(() => ({}));

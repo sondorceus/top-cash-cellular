@@ -25,7 +25,11 @@ const cells = new Map<string, Cell>();
 const k = (id: string, st: string, c: string, car: string) => `${id}|${st}|${c}|${car}`;
 
 (async () => {
-  const ov: PriceOverrides = await readPriceOverrides();
+  // null = the Blob read failed (2026-09-26); a scan against the code table
+  // would report prices nobody is quoting.
+  const ovRead = await readPriceOverrides();
+  if (!ovRead) throw new Error("price overrides read failed — refusing to scan against the code table as if it were live");
+  const ov: PriceOverrides = ovRead;
   say(`# Price scan — ${new Date().toISOString().slice(0, 16)}Z`);
   say(`overrides: updatedAt=${ov.updatedAt ?? "none"} · priceTable models overridden=${Object.keys(ov.priceTable || {}).length} · carrier overrides=${Object.keys(ov.carrierDeductions || {}).length}`);
   const phoneIds = Object.keys(PRICE_TABLE).filter((id) => /^(ip|gs|gz|gnote|px)/.test(id) && !MANUAL_REVIEW_DEVICES.has(id));
