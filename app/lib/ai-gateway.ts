@@ -42,7 +42,66 @@ export type AIResult = {
   parsed?: unknown;
 };
 
+// DIRECT ANTHROPIC FIRST (2026-09-26). The gateway's free tier stopped
+// serving these models ("Free tier users do not have access to this model",
+// 403) — the last [AI-SUMMARY] landed on 2026-08-08, and every gateway-backed
+// job (daily digest, lead triage, photo check, fraud/price/review drafts)
+// has failed silently since. The chat's own Anthropic key works (the seller
+// chat runs on it), so an anthropic/* request goes straight to the Anthropic
+// API on the same model family the chat uses; the gateway remains the path
+// for non-Anthropic models and the fallback when the direct call fails.
+const DIRECT_MODEL: Record<string, string> = {
+  "anthropic/claude-haiku-4-5": "claude-haiku-4-5-20251001",
+  "anthropic/claude-sonnet-4-6": process.env.CHAT_AI_MODEL || "claude-sonnet-5",
+  "anthropic/claude-opus-4-8": "claude-opus-5-5",
+};
+
+async function callAnthropicDirect(req: AIRequest, model: string): Promise<AIResult> {
+  const Anthropic = (await import("@anthropic-ai/sdk")).default;
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 30_000, maxRetries: 1 });
+  // OpenAI-style messages → Anthropic: system lines become the system
+  // prompt; image_url parts become URL image blocks.
+  const system = req.messages
+    .filter((m) => m.role === "system")
+    .map((m) => (typeof m.content === "string" ? m.content : m.content.map((p) => (p.type === "text" ? p.text : "")).join("\n")))
+    .join("\n\n");
+  const jsonHint = req.json ? "\n\nRespond with a single strict JSON object and nothing else." : "";
+  type Block = { type: "text"; text: string } | { type: "image"; source: { type: "url"; url: string } };
+  const messages = req.messages
+    .filter((m) => m.role !== "system")
+    .map((m) => ({
+      role: m.role as "user" | "assistant",
+      content: typeof m.content === "string"
+        ? m.content
+        : m.content.map((p): Block => (p.type === "text" ? { type: "text", text: p.text } : { type: "image", source: { type: "url", url: p.image_url.url } })),
+    }));
+  const res = await client.messages.create({
+    model,
+    max_tokens: req.maxTokens ?? 1024,
+    temperature: req.temperature ?? 0.3,
+    ...(system || jsonHint ? { system: `${system}${jsonHint}`.trim() } : {}),
+    messages,
+  });
+  const text = res.content.map((b) => (b.type === "text" ? b.text : "")).join("").trim();
+  let parsed: unknown;
+  if (req.json) {
+    try { parsed = JSON.parse(text.replace(/^```(?:json)?\s*|\s*```$/g, "")); } catch { /* caller falls back */ }
+  }
+  return { text, inputTokens: res.usage?.input_tokens, outputTokens: res.usage?.output_tokens, model: res.model || model, parsed };
+}
+
 export async function callAI(req: AIRequest): Promise<AIResult> {
+  const direct = DIRECT_MODEL[req.model];
+  if (direct && process.env.ANTHROPIC_API_KEY) {
+    try {
+      return await callAnthropicDirect(req, direct);
+    } catch (e) {
+      // Fall through to the gateway only when one is configured; otherwise
+      // the real error surfaces to the caller.
+      if (!process.env.AI_GATEWAY_API_KEY) throw e;
+      console.warn(`[ai] direct Anthropic call failed (${e instanceof Error ? e.message : "?"}) — trying the gateway`);
+    }
+  }
   const key = process.env.AI_GATEWAY_API_KEY;
   if (!key) {
     throw new Error("AI_GATEWAY_API_KEY not set");
