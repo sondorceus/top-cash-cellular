@@ -195,7 +195,10 @@ function matchTyped(keyed: { r: BoardRow; key: string[] }[], draft: string): Boa
   // One bare word ("iphone", "macbook") is too broad to be a pick; a specific
   // family word ("ps5", "xbox", "switch") that lands on a handful is fine.
   if (toks.length === 1 && (toks[0].length < 3 || out.length > 6)) return [];
-  return out.length && out.length <= 6 ? out : [];
+  // Two words name a family — "macbook air" is 7 rows, "macbook pro" 9 — and
+  // the chip row scrolls sideways, so up to 10 is still a pick, not a list
+  // (2026-09-27: "macbook air" typed on /go showed no chips at all).
+  return out.length && out.length <= 10 ? out : [];
 }
 
 // Category quick-selects — the FB-funnel pattern: pick what you got, we walk
@@ -520,17 +523,23 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // position; opening the chat resets it so a fresh open still lands at the
   // latest message.
   const nearBottomRef = useRef(true);
-  // While our own smooth scroll is animating, the scroll events it emits must
-  // not flip nearBottom off — a second batch landing mid-animation used to
-  // read as "the seller scrolled up" and autoscroll stayed off until they
-  // scrolled by hand.
-  const programmaticUntilRef = useRef(0);
+  // Only a scroll UP (the seller reading back) turns the follow off; reaching
+  // the bottom turns it back on. The old test was the position alone ("within
+  // 120px of the bottom", with our own smooth scroll's events ignored for
+  // 700ms): a smooth scroll that never finished — the next chip tapped while
+  // the thread was still animating, the keyboard opening, the webview
+  // pausing frames — left the thread 150-300px short, that read as "scrolled
+  // up", and the next question landed below the fold under a dimmed widget
+  // (2026-09-27, reproduced on the line → variant → storage taps).
+  const lastScrollTopRef = useRef(0);
   useEffect(() => {
-    if (chatOpen) nearBottomRef.current = true;
+    if (chatOpen) {
+      nearBottomRef.current = true;
+      lastScrollTopRef.current = 0;
+    }
   }, [chatOpen]);
   useEffect(() => {
     if (!nearBottomRef.current) return;   // they scrolled up on purpose — never yank
-    programmaticUntilRef.current = Date.now() + 700;
     threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, sending, chatOpen]);
 
@@ -1264,6 +1273,17 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     if (!gRow) return "something went sideways — tap your phone again";
     const c = gContact.trim();
     if (!c) return "we need a number or email to reach you";
+    // Same rule as the lock route (2026-09-27): a seller with a quote on
+    // screen was refused four times in two minutes and left — the server's
+    // "real phone or email" line gave them nothing to fix. Say what's short.
+    const digits = c.replace(/\D/g, "");
+    const looksEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c);
+    const looksPhone = digits.length === 10 || (digits.length === 11 && digits.startsWith("1")) || (c.startsWith("+") && digits.length >= 11 && digits.length <= 15);
+    if (!looksEmail && !looksPhone) {
+      if (c.includes("@")) return "that email looks incomplete — name@example.com";
+      if (digits.length > 0 && digits.length < 10) return `that's ${digits.length} digits — we need all 10, area code first`;
+      return "we need a phone number (10 digits, area code first) or an email";
+    }
     setGBusy(true);
     // Per-lock dedup id, shared with the server: the pixel Lead and the
     // Conversions API Lead carry the SAME event id, so Meta keeps one copy.
@@ -1655,9 +1675,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         aria-live="polite"
         className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3"
         onScroll={(e) => {
-          if (Date.now() < programmaticUntilRef.current) return; // our own smooth scroll
           const el = e.currentTarget;
-          nearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+          const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
+          const up = el.scrollTop < lastScrollTopRef.current - 1;
+          lastScrollTopRef.current = el.scrollTop;
+          if (up) nearBottomRef.current = distance < 120;      // reading back: follow only while still at the bottom
+          else if (distance < 120) nearBottomRef.current = true; // reached the bottom — by hand or by our own scroll
         }}
       >
         <div className="go-msg flex items-end gap-2">

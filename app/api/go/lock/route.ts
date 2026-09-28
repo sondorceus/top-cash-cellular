@@ -84,6 +84,18 @@ function sanitize(s: string): string {
 
 const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
 const PHONE_RE = /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+// Reachable = an e-mail, or a phone in ANY shape: 10 digits, 11 with the
+// leading 1, or +country code and 11-15 digits. PHONE_RE alone refused
+// "512–960–9256" (en dashes off a phone keyboard), "+52 55 1234 5678" and
+// "512 9609256 (cell)". 2026-09-27: a seller with a quote on screen was
+// refused four times in two minutes and left, and nothing was logged — the
+// refusal now says why (digit count only, never the value).
+function reachable(contact: string): "email" | "phone" | null {
+  if (EMAIL_RE.test(contact)) return "email";
+  const digits = contact.replace(/\D/g, "");
+  if (PHONE_RE.test(contact) || digits.length === 10 || (digits.length === 11 && digits.startsWith("1")) || (/^\s*\+/.test(contact) && digits.length >= 11 && digits.length <= 15)) return "phone";
+  return null;
+}
 
 
 // The seller-facing confirmation. One text or one email, about THIS quote
@@ -174,13 +186,27 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
     processor: body.processor, memory: body.memory, extras: body.extras,
   });
   if (!resolved.ok) {
-    return NextResponse.json({ ok: false, error: "bad spec" }, { status: 400 });
+    // The client shows this line under the lock button — "bad spec" was
+    // what a chat-quoted seller read when the bot's carrier spelling
+    // ("at&t") reached this resolver (2026-09-27).
+    console.warn(`[go/lock] refused: bad spec session=${sessionId} model=${String(body.model || "").slice(0, 24)} carrier=${String(body.carrier ?? body.opt ?? "").slice(0, 16)} condition=${String(body.condition || "").slice(0, 12)}`);
+    return NextResponse.json({ ok: false, error: "something's off with the specs on our side — tap your device above and answer the questions again" }, { status: 400 });
   }
   const spec = resolved.spec;
-  if (!EMAIL_RE.test(contact) && !PHONE_RE.test(contact)) {
-    return NextResponse.json({ ok: false, error: "we need a real phone or email to reach you" }, { status: 400 });
+  if (!reachable(contact)) {
+    const digits = contact.replace(/\D/g, "").length;
+    console.warn(`[go/lock] refused: contact session=${sessionId} len=${contact.length} digits=${digits} at=${contact.includes("@")}`);
+    return NextResponse.json({
+      ok: false,
+      error: contact.includes("@")
+        ? "that email looks incomplete — name@example.com"
+        : digits > 0 && digits < 10
+          ? `that's ${digits} digits — we need all 10, area code first`
+          : "we need a phone number (10 digits, area code first) or an email",
+    }, { status: 400 });
   }
   if (!attest) {
+    console.warn(`[go/lock] refused: attest session=${sessionId}`);
     return NextResponse.json({ ok: false, error: "attestation required" }, { status: 400 });
   }
 

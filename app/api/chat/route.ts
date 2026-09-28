@@ -11,7 +11,7 @@ import { SELL_TOOLS, runQuote, runImeiCheck, looksBulk, slugToDisplay, luhnValid
 import { appendChatMsg, readChat, takeoverStale, validSession, validGoSession } from "../../lib/gochat-store";
 import { needsBinding, setOwnerCookie } from "../../lib/go-owner";
 import { sendCapiLead, isTestConversion } from "../../lib/meta-capi";
-import { normalizeStorage } from "../../lib/quote";
+import { normalizeStorage, canonicalCarrier, canonicalCondition } from "../../lib/quote";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -1224,7 +1224,11 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
           if (q.ok && q.offer != null) {
             quotedAny = true;
             if (leadValue == null || q.offer > leadValue) leadValue = q.offer;
-            lastQuoteSpec = { model: q.slug || "", storage: normalizeStorage(String(tu.input.storage || "")) || "", condition: String(tu.input.condition || "good").toLowerCase(), carrier: String(tu.input.carrier || "unlocked").toLowerCase(), offer: q.offer as number };
+            // Canonical ids, not the model's spelling (2026-09-27): this spec
+            // becomes the /go lock form's body, and app/go/spec.ts only knows
+            // the chip keys — "at&t" or "t-mobile" from the tool call came
+            // back from /api/go/lock as "bad spec" under the lock button.
+            lastQuoteSpec = { model: q.slug || "", storage: normalizeStorage(String(tu.input.storage || "")) || "", condition: canonicalCondition(tu.input.condition || "good"), carrier: canonicalCarrier(tu.input.carrier || "unlocked"), offer: q.offer as number };
             quotedLines.push(`${q.device}${tu.input.storage ? ` ${tu.input.storage}` : ""} ${tu.input.condition || ""} — $${q.offer}`);
             turnOffers.push(q.offer as number);
             // Persist the number the way the chip flow does, so the NEXT

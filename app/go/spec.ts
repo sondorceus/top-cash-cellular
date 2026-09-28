@@ -12,7 +12,7 @@
 // processor + memory + storage option ids and an `extras` answer
 // (battery/charger), priced by the homepage's additive math ported to
 // app/lib/macbook-quote.ts.
-import { quoteDevice, type QuoteSpec } from "../lib/quote";
+import { quoteDevice, canonicalCarrier, type QuoteSpec } from "../lib/quote";
 import { cachedOverrides } from "../lib/overrides-cache";
 import { PRICE_TABLE, MIN_OFFER } from "../data/prices";
 import { BOARD_BY_ID, CELLULAR_BONUS, CELLULAR_MULT, DIGITAL_MULT, type BoardModel } from "./board";
@@ -117,7 +117,12 @@ export function resolveGoSpec(input: GoSpecInput): { ok: true; spec: GoSpec } | 
   if (entry.cat === "phone") {
     // Phones read `carrier`; `opt` is the other categories' field (the
     // client sends both shapes across bundle versions).
-    const carrier = String(input.carrier ?? input.opt ?? "");
+    const rawCarrier = String(input.carrier ?? input.opt ?? "");
+    // A chip key as-is; a spelling from anywhere else ("at&t", "T-Mobile",
+    // "cricket" — the chat brain's tool call used to reach the lock form
+    // this way, 2026-09-27) through the engine's canonicalizer. Empty stays
+    // a refusal: nothing here may price a phone as unlocked by default.
+    const carrier = GO_CARRIERS.has(rawCarrier) ? rawCarrier : rawCarrier ? canonicalCarrier(rawCarrier) : "";
     if (!GO_CARRIERS.has(carrier)) return { ok: false, error: "bad spec" };
     return {
       ok: true,
