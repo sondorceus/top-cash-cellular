@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "bad request" }, { status: 400 });
   }
+  if (!body || typeof body !== "object") return NextResponse.json({ ok: false, error: "bad request" }, { status: 400 });
   const sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
   const email = String(body.email || "").trim().toLowerCase().slice(0, 120);
   if (!validGoSession(sessionId)) return NextResponse.json({ ok: false, error: "start from your quote" }, { status: 400 });
@@ -90,5 +91,10 @@ export async function POST(req: NextRequest) {
       leadId ? { leadId } : undefined,
     ).catch(() => false),
   );
-  return bound(NextResponse.json({ ok: true, sent: r.sent }));
+  // The form closed as "sent" on any Resend failure (no key, timeout) —
+  // with the text relay down this was the seller's only channel and they
+  // got neither a confirmation nor a chance to retry (2026-09-27). The
+  // address is parked above either way; the seller sees a retry line.
+  if (!r.sent) return bound(NextResponse.json({ ok: false, error: "couldn’t send that — try once more" }, { status: 502 }));
+  return bound(NextResponse.json({ ok: true, sent: true }));
 }

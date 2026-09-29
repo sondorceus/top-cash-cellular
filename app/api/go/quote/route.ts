@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
+  if (!body || typeof body !== "object") return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   const res = resolveGoSpec(body);
   if (!res.ok) return NextResponse.json({ ok: false, error: res.error }, { status: 400 });
   const spec = res.spec;

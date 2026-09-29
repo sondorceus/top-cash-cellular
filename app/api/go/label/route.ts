@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
   const ip = clientIp(req);
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "bad request" }, { status: 400 }); }
+  if (!body || typeof body !== "object") return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "bad request" }, { status: 400 });
   const sid = typeof body.session === "string" ? body.session : "";
   if (!validGoSession(sid)) return NextResponse.json({ ok: false, kind: "ADDRESS_INVALID", hint: "start from your quote" }, { status: 400 });
   // OWNERSHIP (2026-09-26): only the browser that started this thread (its
@@ -135,8 +136,13 @@ export async function POST(req: NextRequest) {
 
   // The same [DELIVERY OPTION] SHIPPING comm the homepage funnel writes, so
   // the admin lead row and the reminders cron see the choice + address.
+  // Posted AFTER the mint (2026-09-27): it used to go out first, so every
+  // ADDRESS_INVALID retry added another comm with a slightly different
+  // address. A label, or FedEx being down (the team mints from /admin and
+  // needs the address), posts it once; a bad-address retry posts nothing.
   const isEmail = EMAIL_RE.test(contact);
-  if (MC_KEY) {
+  const postDeliveryComm = async () => {
+    if (!MC_KEY) return;
     try {
       await fetch(`${MC_API}/api/comms`, {
         method: "POST",
@@ -156,7 +162,7 @@ export async function POST(req: NextRequest) {
         }),
       });
     } catch { /* best-effort */ }
-  }
+  };
   if (!sinceLock.some((t) => t.startsWith("HANDOFF-CHOICE:"))) await appendChatMsg(sid, "note", "HANDOFF-CHOICE: ship (free label) — address entered on /go");
 
   const result = await mintGoLabel({ leadId, name, phoneDigits, street, unit: unit || undefined, city, state: stateCode, zip, deviceLabel: boxLabel, declaredValueUsd: boxValue, kindLabel, alsoLeadIds: boxLeadIds });
@@ -164,10 +170,12 @@ export async function POST(req: NextRequest) {
   if (!result.ok) {
     await appendChatMsg(sid, "note", `LABEL-FAILED: ${result.kind} — ${name}, ${city} ${stateCode} ${zip}`);
     if (result.kind === "SERVICE_UNAVAILABLE") {
+      await postDeliveryComm();
       await notifyOwnerSms(`⚠️ GO label FAILED for ${boxLabel} (${name}, ${phoneDigits}) — ${result.hint}\n${link}`).catch(() => {});
     }
     return NextResponse.json(result, { status: result.kind === "ADDRESS_INVALID" ? 400 : 502 });
   }
+  await postDeliveryComm();
   await appendChatMsg(sid, "note", `LABEL: tracking=${result.tracking} url=${result.url}${leadId ? ` lead=${leadId}` : ""}${multi ? ` box=${box.length}` : ""} — ${name}, ${city} ${stateCode} ${zip}`);
 
   // Deliver the label to the seller — text (relay) and/or email. The card on

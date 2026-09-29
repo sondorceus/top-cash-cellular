@@ -129,6 +129,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
+  if (!body || typeof body !== "object") return NextResponse.json({ ok: false }, { status: 400 });
   const sid = typeof body.session === "string" ? body.session : "";
   const text = typeof body.text === "string" ? body.text.slice(0, 300) : "";
   if (!validGoSession(sid) || !text.trim()) return NextResponse.json({ ok: false }, { status: 400 });

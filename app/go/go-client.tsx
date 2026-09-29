@@ -1329,6 +1329,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           src,
           landed,
           sessionId,
+          // The texted link's proof rides along like it does on the label
+          // and e-mail posts: a webview that dropped the owner cookie still
+          // locks INTO its thread instead of a detached lead (2026-09-27).
+          ...(adoptK ? { k: adoptK } : {}),
           eventId: lockEventId,
           quotedOffer,
           fbp,

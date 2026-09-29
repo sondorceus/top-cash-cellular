@@ -40,7 +40,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { appendChatMsg, readChat, validSession, validGoSession, rememberPhoneSession, phoneKey, type StoredMsg } from "../../../lib/gochat-store";
-import { needsBinding, setOwnerCookie } from "../../../lib/go-owner";
+import { needsBinding, setOwnerCookie, sessionOwned, legacySession, linkBinds } from "../../../lib/go-owner";
 import { sendCapiLead, isTestConversion } from "../../../lib/meta-capi";
 import { sendSellerSms, looksLikePhone, notesHaveOptOut, toE164 } from "../../../lib/seller-sms";
 import { after } from "next/server";
@@ -143,6 +143,10 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
+  // A JSON `null` parses fine and then throws on the first field read (500).
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
+  }
   // The client's per-lock dedup id (also the Meta event id). A repeat of an
   // id that already wrote a lead replays that lead's response instead of
   // running the lock again; a refused run lets the retry through.
@@ -170,7 +174,11 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
   const attest = body.attest === true;
   const src = String(body.src || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 10);
   const landedPath = String(body.landed || "").replace(/[^a-zA-Z0-9_\-/?=&.]/g, "").slice(0, 80);
-  const sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
+  let sessionId = String(body.sessionId || "").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 24);
+  // The texted link's proof (?k=), sent by a browser that adopted the thread
+  // from the link and may not hold the owner cookie (a webview that drops
+  // cookies) — the same `k` the label and confirm-email posts carry.
+  const k = typeof body.k === "string" ? body.k : "";
   // The number the seller is looking at. Optional (older bundles don't send
   // it); when present the engine must agree or no lead is written.
   const quotedOffer = typeof body.quotedOffer === "number" && Number.isFinite(body.quotedOffer) ? Math.round(body.quotedOffer) : null;
@@ -229,15 +237,38 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
   // browser that minted the id — the reply sets its owner cookie
   // (app/lib/go-owner). Read from the same store call as the notes.
   let bindFresh = false;
+  let graceBind = false;
   if (validSession(sessionId)) {
     try {
       const st = await readChat(sessionId, 0);
-      notes = st.msgs.filter((m) => m.role === "note");
-      notesRead = true;
-      bindFresh = st.lastTs === 0 && validGoSession(sessionId) && needsBinding(req, sessionId);
+      // OWNERSHIP (2026-09-27): a lock on a thread with history from a
+      // browser that holds neither its owner cookie nor its link is NOT
+      // that thread's seller. It used to write CONTACT/LOCKED into the
+      // thread and text the caller a signed link INTO it (the label form,
+      // Sonny's "text the seller", the whole conversation) — anyone who
+      // learned a live session id from an alert or a lead body could take
+      // a thread over with one POST. The lock itself still goes through —
+      // a seller whose webview dropped the cookie must not lose their lead
+      // — but detached: no session, no notes, no link in the confirmation.
+      // Pre-binding sessions keep the dated legacy grace the other routes
+      // apply (go-owner legacySession), spent on this take.
+      if (st.lastTs > 0 && validGoSession(sessionId) && !sessionOwned(req, sessionId, k)) {
+        if (legacySession(st.firstTs) && !st.bound) {
+          graceBind = true;
+          await appendChatMsg(sessionId, "ctl", "bound");
+        } else {
+          console.warn(`[go/lock] detached: session not owned session=${sessionId}`);
+          sessionId = "";
+        }
+      }
+      if (sessionId) {
+        notes = st.msgs.filter((m) => m.role === "note");
+        notesRead = true;
+        bindFresh = st.lastTs === 0 && validGoSession(sessionId) && needsBinding(req, sessionId);
+      }
     } catch { /* no notes */ }
   }
-  const bound = (res: NextResponse) => { if (bindFresh) setOwnerCookie(res, sessionId); return res; };
+  const bound = (res: NextResponse) => { if (sessionId && (bindFresh || graceBind || linkBinds(req, sessionId, k))) setOwnerCookie(res, sessionId); return res; };
   // SAME LOCK TWICE (2026-09-26): a retap after a lost response — or the
   // same eventId landing on another instance — must not write a second
   // lead, alert the owner again or text the seller again. A LOCKED note for
@@ -294,7 +325,12 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
   // price-moved checks, before anything is written — so a repaint retap
   // spends nothing. Email contacts have no number to cap.
   const lockPhone = phoneKey(toE164(contact) || "");
-  if (lockPhone && !rateLimit(`lock-phone:${lockPhone}`, 3, 24 * 60 * 60_000).ok) {
+  // The cap is for one number locked from MANY sessions. This thread already
+  // carrying the number (a CONTACT note from an earlier lock in it) is the
+  // same seller on device #4 of a lot — not abuse, and device #4 used to
+  // vanish behind the 429 with no lead written (2026-09-27).
+  const sameSeller = !!lockPhone && notes.some((m) => m.text.startsWith("CONTACT: ") && phoneKey(toE164(m.text.slice("CONTACT: ".length)) || "") === lockPhone);
+  if (lockPhone && !sameSeller && !rateLimit(`lock-phone:${lockPhone}`, 3, 24 * 60 * 60_000).ok) {
     return NextResponse.json({ ok: false, error: "that number has locked a few quotes today — our team will follow up by text on those" }, { status: 429 });
   }
 
@@ -331,6 +367,10 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
     spec.display.notes ? `Notes: ${spec.display.notes}` : null,
     ...imeiFacts,
     offer != null ? `Quote: $${offer}` : `Quote: TBD (custom)`,
+    // The engine gave no number at lock time but the seller was looking at
+    // one (a hiccup, a price row pulled mid-session): keep what they saw on
+    // the lead instead of silently turning it into a hand quote.
+    offer == null && !parts && quotedOffer != null ? `Quoted-on-screen: $${quotedOffer} (engine returned no number at lock — verify before honoring)` : null,
     `Payout: TBD`,
     isEmail ? null : `SMS opt-in: no`,
     leadSourceLine("go", src, landedPath || `/go${src ? `?src=${src}` : ""}`),
@@ -387,7 +427,7 @@ async function handleLock(req: NextRequest, body: Record<string, unknown>, ip: s
   // own, and a stall used to hold "locking…" until the platform 504 — the
   // seller's retap then wrote a second lead and a second alert.
   const alertP = notifyOwnerSms(
-    `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\n📍 ${geo.label}${geo.area === "metro" ? "" : ` (${AREA_WORDS[geo.area]})`}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}`,
+    `💰 GO lock: ${specLine}${offer != null ? ` — $${offer}` : " — needs manual quote"}\n📍 ${geo.label}${geo.area === "metro" ? "" : ` (${AREA_WORDS[geo.area]})`}\nReply to: ${contact}${name ? ` (${name})` : ""}\n${hasGoSession ? `https://topcashcellular.com/admin/chats?session=${sessionId}` : "https://topcashcellular.com/admin"}${mcOk ? "" : "\n⚠️ Mission Control did not accept this lead — this alert is the only record of it (no admin row, no reminders)"}`,
     // The lead's MC id rides along → the alert email gets the one-tap
     // "✅ Mark contacted" pill (app/lib/lead-token.ts).
     leadId ? { leadId } : undefined,

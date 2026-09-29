@@ -270,9 +270,16 @@ async function pruneSessionImages(sids: string[]): Promise<void> {
 // and ONLY note-role blobs are fetched — role is pathname-encoded, so
 // narrowing to notes costs zero fetches.
 
-/** Last 10 digits, or "" if that's not a phone. Comparison key for contacts. */
+const PHONE_SHAPE = /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+
+/** The 10-digit key of a contact: the first phone-shaped run when there is
+ *  one (a contact is stored as typed — "512-555-1212 after 5" used to key on
+ *  its LAST ten digits, 1255512125, so the pointer the inbound matcher reads
+ *  was filed under a number nobody has; 2026-09-27), else the last 10 of all
+ *  digits (E.164, international grouping), or "" if that's not a phone. */
 export function phoneKey(v: unknown): string {
-  const d = String(v ?? "").replace(/\D/g, "");
+  const s = String(v ?? "");
+  const d = (s.match(PHONE_SHAPE)?.[0] ?? s).replace(/\D/g, "");
   return d.length >= 10 ? d.slice(-10) : "";
 }
 
@@ -300,7 +307,6 @@ export async function rememberPhoneSession(contact: string, sid: string): Promis
 // seller-SMS path writes on success ("SMS sent to <contact>…"). A session
 // that texted this number from itself is where the reply belongs.
 const SMS_SENT_PREFIX = "SMS sent to ";
-const PHONE_SHAPE = /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
 /** The 10-digit key of an "SMS sent to …" note, or "" for any other note. */
 export function smsSentKey(note: string): string {
   if (!note.startsWith(SMS_SENT_PREFIX)) return "";

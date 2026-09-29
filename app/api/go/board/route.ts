@@ -13,12 +13,16 @@ type Snap = { rows: BoardRow[]; reviews: GoReviews; at: number };
 let snap: Snap | null = null;
 // Requests that arrive while the snapshot is being rebuilt share the one
 // rebuild instead of each pricing ~100 cells and calling MC themselves.
-let inflight: Promise<Snap> | null = null;
+let inflight: Promise<Snap | null> | null = null;
 
 export async function GET(req: NextRequest) {
   if (!snap || Date.now() - snap.at > 60_000) {
     inflight ??= Promise.all([computeBoard(), fetchReviews()])
       .then(([rows, reviews]) => (snap = { rows, reviews, at: Date.now() }))
+      // A failed rebuild used to escape `await` as a 500 — and the previous
+      // snapshot sat unused. Serve it (stale beats empty); 503 only when
+      // there has never been one.
+      .catch((e) => { console.error("[go/board] rebuild failed:", e); return snap; })
       .finally(() => { inflight = null; });
     await inflight;
   }

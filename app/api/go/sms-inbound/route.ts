@@ -118,6 +118,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
+  if (!body || typeof body !== "object") return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   const from = typeof body.from === "string" ? body.from.trim() : "";
   const text = typeof body.text === "string" ? body.text.trim().slice(0, 1000) : "";
   if (!from || !text) {
