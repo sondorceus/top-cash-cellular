@@ -39,6 +39,10 @@ export function useNavHideOnScroll(threshold = 80, delta = 30): boolean {
         ticking = false;
         const y = Math.max(0, window.scrollY);
         const now = performance.now();
+        // The chat overlay's page scroll lock (go-client lockPageScroll,
+        // 2026-09-30) pins the body — scrollY jumps to 0 — and restores it on
+        // close. Neither is the visitor scrolling: track, never flip.
+        if (document.documentElement.dataset.chatLock) { lastY = y; return; }
         // Lockout — block flip-flop during iOS momentum bounce. The
         // transition itself takes 300ms so anything quicker than that
         // looks broken anyway.

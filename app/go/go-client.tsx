@@ -231,6 +231,12 @@ const CATEGORIES: { key: string; label: string; img: string; deterministic?: Gro
   { key: "console", label: "Console", img: "/ps5-series.webp", deterministic: "console" },
   { key: "other", label: "Something else", img: "/fold-series.webp" },
 ];
+// The instant-quote bar above the composer (2026-09-30, Sonny: "customer
+// should always have the box for instant quotes while chatting with the
+// bot"). The tiles above leave the thread once the seller starts talking;
+// the bar carries the one-tap engine-priced categories for the rest of it.
+const QUICK_CATS = CATEGORIES.filter((c) => c.deterministic);
+const NO_CATS: typeof CATEGORIES = [];
 
 type Msg =
   // tap: the bubble is a chip/tile choice, not typed text (history tags it
@@ -403,6 +409,102 @@ const GO_CSS = `
           .go-overlay { animation: goOverlayIn 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
         `;
 
+// Real page scroll lock while the chat is open (2026-09-30, Sonny: "when the
+// keyboard is up customers scroll up or down on the page it glitched big
+// time"). body overflow:hidden alone is ignored by iOS Safari and the
+// Facebook in-app webview (WKWebView): the page behind the overlay kept
+// scrolling, and a drag with the keyboard up panned it under the overlay,
+// which then chased the visual viewport a frame late. Pinning <body> at
+// -scrollY leaves the page nothing to scroll; unlocking puts every style
+// back exactly as it was and returns the seller to the same spot. Counted,
+// so a second opener can neither unlock the page early nor strand it locked.
+let pageLockCount = 0;
+let pageUnlock: (() => void) | null = null;
+function lockPageScroll(): () => void {
+  if (typeof document === "undefined") return () => {};
+  if (pageLockCount++ === 0) {
+    const html = document.documentElement;
+    const body = document.body;
+    const y = window.scrollY || html.scrollTop || 0;
+    const path = window.location.pathname;
+    const rules: [CSSStyleDeclaration, string, string][] = [
+      [html.style, "overflow", "hidden"],
+      [html.style, "overscroll-behavior", "none"], // no pull-to-refresh / rubber band on the root
+      [body.style, "position", "fixed"],
+      [body.style, "top", `-${y}px`],
+      [body.style, "left", "0px"],
+      [body.style, "right", "0px"],
+      [body.style, "width", "100%"],
+      [body.style, "overflow", "hidden"],
+    ];
+    const saved = rules.map(([s, prop]) => [s, prop, s.getPropertyValue(prop), s.getPropertyPriority(prop)] as const);
+    // The site nav's hide-on-scroll hook skips scrolls while this is up
+    // (2026-09-30): the pin's jump to 0 and the restore to y aren't the
+    // seller scrolling — it read the restore as a big scroll down and slid
+    // the nav away on every close.
+    html.dataset.chatLock = "1";
+    for (const [s, prop, val] of rules) {
+      try { s.setProperty(prop, val); } catch { /* best effort — an old engine skips one property */ }
+    }
+    pageUnlock = () => {
+      for (const [s, prop, val, prio] of saved) {
+        try { if (val) s.setProperty(prop, val, prio); else s.removeProperty(prop); } catch { /* best effort */ }
+      }
+      // A client-side route change while open: the new page keeps its own top.
+      try { if (window.location.pathname === path) window.scrollTo(0, y); } catch { /* sandboxed webview */ }
+      // Marker off two frames later — the hook reads scrollY in its own rAF
+      // after the restore's scroll event — unless the chat reopened meanwhile.
+      const clear = () => { if (pageLockCount === 0) delete html.dataset.chatLock; };
+      try { requestAnimationFrame(() => requestAnimationFrame(clear)); } catch { clear(); }
+    };
+  }
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    pageLockCount = Math.max(0, pageLockCount - 1);
+    if (pageLockCount > 0) return;
+    const unlock = pageUnlock;
+    pageUnlock = null;
+    unlock?.();
+  };
+}
+
+// Touch guard for the open chat (2026-09-30). The lock leaves the page with
+// nothing to scroll, but on iOS a drag with the keyboard up still pans the
+// VISUAL viewport, and iOS before 16 ignores overscroll-behavior — so a drag
+// that nothing under the finger can follow (the header, the composer, a
+// thread already at its top) is cancelled instead of moving the page. The
+// scrollers under the finger are collected once at touchstart; each move
+// then only asks "can one of them still go this way?".
+type ChatGesture = { x: number; y: number; t: number; ys: HTMLElement[]; xs: HTMLElement[]; field: Element | null; multi: boolean };
+const SCROLLS = /(auto|scroll)/;
+function chatGesture(target: EventTarget | null, x: number, y: number): ChatGesture {
+  const g: ChatGesture = { x, y, t: Date.now(), ys: [], xs: [], field: null, multi: false };
+  if (!(target instanceof Element)) return g;
+  g.field = target.closest("input, textarea, [contenteditable]:not([contenteditable='false'])");
+  for (let el: Element | null = target; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+    if (!(el instanceof HTMLElement)) continue; // an svg icon inside a button
+    const cs = window.getComputedStyle(el);
+    if (SCROLLS.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 1) g.ys.push(el);
+    if (SCROLLS.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1) g.xs.push(el);
+  }
+  return g;
+}
+// d > 0: the finger moved down / right, so the content has to move toward its start.
+function canScrollToward(el: HTMLElement, vertical: boolean, d: number): boolean {
+  const pos = vertical ? el.scrollTop : el.scrollLeft;
+  const max = vertical ? el.scrollHeight - el.clientHeight : el.scrollWidth - el.clientWidth;
+  return d > 0 ? pos > 1 : pos < max - 1;
+}
+function fieldHasSelection(f: Element): boolean {
+  try {
+    if (f instanceof HTMLInputElement || f instanceof HTMLTextAreaElement) return f.selectionStart != null && f.selectionStart !== f.selectionEnd;
+    const s = window.getSelection();
+    return !!s && !s.isCollapsed;
+  } catch { return false; } // selectionStart throws on some input types in older engines
+}
+
 export default function GoClient({ rows, src, reviews, variant = "std", mode = "page", initialGroup = null, landed = "", visitorArea = "unknown", initialOpen = false }: {
   rows: BoardRow[]; src: string; reviews: GoReviews; variant?: "std" | "lot";
   // "widget": the overlay only — the floating button that opens it lives in
@@ -424,11 +526,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // intact.
   const [chatOpen, setChatOpen] = useState(initialOpen);
   useEffect(() => {
-    document.body.style.overflow = chatOpen ? "hidden" : "";
+    // The page scroll lock moved to its own effect below the history one
+    // (2026-09-30) — the old body overflow:hidden here did nothing on iOS.
     // The site-wide button (SiteChat) hides while the overlay is up.
     if (mode === "widget") window.dispatchEvent(new CustomEvent("tcc:chat-state", { detail: { open: chatOpen } }));
     return () => {
-      document.body.style.overflow = "";
       if (mode === "widget") window.dispatchEvent(new CustomEvent("tcc:chat-state", { detail: { open: false } }));
     };
   }, [chatOpen, mode]);
@@ -465,7 +567,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     const el = overlayRef.current;
     if (!vv || !el) return;
     // One style write per frame: iOS fires a burst of these during the
-    // keyboard animation and on every pan or zoom.
+    // keyboard animation and on every pan or zoom. With the page lock and
+    // touch guard (2026-09-30) a seller's drag no longer pans the page, so
+    // offsetTop moves only when iOS itself reveals the focused box — this
+    // pin is what keeps the composer above the keyboard, and it stays.
     let raf = 0;
     const apply = () => {
       raf = 0;
@@ -738,6 +843,75 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     if (st?.tccChat) window.history.back(); // popstate → setChatOpen(false)
     else setChatOpen(false);
   }
+  // Page scroll lock while the chat is open (2026-09-30) — see
+  // lockPageScroll. Declared AFTER the history effect on purpose: its
+  // pushState records the page's real scroll position before the body is
+  // pinned (scrollY reads 0 once it is), so Back's own scroll restoration
+  // lands where ours does. The cleanup also runs when the widget unmounts.
+  useEffect(() => {
+    if (!chatOpen) return;
+    return lockPageScroll();
+  }, [chatOpen]);
+  // Touch guard (2026-09-30) — see chatGesture. Non-passive, so a drag
+  // nothing can follow is cancelled before the browser pans the page with
+  // it. A move the browser already scrolls with isn't cancelable (nothing to
+  // fix then). Taps, pinch zoom, sideways chip rows and caret / selection
+  // drags in the text fields are never cancelled.
+  useEffect(() => {
+    if (!chatOpen || typeof document === "undefined") return;
+    let g: ChatGesture | null = null;
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length > 1) { if (g) g.multi = true; return; }
+      const t = e.touches[0];
+      g = chatGesture(e.target, t.clientX, t.clientY);
+    };
+    const onMove = (e: TouchEvent) => {
+      if (!g || g.multi || !e.cancelable) return;
+      if (e.touches.length > 1) { g.multi = true; return; } // a pinch stays a pinch — zoom is accessibility
+      // Nothing under the finger scrolls and it isn't a text field: there's
+      // no direction to wait for — hold the page still from the first move.
+      if (!g.ys.length && !g.xs.length && !g.field) { e.preventDefault(); return; }
+      const t = e.touches[0];
+      const dx = t.clientX - g.x;
+      const dy = t.clientY - g.y;
+      // No verdict until the drag has a clear direction (2026-09-30): 6px of
+      // travel — still under iOS's ~10pt pan threshold — with one axis 1.5x
+      // the other. WebKit lets one cancelled move before the pan kill
+      // scrolling for the whole touch, so a noisy first 2px (an arcing thumb)
+      // used to leave the thread or a chip strip dead until the finger lifted.
+      const ax = Math.abs(dx);
+      const ay = Math.abs(dy);
+      if (Math.max(ax, ay) < 6) return;
+      if (ax < ay * 1.5 && ay < ax * 1.5) return; // still diagonal: ask again on the next move
+      const vertical = ay > ax;
+      const own = vertical ? g.ys : g.xs;
+      if (own.some((el) => canScrollToward(el, vertical, vertical ? dy : dx))) return;
+      // Never cancel on an axis none of this touch's scrollers own: sideways
+      // there's nothing to pan unless the seller zoomed in (then that's the
+      // point), and the chip strips are touch-action pan-x, so a vertical
+      // start on one moves nothing. The next move asks again.
+      if (!own.length && !g.field) return;
+      // text fields: sideways drags move the caret or scroll a long line; a
+      // press-and-hold is iOS's caret loupe or a selection — never fight those
+      if (g.field && (!vertical || Date.now() - g.t >= 300 || fieldHasSelection(g.field))) return;
+      e.preventDefault();
+    };
+    const onEnd = (e: TouchEvent) => { if (!e.touches.length) g = null; };
+    // The same options object on add and remove: an engine without options
+    // support reads it as capture=true both times, so removal still matches.
+    const passive: AddEventListenerOptions = { passive: true };
+    const active: AddEventListenerOptions = { passive: false };
+    document.addEventListener("touchstart", onStart, passive);
+    document.addEventListener("touchmove", onMove, active);
+    document.addEventListener("touchend", onEnd, passive);
+    document.addEventListener("touchcancel", onEnd, passive);
+    return () => {
+      document.removeEventListener("touchstart", onStart, passive);
+      document.removeEventListener("touchmove", onMove, active);
+      document.removeEventListener("touchend", onEnd, passive);
+      document.removeEventListener("touchcancel", onEnd, passive);
+    };
+  }, [chatOpen]);
   // Keyboard / screen-reader basics (2026-09-26): focus moves INTO the
   // dialog when it opens — onto the overlay itself, never the composer (see
   // the no-programmatic-focus rule below: a focused input pops the keyboard
@@ -984,9 +1158,26 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   const hasPhoto = msgs.some((m) => !("kind" in m) && m.text.startsWith("IMG::"));
   // The tiles + starter chips stay until the seller actually starts: a
   // "leave my number" card, a bare number and the bot's ack to it don't count
-  // (tapping the chip used to make the tiles vanish).
+  // (tapping the chip used to make the tiles vanish). Once it has started,
+  // the instant-quote bar above the composer carries the quick categories
+  // (2026-09-30) — the two never show together.
   const looksLikeContact = (t: string) => /^\S+@\S+$/.test(t.trim()) || (t.replace(/\D/g, "").length >= 10 && t.trim().length <= 24);
   const threadStarted = msgs.some((m) => ("kind" in m ? m.kind !== "numberform" : m.from === "user" && !looksLikeContact(m.text)));
+  // The seller is TYPING into an in-thread form (lock / ship / number) —
+  // 2026-09-30: the bar sits right above the keyboard then, and a stray tap
+  // on it retires the half-typed form (categoryTap → pushMsgs marks it done)
+  // — a lost lead. The bar steps aside only while a thread field has focus;
+  // with the quote card just sitting there it stays, so the seller can
+  // still price something else.
+  const [threadFieldFocus, setThreadFieldFocus] = useState(false);
+  // A sent form's field is disabled or unmounted, and Chrome fires no blur
+  // for either — re-check on every thread change so the bar can't stay away.
+  useEffect(() => {
+    if (!threadFieldFocus) return;
+    const a = typeof document !== "undefined" ? document.activeElement : null;
+    const inThread = !!a && !!threadRef.current?.contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && !(a as HTMLInputElement).disabled;
+    if (!inThread) setThreadFieldFocus(false);
+  }, [msgs, threadFieldFocus]);
 
   // Retire interactivity on every previous rich message; append new ones.
   // Only the kinds that carry `done` are rewritten (and only while live), so
@@ -1989,7 +2180,8 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     <>
   {/* full-screen immersive chat */}
   {chatOpen && (
-    <div ref={overlayRef} tabIndex={-1} style={{ background: "#0a0a0b" }} className="go-overlay fixed inset-0 z-50 flex flex-col text-white focus:outline-none" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
+    // overscroll none (2026-09-30): nothing inside may hand a drag on to the page
+    <div ref={overlayRef} tabIndex={-1} style={{ background: "#0a0a0b", overscrollBehavior: "none" }} className="go-overlay fixed inset-0 z-50 flex flex-col text-white focus:outline-none" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
         <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
         <div className="flex-1 min-w-0">
@@ -2010,6 +2202,16 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         role="log"
         aria-live="polite"
         className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-3"
+        // contain (2026-09-30): a fling that hits the top or bottom stops
+        // here instead of chaining into the page behind (the keyboard-up jump)
+        style={{ overscrollBehavior: "contain" }}
+        // A form field inside the thread has focus → the quote bar steps
+        // aside (see threadFieldFocus). focus/blur bubble in React.
+        onFocus={(e) => { if (/^(INPUT|TEXTAREA|SELECT)$/.test((e.target as HTMLElement).tagName)) setThreadFieldFocus(true); }}
+        onBlur={(e) => {
+          const next = e.relatedTarget as HTMLElement | null;
+          if (!next || !e.currentTarget.contains(next) || !/^(INPUT|TEXTAREA|SELECT)$/.test(next.tagName)) setThreadFieldFocus(false);
+        }}
         onScroll={(e) => {
           const el = e.currentTarget;
           const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
@@ -2324,9 +2526,17 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         takeover={takeover}
         gBusy={gBusy}
         hasPhoto={hasPhoto}
-        onSend={(t) => void send(t)}
+        // A send or chip tap from down here is a return to the bottom
+        // (2026-09-30): the bar and chips stay pinned under the thread, so
+        // they get tapped while scrolled up re-reading — the result landed
+        // below the fold (auto-follow off) and the tap looked dead.
+        onSend={(t) => { nearBottomRef.current = true; void send(t); }}
         onPhotos={(fs) => void sendPhotos(fs)}
-        onPickModel={deviceTap}
+        onPickModel={(r, pre) => { nearBottomRef.current = true; deviceTap(r, pre); }}
+        // The instant-quote bar: once the in-thread tiles are gone, never
+        // during a takeover (a tap would only become a message to Sonny).
+        quickCats={threadStarted && !takeover && !threadFieldFocus ? QUICK_CATS : NO_CATS}
+        onQuickCat={(c) => { nearBottomRef.current = true; categoryTap(c); }}
       />
       {unbound && (
         <p role="status" className="px-4 pb-2 text-[12px] text-white/50 leading-snug" style={{ background: "#0e0e0f", paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}>
@@ -2517,9 +2727,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
 // thread had twenty messages. Mounted only while the chat is open, so the
 // placeholder ticker runs only then (it used to tick on every site page for
 // the whole visit, chat closed).
-function Composer({ rows, lot, sending, uploading, takeover, gBusy, hasPhoto, onSend, onPhotos, onPickModel }: {
+function Composer({ rows, lot, sending, uploading, takeover, gBusy, hasPhoto, onSend, onPhotos, onPickModel, quickCats, onQuickCat }: {
   rows: BoardRow[]; lot: boolean; sending: boolean; uploading: boolean; takeover: boolean; gBusy: boolean; hasPhoto: boolean;
   onSend: (text: string) => void; onPhotos: (files: File[]) => void; onPickModel: (r: BoardRow, prefill: TypedSpec) => void;
+  // instant-quote bar categories — empty while it shouldn't show
+  quickCats: typeof CATEGORIES; onQuickCat: (c: (typeof CATEGORIES)[number]) => void;
 }) {
   const [draft, setDraft] = useState("");
   // Composer placeholder — rotates through things a seller can actually type
@@ -2552,7 +2764,9 @@ function Composer({ rows, lot, sending, uploading, takeover, gBusy, hasPhoto, on
     <>
       {/* tap-to-price suggestions for a typed model */}
       {typedMatches.length > 0 && !takeover && !gBusy && (
-        <div className="mx-4 mb-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }} aria-label="tap your model to price it">
+        // pan-x (2026-09-30): the strip only ever slides sideways — a
+        // vertical start on it pans nothing (see the touch guard)
+        <div className="mx-4 mb-2 flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none", overscrollBehavior: "contain", touchAction: "pan-x" }} aria-label="tap your model to price it">
           {typedMatches.map((r) => (
             <button
               key={r.id}
@@ -2563,6 +2777,36 @@ function Composer({ rows, lot, sending, uploading, takeover, gBusy, hasPhoto, on
               {r.label} <span className="text-[#00c853] font-semibold">up to ${r.upTo.toLocaleString("en-US")}</span>
             </button>
           ))}
+        </div>
+      )}
+
+      {/* instant-quote bar (2026-09-30) — pinned between the thread and the
+          box, so a seller chatting with the bot is always one tap from an
+          engine number. It gives its slot to the typeahead chips while a
+          typed model matches: one chip row above the input, never two. */}
+      {quickCats.length > 0 && typedMatches.length === 0 && (
+        <div role="group" aria-label="instant quote — tap what you're selling" className="mx-4 mb-2 flex items-center gap-2">
+          <span aria-hidden className="shrink-0 whitespace-nowrap text-[12px] font-semibold text-[#00c853]">instant quote:</span>
+          <div className="flex-1 min-w-0 flex gap-2 overflow-x-auto" style={{ scrollbarWidth: "none", overscrollBehavior: "contain", touchAction: "pan-x" }}>
+            {quickCats.map((c) => (
+              <button
+                key={c.key}
+                type="button"
+                // Not while a bot reply or a photo is in flight (2026-09-30):
+                // a category started under a pending turn got its picker
+                // overwritten by the reply's quote (shared gRow) and the
+                // tap folded into that turn's history.
+                disabled={gBusy || sending || uploading}
+                onClick={() => { if (!gBusy && !sending && !uploading) onQuickCat(c); }}
+                className="shrink-0 h-[44px] flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.06] pl-1.5 pr-3.5 text-[14px] text-white/90 disabled:opacity-40 active:scale-95 transition-transform"
+              >
+                <span className="w-[32px] h-[32px] rounded-full bg-white flex items-center justify-center shrink-0">
+                  <img src={c.img} alt="" width={24} height={24} className="max-h-[24px] max-w-[24px] object-contain" />
+                </span>
+                {c.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
