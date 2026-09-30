@@ -74,9 +74,20 @@ function stampFbc() {
   } catch { /* cookies blocked — CAPI falls back to IP + UA + contact */ }
 }
 
+// A verification visit keeps its tag across pages (2026-09-30): /go's "main
+// site" link and the /sell-* CTAs drop ?src=verify, and /api/lead's server
+// Lead reads this session cookie to stay out of Meta. Skip-only — a forged
+// cookie can only hide its own lead.
+function stampTestVisit() {
+  try {
+    if (isTestTraffic()) document.cookie = "tcc_test=1; path=/; SameSite=Lax; Secure";
+  } catch { /* cookies blocked */ }
+}
+
 export default function MetaPixel() {
   useEffect(() => {
     stampFbc();
+    stampTestVisit();
     if (!PIXEL_ID || window.fbq) return;
     // Standard Meta base snippet, minus the document.write path.
     const n = function (...args: unknown[]) {

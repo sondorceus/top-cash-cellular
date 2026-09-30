@@ -15,6 +15,11 @@ import { getResellEstimate, resellMultiplierForCondition, EBAY_FEE_MULT } from "
 import { mailShell, mailDetails, MAIL, mailLogo, esc as escHtml } from "../../lib/email-shell";
 import { registerEasyPostTracker } from "../../lib/easypost";
 import { notifyOwnerSms, ownBlobStoreHost } from "../../lib/owner-sms";
+import { createHash } from "crypto";
+import { sendCapiEvent, isTestConversion } from "../../lib/meta-capi";
+import { clientGeo } from "../../lib/geo";
+import { COOKIE_NAME, verifySession, isAdminEmail } from "../../lib/auth";
+import { safeEqual } from "../../lib/admin-auth";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -246,6 +251,190 @@ async function postMarker(body: string, tags: string[], priority: "low" | "norma
       signal: AbortSignal.timeout(8_000),
     });
   } catch {}
+}
+
+// Meta Conversions API "Lead" for main-site sell leads (2026-09-30). The FB
+// ad lands on /go, which sends its own CAPI Lead at the lock / chat contact;
+// a visitor who followed /go's "main site" link and finished HERE sent Meta
+// nothing (no CAPI, no pixel), so the ad optimizer never saw that lead.
+// Server-only on purpose — the funnel fires no browser Lead, so there is no
+// pixel twin to share an id with: the request already carries the pixel's
+// first-party _fbp/_fbc cookies (MetaPixel.tsx stamps them site-wide), the
+// IP, the UA and the visitor cookie. Runs inside after(): never throws, never
+// delays the seller, and logs no contact value.
+const SITE_HOSTS = new Set(["topcashcellular.com", "www.topcashcellular.com"]);
+// Meta's documented cookie shape (fb.<idx>.<ms>.<id>), length-capped — the
+// same rule meta-capi applies; a malformed value can fail the whole event.
+const FB_COOKIE_SHAPE = /^fb\.\d\.\d{10,16}\.[A-Za-z0-9_-]{4,200}$/;
+// Names the funnel fills in for the seller (the parts form's default) —
+// hashed as fn/ln they are keys that can never match a real profile.
+const PLACEHOLDER_NAME = /^(custom quote request|guest|returning customer)$/i;
+// Bucket for the hashed event id below: a resubmit of the same lead inside it
+// gets the same id, and Meta keeps one copy.
+const CAPI_ID_BUCKET_MS = 10 * 60_000;
+
+// Request facts, read before the response (plain header / cookie reads).
+type SiteLeadRequest = {
+  at: number; // submit time, ms
+  ip: string;
+  userAgent: string | null;
+  referer: string | null;
+  fbp: string | null;
+  fbc: string | null;
+  visitorId: string;
+  geo: { city: string; region: string; country: string };
+  geoZip: string | null;
+  adminToken: string | null;
+  sessionCookie: string | null;
+  // tcc_test=1: a session cookie for a visit tagged ?src=verify|test|audit|
+  // review on an earlier page (2026-09-30). The tag never reached this submit:
+  // /go's "main site" link and the /sell-* CTAs drop the query, and the
+  // first-touch attribution keeps only utm_*. Skip-only, so a forged cookie
+  // can only hide its own lead.
+  testCookie: boolean;
+};
+type SiteLeadFields = {
+  leadId: string | null;
+  // false = the submission skipped the dedup gate (the parts / bulk forms'
+  // no-handoff "TBD" shape), so a double-click can write two MC rows.
+  dedupGuarded: boolean;
+  isCustom: boolean;
+  clampedToTbd: boolean;
+  quoteClamped: boolean;
+  uncappedSanity: boolean;
+  baseQuoteNum: number;
+  devices: { model?: unknown; quote?: unknown }[] | null; // multi-device carts only
+  name: unknown;
+  phone: unknown;
+  email: unknown;
+  device: unknown;
+  model: unknown;
+  storage: unknown;
+  handoff: unknown;
+  attribution: unknown;
+};
+
+async function sendSiteLeadCapi(r: SiteLeadRequest, l: SiteLeadFields): Promise<void> {
+  let eventId = "sitelead-?";
+  try {
+    const phone = typeof l.phone === "string" ? l.phone : "";
+    const email = typeof l.email === "string" ? l.email : "";
+    // Staff keying in a caller's trade (admin token, or an allow-listed admin
+    // Google session in this browser) is not an ad conversion.
+    let staff = safeEqual(r.adminToken, process.env.TCC_ADMIN_TOKEN);
+    if (!staff && r.sessionCookie) {
+      try { staff = isAdminEmail(verifySession(r.sessionCookie)?.email); } catch { /* no signing secret → not staff */ }
+    }
+    if (staff) return;
+    let ref: URL | null = null;
+    try { ref = r.referer ? new URL(r.referer) : null; } catch { ref = null; }
+    const onSite = !!ref && ref.protocol === "https:" && SITE_HOSTS.has(ref.hostname.toLowerCase());
+    const a = (l.attribution && typeof l.attribution === "object" ? l.attribution : {}) as Record<string, unknown>;
+    // Verification / audit traffic never reaches Meta: a src or utm value of
+    // verify|test|audit|review (on the submit page, in the first-touch
+    // attribution, or carried by the tcc_test cookie), the owner's number,
+    // the internal inboxes.
+    if (r.testCookie) return;
+    // Any host, not only onSite (2026-09-30): the host gate switched the skip
+    // off on a Vercel preview / localhost run with prod Meta keys. It can only
+    // add skips, and a cross-origin Referer carries no query under our
+    // strict-origin-when-cross-origin policy. onSite still gates sourceUrl.
+    const params = ref ? ref.searchParams : null;
+    const srcs: unknown[] = [
+      ...(params ? ["src", "utm_source", "utm_medium", "utm_campaign", "utm_content"].map((k) => params.get(k)) : []),
+      a.source, a.medium, a.campaign, a.term, a.content,
+    ];
+    if (srcs.some((v) => typeof v === "string" && isTestConversion({ src: v.trim() }))) return;
+    if (isTestConversion({ contact: phone }) || isTestConversion({ contact: email })) return;
+
+    // Deterministic, never random: the MC id when the dedup gate guarded the
+    // write; otherwise (MC failed but a label / slot committed the lead, or
+    // the no-dedup parts / bulk shape) a hash of contact + product + the
+    // submit-time bucket, so a resubmit of the same lead dedupes at Meta.
+    const cleanId = String(l.leadId || "").replace(/[^A-Za-z0-9_-]/g, "").slice(0, 80);
+    if (cleanId && l.dedupGuarded) {
+      eventId = `sitelead-${cleanId}`;
+    } else {
+      const contactKey = email.toLowerCase().trim() || phone.replace(/\D/g, "").replace(/^1(?=\d{10}$)/, "");
+      const productKey = `${String(l.device ?? "").toLowerCase().trim()}|${String(l.model ?? "").toLowerCase().trim()}`;
+      const bucket = Math.floor(r.at / CAPI_ID_BUCKET_MS);
+      eventId = `sitelead-h${createHash("sha256").update(`${contactKey}|${productKey}|${bucket}`).digest("hex").slice(0, 32)}`;
+    }
+
+    // The server-validated quote for the devices (line / total clamps
+    // applied, coupon + referral bonus left out). null for a hand quote:
+    // custom / TBD, clamped onto a config we don't auto-quote, or an uncapped
+    // figure flagged for hand verification. A cart's line sum is capped at
+    // baseQuoteNum (2026-09-30): the per-line clamp skips a string quote, so
+    // a hand-built cart could post any sum; honest carts only sum lower.
+    const lineSum = l.devices ? l.devices.reduce((s: number, d) => s + (Number(d.quote) || 0), 0) : 0;
+    const total = l.devices && !l.quoteClamped ? Math.min(lineSum, l.baseQuoteNum) : l.baseQuoteNum;
+    const value = l.isCustom || l.clampedToTbd || l.uncappedSanity || !(total > 0) ? null : Math.round(total);
+    // content_name goes to Meta UNHASHED, so never the seller's free text
+    // (2026-09-30): the custom-inquiry form posts its description as `model`,
+    // the bulk form its company name. Only a model that resolves to a catalog
+    // id is named; else the picker `device` (inquiry category, device type,
+    // "BULK TRADE-IN").
+    const catalogModel = (m: unknown, max: number) => (resolveModelIdFromLabel(m) != null ? cleanField(m, max) : "");
+    const storage = cleanField(l.storage, 20);
+    const single = l.isCustom ? "" : catalogModel(l.model, 80);
+    const contentName = (l.devices
+      ? `${l.devices.length} devices — ${l.devices.map((d) => catalogModel(d.model, 60)).filter(Boolean).join(", ")}`
+      : single
+        ? [single, /^(—|-|n\/a)$/i.test(storage) ? "" : storage].filter(Boolean).join(" ")
+        : cleanField(l.device, 40) || (l.isCustom ? "custom quote" : "")
+    ).replace(/ — $/, "").slice(0, 90) || null;
+
+    // The page the seller submitted from (a same-origin fetch carries the
+    // full Referer under our strict-origin-when-cross-origin policy); else
+    // their first-touch landing path; else the homepage. Path only — never a
+    // query string.
+    const landed = typeof a.landed === "string" && /^\/(?!\/)/.test(a.landed) ? a.landed : "";
+    const path = ((onSite && ref ? ref.pathname : landed) || "/").replace(/[^A-Za-z0-9_\-/.]/g, "").slice(0, 120);
+    const sourceUrl = `https://topcashcellular.com${path.startsWith("/") ? path : "/"}`;
+
+    // Location keys: the seller's own ship address when the form has one
+    // (ship / mixed), else Vercel's edge geo — the lock route's source.
+    const h = (l.handoff && typeof l.handoff === "object" ? l.handoff : {}) as { address?: unknown };
+    const ad = (h.address && typeof h.address === "object" ? h.address : {}) as Record<string, unknown>;
+    const adState = typeof ad.state === "string" ? ad.state.trim() : "";
+    const adZip = typeof ad.zip === "string" ? ad.zip.trim() : "";
+    const fromForm = /^[A-Za-z]{2}$/.test(adState) && /^\d{5}/.test(adZip);
+    const nm = cleanField(l.name, 80);
+    const fb = (v: string | null) => (v && v.length <= 240 && FB_COOKIE_SHAPE.test(v) ? v : null);
+
+    // sendCapiEvent, not sendCapiLead: the same "Lead" / website event, but
+    // it takes phone AND email — the lead form often has both, and
+    // sendCapiLead's single `contact` would hash only the email.
+    const ok = await sendCapiEvent({
+      eventName: "Lead",
+      eventId,
+      actionSource: "website",
+      sourceUrl,
+      value,
+      contentName,
+      contentCategory: "site",
+      user: {
+        ip: r.ip,
+        userAgent: r.userAgent,
+        phone: phone || null,
+        email: email || null,
+        name: nm && !PLACEHOLDER_NAME.test(nm) ? nm : null,
+        city: fromForm ? cleanField(ad.city, 60) || null : r.geo.city || null,
+        region: fromForm ? adState.toUpperCase() : r.geo.region || null,
+        country: fromForm ? "US" : r.geo.country || null,
+        zip: fromForm ? adZip.slice(0, 5) : r.geoZip,
+        externalId: r.visitorId || null,
+        fbp: fb(r.fbp),
+        fbc: fb(r.fbc),
+      },
+    });
+    if (!ok && process.env.META_CAPI_TOKEN && process.env.NEXT_PUBLIC_META_PIXEL_ID) {
+      console.warn(`[lead] capi Lead ${eventId} not accepted`);
+    }
+  } catch (err) {
+    console.warn(`[lead] capi Lead ${eventId} threw: ${err instanceof Error ? err.name : "error"}`);
+  }
 }
 
 // Resell values from Swappa (real market data, scraped 2026-05-12).
@@ -2000,6 +2189,31 @@ Pick the best channel per device. Be concise.`;
     // on as the fallback.
     if (ownerAlert) await notifyOwnerSms(ownerAlert, { skipEmail: ownerEmailSent }).catch(() => {});
   });
+
+  // Meta CAPI Lead — one per accepted new lead (2026-09-30; see
+  // sendSiteLeadCapi). Only reached on the ok:true answer: every 400 / 429,
+  // a dedup hit and the MC-failed 503 have returned above, and recycle /
+  // quote-save submissions never enter this handler. Only plain header and
+  // cookie reads happen here — a throw now would 500 a saved lead.
+  const capiReq: SiteLeadRequest = {
+    at: Date.now(),
+    ip: rlIp,
+    userAgent: req.headers.get("user-agent"),
+    referer: req.headers.get("referer"),
+    fbp: req.cookies.get("_fbp")?.value ?? null,
+    fbc: req.cookies.get("_fbc")?.value ?? null,
+    visitorId,
+    geo: clientGeo(req),
+    geoZip: req.headers.get("x-vercel-ip-postal-code"),
+    adminToken: req.headers.get("x-admin-token"),
+    sessionCookie: req.cookies.get(COOKIE_NAME)?.value ?? null,
+    testCookie: req.cookies.get("tcc_test")?.value === "1",
+  };
+  after(() => sendSiteLeadCapi(capiReq, {
+    leadId, dedupGuarded: !isPreviewSave, isCustom, clampedToTbd, quoteClamped, uncappedSanity, baseQuoteNum,
+    devices: isMulti ? deviceList : null,
+    name, phone, email, device, model, storage, handoff, attribution,
+  }));
 
   return NextResponse.json({
     ok: true, leadId,
