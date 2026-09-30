@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import SiteFooter from "../components/SiteFooter";
-import { BRAND } from "../lib/constants";
+import { BRAND, PHONE_DISPLAY } from "../lib/constants";
 
 export const metadata: Metadata = {
   title: `Shipping & Returns | ${BRAND}`,
@@ -36,7 +36,19 @@ export default function ShippingReturnsPage() {
 
         <h2 className="text-xl font-bold mb-3">Shipping coverage</h2>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 text-sm text-[#e6e6e6] leading-relaxed">
-          <p>The free prepaid FedEx label includes <strong className="text-white">$100 of base coverage</strong> if the package is lost or damaged in transit — it does not cover the full device value. For a high-value device, you can declare and pay for additional coverage at the FedEx counter when you drop off, or pick a <strong className="text-white">local Austin meetup</strong> with no carrier-shipping risk — paid on the spot.</p>
+          <p>The free prepaid FedEx label includes <strong className="text-white">up to $100 of base coverage per box</strong> (not per device) if the package is lost or damaged in transit — it does not cover the full device value, and it&apos;s set when the label prints (the value of what&apos;s on it, capped at $100). For a high-value device, you can declare and pay for additional coverage at the FedEx counter when you drop off, or pick a <strong className="text-white">local Austin meetup</strong> with no carrier-shipping risk — paid on the spot.</p>
+        </div>
+
+        {/* 2026-09-30: one label = one box, several devices per box — a seller
+            with two phones on one label was told the second needed its own. */}
+        <h2 className="text-xl font-bold mb-3">Shipping more than one device?</h2>
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-8 space-y-3 text-sm text-[#e6e6e6] leading-relaxed">
+          <p>One free prepaid FedEx label covers <strong className="text-white">one box</strong>, and one box can hold several devices — roughly up to 15 phones, 5 tablets or 2 laptops fit in a medium box. Each device keeps its own locked offer. Lock each device in the chat (or quote them together on the homepage) before you ship so we know what&apos;s in the box.</p>
+          {/* 2026-09-30 (review): only a chat label takes a device later —
+              phones only, while the label has room; e-mailed labels go
+              through the team. Coverage is set when the label prints. */}
+          <p><strong className="text-white">Already have a label?</strong> If you haven&apos;t dropped the box off yet and your label came from our chat, reopen that chat (the link we texted you), lock the new phone and tap &ldquo;put it in my box — same label&rdquo; — nothing new to print. That works for phones while the label has room for another (the chat tells you); a tablet, laptop or console gets its own label. If the box already went out, the chat prints a new free label right away. If your label came by e-mail, text us at {PHONE_DISPLAY} and we&apos;ll add it or send another label.</p>
+          <p><strong className="text-white">Packing several:</strong> wrap each device separately so screens don&apos;t touch, fill the gaps, and use a plain box (a sealed device&apos;s retail box goes inside the plain box). On each used device — sealed ones stay sealed — sign out of iCloud, Google and Samsung accounts and remove the SIM and case. Drop the box at any FedEx location — labels are drop-off, not pickup. The $100 base coverage is per box, not per device, and set when the label prints — adding a phone to a box that already has its label doesn&apos;t raise it.</p>
         </div>
 
         <h2 className="text-xl font-bold mb-3">If we change the offer</h2>

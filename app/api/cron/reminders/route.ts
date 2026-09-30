@@ -278,12 +278,13 @@ function templateQuoteReminder(lead: LeadShape, handoffKind: "ship" | "local" | 
     };
   }
   // No handoff picked yet — gentle nudge back to the funnel.
+  // 2026-09-30: "free FedEx pickup" was wrong — our labels are drop-off only.
   return {
-    smsBody: `Top Cash: Hi ${first}, your quote for ${device} (${quoteStr}) is still locked in. Pick local meetup or free FedEx pickup whenever you're ready: ${SITE}. Reply STOP to opt out.`,
+    smsBody: `Top Cash: Hi ${first}, your quote for ${device} (${quoteStr}) is still locked in. Pick local meetup or a free FedEx drop-off label whenever you're ready: ${SITE}. Reply STOP to opt out.`,
     emailSubject: `Reminder: your ${device} quote is still good`,
     emailHtml: wrapEmail({
       title: "Your quote is still locked in",
-      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your quote for <span style="color:#00c853;font-weight:600">${deviceH}</span> at <span style="color:#00c853;font-weight:700">${quoteH}</span> is still good.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Local meetup (same-day cash) or free FedEx pickup — pick whichever works.</p>`,
+      bodyHtml: `<p style="font-size:16px;color:#fff;font-weight:700;margin:0 0 14px">Hi ${firstH},</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0 0 14px">Your quote for <span style="color:#00c853;font-weight:600">${deviceH}</span> at <span style="color:#00c853;font-weight:700">${quoteH}</span> is still good.</p><p style="font-size:15px;line-height:1.65;color:#e6e6e6;margin:0">Local meetup (same-day cash) or a free FedEx label you drop off at any FedEx location — pick whichever works.</p>`,
       ctaHref: SITE,
       ctaLabel: "Finish your trade →",
       unsubUrl,

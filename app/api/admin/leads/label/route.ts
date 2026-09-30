@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { safeEqual } from "../../../../lib/admin-auth";
 import { put } from "@vercel/blob";
 import { createReturnLabel, deviceKindFor, type LabelInputs } from "../../../../lib/fedex";
 import { findFreshLabel } from "../../../../lib/fedex-retry";
 import { logComm } from "../../../../lib/comms-log";
 import { mailShell, mailDetails, esc } from "../../../../lib/email-shell";
+import { fetchCommsRead } from "../../../../lib/mc-comms";
+import { field, isCustomerLeadPost } from "../../../../lib/lead-devices";
+import { appendChatMsg, readChat, validGoSession } from "../../../../lib/gochat-store";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -72,6 +75,32 @@ async function emailLabel(to: string, name: string, tracking: string, labelUrl: 
   }
 }
 
+// A /go lead's label reaches its /go thread too (2026-09-30, review): this
+// route wrote only the MC [LABEL:] marker, so a lock whose page print failed
+// on the address and was finished here stayed "waiting for a box" — the
+// seller's next lock minted one label "covering" both, overwrote this
+// label's marker, and fedex-poll tracked the wrong box. The LABEL note
+// closes that window (go-box WINDOW_CLOSE_RE), and the page and the chat
+// show this label for that lock. Stamped inside the lead's own lock span
+// (before the next LOCKED note), so a device locked after it doesn't read
+// as labeled. Best-effort, after the response.
+async function noteGoThread(leadId: string, tracking: string, url: string): Promise<void> {
+  if (!MC_KEY || !tracking || !/^https:\/\/\S+$/.test(url)) return;
+  const read = await fetchCommsRead({ apiKey: MC_KEY, pageSize: 5000, maxPages: 6, includeArchive: true, memoMs: 3_000 });
+  const lead = read.messages.find((m) => m.id === leadId && isCustomerLeadPost(m.body));
+  const sid = lead?.body ? field(lead.body, "Session") || "" : "";
+  if (!validGoSession(sid)) return;
+  const notes = (await readChat(sid, 0)).msgs.filter((m) => m.role === "note");
+  // Already known here: the page printed it, adopted it, or a join rode on it.
+  if (notes.some((m) => m.text.includes(`tracking=${tracking} `))) return;
+  const leadNote = notes.find((m) => m.text.startsWith("LEAD-ID: ") && m.text.slice("LEAD-ID: ".length).trim() === leadId);
+  if (!leadNote) return;
+  const next = notes.find((m) => m.text.startsWith("LOCKED:") && m.ts > leadNote.ts);
+  const ts = next ? Math.min(Date.now(), next.ts - 1) : Date.now();
+  if (ts < leadNote.ts) return;
+  await appendChatMsg(sid, "note", `LABEL: tracking=${tracking} url=${url} lead=${leadId} — minted by the team in /admin`, ts);
+}
+
 export async function POST(req: NextRequest) {
   if (!checkAuth(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -114,6 +143,9 @@ export async function POST(req: NextRequest) {
   // The status auto-fire and the first-time Generate never send `replace`.
   const existing = await findFreshLabel(leadId);
   if (existing && !(replaceTracking && existing.tracking === replaceTracking)) {
+    // A reuse reaches the /go thread too (2026-09-30, review) — a label
+    // minted here before noteGoThread existed.
+    after(() => noteGoThread(leadId, existing.tracking, existing.url).catch((e) => console.error(`[admin/label] /go thread note failed for ${leadId}`, e)));
     return NextResponse.json({
       ok: true,
       tracking: existing.tracking,
@@ -174,6 +206,9 @@ export async function POST(req: NextRequest) {
     // Non-fatal — label already generated. Operator will see the
     // tracking in the API response.
   }
+  // The /go thread, if this is a /go lead (2026-09-30, review).
+  const mintedTracking: string = label.trackingNumber;
+  after(() => noteGoThread(leadId, mintedTracking, labelUrl).catch((e) => console.error(`[admin/label] /go thread note failed for ${leadId}`, e)));
 
   // Email the label to the customer (unless caller asked us to stay
   // silent, e.g. the status-update auto-fire wants to merge with its

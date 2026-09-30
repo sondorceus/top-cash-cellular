@@ -17,6 +17,9 @@ import { safeEqual } from "../../../lib/admin-auth";
 //                          them past that anyway)
 //   fedex-labels/*.pdf    label PDFs (name, address, phone) uploaded more
 //                          than 90 days ago
+//   gochat-join/<sid>/…   box-join claims (go-box claimJoin, 2026-09-30):
+//                          dead after a minute, so any older than a day, and
+//                          a deleted session's
 // Bounded: at most MAX_DELETES blobs per run, the rest wait for tomorrow;
 // a session's records go together or not at all. A prefix walk that hits
 // MAX_PAGES deletes nothing under it (a cut-off session would look idle).
@@ -30,6 +33,7 @@ const D = 24 * 3600_000;
 const IDLE_MS = 30 * D;         // gochat-store's sweep rule
 const LOCK_KEEP_MS = 90 * D;    // a LOCKED note younger than this keeps the session
 const LABEL_KEEP_MS = 90 * D;
+const CLAIM_KEEP_MS = 1 * D;    // a join claim blocks nothing past go-box CLAIM_STALE_MS (60 s)
 const MAX_DELETES = 2000;
 const MAX_PAGES = 200;          // 200k blobs per prefix — a hard stop, reported
 const NOTE_FETCH_BUDGET = 400;  // the LOCKED checks are the only content reads
@@ -43,6 +47,7 @@ type Walk = { pages: number; truncated: boolean; error?: string };
 const RECORD_RE = /^gochat\/([^/]+)\/(\d+)-(user|bot|owner|note|ctl)(?:-[a-z]+)?-[a-z0-9]+\.json$/;
 const IMAGE_RE = /^gochat-img\/([^/]+)\/(\d+)-[a-z0-9]+\.[a-z0-9]+$/i;
 const POINTER_RE = /^gochat-phone\/\d{10}\/(\d+)-[^/]+\.json$/;
+const CLAIM_RE = /^gochat-join\/([^/]+)\/\d+\.json$/;
 
 async function walk(prefix: string, onBlob: (b: Rec) => void): Promise<Walk> {
   let cursor: string | undefined;
@@ -68,7 +73,7 @@ export async function GET(req: NextRequest) {
   const now = Date.now();
 
   const queue: string[] = [];
-  const counts = { records: 0, images: 0, pointers: 0, labels: 0 };
+  const counts = { records: 0, images: 0, pointers: 0, labels: 0, claims: 0 };
   let capped = false;
   // Takes what fits under MAX_DELETES; allOrNothing = a session's records.
   const enqueue = (urls: string[], kind: keyof typeof counts, allOrNothing = false): number => {
@@ -160,7 +165,17 @@ export async function GET(req: NextRequest) {
   });
   if (!walks.labels.truncated) enqueue(labelUrls, "labels");
 
-  // 5. Delete, in chunks; a failed chunk stops the run (the rest wait).
+  // 5. Box-join claims (2026-09-30, review): one public, sid-keyed blob per
+  // join that nothing else ever deleted — it outlived the session's own
+  // records. Older than a day, or a session deleted in this run.
+  const claimUrls: string[] = [];
+  walks.claims = await walk("gochat-join/", (b) => {
+    const m = b.pathname.match(CLAIM_RE);
+    if (m && (deletedSids.has(m[1]) || new Date(b.uploadedAt).getTime() < now - CLAIM_KEEP_MS)) claimUrls.push(b.url);
+  });
+  if (!walks.claims.truncated) enqueue(claimUrls, "claims");
+
+  // 6. Delete, in chunks; a failed chunk stops the run (the rest wait).
   let deleted = 0;
   const errors: string[] = Object.entries(walks).filter(([, w]) => w.error).map(([k, w]) => `${k}: ${w.error}`);
   if (!dryRun) {

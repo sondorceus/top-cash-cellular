@@ -20,7 +20,7 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { rateLimit, rateLimitResponse, clientIp } from "../../../../lib/rate-limit";
 import { notifyOwnerSms } from "../../../../lib/owner-sms";
-import { latestStatus, isDeleted, latestLabelTracking } from "../../../../lib/lead-devices";
+import { latestStatus, isDeleted, latestLabelTracking, isCustomerLeadPost, type LeadMessage } from "../../../../lib/lead-devices";
 import { fetchCommsRead, invalidateCommsMemo } from "../../../../lib/mc-comms";
 import { offerKeyValid } from "../../../../lib/offer-link";
 
@@ -36,6 +36,26 @@ const UNSIGNED_LINK = "This link isn't signed — open your offer from your conf
 function field(body: string, key: string): string | undefined {
   const m = body.match(new RegExp(`(?:^|\\n)${key}:[ \\t]*([^\\n]*)`, "i"));
   return m?.[1]?.trim() || undefined;
+}
+
+// A /go box puts several leads on ONE FedEx label — box-mates at mint, and
+// devices added to a box later (app/lib/go-box, 2026-09-30) — so "void it"
+// for one cancelled phone killed the label every other device in that box
+// rides on. live: other un-cancelled leads whose newest [LABEL:] is this
+// tracking (a box's later markers always post after its first, so they are
+// in the same comms window). boxed: none in view, but this lead's own marker
+// says it rode in someone's box (box= / joined=1) — that first lead may be
+// older than the window.
+function labelShare(messages: LeadMessage[], leadId: string, tracking: string): { live: number; boxed: boolean } {
+  const newest = new Map<string, string>();
+  for (const m of messages) {
+    if (!m.body || isCustomerLeadPost(m.body)) continue;
+    const id = m.body.match(/\[LABEL:\s*([\w-]+)\][^\n]*?tracking=\S+/)?.[1];
+    if (id) newest.set(id, m.body);
+  }
+  const mates = [...newest].filter(([id, body]) => id !== leadId && body.match(/tracking=(\S+)/)?.[1] === tracking).map(([id]) => id);
+  const live = mates.filter((id) => !isDeleted(messages, id)).length;
+  return { live, boxed: mates.length === 0 && / (box=\S+|joined=1)\b/.test(newest.get(leadId) || "") };
 }
 
 export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: string }> }) {
@@ -161,7 +181,13 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ leadId: st
     const customerName = field(leadMsg.body, "Name") || "Customer";
     const model = field(leadMsg.body, "Model") || field(leadMsg.body, "Device") || "device";
     const tracking = latestLabelTracking(messages, leadId);
-    const text = `❌ CANCEL: ${customerName} cancelled offer ${leadId.slice(0, 10).toUpperCase()} (${model})${note ? ` — "${note}"` : ""}${tracking ? ` — had a FedEx label — tracking ${tracking} — void it.` : ""}`;
+    // A shared box label is never "void it" (2026-09-30): see labelShare.
+    const share = tracking ? labelShare(messages, leadId, tracking) : { live: 0, boxed: false };
+    const labelLine = !tracking ? ""
+      : share.live > 0 ? ` — shares FedEx label ${tracking} with ${share.live} other device${share.live === 1 ? "" : "s"} — do NOT void; pull this device at check-in.`
+      : share.boxed ? ` — its FedEx label ${tracking} is a shared box label — check the box's other devices before voiding.`
+      : ` — had a FedEx label — tracking ${tracking} — void it.`;
+    const text = `❌ CANCEL: ${customerName} cancelled offer ${leadId.slice(0, 10).toUpperCase()} (${model})${note ? ` — "${note}"` : ""}${labelLine}`;
     after(() => notifyOwnerSms(text.slice(0, 480)).catch(() => {}));
   }
 

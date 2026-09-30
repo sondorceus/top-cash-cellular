@@ -99,7 +99,15 @@ function historyFor(list: Msg[]): { from: "user" | "bot"; text: string }[] {
       case "lockform": push("bot", m.manual ? "(number form on the page \u2014 this one is priced by hand)" : "(lock-it-in number form on the page)"); break;
       case "locked": push("bot", m.offer != null ? `(locked in on the page at $${m.offer.toLocaleString("en-US")})` : "(locked in on the page \u2014 hand quote, no number yet)"); break;
       case "shipform": push("bot", "(shipping address form on the page \u2014 the FedEx label prints when they submit it)"); break;
-      case "label": push("bot", `(FedEx label issued on the page \u2014 tracking ${m.tracking}; they were texted the link)`); break;
+      // What the label covers (2026-09-30): the brain promised a second
+      // label for a phone that was already on the first one.
+      case "label": {
+        const covers = m.devices?.length ? `, covers ${m.devices.join(" + ")}` : "";
+        push("bot", m.joined
+          ? `(added to the existing box on the page \u2014 same FedEx label, tracking ${m.tracking}${covers}; no new label)`
+          : `(FedEx label issued on the page \u2014 tracking ${m.tracking}${covers}; they were texted the link)`);
+        break;
+      }
       default: break; // models grid, err, numberform, msgr: local-only
     }
   }
@@ -119,6 +127,11 @@ function quoteLabel(r: BoardRow, key?: string): string {
   return s ? `${r.label} ${s}` : r.label;
 }
 const CHIPS = ["i got a few phones", "how do i get paid", "how does this work"];
+// A device locked after a label exists: same box by default (2026-09-30).
+const BOX_CHIPS: { key: string; label: string }[] = [
+  { key: "joinbox", label: "put it in my box — same label" },
+  { key: "ship", label: "my box already shipped — new label" },
+];
 
 // The seller's own avatar — a neutral person glyph on a dark circle, so their
 // bubbles read as "you" and the thread looks like a real two-sided chat
@@ -243,9 +256,52 @@ type Msg =
   // contact: what they locked with — a phone whose text failed gets the email fallback form under the card
   | { from: "bot"; kind: "locked"; offer: number | null; until?: string; confirmed?: "sms" | "email" | "pending" | "failed"; contact?: string }
   // Shipping handoff: address form → FedEx label minted on the spot.
-  | { from: "bot"; kind: "shipform"; done?: boolean }
-  | { from: "bot"; kind: "label"; tracking: string; url: string; texted?: boolean; emailed?: boolean; devices?: number }
+  // newLabel (2026-09-30): "my box already shipped" after a join — the label
+  // route sets the joined label aside and prints this lock its own.
+  | { from: "bot"; kind: "shipform"; done?: boolean; newLabel?: boolean }
+  // devices: what the label covers (the box's list, 2026-09-30 — the card
+  // said "box the device" over a label that covered two phones); count can
+  // exceed devices.length on a legacy box. joined: a device ADDED to an
+  // existing box — no new label. room: how many more phones the label
+  // carries (go-box boxRoom) — the "more phones?" line shows only with room.
+  | { from: "bot"; kind: "label"; tracking: string; url: string; texted?: boolean; emailed?: boolean; devices?: string[]; count?: number; joined?: boolean; room?: number }
   | { from: "bot"; kind: "msgr" };
+
+// ShipForm → shipDone. devices is the box's list since 2026-09-30 (it was a
+// number); count is the number; status the failed response's HTTP status.
+// withheld: the route will never print this one (a desktop); newLabel: the
+// failed form was a "my box already shipped" print (2026-09-30, review).
+type ShipResult = { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string; texted?: boolean; emailed?: boolean; devices?: string[]; count?: number; room?: number; status?: number; withheld?: boolean; newLabel?: boolean };
+const num = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : undefined);
+
+// Device lists from the label route / chat-sync / chat widgets — strings
+// only, whatever shape a half-deployed server sends.
+function strList(v: unknown): string[] | undefined {
+  return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string" && x.trim() !== "").map((x) => x.trim().slice(0, 120)) : undefined;
+}
+// Model-only name for chat copy: "iPhone 16 Pro Max 1tb good unlocked" →
+// "iPhone 16 Pro Max". Same cut as app/lib/go-box shortDevice — copied, not
+// imported: go-box pulls the store, SMS and Resend into the client bundle.
+function shortDevice(device: string): string {
+  const words = device.trim().split(/\s+/);
+  const i = words.findIndex((w, k) => k > 0 && /^(\d+(gb|tb)|64|128|256|512|sealed|mint|good|fair|broken|won['’]t)$/i.test(w));
+  return (i > 0 ? words.slice(0, i) : words).join(" ") || device;
+}
+function sayDevices(list: string[]): string {
+  const s = list.map(shortDevice);
+  return s.length <= 1 ? s.join("") : `${s.slice(0, -1).join(", ")} and ${s[s.length - 1]}`;
+}
+// Can this device be ADDED to a box that already has a label? go-box joins
+// phones only (fedex.ts deviceKindFromString "phone", or nothing it knows) —
+// mirrored here so the pay row offers the box only when the join will pass
+// (2026-09-30, review: a MacBook got "this one can go in the same box", then
+// a 409). The server still decides.
+function phoneSized(device: string): boolean {
+  const k = device.toLowerCase();
+  if (k.includes("laptop") || k.includes("book")) return false;
+  if (/phone|galaxy|pixel/.test(k)) return true;
+  return !/tablet|ipad|desktop|imac|mac mini|mac studio|\bmac pro\b|all-in-one|\btower\b|alienware|thinkpad|\bxps\b|ideapad|latitude|inspiron|console|playstation\s*\d|ps5|\bps4\b|xbox|switch/.test(k);
+}
 
 // FB Page handle for the "keep this chat on Messenger" affordance (m.me deep
 // link). Meta policy: we can never MESSAGE someone cold — they must open the
@@ -506,6 +562,16 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   // ask it again on "that's it for now", but keep those devices pending so a
   // later meetup / box still covers them. Reset by the next lock.
   const payDeferredRef = useRef(false);
+  // The seller's open box (2026-09-30): the label a device locked later can
+  // ride on instead of a second label. Set by a minted label, a join, the
+  // restore's `box` and the chat's label/joinbox widgets. coversNewest: the
+  // newest lock is already in it (a new lock flips it off) — while it is off,
+  // the pay question leads with "put it in my box — same label" when the new
+  // lock can join (phones, and room on the label).
+  // ask (2026-09-30, review): the server's own "can the newest lock join"
+  // verdict (restore box.ask; a chat joinbox widget) — the only one there is
+  // after a reload, when this page load knows no lock.
+  const openBoxRef = useRef<{ tracking: string; url: string; devices: string[]; room: number; coversNewest: boolean; ask?: boolean } | null>(null);
   // Business-hours status. Client-only (Date at render would mismatch the
   // server HTML), and both strings are TRUE at all hours — quotes run 24/7.
   const [status, setStatus] = useState("");
@@ -794,9 +860,49 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         // A label already issued → show it again ("where's my label?").
         // The SMS SHIP reply deep-links with &ship=1 → open the address form.
         const lb = d?.label;
-        if (lb && typeof lb.tracking === "string" && typeof lb.url === "string") {
+        // The open box (2026-09-30): a device locked after the label gets
+        // "same box, same label" or "that box already shipped". Before, a
+        // reload showed nothing and the next ship minted a second label.
+        // ask (review 2026-09-30): only when the newest lock can join AND its
+        // handoff is still open \u2014 a meetup pick, or an SMS SHIP that took the
+        // address path, reloaded to the box question and a join that posted
+        // a shipping record for a device booked for a meetup.
+        const bx = d?.box && typeof d.box.tracking === "string" && typeof d.box.url === "string"
+          ? { tracking: String(d.box.tracking), url: String(d.box.url), devices: strList(d.box.devices) ?? [], count: num(d.box.count), room: num(d.box.room) ?? 0, coversNewest: d.box.coversNewest === true, ask: d.box.ask === true }
+          : null;
+        if (bx) openBoxRef.current = { tracking: bx.tracking, url: bx.url, devices: bx.devices, room: bx.room, coversNewest: bx.coversNewest, ask: bx.ask };
+        if (bx && bx.ask) {
           setChatOpen(true);
-          setMsgs((cur) => [...cur, { from: "bot", text: "welcome back \u2014 here\u2019s your FedEx label again." }, { from: "bot", kind: "label", tracking: lb.tracking, url: lb.url }]);
+          setMsgs((cur) => [
+            ...cur,
+            { from: "bot", text: bx.devices.length ? `welcome back \u2014 your FedEx label covers the ${sayDevices(bx.devices)}.` : "welcome back \u2014 you already have a FedEx label." },
+            { from: "bot", kind: "label", tracking: bx.tracking, url: bx.url, devices: bx.devices, count: bx.count, room: bx.room },
+            boxChips(),
+          ]);
+        } else if (lb && typeof lb.tracking === "string" && typeof lb.url === "string") {
+          // One card, with what the label covers. A lock that was ADDED to an
+          // earlier box also gets the way out if that box already went out
+          // (2026-09-30, review: the join text points here for it).
+          const same = bx && bx.tracking === lb.tracking ? bx : null;
+          const devices = strList(lb.devices) ?? same?.devices;
+          const joined = lb.joined === true;
+          setChatOpen(true);
+          setMsgs((cur) => [
+            ...cur,
+            { from: "bot", text: "welcome back \u2014 here\u2019s your FedEx label again." },
+            { from: "bot", kind: "label", tracking: lb.tracking, url: lb.url, devices, count: num(lb.count) ?? same?.count, room: num(lb.room) ?? same?.room, joined },
+            ...(joined ? [newLabelChips()] : []),
+          ]);
+        } else if (d?.relabel === true) {
+          // Added to a box they then said already shipped, and that new
+          // label didn't print (2026-09-30, review): the way to print it —
+          // not the joined card, which said to use the shipped box.
+          setChatOpen(true);
+          setMsgs((cur) => [
+            ...cur,
+            { from: "bot", text: "welcome back — the new label for your newest device hasn’t printed yet." },
+            newLabelChips(true),
+          ]);
         } else if (wantShip && d?.contactOnFile) {
           setChatOpen(true);
           setMsgs((cur) => [...cur, { from: "bot", text: "drop your shipping address and your free FedEx label prints right here." }, { from: "bot", kind: "shipform" }]);
@@ -931,20 +1037,89 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     const ship = { key: "ship", label: "ship it — free label, paid the day it lands" };
     const later = { key: "later", label: "not sure yet" };
     const another = { key: "another", label: "+ i have another one" };
+    // A label already exists and this lock isn't on it (2026-09-30): the
+    // default is the SAME box on the SAME label. We can't see whether that
+    // box was dropped off (FedEx tracking is blind to us), so the seller
+    // says. The meet chip keeps today's area rules.
+    const ob = openBoxRef.current;
+    // Only when the join will pass (2026-09-30, review): phones, and room on
+    // that label for everything waiting — same rules as go-box joinable.
+    const waiting = pendingLocksRef.current.length ? pendingLocksRef.current.map((p) => p.model) : lastLockRef.current ? [lastLockRef.current.model] : [];
+    // No lock known on this page load (a reload): the server's verdict
+    // decides (ob.ask), never "can't take this one" (2026-09-30, review — a
+    // failed join after a restore said the phone didn't fit, and "ship it"
+    // minted a second label for one that did).
+    const fits = !!ob && (waiting.length > 0 ? waiting.length <= ob.room && waiting.every(phoneSized) : ob.ask === true);
+    // The meet chip needs a lock from this page load — without one the
+    // handler reads it as "not sure yet" and the pick is lost (2026-09-30,
+    // review).
+    const noMeet = !lastLockRef.current || visitorArea === "us" || visitorArea === "intl";
+    if (ob && !ob.coversNewest && fits) {
+      const meet = noMeet
+        ? []
+        : [{ key: "meet", label: visitorArea === "tx" ? "I can drive to austin — cash on the spot" : "meet in austin — cash on the spot" }];
+      return {
+        from: "bot",
+        kind: "chips",
+        q: ob.devices.length
+          ? `how do you want to get paid? your label already covers the ${sayDevices(ob.devices)} — this one can go in the same box.`
+          : "how do you want to get paid? you already have a FedEx label — this one can go in the same box.",
+        dim: "handoff",
+        options: [...BOX_CHIPS, ...meet, later, another],
+      };
+    }
     return {
       from: "bot",
       kind: "chips",
-      q: "how do you want to get paid?",
+      // An open box that can't take this one: say so, then the normal row —
+      // "ship it" prints its own label. Only for locks this page load knows
+      // (2026-09-30, review). Several waiting share that one new label
+      // (2026-09-30, review: "this one" had a seller split them).
+      q: ob && !ob.coversNewest && waiting.length > 0
+        ? waiting.length > 1
+          ? `how do you want to get paid? your earlier box can’t take these ${waiting.length} — they get one new label together.`
+          : "how do you want to get paid? your earlier box can’t take this one — it gets its own label."
+        : "how do you want to get paid?",
       dim: "handoff",
       // Out-of-area sellers (most of the ad traffic, review 2026-09-23:
       // Dallas / Houston / San Antonio / Phoenix / CA) get the label
       // first; outside Texas the meetup isn't offered at all.
       options:
-        visitorArea === "us" || visitorArea === "intl"
+        noMeet
           ? [ship, later, another]
           : visitorArea === "tx"
             ? [ship, { key: "meet", label: "I can drive to austin — cash on the spot" }, later, another]
             : [{ key: "meet", label: "meet in austin — cash on the spot" }, { key: "ship", label: "ship it — free label" }, later, another],
+    };
+  }
+
+  // Just the box question (restore, the chat's joinbox widget): "joinbox"
+  // POSTs {join:true} to /api/go/label; "ship" opens the address form, and
+  // that new label closes the old box server-side.
+  function boxChips(device?: string): Msg {
+    // Several waiting locks arrive as "A + B" — name them all (2026-09-30,
+    // review: shortDevice cut the question to the first one).
+    const list = device ? device.split(" + ").filter(Boolean) : [];
+    return {
+      from: "bot",
+      kind: "chips",
+      q: `put ${list.length ? `the ${sayDevices(list)}` : "your new one"} in the same box? if that box already shipped, we’ll print a new label.`,
+      dim: "handoff",
+      options: BOX_CHIPS,
+    };
+  }
+
+  // A lock that was ADDED to an earlier box, on a return visit: if that box
+  // already went out, the label route prints it a label of its own
+  // (newLabel, 2026-09-30). retry: that new label already failed to print
+  // once (chat-sync relabel, 2026-09-30 review).
+  function newLabelChips(retry = false): Msg {
+    return {
+      from: "bot",
+      kind: "chips",
+      q: retry ? "tap below and it prints right here." : "box already dropped off? tap below and your newest device gets its own free label.",
+      dim: "handoff",
+      options: [{ key: "newlabel", label: retry ? "print my new label" : "my box already shipped — new label" }],
     };
   }
 
@@ -1176,23 +1351,41 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       }
       const lk = lastLockRef.current;
       pushMsgs({ from: "user", text: label, tap: true });
+      // "put it in my box — same label" (2026-09-30). Ahead of the !lk
+      // check, like ship: after a reload the restore offers both with no
+      // lock from this page load — the server knows the lock anyway.
+      if (key === "joinbox") {
+        await joinBox();
+        return;
+      }
+      // "my box already shipped" for a lock already ADDED to that box
+      // (2026-09-30): its own label, from the same address form.
+      if (key === "newlabel") {
+        pushMsgs(
+          { from: "bot", text: "got it — new box, new label. drop your shipping address and it prints right here." },
+          { from: "bot", kind: "shipform", newLabel: true },
+        );
+        return;
+      }
+      // Ship: the label prints right here — the address form posts to
+      // /api/go/label, which mints the FedEx label with the same code the
+      // homepage funnel uses and texts/emails it. No "we'll text you for the
+      // address" round trip (Sonny 2026-09-12). With a box open this is "my
+      // box already shipped": the new label replaces it (shipDone).
+      if (key === "ship") {
+        const ob = openBoxRef.current;
+        pushMsgs(
+          { from: "bot", text: ob && !ob.coversNewest ? "got it — new box, new label. drop your shipping address and it prints right here." : "perfect — drop your shipping address and your free FedEx label prints right here." },
+          { from: "bot", kind: "shipform" },
+        );
+        return;
+      }
       if (key === "later" || !lk) {
         // "not sure yet" IS their answer for now (the team sorts it out by
         // text): "that's it for now" won't ask again, and a meetup or box
         // picked after the next lock still covers these devices.
         payDeferredRef.current = true;
         pushMsgs({ from: "bot", text: "no problem — we’ll text you and sort it out." }, anotherChips());
-        return;
-      }
-      // Ship: the label prints right here — the address form posts to
-      // /api/go/label, which mints the FedEx label with the same code the
-      // homepage funnel uses and texts/emails it. No "we'll text you for the
-      // address" round trip (Sonny 2026-09-12).
-      if (key === "ship") {
-        pushMsgs(
-          { from: "bot", text: "perfect \u2014 drop your shipping address and your free FedEx label prints right here." },
-          { from: "bot", kind: "shipform" },
-        );
         return;
       }
       // One meetup for everything locked since the last choice.
@@ -1249,7 +1442,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
 
   // Address form result → label card (or an honest fallback). The route
   // already posted the delivery comm, the notes and the seller's text.
-  function shipDone(r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string; texted?: boolean; emailed?: boolean; devices?: number }) {
+  function shipDone(r: ShipResult) {
     setMsgs((cur) => cur.map((m) => ("kind" in m && m.kind === "shipform" && !m.done ? { ...m, done: true } : m)));
     if (r.ok && r.tracking && r.url) {
       // A printed label is a strong intent milestone, NOT a purchase: the $0
@@ -1259,10 +1452,122 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       pixelTrackCustom("ShipLabel", { content_name: "fedex-label" });
       // The label covers every device locked since the last choice.
       pendingLocksRef.current = [];
-      pushMsgs({ from: "bot", kind: "label", tracking: r.tracking, url: r.url, texted: r.texted, emailed: r.emailed, devices: r.devices }, anotherChips());
+      // This label is the seller's box now — a device locked next can ride
+      // in it (2026-09-30). A new label while another box was open closed
+      // that one server-side, so it simply replaces it here.
+      openBoxRef.current = { tracking: r.tracking, url: r.url, devices: r.devices ?? [], room: r.room ?? 0, coversNewest: true };
+      pushMsgs({ from: "bot", kind: "label", tracking: r.tracking, url: r.url, texted: r.texted, emailed: r.emailed, devices: r.devices, count: r.count, room: r.room }, anotherChips());
     } else {
-      pushMsgs({ from: "bot", text: r.hint || "couldn\u2019t print the label right now \u2014 your quote is saved and we\u2019ll text you the label shortly." }, anotherChips());
+      // The route closes an open box just before it calls FedEx, so only a
+      // 502 (FedEx failed) leaves no box to join \u2014 a 429 "too many tries"
+      // never got that far and the box is still open (2026-09-30, review).
+      if (r.status === 502) openBoxRef.current = null;
+      // Same words as the route's hint \u2014 nothing texts a label later.
+      const text = r.hint || "couldn\u2019t print the label right now \u2014 your quote is saved and our team will get your label to you. You can also tap ship again in a few minutes.";
+      // A withheld label (a desktop) fails the same way every time: no retry
+      // (2026-09-30, review \u2014 each tap re-sent the owner alert).
+      if (r.withheld) {
+        pushMsgs({ from: "bot", text }, anotherChips());
+        return;
+      }
+      // Just the retry the hint mentions, not the pay row (2026-09-30,
+      // review): its meet chip read as "not sure yet" with no lock on this
+      // page load. A "my box already shipped" print retries as one.
+      pushMsgs(
+        { from: "bot", text },
+        {
+          from: "bot",
+          kind: "chips",
+          q: "try it again in a few minutes?",
+          dim: "handoff",
+          options: [{ key: r.newLabel ? "newlabel" : "ship", label: "try the label again" }, { key: "another", label: "+ i have another one" }],
+        },
+      );
     }
+  }
+
+  // "put it in my box, same label" (2026-09-30): the newest lock (and any
+  // other lock still waiting for a box) rides on the open box's label. No
+  // address, no new label, no FedEx charge. The route writes the notes, the
+  // Mission Control markers and the seller's text; this shows the result.
+  async function joinBox() {
+    setGBusy(true);
+    const prev = openBoxRef.current;
+    const body = { session: sessionId, ...(adoptK ? { k: adoptK } : {}) };
+    // The box question again, not the pay row (2026-09-30, review): after a
+    // reload that row said "your earlier box can't take this one" with no
+    // join chip, and its "ship it" minted a second label.
+    const retry = () => pushMsgs({ from: "bot", text: "couldn\u2019t reach us just now \u2014 tap that again for me." }, boxChips());
+    try {
+      const res = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...body, join: true }) });
+      const d = await res.json().catch(() => null);
+      const hint = typeof d?.hint === "string" && d.hint ? String(d.hint) : "";
+      if (d?.ok && typeof d.tracking === "string" && typeof d.url === "string") {
+        rearmSync();
+        const devices = strList(d.devices);
+        // What went in: the tail past the box's old list, else what this
+        // page load locked, else the newest lock.
+        const added = devices && prev && prev.tracking === d.tracking && devices.length > prev.devices.length
+          ? devices.slice(prev.devices.length)
+          : pendingLocksRef.current.length ? pendingLocksRef.current.map((p) => p.model)
+          : lastLockRef.current ? [lastLockRef.current.model] : [];
+        pendingLocksRef.current = [];
+        payDeferredRef.current = false;
+        openBoxRef.current = { tracking: d.tracking, url: d.url, devices: devices ?? prev?.devices ?? [], room: num(d.room) ?? 0, coversNewest: true };
+        pushMsgs(
+          { from: "bot", kind: "label", tracking: d.tracking, url: d.url, devices, count: typeof d.count === "number" ? d.count : devices?.length, joined: true, room: num(d.room) },
+          { from: "bot", text: d.already ? "that one\u2019s already in your box \u2014 same label, nothing new to print." : `done \u2014 put the ${added.length ? sayDevices(added) : "new one"} in the same box, same label. nothing new to print.` },
+          anotherChips(),
+        );
+      } else if (d?.kind === "NOT_JOINABLE" && d.reason === "labeled") {
+        // This lock already has a label (another tab got there first): a
+        // POST with no address hands it back (the label route's
+        // existing-label shortcut runs before any address check).
+        const r2 = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        const e = await r2.json().catch(() => null);
+        if (e?.ok && typeof e.tracking === "string" && typeof e.url === "string") {
+          const devices = strList(e.devices);
+          pendingLocksRef.current = [];
+          openBoxRef.current = { tracking: e.tracking, url: e.url, devices: devices ?? [], room: num(e.room) ?? 0, coversNewest: true };
+          pushMsgs(
+            { from: "bot", text: "that one already has its label \u2014 here it is." },
+            { from: "bot", kind: "label", tracking: e.tracking, url: e.url, devices, count: typeof e.count === "number" ? e.count : devices?.length, room: num(e.room) },
+            anotherChips(),
+          );
+        } else if (e?.kind === "ADDRESS_INVALID") {
+          // No label came back (2026-09-30, review): an /admin label for this
+          // lock that can't carry the waiting box isn't handed out — this
+          // box prints its own from the form.
+          pushMsgs({ from: "bot", text: "drop your shipping address and your free FedEx label prints right here." }, { from: "bot", kind: "shipform" });
+        } else pushMsgs({ from: "bot", text: hint || "that one already has its label." }, anotherChips());
+      } else if (d?.kind === "NOT_JOINABLE" && d.reason === "no_lock") {
+        pushMsgs({ from: "bot", text: hint || "lock in your quote first, then we add it to your box." });
+      } else if (d?.kind === "NOT_JOINABLE" && d.reason === "chosen") {
+        // Its handoff is already set (a label the team is printing — a
+        // meetup no longer refuses an explicit join, 2026-09-30 review) — no
+        // address form for it (2026-09-30).
+        pushMsgs({ from: "bot", text: hint || "that one already has its next step set — we’ll text you about it." }, anotherChips());
+      } else if (d?.kind === "NOT_JOINABLE") {
+        // Not a phone, no room on that label, or the box is gone: this one
+        // gets its own label, so straight to the address form.
+        if (d.reason === "no_box") openBoxRef.current = null;
+        pushMsgs(
+          {
+            from: "bot",
+            text: d.reason === "no_box"
+              ? "that box is closed out \u2014 this one gets its own free label. drop your shipping address below."
+              : `${hint || "this one needs its own label"}. drop your shipping address and it prints right here.`,
+          },
+          { from: "bot", kind: "shipform" },
+        );
+      } else if (d?.kind === "UNBOUND") {
+        // Not this browser's thread: the hint says to open the texted link.
+        pushMsgs({ from: "bot", text: hint || "open the link from your text to add it to your box." }, boxChips());
+      } else retry();
+    } catch {
+      retry();
+    }
+    setGBusy(false);
   }
 
   // One field, one tap. The attestation rides in the button label ("I'm 18+
@@ -1347,6 +1652,9 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         lastLockRef.current = { model: quoteLabel(gRow, gSpec.storage ?? gRow.storages[0]), contact: c, offer, name: gName.trim() };
         pendingLocksRef.current = [...pendingLocksRef.current, lastLockRef.current];
         payDeferredRef.current = false;
+        // A new lock is never on the existing label yet — payChips below
+        // offers the box (2026-09-30).
+        if (openBoxRef.current) openBoxRef.current = { ...openBoxRef.current, coversNewest: false };
         pixelTrack("Lead", { content_name: gRow.label, value: offer ?? 0, currency: "USD" }, lockEventId);
         // (the LOCKED breadcrumb + the confirmation text are server-side)
         // Peak trust: they just saw a real number and handed over a way to
@@ -1477,9 +1785,30 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         // says which tile picker to open under the reply.
         const catGroup = d?.widget === "category" ? CATEGORIES.find((c) => c.deterministic === d?.group) : undefined;
         if (catGroup) setTimeout(() => categoryTap(catGroup), 0);
+        // The label card carries what the label covers, and "joinbox" (a
+        // lock not on the existing label yet) shows that label plus the box
+        // question (2026-09-30). devices/count under label.* / box.* or
+        // top-level — whichever the chat route sends.
+        const cnt = (v: unknown) => (typeof v === "number" && v > 0 ? v : undefined);
+        const wl = d?.widget === "label" && d?.label?.tracking && d?.label?.url
+          ? { tracking: String(d.label.tracking), url: String(d.label.url), devices: strList(d.label.devices) ?? strList(d.devices), count: cnt(d.label.count) ?? cnt(d.count), room: num(d.label.room), joined: d.label.joined === true }
+          : null;
+        const jb = d?.widget === "joinbox" && d?.box?.tracking && d?.box?.url
+          ? { tracking: String(d.box.tracking), url: String(d.box.url), devices: strList(d.box.devices) ?? strList(d.devices), count: cnt(d.box.count) ?? cnt(d.count), room: num(d.box.room) }
+          : null;
+        const known = openBoxRef.current;
+        if (wl) openBoxRef.current = { tracking: wl.tracking, url: wl.url, devices: wl.devices ?? (known?.tracking === wl.tracking ? known.devices : []), room: wl.room ?? 0, coversNewest: true };
+        // ask: the server just found the newest lock joinable (2026-09-30).
+        if (jb) openBoxRef.current = { tracking: jb.tracking, url: jb.url, devices: jb.devices ?? (known?.tracking === jb.tracking ? known.devices : []), room: jb.room ?? 0, coversNewest: false, ask: true };
         const extra: Msg[] =
-          d?.widget === "shipform" ? [{ from: "bot", kind: "shipform" }]
-          : d?.widget === "label" && d?.label?.tracking && d?.label?.url ? [{ from: "bot", kind: "label", tracking: String(d.label.tracking), url: String(d.label.url) }]
+          // newLabel: an older server's "that box already shipped" form
+          // (2026-09-30); the chat now sends the joined label card instead.
+          d?.widget === "shipform" ? [{ from: "bot", kind: "shipform", ...(d?.newLabel === true ? { newLabel: true } : {}) }]
+          // A joined lock's card gets its "my box already shipped — new
+          // label" button, as the restore does (2026-09-30, review: the card
+          // said "same box" under a reply about a shipped box).
+          : wl ? [{ from: "bot", kind: "label", ...wl }, ...(wl.joined ? [newLabelChips()] : [])]
+          : jb ? [{ from: "bot", kind: "label", ...jb }, boxChips(typeof d?.device === "string" ? d.device : undefined)]
           : [];
         // The reply's stored ts (server, 2026-09-26) keys it like a poll
         // record: a poll that already showed this reply doesn't get a twin,
@@ -1487,7 +1816,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         const replyKey = typeof d?.replyTs === "number" && typeof d?.reply === "string" ? `${d.replyTs}|${d.reply}` : "";
         const shown = !!replyKey && seenSyncRef.current.has(replyKey);
         if (replyKey) seenSyncRef.current.add(replyKey);
-        setMsgs((m) => [...m, ...(shown ? [] : [{ from: "bot" as const, text: d?.reply || "hang on — try that again in a sec" }]), ...lockExtra, ...extra]);
+        // The box question supersedes a pay row still up — its plain "ship
+        // it" chip would open the form for a second label.
+        const retire = (x: Msg): Msg => (jb && "kind" in x && x.kind === "chips" && x.dim === "handoff" && !x.done ? { ...x, done: true } : x);
+        setMsgs((m) => [...m.map(retire), ...(shown ? [] : [{ from: "bot" as const, text: d?.reply || "hang on — try that again in a sec" }]), ...lockExtra, ...extra]);
       }
     } catch {
       // kind:"err" keeps this local-only bubble OUT of the history sent to
@@ -1861,19 +2193,41 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   defaultName={lk?.name || ""}
                   defaultPhone={lk && !lk.contact.includes("@") ? lk.contact : ""}
                   disabled={!!m.done}
+                  newLabel={m.newLabel === true}
                   onDone={shipDone}
                 />
               </div>
             );
           }
           if (m.kind === "label") {
+            // What the label covers and how to pack it (2026-09-30): the card
+            // said "box the device" over a label that covered two phones, and
+            // nothing told the seller a third one could ride along.
+            const n = m.count ?? m.devices?.length ?? 0;
+            const packing = n > 1
+              ? `put all ${n} in one box (wrap each one so the screens don’t touch)`
+              : m.joined ? "put it in the same box" : "box the device";
             return (
               <div key={keyOf(m)} className="go-msg ml-10 max-w-[85%]">
                 <div className="rounded-2xl border border-[#00c853]/40 bg-[#00c853]/[0.08] px-4 py-3">
-                  <div className="text-[15px] font-bold text-white">your FedEx label is ready</div>
+                  <div className="text-[15px] font-bold text-white">{m.joined ? "added to your box — same label" : "your FedEx label is ready"}</div>
                   <div className="text-[13px] text-white/70 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
+                  {m.devices && m.devices.length > 0 && (
+                    <div className="text-[13px] text-white/80 mt-2">
+                      <div className="text-white/55">{m.devices.length > 1 ? `covers all ${m.devices.length}:` : "covers:"}</div>
+                      <ul className="mt-0.5 leading-snug">
+                        {m.devices.map((dv, j) => <li key={j}>{"· "}{dv}</li>)}
+                      </ul>
+                    </div>
+                  )}
                   <a href={m.url} target="_blank" rel="noopener noreferrer" className="tcc-button-primary mt-3 inline-block py-2.5 px-5 text-[15px] font-bold rounded-2xl">open my label</a>
-                  <div className="text-[13px] text-white/60 mt-3 leading-snug">print it, box the {m.devices && m.devices > 1 ? `${m.devices} devices together` : "device"}, drop it at any FedEx location. we&rsquo;ll text you when it&rsquo;s checked in at our warehouse and pay within 24 hours of inspection. {m.texted ? "we texted you this link too." : m.emailed ? "we emailed you this link too." : "this link stays right here in the chat."}</div>
+                  <div className="text-[13px] text-white/60 mt-3 leading-snug">{m.joined ? "nothing new to print — " : "print it, "}{packing}, drop it at any FedEx location. we&rsquo;ll text you when it&rsquo;s checked in at our warehouse and pay within 24 hours of inspection. {m.texted ? "we texted you this link too." : m.emailed ? "we emailed you this link too." : "this link stays right here in the chat."}</div>
+                  {/* Only while the label has room for another phone
+                      (the route's go-box boxRoom — none on a laptop or
+                      console label, none on a full box). */}
+                  {(m.room ?? 0) > 0 && (
+                    <div className="text-[12px] text-white/45 mt-2 leading-snug">more phones? they can go in this same box &mdash; lock them in here first so we price them.</div>
+                  )}
                 </div>
               </div>
             );
@@ -2457,9 +2811,12 @@ function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: strin
 // Shipping address → /api/go/label mints the FedEx label on the spot. FedEx
 // prints a name and phone on every label, so both are required here (the
 // name pre-fills from the lock when they gave one).
-function ShipForm({ sessionId, adoptK, defaultName, defaultPhone, disabled, onDone }: {
-  sessionId: string; adoptK: string; defaultName: string; defaultPhone: string; disabled: boolean;
-  onDone: (r: { ok: boolean; tracking?: string; url?: string; kind?: string; hint?: string; texted?: boolean; emailed?: boolean; devices?: number }) => void;
+// newLabel (2026-09-30): "my box already shipped" for a lock ADDED to that
+// box — the route prints it its own label instead of handing the joined one
+// back.
+function ShipForm({ sessionId, adoptK, defaultName, defaultPhone, disabled, newLabel, onDone }: {
+  sessionId: string; adoptK: string; defaultName: string; defaultPhone: string; disabled: boolean; newLabel?: boolean;
+  onDone: (r: ShipResult) => void;
 }) {
   const [f, setF] = useState({ name: defaultName, phone: defaultPhone, street: "", unit: "", city: "", state: "", zip: "" });
   const [err, setErr] = useState("");
@@ -2472,13 +2829,17 @@ function ShipForm({ sessionId, adoptK, defaultName, defaultPhone, disabled, onDo
     if (!f.street.trim() || !f.city.trim() || f.state.trim().length !== 2 || !/^\d{5}(-\d{4})?$/.test(f.zip.trim())) return setErr("street, city, 2-letter state and 5-digit ZIP");
     setBusy(true); setErr("");
     try {
-      const res = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: sessionId, ...(adoptK ? { k: adoptK } : {}), ...f, state: f.state.trim().toUpperCase() }) });
+      const res = await fetch("/api/go/label", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session: sessionId, ...(adoptK ? { k: adoptK } : {}), ...(newLabel ? { newLabel: true } : {}), ...f, state: f.state.trim().toUpperCase() }) });
       const d = await res.json().catch(() => ({}));
-      if (d?.ok) onDone({ ok: true, tracking: String(d.tracking), url: String(d.url), texted: d.texted === true, emailed: d.emailed === true, devices: typeof d.devices === "number" ? d.devices : undefined });
+      // devices is the box's list, count the number (2026-09-30; a numeric
+      // devices is the old route's count, mid-deploy); room how many more
+      // phones the label carries.
+      if (d?.ok) onDone({ ok: true, tracking: String(d.tracking), url: String(d.url), texted: d.texted === true, emailed: d.emailed === true, devices: strList(d.devices), count: typeof d.count === "number" ? d.count : typeof d.devices === "number" ? d.devices : undefined, room: num(d.room) });
       // UNBOUND (403, 2026-09-26): not this browser's thread — the hint says
       // to open the texted link; the form stays up.
       else if (d?.kind === "ADDRESS_INVALID" || d?.kind === "UNBOUND") setErr(String(d.hint || "check the address and try again"));
-      else onDone({ ok: false, kind: String(d?.kind || "SERVICE_UNAVAILABLE"), hint: typeof d?.hint === "string" ? d.hint : undefined });
+      // status: shipDone forgets the open box only when FedEx was reached (502).
+      else onDone({ ok: false, kind: String(d?.kind || "SERVICE_UNAVAILABLE"), hint: typeof d?.hint === "string" ? d.hint : undefined, status: res.status, withheld: d?.withheld === true, newLabel });
     } catch {
       setErr("that didn\u2019t go through \u2014 try again");
     }

@@ -21,7 +21,9 @@ const STEPS = [
     n: 2,
     icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-14L4 7m8 4v10M4 7v10l8 4",
     title: "Ship it free",
-    body: "We email a pre-paid FedEx label. Drop the box at any FedEx location. Includes $100 base shipping coverage (declare more at FedEx for higher-value devices), tracked end-to-end.",
+    // 2026-09-30: several devices share one box and one label (the HowTo
+    // JSON-LD below reads this same body).
+    body: "We email a pre-paid FedEx label. Drop the box at any FedEx location. Selling several devices? They go in one box on the same label. Includes up to $100 base shipping coverage per box, set when the label prints (declare more at FedEx for higher-value devices), tracked end-to-end.",
   },
   {
     n: 3,

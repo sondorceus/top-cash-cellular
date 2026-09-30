@@ -5,6 +5,7 @@ import { SlideOnScrollNav } from "../components/SlideOnScrollNav";
 import { HeaderSearch } from "../components/HeaderSearch";
 import SiteFooter from "../components/SiteFooter";
 import FaqList from "./FaqList";
+import { PHONE_DISPLAY } from "../lib/constants";
 
 export const metadata: Metadata = {
   title: "FAQ — Top Cash Cellular | Trade-In Questions Answered",
@@ -37,7 +38,25 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "Step-by-step — how does shipping actually work?",
-    a: "1. Submit your trade-in on our site and pick \"Ship It.\" 2. Within seconds we email you a prepaid FedEx label (PDF) along with packing instructions. 3. Pack it in a sturdy box with padding on all sides so the device can't shift or rattle — phones can go in a well-padded mailer, but laptops and tablets must ship in a real box, never a loose mailer. 4. Tape the label flat on top, barcode visible. 5. Drop at any FedEx location or self-service drop box — no appointment, no waiting. 6. FedEx scans it, we get a tracking ping, and you can watch it on our /track page or in FedEx's app.",
+    a: "1. Submit your trade-in on our site and pick \"Ship It.\" 2. Within seconds we email you a prepaid FedEx label (PDF) along with packing instructions. 3. Pack it in a sturdy box with padding on all sides so the device can't shift or rattle — phones can go in a well-padded mailer, but laptops and tablets must ship in a real box, never a loose mailer. Selling several devices? They all go in the same box on the same label — wrap each one separately. 4. Tape the label flat on top, barcode visible. 5. Drop at any FedEx location or self-service drop box — no appointment, no waiting. 6. FedEx scans it, we get a tracking ping, and you can watch it on our /track page or in FedEx's app.",
+  },
+  // 2026-09-30: one label = one box, several devices per box. A seller with
+  // two phones on one label was told the second needed its own label.
+  {
+    q: "Can I ship more than one device in the same box?",
+    a: "Yes. One free prepaid FedEx label covers one box, and one box can hold several devices — roughly up to 15 phones, 5 tablets or 2 laptops fit in a medium box. Each device keeps its own locked offer. Lock each device in the chat (or quote them together on the homepage) before you ship so we know what's in the box, then pack them together and drop the box at any FedEx location.",
+  },
+  {
+    // 2026-09-30 (review): only a label printed in our chat can take a device
+    // later, only phones, and only while the label has room for one.
+    q: "I already have a label — can I add another phone to the box?",
+    a: `Usually, as long as you haven't dropped the box off yet. If your label came from our chat, reopen that chat (the link we texted you), lock the new phone and tap "put it in my box — same label" — it rides in the same box on the same label, so there's nothing new to print. That works for phones while the label has room for another (the chat tells you); a tablet, laptop or console gets its own label. If your box already went out, tap "my box already shipped — new label" and the chat prints a new free label right away. If your label came by e-mail, text us at ${PHONE_DISPLAY} and we'll add the new phone or send another label.`,
+  },
+  {
+    q: "How should I pack several phones in one box?",
+    // 2026-09-30 (review): opening a sealed box to sign out forfeits the
+    // Sealed grade the seller locked.
+    a: "1. On each device you've used (leave a sealed device sealed — don't open it), sign out of iCloud, Google and Samsung accounts, and take out the SIM and the case. 2. Wrap each device separately so the screens don't touch. 3. Fill the gaps so nothing shifts or rattles. 4. Use a plain box — a sealed device's retail box goes inside the plain box. 5. Tape the label flat on top and drop the box at any FedEx location (labels are drop-off, not pickup).",
   },
   {
     q: "How do I track my package?",
@@ -50,7 +69,9 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "What about insurance during shipping?",
-    a: "Our prepaid FedEx label includes $100 of base shipping coverage — that's what we cover if a package is lost or damaged in transit. We do not cover the full device value. If your device is worth more and you want it fully protected, you're responsible for declaring and paying for the additional insurance at the FedEx counter when you drop it off. By choosing to ship, you agree to the $100 coverage limit. Want to skip carrier-shipping risk entirely? Pick a local Austin meetup instead — paid on the spot.",
+    // 2026-09-30 (review): "still carries $100" contradicted "the value on
+    // the label, capped at $100" (fedex.ts declaredAmount).
+    a: "Our prepaid FedEx label includes up to $100 of base shipping coverage per box — that's what we cover if a package is lost or damaged in transit. It's per box, not per device, so a box with several phones in it carries up to $100 of base coverage in total — the value of what was on the label when it printed, capped at $100 — so adding a phone to a box that already has its label doesn't raise it. We do not cover the full device value. If what's in your box is worth more and you want it fully protected, you're responsible for declaring and paying for the additional insurance at the FedEx counter when you drop it off. By choosing to ship, you agree to the $100-per-box coverage limit. Want to skip carrier-shipping risk entirely? Pick a local Austin meetup instead — paid on the spot.",
   },
   {
     q: "Can I change my mind after shipping?",
@@ -62,7 +83,7 @@ const FAQ: { q: string; a: ReactNode; aText?: string }[] = [
   },
   {
     q: "What if my package weighs more than the prepaid label says?",
-    a: "The prepaid label runs on our shipping account, so if your box comes in heavier than the label estimated, FedEx bills us — never you. Just make sure the package contains the device you quoted.",
+    a: "The prepaid label runs on our shipping account, so if your box comes in heavier than the label estimated, FedEx bills us — never you. Just make sure everything in the box is a device you quoted — several in one box is fine.",
   },
   {
     q: "What happens to my data?",
@@ -160,6 +181,9 @@ const FAQ_CATEGORIES: { name: string; questions: string[] }[] = [
     questions: [
       "Do you cover shipping?",
       "Step-by-step — how does shipping actually work?",
+      "Can I ship more than one device in the same box?",
+      "I already have a label — can I add another phone to the box?",
+      "How should I pack several phones in one box?",
       "How do I track my package?",
       "What if I don't have a printer?",
       "What about insurance during shipping?",

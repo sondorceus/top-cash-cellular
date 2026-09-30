@@ -20,7 +20,12 @@
 //   MEET / SHIP → the seller's handoff choice, straight from the lock
 //     confirmation text: posts a [DELIVERY OPTION] comm (the same shape the
 //     homepage funnel writes) + an owner alert + a HANDOFF-CHOICE note, and
-//     acks the seller with one short text.
+//     acks the seller with one short text. SHIP for a device that fits the
+//     box an earlier label covers joins that box instead (2026-09-30) — when
+//     that box was labeled or joined in the last day; an older one gets the
+//     chat link, where the page asks whether it already shipped — once per
+//     lock (BOX-ASK note), and a texted answer to it goes to the owner
+//     (2026-09-30, review).
 //
 // Auth: x-relay-token vs SMS_RELAY_TOKEN — the SAME shared secret that guards
 // the outbound relay, already set on both Vercel projects. Unset = fail closed.
@@ -33,6 +38,7 @@ import { fetchCommsPaged } from "../../../lib/mc-comms";
 import { notifyOwnerSms } from "../../../lib/owner-sms";
 import { rateLimit } from "../../../lib/rate-limit";
 import { sendSellerSms, smsOptOutMarker, markOptedOut, STOP_RE, SMS_STOP_NOTE, notesHaveOptOut } from "../../../lib/seller-sms";
+import { joinable, joinOpenBox, joinSellerText, sellerChatLink } from "../../../lib/go-box";
 
 export const dynamic = "force-dynamic";
 
@@ -45,6 +51,14 @@ const MC_KEY = process.env.MC_API_KEY || "";
 // 60 s (was 5 min, 2026-09-26): a redelivery lands within seconds, while a
 // seller's second "ok" a few minutes later is a real message and was dropped.
 const DUPE_WINDOW_MS = 60_000;
+
+// A SHIP text joins the open box by itself only this soon after the box was
+// labeled or last joined (2026-09-30) — past it, the page asks.
+const SMS_JOIN_FRESH_MS = 24 * 3600_000;
+
+// A free-text reply this soon after the box question goes to the owner
+// (2026-09-30, review) — nothing else answers a text.
+const BOX_REPLY_MS = 12 * 3600_000;
 
 const MEET_RE = /^\s*(meet|meetup|local|austin)\b/i;
 const SHIP_RE = /^\s*(ship|shipping|label|mail)\b/i;
@@ -191,6 +205,61 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, matched: true, sid, handoff: "already-chosen" });
     }
     const ownerActive = state.lastOwnerTs > 0 && Date.now() - state.lastOwnerTs < 24 * 3600_000;
+    // SHIP for a device locked after the first one was labeled (2026-09-30):
+    // it goes in that same box on that same label — no address, no second
+    // label. joinOpenBox writes the notes + MC records and alerts the owner;
+    // the reply to this text is ours (same ack rules as below). Anything
+    // that can't join (no open box, not a phone, no room on the label) takes
+    // the address path as before.
+    // By text only for a box touched in the last day (review 2026-09-30):
+    // nothing tells us a box was dropped off, and a join made from a one-word
+    // reply sent a seller back to a label already delivered. An older box
+    // gets the seller's chat link instead, where the page asks "put it in my
+    // box" / "my box already shipped" — nothing is decided or posted yet.
+    const jc = ship ? joinable(noteMsgs) : null;
+    if (jc?.ok && Date.now() - jc.box.ts < SMS_JOIN_FRESH_MS) {
+      const r = await joinOpenBox(sid, "sms");
+      if (r.ok) {
+        // already: the page (or another delivery of this text) made the
+        // join and messaged the seller itself.
+        if (!r.already && !notesHaveOptOut(notes) && !ownerActive) {
+          const sent = await sendSellerSms(from, joinSellerText(r.device, r.devices, r.url, sellerChatLink(sid)));
+          await appendChatMsg(sid, "note", sent ? `SMS sent to ${from} (box join ack)` : `SMS FAILED to ${from} (box join ack)`);
+        }
+        return NextResponse.json({ ok: true, matched: true, sid, handoff: "shipping", joined: true });
+      }
+    } else if (jc?.ok) {
+      const box = jc.box;
+      // Once per lock (2026-09-30, review): nothing recorded the question,
+      // so every SHIP-shaped reply re-sent it and re-alerted the owner.
+      if (noteMsgs.some((m) => m.ts >= lastLockTs && (m.text.startsWith("BOX-ASK: ") || /\(box question\)$/.test(m.text)))) {
+        return NextResponse.json({ ok: true, matched: true, sid, handoff: "box-question", repeat: true });
+      }
+      // BOX-ASK (server-only — chat-sync refuses BOX*): written even when
+      // the text is skipped, so the owner alert fires once per lock. The
+      // label route and a join read it to look for an /admin label the owner
+      // may make for this lock (2026-09-30, review).
+      await appendChatMsg(sid, "note", `BOX-ASK: SHIP replied by text — box ${box.tracking}`);
+      // Send first, then tell the owner what actually happened (2026-09-30,
+      // review): the alert said "they were sent their chat" while an active
+      // owner, an opt-out or a relay failure meant nothing went out — and
+      // nothing else records this SHIP, so the alert is the owner's only cue.
+      const skipped = notesHaveOptOut(notes) ? "opted out" : ownerActive ? "you're active in this thread" : "";
+      let sent = false;
+      if (!skipped) {
+        // An action, not a yes/no question (2026-09-30, review): a texted
+        // "yes still have it" matched nothing and went unanswered.
+        sent = await sendSellerSms(from, `Top Cash Cellular: got it — tap to add it to your box (same label), or get a new label if that box already went out: ${sellerChatLink(sid)}&ship=1`).catch(() => false);
+        await appendChatMsg(sid, "note", sent ? `SMS sent to ${from} (box question)` : `SMS FAILED to ${from} (box question)`);
+      }
+      const outcome = sent
+        ? `texted their chat link to pick "same box" or "new label" (nothing posted yet)`
+        : `NOT texted (${skipped || "send failed"}) — reply to them yourself: same box on ${box.tracking} or a new label (nothing posted yet)`;
+      after(() => notifyOwnerSms(
+        `📦 GO seller replied SHIP for ${jc.device} — their earlier box ${box.tracking} is ${Math.round((Date.now() - box.ts) / 86_400_000)}d old; ${outcome} · ${from}\nhttps://topcashcellular.com/admin/chats?session=${sid}`,
+      ));
+      return NextResponse.json({ ok: true, matched: true, sid, handoff: "box-question" });
+    }
     const locked = [...notes].reverse().find((t) => t.startsWith("LOCKED: ")) || "";
     const specAndOffer = locked.slice("LOCKED: ".length).split(" — ")[0] || "";
     const offer = specAndOffer.match(/\$(\d+)/)?.[1] || "";
@@ -222,6 +291,22 @@ export async function POST(req: NextRequest) {
       await appendChatMsg(sid, "note", sent ? `SMS sent to ${from} (handoff ack)` : `SMS FAILED to ${from} (handoff ack)`);
     }
     return NextResponse.json({ ok: true, matched: true, sid, handoff: method });
+  }
+
+  // A texted answer to the box question (2026-09-30, review): "yes still
+  // have it" / "it shipped already" matches neither MEET nor SHIP, and only
+  // /api/chat replies — nothing answered it, and the owner, told the seller
+  // had the link, waited. Forwarded while that lock is still undecided and
+  // the owner hasn't written in the thread since the question.
+  const since = await readChat(sid, Date.now() - BOX_REPLY_MS);
+  const sinceNotes = since.msgs.filter((m) => m.role === "note");
+  const ask = [...sinceNotes].reverse().find((m) => m.text.startsWith("BOX-ASK: "));
+  if (ask && since.lastOwnerTs < ask.ts && !sinceNotes.some((m) => m.ts > ask.ts && /^(LOCKED:|LABEL: |HANDOFF-CHOICE:)/.test(m.text))) {
+    const tracking = ask.text.match(/ box (\S+)$/)?.[1] || "their earlier box";
+    after(() => notifyOwnerSms(
+      `📦 GO seller answered the box question by text: "${clean(text, 300)}" — reply to them yourself: same box on ${tracking}, or a new label if it already shipped · ${from}\nhttps://topcashcellular.com/admin/chats?session=${sid}`,
+    ));
+    return NextResponse.json({ ok: true, matched: true, sid, boxReply: true });
   }
 
   return NextResponse.json({ ok: true, matched: true, sid });

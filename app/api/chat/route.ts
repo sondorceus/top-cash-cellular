@@ -12,6 +12,7 @@ import { appendChatMsg, readChat, takeoverStale, validSession, validGoSession } 
 import { needsBinding, setOwnerCookie } from "../../lib/go-owner";
 import { sendCapiLead, isTestConversion } from "../../lib/meta-capi";
 import { normalizeStorage, canonicalCarrier, canonicalCondition } from "../../lib/quote";
+import { boxFor, boxRoom, isBoxClosed, joinable, openBox, openRoom } from "../../lib/go-box";
 
 const MC_API = "https://missioncontrolsdjg-production.up.railway.app";
 const MC_KEY = process.env.MC_API_KEY || "";
@@ -82,12 +83,14 @@ function smartReply(message: string, area = "unknown"): Canned {
   if (m.match(/ps[45]|playstation|xbox|switch|console|game/)) return { a: "we buy PS4, PS5, Xbox One, Xbox Series S/X and Switch.", s: "which one have you got?", n: ASK_TOO };
   if (m.match(/pay|cashapp|cash app|zelle|btc|bitcoin|cash|money/)) return { a: `we pay cash, Cash App, Zelle or BTC — your pick. ${far ? "shipped devices get paid the day we inspect them." : "local austin handoffs get paid on the spot."}`, s: "tell us what you've got.", n: ASK };
   if (m.match(/broken|crack|damage|screen/)) return { a: "we buy cracked and water-damaged too — the number is lower than a clean one, but we still buy it.", s: "tell us what's wrong with it.", n: ASK };
-  if (m.match(/how|work|process|step/)) return { a: far ? "three steps: you get a real number, we send you a free prepaid FedEx label, then we check it and pay you the day it lands." : "three steps: you get a real number, we meet in the austin area or send you a free shipping label, then we check it and pay you. local handoffs run about 15 minutes.", s: "tell us what you've got.", n: "drop your number to start." };
+  // "one box, one label" (2026-09-30): a two-phone seller was promised a
+  // second label that never needed to exist.
+  if (m.match(/how|work|process|step/)) return { a: far ? "three steps: you get a real number, we send you a free prepaid FedEx label, then we check it and pay you the day it lands. selling a few? they all go in one box on that one label." : "three steps: you get a real number, we meet in the austin area or send you a free shipping label, then we check it and pay you. local handoffs run about 15 minutes, and several devices can ship in one box on one label.", s: "tell us what you've got.", n: "drop your number to start." };
   if (m.match(/where|location|store|address|visit|come in|walk.?in|austin|meet|pickup/)) {
     if (area === "intl") return { a: "we're online-first and only buy inside the US — our free prepaid label ships within the US.", s: "", n: "" };
     return { a: far ? "we're online-first — no walk-in store. from where you are, the easy way is a free prepaid FedEx label, and we pay the day it lands." : "we're online-first — no walk-in store. we meet at a public spot in the austin area and pay on the spot, or we send a free prepaid label, whichever is easier.", s: "", n: "drop your number and we'll set it up by text." };
   }
-  if (m.match(/ship|mail|send/)) return { a: "yes — we send a free prepaid FedEx label. pack it, drop it off, and we pay the same day we inspect it.", s: "tell us what you've got.", n: "drop your number to get started." };
+  if (m.match(/ship|mail|send/)) return { a: "yes — we send a free prepaid FedEx label, and several devices can go in one box on that one label. pack it, drop it off, and we pay the same day we inspect it.", s: "tell us what you've got.", n: "drop your number to get started." };
   if (m.match(/human|person|talk|call.?back|text.*back|representative|agent|someone/)) return { a: "sure.", s: "", n: "drop your name and the best number or email and our team will text you back." };
   if (m.match(/hi|hey|hello|sup|yo|what'?s up/)) return { a: "welcome to top cash.", s: "what have you got to sell?", n: "" };
   if (m.match(/thank|thanks|thx|appreciate/)) return { a: "anytime.", s: "whenever you're ready, just tell us what you've got.", n: "" };
@@ -198,7 +201,9 @@ function detectContact(s: string): string {
 function extractDevice(text: string): string {
   // Collect every brand/model hit and keep the most specific (longest) one,
   // so "iPhone 14 Pro" wins over a bare "iphone" mentioned earlier.
-  const brands = text.match(/iphone(?:\s+\d+\s*(?:pro\s*max|pro|plus|mini)?)?|galaxy\s*[a-z]?\s*\d*\s*(?:ultra|plus|fe)?|samsung|pixel\s*\d*|macbook(?:\s+(?:air|pro))?(?:\s+\d{2}")?|ipad(?:\s+(?:pro|air|mini))?|imac|mac\s*mini|playstation\s*\d?|ps[45]|xbox(?:\s+series\s*[sx])?|nintendo\s*switch|switch|apple\s*watch|airpods/gi) || [];
+  // The e and Air models keep their suffix ("iPhone 17e" reached a real lead
+  // as "iPhone 17", 2026-09-26); \b keeps "17 airpods" from reading "17 Air".
+  const brands = text.match(/iphone(?:\s+(?:\d+(?:e\b)?(?:\s*(?:pro\s*max|pro|plus|mini|air)\b)?|air\b))?|galaxy\s*[a-z]?\s*\d*\s*(?:ultra|plus|fe)?|samsung|pixel\s*\d*|macbook(?:\s+(?:air|pro))?(?:\s+\d{2}")?|ipad(?:\s+(?:pro|air|mini))?|imac|mac\s*mini|playstation\s*\d?|ps[45]|xbox(?:\s+series\s*[sx])?|nintendo\s*switch|switch|apple\s*watch|airpods/gi) || [];
   const brand = brands.map((b) => b.trim()).sort((a, b) => b.length - a.length)[0];
   if (!brand) return "";
   const storage = text.match(/\b\d{2,4}\s?(?:gb|tb)\b/i)?.[0];
@@ -550,12 +555,57 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
   // /api/go/label): after "got another one?" locks device #2, device #1's
   // label must not stand in for it — "ship it" opens the form for #2.
   const lastLockTs = (live?.msgs || []).reduce((t, m) => (m.role === "note" && m.text.startsWith("LOCKED:") && m.ts > t ? m.ts : t), 0);
-  const labelNote = (live?.msgs || [])
+  const labelNoteRaw = (live?.msgs || [])
     .filter((m) => m.role === "note" && m.ts >= lastLockTs && m.text.startsWith("LABEL: "))
-    .pop()?.text.match(/tracking=(\S+) url=(https:\/\/\S+)/);
-  const wantsShip = /\b(ship|shipping|mail(ing)?( it)?|send it in|sending it|label|fedex|by post)\b/i.test(msgText);
-  const wantsTrack = /\b(track(ing)?|where('?s| is) (my|the) (phone|package|device|label)|did (it|my phone) (arrive|get there))\b/i.test(msgText);
+    .pop()?.text;
+  // BOX MODEL (2026-09-30, go-fb1-a91elato): one label covers one box and one
+  // box takes several devices — the bot promised a second label "first thing
+  // in the morning" for a phone that was already on the first one.
+  const noteRecs = (live?.msgs || []).filter((m) => m.role === "note").map((m) => ({ ts: m.ts, text: m.text }));
+  // A lock ADDED to a box the seller then said already shipped (BOX-CLOSED
+  // goes in before the new print) whose new print failed (2026-09-30,
+  // review): that box is no label of theirs — the bot called it their label
+  // with room for more. Unlabeled: the shipform and labelFailed apply.
+  const rawTracking = labelNoteRaw?.match(/tracking=(\S+)/)?.[1] || "";
+  const joinedClosed = !!labelNoteRaw && / joined=1\b/.test(labelNoteRaw) && isBoxClosed(noteRecs, rawTracking);
+  const labelNoteText = joinedClosed ? undefined : labelNoteRaw;
+  const labelNote = labelNoteText?.match(/tracking=(\S+) url=(https:\/\/\S+)/);
+  // What the label on file covers, open box or not (the card said "box the
+  // device" with two phones on it).
+  const labelBox = labelNote ? boxFor(noteRecs, labelNote[1]) : null;
   const wantsMeet = /\b(meet ?up|meet you|in person|local(ly)?|cash in hand|same day cash)\b/i.test(msgText);
+  // Box words ("same box?", "do I need a second label?") after a lock are a
+  // shipping question — never beside a meetup ask ("meet up for both
+  // together"), and never about the retail box ("comes with the original box").
+  // Shipping-shaped phrases only (2026-09-30, review): a bare "box" /
+  // "together" fired on "it's still sealed in the box", "no box" and "can I
+  // bring both together tomorrow", and pulled the meetup chip off the page.
+  const RETAIL_BOX = /\b(original|retail|factory|apple)\s+box(es)?\b|\b(comes?|came) with (the |its |a |an )?box(es)?\b|\bbox (and|&|\+|with) (the )?(charger|cable|cord|accessories|papers|receipt)\b|\bno box(es)?\b|\b(still|sealed|new|brand new) in (the |its |a )?box\b|\bha(ve|s|ving) (the |its |a |an )?(original )?box(es)?\b|\b(lost|lose|threw (away|out)|tossed|thrown (away|out)|misplaced|don'?t have|do not have|didn'?t keep) (the |its |my |a |an )?(original )?box(es)?\b/gi;
+  const BOX_ASK = /\b(same|one|single|another|second|2nd|new|separate)\s+(box|package|label)(e?s)?\b|\b(my|that|first)\s+(box|label)(e?s)?\b|\b(ship|send|mail|pack|put)\b(?!.{0,25}\b(price|prices|offer|offers|quote|quotes|deal)\b).{0,25}\b(together|same box|one box)\b|\b(in|into)\s+(the\s+|my\s+)?(same|one)\s+box\b/i;
+  // Only with a box to talk about and a handoff that isn't a meetup
+  // (2026-09-30, review): "should I bring my box?" after the Austin chip
+  // opened the address form for a meetup seller.
+  const meetChosen = noteRecs.some((n) => n.ts >= lastLockTs && /^HANDOFF-CHOICE: local meetup/.test(n.text));
+  const wantsBox = hasLock && !wantsMeet && !meetChosen && (!!labelNote || !!openBox(noteRecs)) && BOX_ASK.test(msgText.replace(RETAIL_BOX, " "));
+  // "that box already shipped" over a lock that was ADDED to an earlier box
+  // (2026-09-30, review): the label card shows with its "my box already
+  // shipped — new label" button — typed text never opens the new-label form.
+  // A statement, not a question (2026-09-30, review): "do i need a second
+  // label?" on a joined lock bought a second label for a phone still in the
+  // unshipped box.
+  const wantsNewLabel = !!labelNoteText && / joined=1\b/.test(labelNoteText)
+    && /\b(already|was|been|got)\s+(shipped|sent|mailed|dropped( it| them)? off|gone)\b|\bdropped (it|them|the box|that box|my box) off\b/i.test(msgText)
+    && !/\?|\b(do|does|will|should|can|would|is|was)\s+(i|it|that|the box)\b/i.test(msgText);
+  const shipWord = /\b(ship|shipping|mail(ing)?( it)?|send it in|sending it|labels?|fedex|by post)\b/i.test(msgText);
+  // "It already went out" over a label (2026-09-30, review): "I dropped off
+  // the box yesterday but forgot the 17", "I'll send the 17 separately" —
+  // no ship word ("shipped" isn't "ship"), so no widget, and the label line
+  // (the only one with the NEW LABEL NEEDED exception) never reached the
+  // model, which promised a new label "right here" that can't print.
+  const saysShipped = hasLock && (!!labelNote || joinedClosed)
+    && /\b(shipped|mailed)\b|\bsent (the box|my box|that box|the package)\b|\bsent (it|them)\b(?!\s+(to you\s+)?((the|a|an|my|some|those|these)\s+)?(pics?|pictures?|photos?|images?|screenshots?|imei|serial|numbers?|texts?|messages?|e-?mails?|info|details)\b)(?!\s+(to you\s+)?(on|via|over|by|in|through)\s+(the\s+)?(messenger|facebook|fb|text|sms|chat|here|e-?mail|dm)\b)|\bdropped (it|them|the box|that box|my box|the package) off\b|\bdropped off (the|my|that) (box|package)\b|\b(send|ship|mail)(ing)?\b.{0,30}\bseparate(ly)?\b/i.test(msgText);
+  const wantsShip = shipWord || wantsBox || wantsNewLabel || saysShipped;
+  const wantsTrack = /\b(track(ing)?|where('?s| is) (my|the) (phone|package|device|label)|did (it|my phone) (arrive|get there))\b/i.test(msgText);
   const linkHints: string[] = [];
   if (wantsShip && !hasLock) linkHints.push("shipping, how it works + free label: https://topcashcellular.com/shipping-returns");
   if (wantsTrack) linkHints.push("track a shipment: https://topcashcellular.com/track");
@@ -577,7 +627,49 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
       : /\bmac ?book\b/i.test(msgText) ? "macbook"
       : ""
     : "";
-  const widget = wantsShip && hasLock ? (labelNote ? "label" : "shipform") : catGroup && sessionId.startsWith("go-") && (!hasLock || namesAnother.test(msgText)) ? "category" : "";
+  // A newest lock with no label while an earlier box is still open offers
+  // "put it in my box — same label" / "my box already shipped — new label"
+  // (joinbox, 2026-09-30). The buttons do the join; the chat never does.
+  // "i also have an ipad, can it go in the same box?" names a NEW device
+  // (2026-09-30, review): when box words alone made it a shipping ask, its
+  // tile picker wins — it gets priced first (and an iPad can't join a
+  // phone box anyway).
+  const catFirst = !!catGroup && sessionId.startsWith("go-") && namesAnother.test(msgText) && !shipWord && !wantsNewLabel;
+  const joinCheck = wantsShip && hasLock && !labelNote && !catFirst ? joinable(noteRecs) : null;
+  // A labeled lock always gets its card — "that box already shipped" too:
+  // the card's own button prints the new label (2026-09-30, review).
+  const widget = catFirst ? "category" : wantsShip && hasLock ? (labelNote ? "label" : joinCheck?.ok ? "joinbox" : "shipform") : catGroup && sessionId.startsWith("go-") && (!hasLock || namesAnother.test(msgText)) ? "category" : "";
+  // Widget payloads, identical on the model and canned-fallback responses.
+  // room: how many more phones the label carries (go-box boxRoom); joined:
+  // this lock was added to an earlier box (the page adds the "my box
+  // already shipped — new label" button under the card).
+  // Only while that box is open — not closed, not stale (2026-09-30, review).
+  const labelRoom = labelBox ? openRoom(noteRecs, labelBox) : 0;
+  const labelJoined = / joined=1\b/.test(labelNoteText || "");
+  const labelCard = labelNote ? { tracking: labelNote[1], url: labelNote[2], ...(labelBox ? { devices: labelBox.devices, count: labelBox.count, room: labelRoom } : {}), ...(labelJoined ? { joined: true } : {}) } : null;
+  const shipCard = widget === "shipform" ? { widget: "shipform" } : null;
+  const joinCard = joinCheck?.ok
+    ? { widget: "joinbox", box: { tracking: joinCheck.box.tracking, url: joinCheck.box.url, devices: joinCheck.box.devices, count: joinCheck.box.count, room: boxRoom(joinCheck.box) }, device: joinCheck.device }
+    : null;
+  // "d1 + d2" for the model; a legacy box= count can exceed the notes we kept.
+  const covers = (b: { devices: string[]; count: number }) => `${b.devices.join(" + ") || "their locked device"}${b.count > b.devices.length ? ` (${b.count} devices in all)` : ""}`;
+  // Why a lock with an open box still gets the address form. n: the locks
+  // waiting — all of them go on the one new label; "full" counts them
+  // against the room left (2026-09-30, review: "no room for another device"
+  // on a label with room for some, and "this one" split a seller's phones).
+  const noJoin = joinCheck && !joinCheck.ok && (joinCheck.reason === "heavier" || joinCheck.reason === "full")
+    ? {
+        box: openBox(noteRecs),
+        n: joinCheck.waiting ?? 1,
+        why: joinCheck.reason === "heavier" ? `only phones can be added to a box that already has a label (the ${joinCheck.device || "new device"} isn't one)`
+          : (joinCheck.room ?? 0) > 0 ? `that label only has room for ${joinCheck.room} more and ${joinCheck.waiting ?? 1} are waiting — all ${joinCheck.waiting ?? 1} go in one new box on one new label`
+          : "that label has no room for another device",
+      }
+    : null;
+  // The label printer failed for the newest lock and nothing printed since
+  // (2026-09-30, review): the page says the team will get the label to them
+  // or they can tap ship again — the bot must say the same, not "instantly".
+  const labelFailed = hasLock && !labelNote && (live?.msgs || []).some((m) => m.role === "note" && m.ts >= lastLockTs && m.text.startsWith("LABEL-FAILED: SERVICE_UNAVAILABLE"));
   // The contact already locked in this session (same digits/email): the
   // typed number is a follow-up, not a second lead (a Port Arthur seller
   // showed up twice in the feed, review 2026-09-23).
@@ -865,6 +957,9 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
   }
 
   // Shared facts both personas must respect.
+  // The /go ad page prints labels in the chat; the homepage chat (app/page.tsx,
+  // a non-go- session) can't — no lock, form or label card there.
+  const onGo = sessionId.startsWith("go-");
   const FACTS = [
     // The catalog is generated from PRICE_TABLE so the bot can never "check"
     // and be wrong about what exists (Sonny tricked it into denying the 17
@@ -876,6 +971,16 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
     "LINKS & BASIC TASKS: when someone asks for a link, to be taken somewhere, or where to check something, give the exact URL on its own line — never say a page doesn't exist. Main site + instant quote for any device: https://topcashcellular.com/ · MacBooks: https://topcashcellular.com/sell-macbook-austin · iPhones: https://topcashcellular.com/sell-iphone-austin · Samsung: https://topcashcellular.com/sell-samsung-austin · iPads: https://topcashcellular.com/sell-ipad-austin · financed phones: https://topcashcellular.com/sell-financed-phone · carrier-locked iPhones: https://topcashcellular.com/sell-locked-iphone · bulk / lots: https://topcashcellular.com/bulk · reviews: https://topcashcellular.com/reviews · how it works: https://topcashcellular.com/how-it-works · FAQ: https://topcashcellular.com/faq · grading guide: https://topcashcellular.com/grading-guide · shipping & returns: https://topcashcellular.com/shipping-returns · best price guarantee: https://topcashcellular.com/best-price-guarantee · track a shipment: https://topcashcellular.com/track · this ad page: https://topcashcellular.com/go. On THIS page an iPad, console or M-series MacBook prices instantly by tapping its tile — say 'tap the iPad tile above', not 'team quote'.",
     `REACH A PERSON: customers can call or text us at ${PHONE_DISPLAY} any time — give it plainly whenever someone asks how to reach us, wants to call, or would rather text a person. Still take their number for the team when a quote is in play.`,
     "CRITICAL — we have NO physical store and NO walk-in counter, but we DO meet in person. NEVER tell anyone to 'come to our store', 'visit our location', 'stop by', or 'walk in' — and never call us 'online-only' or use 'no walk-in' as a reason they can't sell in person (a San Antonio seller who asked for our address was told 'we're online-only, everything goes through a FedEx label' on 2026-09-22). There are exactly two ways to sell: (1) LOCAL — meet us at a safe public spot in the Austin area, inspected and paid on the spot in ~15 min; our team texts a time and the spot, never an address; or (2) SHIP — we send a free prepaid FedEx label and pay same-day after we inspect (usually the next business day after it arrives). When someone in Texas asks for our address, wants to drop it off, or offers to drive, the answer is yes — a meetup in the Austin area — plus the free label if that's easier from where they are.",
+    // 2026-09-30 (go-fb1-a91elato): one label already covered both phones,
+    // yet the bot promised a second label "first thing in the morning" and
+    // told staff to issue one. Per surface (review): only the /go chat
+    // prints labels — the homepage chat's sellers get theirs by e-mail.
+    // Scoped to devices locked after the label (2026-09-30, review): one
+    // that was on the label when it printed can't get a new one on the page
+    // — "a second label prints right here" left that seller stuck.
+    onGo
+      ? "SHIPPING SEVERAL DEVICES: one free prepaid FedEx label covers one box, and one box holds several devices — wrap each one separately so the screens don't touch (roughly up to 15 phones, 5 tablets or 2 laptops fit a medium box when they ship together on a new label). Each device keeps its own locked offer. Lock each device first so we know what's coming. Labels print right here in the chat, instantly — never promise that the team will text or e-mail a label later (except right after a failed print, as the page says), and never use notify_team just to get a label printed. A phone locked after a label exists can be added to that box on the same label while the label has room for it (the page says); a tablet, laptop or console always gets its own label. A device locked AFTER a box's label printed gets its own label right here if that box already went out (the page's 'my box already shipped — new label' or 'ship it' button). A device that was ON a label when it printed can't get a new label on the page: if it missed the box that shipped or has to ship separately, call notify_team with 'NEW LABEL NEEDED — box <tracking> already shipped, device <device>' and say only that our team will text you, with no time. Base shipping coverage is per box and set when the label prints (up to $100) — adding a device to a box doesn't raise it."
+      : `SHIPPING SEVERAL DEVICES: one free prepaid FedEx label covers one box, and one box holds several devices — wrap each one separately so the screens don't touch. Each device keeps its own offer. The free label is e-mailed as soon as they finish the quote on the homepage and pick Ship It; several devices quoted together go on one label. Nothing prints in this chat. To add a device to a label they already have, take their number and call notify_team with the device and their label's tracking number if they have it — the team adds it or sends a new label. Base shipping coverage is per box and set when the label prints (up to $100).`,
     "We buy: iPhones (11+ price instantly, older ones we quote by hand), Samsung Galaxy S20+ (incl. Z Fold/Flip), MacBooks M1+, and game consoles (PS4/PS5, Xbox, Switch) — any condition, even cracked or water-damaged (lower offer). Payout: Cash, Cash App, Zelle, or BTC, the customer's choice. For an exact price, point them to the instant quote flow (~30 seconds).",
     "PHOTOS: the customer can attach photos of their device (camera button in the chat). When a photo arrives you can SEE it — acknowledge what's visible in one short plain line (cracks, screen damage, wear, or that it looks clean) and use it as the condition when you quote. If their damage description is vague, you may ask them to snap a quick photo. A photo never finalizes anything — condition is still confirmed at inspection, said once and naturally, never as a legal disclaimer.",
     // Sourced from the live FAQ + /go page — the funnel's core closing
@@ -922,7 +1027,8 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
         "CONDITION FIRST: never call get_quote until the seller has said what shape the device is in. Model (and storage) alone → ask one question, 'what kind of shape is it in — any cracks, or clean?' — then price. Never quote 'assuming normal condition' and ask afterwards.",
         "NEVER A DEAD END: when get_quote returns no number (too low for an instant price, off-tier storage, not in the catalog, newer than the catalog), that device is a TEAM QUOTE and we still buy it. Say so plainly ('that one our team prices by hand — they'll text you a number for it'), keep it in any lot recap as 'team quote', and never say 'no offer', 'can't offer anything', 'below what we pay', or that we don't buy it.",
         "'SOMETHING ELSE': when the seller says they have something else to sell (the page's 'something else' tile sends 'i got something else to sell' — several sellers tapped it, got an open question, and left), ask what it is in one short line and name a few things people bring us so they know to just type it: another phone brand (Pixel, Motorola, OnePlus), an Apple Watch, a tablet, a camera. Off the instant list is a team quote — we still buy it.",
-        "ANYTHING ELSE (owner's ask, 2026-09-24): once a device is locked or handed to the team AND its next step is set (meetup, label, or 'not sure yet'), ask once, briefly and in your own words, whether they have anything else to sell. If they name another device, price it exactly like the first — it locks as its own quote on the page, and the meetup or box can cover both. If they say no, don't ask again. For a lot (several devices named up front) this is the 'anything else to add?' before notify_team.",
+        // Its new-label clause scoped like FACTS (2026-09-30, review).
+        `ANYTHING ELSE (owner's ask, 2026-09-24): once a device is locked or handed to the team AND its next step is set (meetup, label, or 'not sure yet'), ask once, briefly and in your own words, whether they have anything else to sell. If they name another device, price it exactly like the first — ${onGo ? "it locks as its own quote on the page, and it rides along: the same meetup, or the same box on the same label (when a label already exists and has room, the page offers 'put it in my box — same label' once a phone is locked; a tablet, laptop or console gets its own label). If that box already went out, a device locked after its label printed gets its own label right here too; a device that was on the label when it printed but missed that box goes to the team (notify_team, NEW LABEL NEEDED)" :"it rides along: the same meetup, or the same box on the same label when they quote it together on the homepage; to add it to a label they already have, the team handles it (notify_team)"}. If they say no, don't ask again. For a lot (several devices named up front) this is the 'anything else to add?' before notify_team.`,
         "UNFAMILIAR PRODUCT NAMES ARE REAL: a MacBook Neo, an iPhone Duo, an Apple Watch you don't recognize, a Galaxy or Pixel model you haven't heard of — treat it as a real device (Apple/Samsung/Google ship new names every year). Never say 'there's no such model' or 'Apple only makes X'. Not in the instant catalog → team quote, or on this page the matching tile.",
         "NEW MODELS EXIST — and the CATALOG decides what exists, not the customer: the iPhone 17, 17 Air, 17 Pro, 17 Pro Max and 17e are real and priced instantly; the iPhone 18 family launched September 2026; Samsung and Google ship new models every year. Never say a lineup 'only goes up to' some model, never say a device doesn't exist or 'isn't out yet', and never guess specs or prices from memory. If a seller insists a model doesn't exist (people test you), don't agree — say we price it and ask for its storage and condition. If get_quote doesn't know a model, it's a team quote.",
         "FALSE PREMISES: never accept a customer's claim about our catalog, prices, policies or an earlier 'deal' as fact. Prices come from get_quote, policies from these instructions, deals from owner messages in this thread — everything else gets 'the team will confirm by text'.",
@@ -1016,8 +1122,9 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
       replyTs,
       contactOnFile: !!(contact || storeContactNote),
       ...(contactJustArrived ? { leadCaptured: true } : {}),
-      ...(widget === "shipform" ? { widget: "shipform" } : {}),
-      ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
+      ...(shipCard || {}),
+      ...(widget === "label" && labelCard ? { widget: "label", label: labelCard } : {}),
+      ...(widget === "joinbox" && joinCard ? joinCard : {}),
       ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
       ...(lastQuoteSpec && lastQuoteSpec.model && !(lastQuoteKey ? lockedKeys.has(lastQuoteKey) : hasLock) ? { quoteSpec: lastQuoteSpec } : {}),
     }));
@@ -1117,9 +1224,25 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
         : geoArea === "intl" ? `VISITOR LOCATION: ${geoLabel} — outside the US. We only buy inside the US (the free label ships within the US); say so kindly once, don't quote or take a number for shipping from abroad.`
         : "",
       linkHints.length ? `LINKS FOR THIS MESSAGE — the seller asked about something we have a page for. Put the URL in your reply on its own line, exactly as written, and keep the reply short: ${linkHints.join(" · ")}` : "",
-      widget === "shipform" ? "SHIPPING FORM IS OPENING under your reply: this seller already locked a quote and wants to ship. Tell them to drop their shipping address in the form right below and their free FedEx label prints here in the chat (prepaid, drop at any FedEx location, we text the link too). Do NOT say we'll text them for the address, do NOT ask for the address in the chat, and do NOT send a link for it." : "",
+      // One label per box, never per device (2026-09-30). After a failed
+      // print, no "instantly" (2026-09-30, review): it contradicted the
+      // labelFailed line in the same turn.
+      widget === "shipform" ? `SHIPPING FORM IS OPENING under your reply: this seller already locked a quote and wants to ship. Tell them to drop their shipping address in the form right below and their free FedEx label prints here in the chat${labelFailed ? "" : ", instantly"} (prepaid, drop at any FedEx location, we text the link too).${labelFailed ? " Their last print failed a moment ago: if FedEx is still down it may fail again — the team was alerted and will get it to them." : ""} One label covers the whole box: every device they've locked that is waiting to ship goes in that one box — never say each device needs its own label.${noJoin?.box ? ` Their earlier box (label ${noJoin.box.tracking}) can't take ${noJoin.n > 1 ? `these ${noJoin.n}` : "this one"} — ${noJoin.why} — so ${noJoin.n > 1 ? `all ${noJoin.n} get one new label together` : "this one gets its own label"} from the form.` : ""} Do NOT say we'll text them for the address, do NOT ask for the address in the chat, and do NOT send a link for it.` : "",
+      widget === "joinbox" && joinCheck?.ok ? `OPEN BOX: this seller's label ${joinCheck.box.tracking} already covers ${covers(joinCheck.box)}. ${joinCheck.adds.length > 1 ? `The devices waiting to ship (${joinCheck.device}) can go in THAT box on the SAME label — the buttons under your reply add them` : `The newest device (${joinCheck.device}) can go in THAT box on the SAME label — the buttons under your reply add it`} (no new label, nothing to wait for). Only if that box was already dropped off do they need a new label, and it prints right here from the second button. Never say the team will text a label. Nothing is added until they tap — ask which it is in one short line, never say it's done, never ask for their address, and never call notify_team for a label.` : "",
       widget === "category" ? `THE PAGE IS OPENING THE ${catGroup.toUpperCase()} PICKER under your reply — the engine prices it there. Say one short line: 'tap your model below and the number's right there' — nothing about team quotes, hand pricing, or their number.` : "",
-      widget === "label" ? `LABEL ALREADY ISSUED for this seller (tracking ${labelNote?.[1]}) — the label card is showing under your reply. Say it's their label, they can print it and drop the device at any FedEx location, and we text them when it lands. Do not mint another one.` : "",
+      // Room and the shipped-box way out (2026-09-30, review): the line said
+      // "several phones fit" on a full label and forbade the one answer a
+      // seller whose box already went out needs. Most shipped-box cases
+      // print right here (2026-09-30, review): the team line sent a joined
+      // lock and an unlocked phone to staff "first thing in the morning".
+      // Either button (2026-09-30, review): "my box already shipped" shows
+      // only when the new lock could join — an iPad, a stale or full box
+      // gets "ship it".
+      widget === "label" ? `LABEL ALREADY ISSUED for this seller — label ${labelNote?.[1]} covers: ${labelBox ? covers(labelBox) : "their newest locked device"}. The label card is showing under your reply. ${labelRoom > 0 ? `Several phones go in the same box on this one label (room for ${labelRoom} more) — say so plainly (wrap each one).` : "This label has no room for another device — a new one gets its own label once it's locked."} Say it's their label: they print it, drop the box at any FedEx location, and we text them when it lands. Don't offer a second label for devices already on it, and never say the team will send one for them. IF THIS BOX WAS ALREADY DROPPED OFF OR SHIPPED, never tell them to put another device in it, and the new label almost always prints right here:${labelJoined ? ` their newest device was ADDED to this box (the card says "added to your box") — if their box already went out, they tap the button under the card ("my box already shipped — new label") and its own label prints right here${wantsNewLabel ? " (they just said it did — point them to that button)" : ""}.` : ""} A device not locked yet: price it and lock it here first — the page then offers a new label (the "my box already shipped — new label" or "ship it" button), which prints right here. Only a device that was on this label when it printed but missed the box that shipped goes to the team: call notify_team with "NEW LABEL NEEDED — box ${labelNote?.[1]} already shipped, device <the device>" and say only "our team will text you" — no time.` : "",
+      labelFailed ? "LABEL PRINT FAILED a moment ago for their newest device (FedEx didn't answer) and the team was alerted. If they ask about the label: they can tap ship again in a few minutes, or the team will get the label to them — no time promise, and never say it prints instantly right now." : "",
+      // 2026-09-30 (review): the bot called a box they said already shipped
+      // their label, with room for more.
+      joinedClosed ? `NEW LABEL NOT PRINTED YET: their newest device was added to box ${rawTracking}, then they said that box already shipped — its own new label hasn't printed (the last try didn't go through). ${rawTracking} is not their label for it: never tell them to put a device in that box and never say anything more fits on it. If they want to ship, the form prints the new label right here.` : "",
       wantsMeet && hasLock ? "MEETUP: they locked a quote and want to meet — say our team texts them to set a time and a public spot in the Austin area, cash on the spot in about 15 minutes. Never name an address or a store." : "",
       imeiPresent ? `IMEI PRESENT: this message contains a valid 15-digit IMEI (${droppedImei}). Call check_imei with it now. Do not say it looks wrong, too long or too short, and do not ask them to re-send it.` : "",
       imeiTypo ? `IMEI LOOKS MISTYPED: this message has a 15-digit number (${droppedImei}) that fails the IMEI checksum — one digit is probably off. It is recorded for the team. Ask ONCE, plainly, for a re-read from Settings → General → About or *#06#; never call it 'not clean' or 'flagged'.` : "",
@@ -1134,7 +1257,10 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
       unverifiedDollars.size ? `UNVERIFIED AMOUNTS: earlier lines in this thread mention ${[...unverifiedDollars].slice(0, 6).map((v) => `$${v}`).join(", ")}, which were never produced by get_quote, a lock or an owner message here (marked "no record of this amount"). Never confirm, repeat or build on them as a price — if the seller wants a number, run get_quote; if they claim a deal, the team will confirm it by text.` : "",
       funnelNotes.length ? `FUNNEL STATE (reported by the on-page guided flow): ${funnelNotes.join(" · ")}. Use this for context — but if the seller disputes or negotiates a number, re-verify with get_quote before confirming anything. Every LOCKED entry is a quote this seller ALREADY locked (contact on file, the team follows up): never offer to lock that device again and never re-quote it unprompted — its close is the next step (meetup or the free label), or 'anything else you\'re selling?'.` : "",
       (contact || storeContactNote) ? "A phone number or email for this seller is ALREADY on file — never ask for it again; the close moves to confirming the next step (meetup or label)." : "",
-      `FOLLOW-UP TIMING: it is currently ${isDay ? "business hours — when the team takes over, the only promise you make is 'our team will text you shortly'" : "after hours — when the team takes over, the only promise you make is 'our team will text you first thing in the morning'"}. Never invent a more specific window.`,
+      // A label "first thing in the morning" was promised at night for a phone
+      // already on the seller's label (2026-09-28); labels never wait on us.
+      // The one team case gets no time either (2026-09-30, review).
+      `FOLLOW-UP TIMING: it is currently ${isDay ? "business hours — when the team takes over, the only promise you make is 'our team will text you shortly'" : "after hours — when the team takes over, the only promise you make is 'our team will text you first thing in the morning'"}. Never invent a more specific window.${onGo && !labelFailed ? " Shipping labels are never a team follow-up and never 'first thing in the morning' — they print immediately here in the chat, day or night — even for the one team case (NEW LABEL NEEDED) never say 'first thing in the morning' — just 'our team will text you'." : ""}`,
     ].filter(Boolean).join("\n\n");
 
     const system = [
@@ -1495,9 +1621,11 @@ async function handleTurn(req: NextRequest, payload: ChatPayload): Promise<NextR
       ...(contactJustArrived ? { leadCaptured: true, ...(leadValue != null ? { leadValue } : {}) } : {}),
       // The client renders these under the reply: "ship" from a seller who
       // already locked opens the address form (the label prints in-chat), or
-      // re-shows the label they were already issued.
-      ...(widget === "shipform" ? { widget: "shipform" } : {}),
-      ...(widget === "label" && labelNote ? { widget: "label", label: { tracking: labelNote[1], url: labelNote[2] } } : {}),
+      // re-shows the label they were already issued (with what it covers), or
+      // offers to add the new lock to the open box on the same label.
+      ...(shipCard || {}),
+      ...(widget === "label" && labelCard ? { widget: "label", label: labelCard } : {}),
+      ...(widget === "joinbox" && joinCard ? joinCard : {}),
       ...(widget === "category" ? { widget: "category", group: catGroup } : {}),
       ...(lastQuoteSpec && lastQuoteSpec.model && !(lastQuoteKey ? lockedKeys.has(lastQuoteKey) : hasLock) ? { quoteSpec: lastQuoteSpec } : {}),
     }));

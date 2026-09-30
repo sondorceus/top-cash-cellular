@@ -29,10 +29,20 @@ export type GoLabelInput = {
   // admin row shows the tracking and its Received button.
   kindLabel?: string;
   alsoLeadIds?: string[];
+  // Devices in the box (2026-09-30): the printed reference was the first 30
+  // chars of the device list ("iPhone 16 Pro Max 1tb good unl") on a label
+  // that covered two phones — several now print as "2 devices".
+  deviceCount?: number;
+  // Rated weight for a box of several (2026-09-30, review): the label was
+  // rated as its heaviest device alone, and FedEx bills the scanned weight.
+  // Unset → createReturnLabel's per-kind default (one device).
+  weightLbs?: number;
 };
 export type GoLabelResult =
   | { ok: true; tracking: string; url: string; service: string; cost?: number }
-  | { ok: false; kind: "ADDRESS_INVALID" | "SERVICE_UNAVAILABLE"; hint: string };
+  // withheld (2026-09-30, review): shouldBlockAutoShip refused it (a
+  // desktop) — every retry fails the same way, so the page offers none.
+  | { ok: false; kind: "ADDRESS_INVALID" | "SERVICE_UNAVAILABLE"; hint: string; withheld?: boolean };
 
 async function mcPost(body: string, tags: string[], priority: "low" | "normal" | "urgent" = "normal") {
   if (!MC_KEY) return;
@@ -50,7 +60,7 @@ export async function mintGoLabel(input: GoLabelInput): Promise<GoLabelResult> {
   const blocked = shouldBlockAutoShip(kind);
   if (blocked) {
     if (input.leadId) await mcPost(`[LABEL-WITHHELD: ${input.leadId}] reason=${blocked}`, ["fedex-label", "blocked"]);
-    return { ok: false, kind: "SERVICE_UNAVAILABLE", hint: blocked };
+    return { ok: false, kind: "SERVICE_UNAVAILABLE", hint: blocked, withheld: true };
   }
   const ref = input.leadId ? `TCC-${input.leadId}` : `go-${Date.now().toString(36)}`;
   try {
@@ -63,7 +73,8 @@ export async function mintGoLabel(input: GoLabelInput): Promise<GoLabelResult> {
       customerState: input.state,
       customerZip: input.zip,
       deviceKind: kind,
-      customerReference: input.deviceLabel.slice(0, 30),
+      weightLbs: input.weightLbs,
+      customerReference: input.deviceCount && input.deviceCount > 1 ? `${input.deviceCount} devices` : input.deviceLabel.slice(0, 30),
       poNumber: ref,
       declaredValueUsd: input.declaredValueUsd,
     });
@@ -86,11 +97,16 @@ export async function mintGoLabel(input: GoLabelInput): Promise<GoLabelResult> {
   } catch (err) {
     // Same classification as /api/lead: an address-shaped FedEx error is the
     // seller's to fix; anything else is ours. Never echo the raw body.
+    // SERVICE_UNAVAILABLE promises no text (2026-09-30): nothing sends one —
+    // the owner is alerted and the team gets the label to them. The retry it
+    // offers is safe: the /go label route looks for a label the team already
+    // minted in /admin before it buys another, and the page puts the ship
+    // chip back under this hint.
     const raw = err instanceof Error ? err.message : String(err);
     const addressy = /address|postal|street|city|state|zip/i.test(raw);
     if (input.leadId) await mcPost(`[LABEL-FAILED: ${input.leadId}] kind=${addressy ? "ADDRESS_INVALID" : "SERVICE_UNAVAILABLE"} reason=${raw.replace(/[\n\r]/g, " ").slice(0, 300)}`, ["fedex-label", "failed"], addressy ? "normal" : "urgent");
     return addressy
       ? { ok: false, kind: "ADDRESS_INVALID", hint: "FedEx couldn’t validate that address — double-check the street, city, state and ZIP and try again." }
-      : { ok: false, kind: "SERVICE_UNAVAILABLE", hint: "couldn’t print the label right now — your quote is saved and we’ll text you the label shortly." };
+      : { ok: false, kind: "SERVICE_UNAVAILABLE", hint: "couldn’t print the label right now — your quote is saved and our team will get your label to you. You can also tap ship again in a few minutes." };
   }
 }

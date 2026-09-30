@@ -17,6 +17,7 @@ import { appendChatMsg, readChat, takeoverStale, validGoSession } from "../../..
 import { sidTokenValid } from "../../../lib/go-sid-token";
 import { legacySession, linkBinds, needsBinding, sessionOwned, setOwnerCookie } from "../../../lib/go-owner";
 import { clientIp, rateLimit } from "../../../lib/rate-limit";
+import { boxFor, boxRoom, isBoxClosed, joinable, newestLockLabeled, openBox, openRoom } from "../../../lib/go-box";
 
 // One store read (bounded) — a poll never needs more than this.
 export const maxDuration = 30;
@@ -84,7 +85,22 @@ export async function GET(req: NextRequest) {
   let contactOnFile = false;
   // A label already issued for this thread — the page shows it again on
   // reload ("where's my label?" is the most common return visit).
-  let label: { tracking: string; url: string } | null = null;
+  // With what it covers (2026-09-30); joined: the newest lock was ADDED to
+  // an earlier box, so the page also offers "my box already shipped".
+  let label: { tracking: string; url: string; devices?: string[]; count?: number; room?: number; joined?: boolean } | null = null;
+  // relabel (2026-09-30, review): the newest lock was ADDED to a box the
+  // seller then said already shipped (BOX-CLOSED goes in before the new
+  // print), and that print failed — no label to show, only the way to print
+  // the new one. The joined card told them to put the phone in the shipped
+  // box and that more phones fit.
+  let relabel = false;
+  // The open box (2026-09-30): what the label covers, and whether it
+  // already covers the newest lock. ask: the newest lock can join it and
+  // its handoff is still open — only then does the page ask "put it in my
+  // box — same label" / "my box already shipped — new label" (review: a
+  // meetup pick, or an SMS SHIP sent down the address path, reloaded to the
+  // box question). room: how many more phones its label carries.
+  let box: { tracking: string; url: string; devices: string[]; count: number; room: number; coversNewest: boolean; ask: boolean } | null = null;
   if (full) {
     const notes = state.msgs.filter((m) => m.role === "note");
     contactOnFile = notes.some((m) => m.text.startsWith("CONTACT: "));
@@ -93,8 +109,19 @@ export async function GET(req: NextRequest) {
     // Only a label minted for the NEWEST lock (same rule as /api/go/label) —
     // a second device locked in this thread would otherwise reload to
     // device #1's label ("here's your label again") instead of its ship form.
-    const lm = [...notes].reverse().find((m) => m.text.startsWith("LABEL: ") && m.ts >= (lastLock?.ts ?? 0))?.text.match(/tracking=(\S+) url=(https:\/\/\S+)/);
-    if (lm) label = { tracking: lm[1], url: lm[2] };
+    const ln = [...notes].reverse().find((m) => m.text.startsWith("LABEL: ") && m.ts >= (lastLock?.ts ?? 0))?.text;
+    const lm = ln?.match(/tracking=(\S+) url=(https:\/\/\S+)/);
+    if (ln && lm && / joined=1\b/.test(ln) && isBoxClosed(notes, lm[1])) relabel = true;
+    else if (ln && lm) {
+      // Room only while that box is open (2026-09-30, review).
+      const lb = boxFor(notes, lm[1]);
+      label = { tracking: lm[1], url: lm[2], ...(lb ? { devices: lb.devices, count: lb.count, room: openRoom(notes, lb) } : {}), ...(/ joined=1\b/.test(ln) ? { joined: true } : {}) };
+    }
+    const ob = openBox(notes);
+    if (ob) {
+      const chose = lastLock ? notes.some((m) => m.ts >= lastLock.ts && m.text.startsWith("HANDOFF-CHOICE:")) : false;
+      box = { tracking: ob.tracking, url: ob.url, devices: ob.devices, count: ob.count, room: boxRoom(ob), coversNewest: newestLockLabeled(notes), ask: !chose && joinable(notes).ok };
+    }
     // 14-day gate mirrors the published price-lock promise — past it the
     // stored number may be stale, so the seller redoes the (30s) flow and
     // gets a fresh engine number instead of a "still good" that isn't.
@@ -108,7 +135,7 @@ export async function GET(req: NextRequest) {
       }
     }
   }
-  const res = NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}), ...(label ? { label } : {}) });
+  const res = NextResponse.json({ msgs, takeover, lastTs: state.lastTs, ...(adopt ? { adopt: true } : {}), ...(pendingQuote ? { pendingQuote } : {}), ...(contactOnFile ? { contactOnFile: true } : {}), ...(label ? { label } : {}), ...(relabel ? { relabel: true } : {}), ...(box ? { box } : {}) });
   // A valid link binds this browser too: the cookie is absent, or names the
   // session the browser had before the texted link brought it here.
   if (graceBind || linkBinds(req, sid, k)) setOwnerCookie(res, sid);
@@ -147,7 +174,9 @@ export async function POST(req: NextRequest) {
   // device by the second — both server-written.
   // "price moved at lock" is written by the lock route now (the page no
   // longer posts it) — a forged one would show the console a fake repricing.
-  if (/^\s*(CONTACT|EMAIL-FALLBACK|QSPEC|LOCKED|LOCK-EVENT|HANDOFF|quote shown|price moved|SMS|Email sent|Email FAILED|LEAD-ID|LABEL|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
+  // BOX / BOX-CLOSED (2026-09-30): the label route's record of what a label
+  // covers — a forged one would put a stranger's device on someone's label.
+  if (/^\s*(CONTACT|EMAIL-FALLBACK|QSPEC|LOCKED|LOCK-EVENT|HANDOFF|quote shown|price moved|SMS|Email sent|Email FAILED|LEAD-ID|LABEL|BOX|GEO|IMEI)\s*[:\s-]/i.test(text)) return NextResponse.json({ ok: false }, { status: 400 });
   // BINDING (2026-09-26): the breadcrumb is the first thing a session
   // writes when a tap opens it, so this is where the browser that minted the
   // id gets its owner cookie — only while the session has no records yet

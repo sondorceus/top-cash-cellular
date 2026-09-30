@@ -313,8 +313,16 @@ export const SELL_TOOLS = [
   },
   {
     name: "notify_team",
+    // No label requests (2026-09-30): the bot told staff to issue a second
+    // label for a phone already on the first one (go-fb1-a91elato). Two
+    // exceptions (review): a device that was on a label's original print but
+    // missed the box that shipped (2026-09-30, review: narrowed — a joined
+    // or not-yet-locked device prints its own label on the page), and a
+    // homepage seller adding to an e-mailed label — no label prints there.
+    // "Either button" (2026-09-30, review): the page shows "my box already
+    // shipped" only when the new lock could join; otherwise "ship it".
     description:
-      "Alert a real Top Cash Cellular teammate to follow up. Call when the customer wants to proceed/lock in, asks for a human, gives contact info, pushes back on a quote and names the price they want (their price goes in the summary — the owner decides), has a device/bulk lot that needs a manual quote, or is a wholesale buyer/vendor pitching to buy FROM us (include their price sheet details).",
+      "Alert a real Top Cash Cellular teammate to follow up. Call when the customer wants to proceed/lock in, asks for a human, gives contact info, pushes back on a quote and names the price they want (their price goes in the summary — the owner decides), has a device/bulk lot that needs a manual quote, or is a wholesale buyer/vendor pitching to buy FROM us (include their price sheet details). Don't call it just to get a shipping label printed — on the /go page labels print right in the chat, instantly (the address form or the label card), and one label covers a box of several devices. A box that already shipped is NOT a reason either: a device added to it later has a 'my box already shipped — new label' button under its label card, and a device not locked yet gets priced and locked first, then the page offers a new label (the 'my box already shipped — new label' or 'ship it' button), which prints right here. Do call it only when a device that was on a label when it printed missed the box that shipped ('NEW LABEL NEEDED — box <tracking> already shipped, device <device>' — tell the seller only 'our team will text you', no time), or when a homepage-chat seller wants a device added to a label they already got by e-mail.",
     input_schema: {
       type: "object" as const,
       properties: {
