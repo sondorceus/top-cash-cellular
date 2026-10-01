@@ -23,6 +23,11 @@
 // image tiles (category tiles, variant cards) stay at white/[0.18]–/20 and
 // read as buttons by their white image plate. Helper lines that carry
 // information are 14px; the consent line stays 12px. Still dark, no glow.
+// Weight (2026-09-30, Sonny: "a tiny bit larger, or bolder, without taking
+// away space"): chat text is 500 from the overlay root, sizes unchanged — a
+// +0.5px bump wrapped extra lines at 375–430 wide. Pinned leading-[Npx]
+// classes equal the line box each size already had (14px: 21.7, snug 19.25;
+// 15px: 23.25, snug 20.625); keep them in step if a size changes.
 // Glass theme (2026-09-30): globals.css 304-314 frosts bg-white/[0.03], /5,
 // [0.06], [0.08], /10, [0.12] and /15 with !important under
 // html[data-theme="light"] — the DEFAULT theme — and over this overlay that
@@ -2200,7 +2205,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
   {/* full-screen immersive chat */}
   {chatOpen && (
     // overscroll none (2026-09-30): nothing inside may hand a drag on to the page
-    <div ref={overlayRef} tabIndex={-1} style={{ background: "#0a0a0b", overscrollBehavior: "none" }} className="go-overlay fixed inset-0 z-50 flex flex-col text-white focus:outline-none" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
+    // font-medium (2026-09-30, Sonny: "a tiny bit bolder"): every chat line that
+    // inherited the site's 450 body weight — bubbles, helpers, captions, inputs
+    // and placeholders — renders at 500. Weight never changes a line box. Buttons
+    // stay 600 (globals.css), titles keep their own semibold/bold.
+    <div ref={overlayRef} tabIndex={-1} style={{ background: "#0a0a0b", overscrollBehavior: "none" }} className="go-overlay fixed inset-0 z-50 flex flex-col text-white font-medium focus:outline-none" role="dialog" aria-modal="true" aria-label="chat with top cash cellular">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-white/15" style={{ background: "#0e0e0f", paddingTop: "max(12px, env(safe-area-inset-top))" }}>
         <img src="/icon-192.png" alt="" width={36} height={36} style={{ borderRadius: "50%" }} className="w-[36px] h-[36px] object-cover border border-[#00c853]/40 shrink-0" />
         <div className="flex-1 min-w-0">
@@ -2242,7 +2251,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
       >
         <div className="go-msg flex items-end gap-2">
           <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-          <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.10] border border-white/[0.18] leading-snug">
+          {/* Bubbles stay 15px (2026-09-30), bolder via the root's 500: 15.5
+              kept each line box but wrapped extra lines at 390–412 wide.
+              Line heights are pinned to the px they already had (snug
+              20.625 here; 23.25 for the bubbles below). */}
+          <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.10] border border-white/[0.18] leading-[20.625px]">
             {lot
               ? "welcome — tell us what you got. trays, shelves, mixed lots, cracked ones too. snap a pic of the pile if it\u2019s easier. we\u2019ll get you real numbers and cash the same day."
               : "tap what you got — or just type it. one phone or a whole drawer. cracked or still on payments, we still buy it. you can also tap 📷 to send a photo."}
@@ -2279,7 +2292,8 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={img} alt="device photo" className="block max-w-full rounded-xl" style={{ maxHeight: 260 }} />
                 {m.pending && (
-                  <span className="absolute bottom-1.5 right-2 rounded-full bg-black/70 px-2 py-[2px] text-[11px] text-white">sending…</span>
+                  // own line height (2026-09-30): the bubble's pinned 23.25px would inherit and fatten the pill
+                  <span className="absolute bottom-1.5 right-2 rounded-full bg-black/70 px-2 py-[2px] text-[11px] leading-[17.05px] text-white">sending…</span>
                 )}
               </span>
             ) : (
@@ -2294,7 +2308,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   <img src={OWNER_PHOTO || "/icon-192.png"} alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border-2 border-[#00c853] shrink-0" />
                   <div className="max-w-[85%]">
                     <div className="text-[12px] text-[#00c853] font-semibold mb-1 ml-1">Sonny · owner</div>
-                    <div className={`rounded-2xl rounded-bl-md ${pad} text-[15px] bg-[#0f2417] border border-[#00c853]/55`}>
+                    <div className={`rounded-2xl rounded-bl-md ${pad} text-[15px] leading-[23.25px] bg-[#0f2417] border border-[#00c853]/55`}>
                       {body}
                     </div>
                   </div>
@@ -2303,7 +2317,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             }
             return m.from === "user" ? (
               <div key={keyOf(m)} className="go-msg flex items-end gap-2 justify-end">
-                <div className={`max-w-[80%] rounded-2xl rounded-br-md ${pad} text-[15px] bg-[#16281c] border border-[#00c853]/55`}>
+                <div className={`max-w-[80%] rounded-2xl rounded-br-md ${pad} text-[15px] leading-[23.25px] bg-[#16281c] border border-[#00c853]/55`}>
                   {body}
                 </div>
                 <SellerAvatar />
@@ -2311,7 +2325,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             ) : (
               <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                <div className={`max-w-[85%] rounded-2xl rounded-bl-md ${pad} text-[15px] bg-white/[0.10] border border-white/[0.18]`}>
+                <div className={`max-w-[85%] rounded-2xl rounded-bl-md ${pad} text-[15px] leading-[23.25px] bg-white/[0.10] border border-white/[0.18]`}>
                   {body}
                 </div>
               </div>
@@ -2322,7 +2336,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             return (
               <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
-                <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] bg-white/[0.10] border border-white/[0.18]">
+                <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] leading-[23.25px] bg-white/[0.10] border border-white/[0.18]">
                   {m.text}
                 </div>
               </div>
@@ -2376,7 +2390,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
           if (m.kind === "chips") {
             return (
               <div key={keyOf(m)} className={"go-msg ml-10 " + (m.done ? "opacity-55 pointer-events-none" : "")}>
-                {m.q && <div className="text-[14px] text-white/80 mb-2">{m.q}</div>}
+                {/* Question line stays 14px on its 21.7px line, bolder via the
+                    root's 500 (2026-09-30): at 14.5 the MacBook chip question
+                    wrapped to 2 lines at 375. The chips stay 14px at 600
+                    (globals.css button rule). */}
+                {m.q && <div className="text-[14px] leading-[21.7px] text-white/80 mb-2">{m.q}</div>}
                 <div className="flex flex-wrap gap-2">
                   {m.options.map((o) => (
                     <button key={o.key} type="button" disabled={!!m.done || gBusy}
@@ -2394,10 +2412,10 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
               <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                 <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 bg-white/[0.10] border border-[#00c853]/55">
-                  <div className="text-[14px] text-white/80">{m.label}</div>
+                  <div className="text-[14px] leading-[21.7px] text-white/80">{m.label}</div>
                   <div className="text-[32px] font-extrabold text-[#00c853]" style={{ fontVariantNumeric: "tabular-nums" }}>${m.offer.toLocaleString("en-US")}</div>
-                  {m.note && <div className="text-[14px] text-[#00c853] mt-1">{m.note}</div>}
-                  <div className="text-[14px] text-white/80 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
+                  {m.note && <div className="text-[14px] leading-[21.7px] text-[#00c853] mt-1">{m.note}</div>}
+                  <div className="text-[14px] leading-[21.7px] text-white/80 mt-1">that&rsquo;s your number if it matches what you told us — locked for 14 days. drop your number below and we&rsquo;ll text it to you.</div>
                 </div>
               </div>
             );
@@ -2437,22 +2455,22 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
               <div key={keyOf(m)} className="go-msg ml-10 max-w-[85%]">
                 <div className="rounded-2xl border border-[#00c853]/55 bg-[#00c853]/[0.08] px-4 py-3">
                   <div className="text-[15px] font-bold text-white">{m.joined ? "added to your box — same label" : "your FedEx label is ready"}</div>
-                  <div className="text-[14px] text-white/80 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
+                  <div className="text-[14px] leading-[21.7px] text-white/80 mt-1" style={{ fontVariantNumeric: "tabular-nums" }}>tracking {m.tracking}</div>
                   {m.devices && m.devices.length > 0 && (
-                    <div className="text-[14px] text-white/80 mt-2">
+                    <div className="text-[14px] leading-[21.7px] text-white/80 mt-2">
                       <div className="text-white/65">{m.devices.length > 1 ? `covers all ${m.devices.length}:` : "covers:"}</div>
-                      <ul className="mt-0.5 leading-snug">
+                      <ul className="mt-0.5 leading-[19.25px]">
                         {m.devices.map((dv, j) => <li key={j}>{"· "}{dv}</li>)}
                       </ul>
                     </div>
                   )}
                   <a href={m.url} target="_blank" rel="noopener noreferrer" className="tcc-button-primary mt-3 inline-block py-2.5 px-5 text-[15px] font-bold rounded-2xl">open my label</a>
-                  <div className="text-[14px] text-white/80 mt-3 leading-snug">{m.joined ? "nothing new to print — " : "print it, "}{packing}, drop it at any FedEx location. we&rsquo;ll text you when it&rsquo;s checked in at our warehouse and pay within 24 hours of inspection. {m.texted ? "we texted you this link too." : m.emailed ? "we emailed you this link too." : "this link stays right here in the chat."}</div>
+                  <div className="text-[14px] text-white/80 mt-3 leading-[19.25px]">{m.joined ? "nothing new to print — " : "print it, "}{packing}, drop it at any FedEx location. we&rsquo;ll text you when it&rsquo;s checked in at our warehouse and pay within 24 hours of inspection. {m.texted ? "we texted you this link too." : m.emailed ? "we emailed you this link too." : "this link stays right here in the chat."}</div>
                   {/* Only while the label has room for another phone
                       (the route's go-box boxRoom — none on a laptop or
                       console label, none on a full box). */}
                   {(m.room ?? 0) > 0 && (
-                    <div className="text-[14px] text-white/65 mt-2 leading-snug">more phones? they can go in this same box &mdash; lock them in here first so we price them.</div>
+                    <div className="text-[14px] text-white/65 mt-2 leading-[19.25px]">more phones? they can go in this same box &mdash; lock them in here first so we price them.</div>
                   )}
                 </div>
               </div>
@@ -2470,7 +2488,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-[#00c853] shrink-0" aria-hidden>
                     <path d="M12 2C6.5 2 2 6.14 2 11.25c0 2.9 1.45 5.49 3.72 7.18V22l3.4-1.87c.91.25 1.87.39 2.88.39 5.5 0 10-4.14 10-9.27S17.5 2 12 2zm1.06 12.47-2.55-2.72-4.98 2.72 5.48-5.82 2.61 2.72 4.92-2.72-5.48 5.82z" />
                   </svg>
-                  <span className="text-[14px] text-white leading-snug">
+                  <span className="text-[14px] text-white leading-[19.25px]">
                     <span className="font-semibold text-white">keep this chat on Messenger</span>
                     <span className="block text-white/65 text-[14px]">message us there and your quote follows you</span>
                   </span>
@@ -2486,10 +2504,11 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   <div className="text-[16px] font-semibold text-[#00c853]">
                     locked in{m.offer != null ? ` — $${m.offer.toLocaleString("en-US")}` : ""}.
                     {m.until && (
-                      <span className="text-white/80 font-normal"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}.</span>
+                      // 400 → 500 with the rest of the chat (2026-09-30), still under the 600 title
+                      <span className="text-white/80 font-medium"> holds until {new Date(m.until).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}.</span>
                     )}
                   </div>
-                  <div className="text-[14px] text-white/80 mt-1">{m.confirmed === "sms" ? "we just texted you the details. " : m.confirmed === "email" ? "we just emailed you the details. " : m.confirmed === "pending" ? "we\u2019ll text you the details shortly. " : m.confirmed === "failed" && m.contact && !m.contact.includes("@") ? "our texts aren\u2019t going through right now \u2014 drop an email below and we\u2019ll send the details there. " : ""}{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
+                  <div className="text-[14px] leading-[21.7px] text-white/80 mt-1">{m.confirmed === "sms" ? "we just texted you the details. " : m.confirmed === "email" ? "we just emailed you the details. " : m.confirmed === "pending" ? "we\u2019ll text you the details shortly. " : m.confirmed === "failed" && m.contact && !m.contact.includes("@") ? "our texts aren\u2019t going through right now \u2014 drop an email below and we\u2019ll send the details there. " : ""}{isDay ? "we\u2019ll reach out shortly to get you paid" : "we\u2019ll reach out first thing in the morning to get you paid"} — meet up in the austin area or we send a free shipping label, your pick.</div>
                   {/* The text failed (relay down / opted out): one email field,
                       newest lock only, and the card flips to "emailed" on success. */}
                   {m.confirmed === "failed" && m.contact && !m.contact.includes("@") && i === lastLockedIdx(msgs) && (
@@ -2935,7 +2954,7 @@ function ModelPicker({ rows, line, onLine, onPick, onOther, busy }: {
   if (!line) {
     return (
       <div>
-        <div className="text-[14px] text-white/80 mb-2">which one?</div>
+        <div className="text-[14px] leading-[21.7px] text-white/80 mb-2">which one?</div>
         <div className="flex flex-wrap gap-2">
           {lines.map((l) => (
             <button key={l.key} type="button" disabled={busy} onClick={() => onLine(l.key, l.label)} className={chip}>
@@ -3041,7 +3060,7 @@ function EmailFallbackForm({ sessionId, adoptK, onDone }: { sessionId: string; a
           {busy ? "\u2026" : "send"}
         </button>
       </div>
-      {err && <div className="text-[14px] text-[#ff8a80]">{err}</div>}
+      {err && <div className="text-[14px] leading-[21.7px] text-[#ff8a80]">{err}</div>}
     </form>
   );
 }
@@ -3054,7 +3073,7 @@ function NumberForm({ disabled, onSave }: { disabled: boolean; onSave: (v: strin
       className="rounded-2xl border border-white/[0.18] bg-white/[0.10] p-3 flex flex-col gap-2 max-w-[92%]"
       onSubmit={(e) => { e.preventDefault(); if (ok && !disabled) onSave(v.trim()); }}
     >
-      <div className="text-[14px] text-white/80">so we can reach you about your offer — even if this chat gets cut off.</div>
+      <div className="text-[14px] leading-[21.7px] text-white/80">so we can reach you about your offer — even if this chat gets cut off.</div>
       <div className="flex gap-2">
         <input
           value={v}
@@ -3129,11 +3148,11 @@ function ShipForm({ sessionId, adoptK, defaultName, defaultPhone, disabled, newL
         <input className={cls} placeholder="state" maxLength={2} value={f.state} onChange={set("state")} autoComplete="address-level1" disabled={disabled} aria-label="state" />
         <input className={cls} placeholder="ZIP" value={f.zip} onChange={set("zip")} autoComplete="postal-code" inputMode="numeric" disabled={disabled} aria-label="ZIP code" />
       </div>
-      {err && <p className="text-[14px] text-red-400" role="alert">{err}</p>}
+      {err && <p className="text-[14px] leading-[21.7px] text-red-400" role="alert">{err}</p>}
       <button type="submit" disabled={disabled || busy} className="tcc-button-primary py-3 text-[16px] font-bold rounded-2xl disabled:opacity-40">
         {busy ? "printing your label\u2026" : "get my free FedEx label"}
       </button>
-      <p className="text-[14px] text-white/65 leading-snug">prepaid, drop it at any FedEx location. we text you the label link too.</p>
+      <p className="text-[14px] text-white/65 leading-[19.25px]">prepaid, drop it at any FedEx location. we text you the label link too.</p>
     </form>
   );
 }
@@ -3175,7 +3194,7 @@ function LockForm({ manual, disabled, onLock, defaultContact = "", defaultName =
         disabled={disabled}
         aria-label="your name (optional)"
       />
-      {err && <p className="text-[14px] text-red-400" role="alert">{err}</p>}
+      {err && <p className="text-[14px] leading-[21.7px] text-red-400" role="alert">{err}</p>}
       <button
         type="submit"
         disabled={disabled || busy}
