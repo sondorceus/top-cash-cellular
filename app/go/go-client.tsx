@@ -36,7 +36,7 @@
 // brackets (bg-white/10 is the same CSS but frosted), the avatar is [0.13].
 // The email/number inputs nested on a card keep [0.06], so in glass they're
 // a darker well inside the card; placeholder 6.2:1 there, 5.2:1 in dark.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { BoardRow, GoStep } from "./board";
 import { pixelTrack, pixelTrackCustom, fbCookies } from "../components/MetaPixel";
 
@@ -331,6 +331,129 @@ function phoneSized(device: string): boolean {
   if (k.includes("laptop") || k.includes("book")) return false;
   if (/phone|galaxy|pixel/.test(k)) return true;
   return !/tablet|ipad|desktop|imac|mac mini|mac studio|\bmac pro\b|all-in-one|\btower\b|alienware|thinkpad|\bxps\b|ideapad|latitude|inspiron|console|playstation\s*\d|ps5|\bps4\b|xbox|switch/.test(k);
+}
+
+// Repeat category taps (2026-09-30, Sonny: "they can click infinity the same
+// categories over and over, wasting memory and time"): every tap pushed a
+// bubble, a bot line, a fresh picker and a chat-sync note. The picker that is
+// still the newest open question for that group is shown again instead.
+// err bubbles and the Messenger card aren't steps, so they don't count as
+// "the seller moved on"; a picked line, a newer widget or a retired picker do.
+function liveModelsPicker(list: Msg[], group: Group): Msg | null {
+  for (let i = list.length - 1; i >= 0; i--) {
+    const m = list[i];
+    if (!("kind" in m) || m.kind === "err" || m.kind === "msgr") continue;
+    return m.kind === "models" && m.group === group && !m.line && !m.done ? m : null;
+  }
+  return null;
+}
+// The seller's newest message is exactly this line and nothing has answered
+// it yet (2026-09-30) — the AI-path opener / a takeover tap isn't sent twice.
+function awaitingReplyTo(list: Msg[], line: string): boolean {
+  const last = list[list.length - 1];
+  return !!last && !("kind" in last) && last.from === "user" && last.text === line;
+}
+
+// Tappable links in bot / owner bubbles (2026-09-30, Sonny: "Theot can't give
+// clickable links" — the chat route has her put exact URLs on their own line,
+// and the bubble rendered them as dead text). linkParts is pure; linkify only
+// maps its parts to <a>, React escapes everything else (no innerHTML). The
+// bot's words come from a model that reads seller text, so a bot line links
+// ONLY our own hosts — a prompt-injected or made-up link stays plain text.
+// Sonny's lines may link any https host. https only: http is upgraded on our
+// hosts, and no other scheme ever matches. Seller bubbles are never linkified;
+// history and the server keep the raw m.text.
+const OUR_WEB = new Set(["topcashcellular.com", "www.topcashcellular.com"]);
+const FB_HOSTS = new Set(["m.me", "facebook.com", "www.facebook.com"]);
+// m.me / facebook.com host anyone's page, and FB's /l.php shim forwards
+// anywhere (2026-09-30 review): a bot line links them only to OUR page —
+// m.me/<handle>, facebook.com/<handle>/… — and only when NEXT_PUBLIC_FB_PAGE
+// names it (MSGR_HANDLE, below; read at render time). Unset = plain text.
+function ourFbPage(u: URL): boolean {
+  const h = MSGR_HANDLE.toLowerCase();
+  if (!h || !FB_HOSTS.has(u.hostname)) return false;
+  const seg = u.pathname.toLowerCase().split("/"); // "/h/x" → ["", "h", "x"]
+  if (seg[1] !== h) return false;
+  return u.hostname !== "m.me" || seg.length === 2 || (seg.length === 3 && seg[2] === "");
+}
+type LinkMode = "bot" | "owner";
+type LinkPart = { text: string; href?: string };
+// [label](url) | an http(s) URL | a bare topcashcellular.com(/path) | our
+// number. No lookbehind: older iOS webviews can't parse one. A dash, an
+// ellipsis or CJK punctuation glued to a URL ends it (2026-09-30: model text
+// writes "…/track—it updates", which linked to a 404).
+const LINK_RE = /\[([^\[\]\n]{1,200})\]\(\s*((?:https?:\/\/|(?:www\.)?topcashcellular\.com(?!\.?[\w-]))[^\s()<>–—…、。，」』]*)\s*\)|(https?:\/\/[^\s<>"'`‘’“”\[\]–—…、。，」』]+)|((?:www\.)?topcashcellular\.com(?!\.?[\w-])(?:\/[^\s<>"'`‘’“”\[\]–—…、。，」』]*)?)|(\(512\) ?960-9256(?!\d)|\b512-960-9256(?!\d))/gi;
+const TEL_HREF = "tel:+15129609256";
+function safeLinkHref(raw: string, mode: LinkMode): string | null {
+  let u: URL;
+  try {
+    u = new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`);
+  } catch {
+    return null;
+  }
+  const host = u.hostname.toLowerCase();
+  if (u.protocol === "http:" && (OUR_WEB.has(host) || FB_HOSTS.has(host))) u.protocol = "https:";
+  if (u.protocol !== "https:" || u.username || u.password) return null;
+  if (mode === "bot" && (!(OUR_WEB.has(host) || ourFbPage(u)) || u.port)) return null;
+  return u.href;
+}
+// Sentence punctuation after a URL isn't part of it, nor is a ")" closing a
+// parenthesis opened before the URL ("(see https://…/track).").
+function trimUrlTail(s: string): string {
+  let end = s.length;
+  while (end > 0) {
+    const c = s[end - 1];
+    if (".,!?:;*…".includes(c)) { end--; continue; }
+    if (c === ")") {
+      const body = s.slice(0, end);
+      if (body.split(")").length > body.split("(").length) { end--; continue; }
+    }
+    break;
+  }
+  return s.slice(0, end);
+}
+function linkParts(text: string, mode: LinkMode): LinkPart[] {
+  const parts: LinkPart[] = [];
+  const re = new RegExp(LINK_RE.source, "gi"); // own lastIndex per call
+  let at = 0; // text before this index is already in parts
+  const plain = (end: number) => { if (end > at) parts.push({ text: text.slice(at, end) }); at = end; };
+  for (let m = re.exec(text); m; m = re.exec(text)) {
+    if (m[1] !== undefined) {
+      const href = safeLinkHref(m[2], mode);
+      if (!href) continue; // the whole [label](url) stays literal text
+      plain(m.index);
+      parts.push({ text: m[1], href });
+      at = m.index + m[0].length;
+    } else if (m[5] !== undefined) {
+      plain(m.index);
+      parts.push({ text: m[0], href: TEL_HREF });
+      at = m.index + m[0].length;
+    } else {
+      // A bare domain inside an e-mail, a path or a longer word isn't one.
+      if (m[4] !== undefined && m.index > 0 && /[\w@.\/-]/.test(text[m.index - 1])) continue;
+      const raw = trimUrlTail(m[0]);
+      const href = raw ? safeLinkHref(raw, mode) : null;
+      if (!href) continue;
+      plain(m.index);
+      parts.push({ text: raw, href });
+      at = m.index + raw.length;
+    }
+  }
+  plain(text.length);
+  return parts;
+}
+// Green #00c853 on the bubbles: ~7:1 on the bot's white/[0.10] and ~7.3:1 on
+// Sonny's #0f2417. overflowWrap anywhere (break-words where it's missing) —
+// a long URL wraps inside the bubble instead of widening it.
+const LINK_CLASS = "text-[#00c853] underline underline-offset-2 break-words";
+function linkify(text: string, mode: LinkMode): ReactNode {
+  const parts = linkParts(text, mode);
+  if (!parts.some((p) => p.href)) return text;
+  return parts.map((p, i) =>
+    !p.href ? p.text
+    : p.href === TEL_HREF ? <a key={i} href={p.href} className="text-[#00c853] underline underline-offset-2 whitespace-nowrap">{p.text}</a>
+    : <a key={i} href={p.href} target="_blank" rel="noopener noreferrer nofollow" className={LINK_CLASS} style={{ overflowWrap: "anywhere" }}>{p.text}</a>,
+  );
 }
 
 // FB Page handle for the "keep this chat on Messenger" affordance (m.me deep
@@ -1338,34 +1461,87 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
     };
   }
 
-  function categoryTap(cat: (typeof CATEGORIES)[number]) {
+  // Double-tap guard (2026-09-30): the same tile / pill / model chip tapped
+  // again within 1.2s runs once. Keyed per chip — a DIFFERENT one always runs.
+  const lastTapRef = useRef<{ key: string; at: number }>({ key: "", at: 0 });
+  function repeatTap(key: string): boolean {
+    const now = Date.now();
+    if (lastTapRef.current.key === key && now - lastTapRef.current.at < 1200) return true;
+    lastTapRef.current = { key, at: now };
+    return false;
+  }
+  // A repeat tap shows what's already there (2026-09-30): that message, or
+  // the bottom (null). Only the thread scrolls — scrollIntoView would also
+  // pan the locked page / iOS visual viewport. Two frames: a page tile tap
+  // mounts the overlay in this same tap.
+  function revealMsg(m: Msg | null) {
+    nearBottomRef.current = true;
+    const go = () => {
+      const el = threadRef.current;
+      if (!el) return;
+      const k = m ? msgKeys.current.get(m) : undefined;
+      const node = k ? el.querySelector(`[data-mk="${k}"]`) : null;
+      if (!node) { el.scrollTo({ top: el.scrollHeight, behavior: "smooth" }); return; }
+      const r = node.getBoundingClientRect();
+      const c = el.getBoundingClientRect();
+      // nearest edge; a picker taller than the thread shows its top
+      const dy = r.top < c.top ? r.top - c.top - 8 : r.bottom > c.bottom ? Math.min(r.bottom - c.bottom + 8, r.top - c.top - 8) : 0;
+      if (dy) el.scrollTo({ top: el.scrollTop + dy, behavior: "smooth" });
+    };
+    try { requestAnimationFrame(() => requestAnimationFrame(go)); } catch { go(); }
+  }
+
+  // fromReply: the /api/chat "category" widget under a typed turn's reply
+  // (2026-09-30) — once per turn, so not a repeat tap.
+  function categoryTap(cat: (typeof CATEGORIES)[number], fromReply = false) {
     if (gBusy) return;
+    if (!fromReply && repeatTap(`cat:${cat.key}`)) return;
     interactedRef.current = true;
     setChatOpen(true);
+    const cur = msgsRef.current;
     // Funnel breadcrumb: tile taps never touched the server, so the funnel
     // card couldn't see where sellers stalled between "tapped" and "quoted".
-    logNote(`tapped ${cat.label}`);
+    // Written only when the tap does something (2026-09-30).
     // Sonny is live: the deterministic flow must not quote a second number
     // over his negotiation. Route the tap's intent through send() — it's
-    // stored for the console and the bot stays silent.
+    // stored for the console and the bot stays silent. A spam of taps sent
+    // him the same line N times (2026-09-30): not while a turn is in flight
+    // or that line is still the newest, unanswered message.
     if (takeoverRef.current) {
-      void send(`i got a ${cat.label.toLowerCase()} to sell`);
+      const line = `i got a ${cat.label.toLowerCase()} to sell`;
+      if (sending || uploading || awaitingReplyTo(cur, line)) { revealMsg(null); return; }
+      logNote(`tapped ${cat.label}`);
+      void send(line);
       return;
     }
     if (cat.deterministic) {
+      // This group's picker is still the open question (2026-09-30): bring
+      // it back into view — no twin picker, no bubbles, no store write.
+      // A typed turn's reply says "tap yours below": the old picker retires
+      // and a fresh one lands under the reply — no tap bubble, no note, and
+      // no scroll back up past what the seller just read.
+      const live = liveModelsPicker(cur, cat.deterministic);
+      if (live && fromReply) { pushMsgs({ from: "bot", kind: "models", group: cat.deterministic }); return; }
+      if (live) { revealMsg(live); return; }
+      logNote(`tapped ${cat.label}`);
       pushMsgs(
         { from: "user", text: cat.label, tap: true },
         { from: "bot", text: "solid — which one is it? older models work too, just type the model." },
         { from: "bot", kind: "models", group: cat.deterministic },
       );
     } else {
-      // AI runs the intake for everything off the quick path
-      void send(cat.key === "other" ? "i got something else to sell" : `i got a ${cat.label.toLowerCase()} to sell`);
+      // AI runs the intake for everything off the quick path — the same
+      // opener once until it's answered (2026-09-30).
+      const line = cat.key === "other" ? "i got something else to sell" : `i got a ${cat.label.toLowerCase()} to sell`;
+      if (sending || uploading || awaitingReplyTo(cur, line)) { revealMsg(null); return; }
+      logNote(`tapped ${cat.label}`);
+      void send(line);
     }
   }
 
   function deviceTap(r: BoardRow, prefill?: TypedSpec) {
     if (gBusy) return;
+    if (repeatTap(`dev:${r.id}`)) return;
     interactedRef.current = true;
     setChatOpen(true);
     if (takeoverRef.current) {
@@ -1999,7 +2175,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         // "xbox series x" / "ipad" / "macbook" typed on this page: the server
         // says which tile picker to open under the reply.
         const catGroup = d?.widget === "category" ? CATEGORIES.find((c) => c.deterministic === d?.group) : undefined;
-        if (catGroup) setTimeout(() => categoryTap(catGroup), 0);
+        if (catGroup) setTimeout(() => categoryTap(catGroup, true), 0);
         // The label card carries what the label covers, and "joinbox" (a
         // lock not on the existing label yet) shows that label plus the box
         // question (2026-09-30). devices/count under label.* / box.* or
@@ -2296,8 +2472,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   <span className="absolute bottom-1.5 right-2 rounded-full bg-black/70 px-2 py-[2px] text-[11px] leading-[17.05px] text-white">sending…</span>
                 )}
               </span>
-            ) : (
+            ) : m.from === "user" || raw !== null ? (
+              // seller text and an unvalidated IMG:: line stay plain text
               m.text
+            ) : (
+              // bot: our hosts only; owner: any https (2026-09-30, linkify)
+              linkify(m.text, m.from === "owner" ? "owner" : "bot")
             );
             const pad = img ? "p-1.5" : "px-4 py-3";
             if (m.from === "owner") {
@@ -2337,7 +2517,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
               <div key={keyOf(m)} className="go-msg flex items-end gap-2">
                 <img src="/icon-192.png" alt="" width={30} height={30} style={{ borderRadius: "50%" }} className="w-[30px] h-[30px] object-cover border border-[#00c853]/40 shrink-0" />
                 <div className="max-w-[85%] rounded-2xl rounded-bl-md px-4 py-3 text-[15px] leading-[23.25px] bg-white/[0.10] border border-white/[0.18]">
-                  {m.text}
+                  {linkify(m.text, "bot")}
                 </div>
               </div>
             );
@@ -2348,22 +2528,27 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             // scrolls back, and the row still reads as off. ModelPicker's
             // own disabled:opacity-50 still dims a retired picker's choices
             // (~0.28 total) — by design, the pick is echoed as their bubble.
+            // data-mk: a repeat category tap scrolls back to this picker, and
+            // a pick on it — maybe scrolled up there — follows its answer to
+            // the bottom (2026-09-30).
             return (
-              <div key={keyOf(m)} className={"go-msg ml-10 " + (m.done ? "opacity-55 pointer-events-none" : "")}>
+              <div key={keyOf(m)} data-mk={keyOf(m)} className={"go-msg ml-10 " + (m.done ? "opacity-55 pointer-events-none" : "")}>
                 <ModelPicker
                   rows={rowsFor(rows, m.group)}
                   line={m.line}
                   onLine={(key, label) => {
                     if (gBusy) return;
                     interactedRef.current = true;
+                    nearBottomRef.current = true;
                     logNote(`picked line ${label}`);
                     pushMsgs(
                       { from: "user", text: label, tap: true },
                       { from: "bot", kind: "models", group: m.group, line: key },
                     );
                   }}
-                  onPick={deviceTap}
+                  onPick={(r) => { nearBottomRef.current = true; deviceTap(r); }}
                   onOther={() => {
+                    nearBottomRef.current = true;
                     pushMsgs(
                       { from: "user", text: "i don’t see mine" },
                       { from: "bot", text: "all good — type what you got (model + anything you know) and we’ll get you a number." },
