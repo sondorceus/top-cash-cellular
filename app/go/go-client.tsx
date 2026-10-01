@@ -2052,6 +2052,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
         // reach them. Ask how they want to get paid HERE — the same row
         // carries "+ i have another one", and "got another one?" follows
         // whichever pay method they pick.
+        // The Messenger card after the lock too (Sonny, 2026-10-01) — once
+        // per thread, after the pay chips so the next step stays right under
+        // the lock. A seller whose confirmation text can't reach them (the
+        // relay has been down for days at a time) still has a thread with
+        // us that survives them closing the tab.
+        const msgrAfterLock = !!MSGR_HANDLE && !msgs.some((x) => "kind" in x && x.kind === "msgr");
         pushMsgs(
           {
             from: "bot",
@@ -2062,6 +2068,7 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
             contact: c,
           },
           payChips(),
+          ...(msgrAfterLock ? [{ from: "bot" as const, kind: "msgr" as const }] : []),
         );
         return null;
       }
@@ -2668,6 +2675,12 @@ export default function GoClient({ rows, src, reviews, variant = "std", mode = "
                   href={`https://m.me/${MSGR_HANDLE}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  // A tap is a contact attempt (2026-10-01): the console sees
+                  // who moved to Messenger, and Meta gets a standard Contact.
+                  onClick={() => {
+                    logNote("tapped keep this chat on Messenger");
+                    pixelTrack("Contact", { content_name: "messenger", content_category: "chat" });
+                  }}
                   className="flex items-center gap-2.5 rounded-2xl border border-white/35 bg-white/[0.10] px-4 py-3 active:scale-[0.98] transition-transform"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-[#00c853] shrink-0" aria-hidden>
