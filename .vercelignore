@@ -1,0 +1,5 @@
+# What `vercel` must NOT upload (2026-10-14). Vercel already drops .git, .next,
+# node_modules, .vercel and .env.local on its own, and .gitignore does NOT apply
+# to the upload. The Claude session worktrees under .claude/ (16 full copies of
+# this tree) pushed a deploy past the CLI 15,000-file limit and it was refused.
+.claude/
