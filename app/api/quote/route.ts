@@ -7,14 +7,21 @@
 //   POST /api/quote
 //   headers: Authorization: Bearer <QUOTE_API_TOKEN | TCC_ADMIN_TOKEN>
 //            (or ?token= query param)
-//   body:    a single QuoteSpec, or { devices: QuoteSpec[] } for a batch
+//   body:    a single QuoteSpec, or { devices: QuoteSpec[] } for a batch,
+//            or { items: [{ model, storage?, carrier?, condition?,
+//                           mdm_locked?, faceid_broken? }] } — devices as a
+//            PERSON types them, parsed by the site chat's own quote tool
+//            (2026-10-14; the caller is Theot's tcc_price tool in Mission
+//            Control, bots/tcc-price.js)
 //
 // Single  -> QuoteResult
 // Batch   -> { results: QuoteResult[], overridesUpdatedAt }
+// Items   -> { results: (QuoteToolResult & { input })[] }
 
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../lib/admin-auth";
-import { quoteDevice, type QuoteSpec } from "../../lib/quote";
+import { quoteDevice, canonicalCondition, canonicalCarrier, normalizeStorage, type QuoteSpec } from "../../lib/quote";
+import { runQuote, type QuoteToolInput } from "../../lib/sell-tools";
 // Last-good overrides (2026-09-26): a failed Blob read used to quote the whole
 // batch off the code table as if no overrides existed.
 import { cachedOverrides } from "../../lib/overrides-cache";
@@ -72,6 +79,51 @@ export async function POST(req: NextRequest) {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "invalid JSON body" }, { status: 400 });
+  }
+
+  // Free-text batch (2026-10-14): { items: [{ model, storage?, carrier?,
+  // condition?, mdm_locked?, faceid_broken? }] } — devices the way a person
+  // writes them ("iPhone 16 pro max", "1tb", "cricket"). Parsed by the same
+  // code the site chat uses (sell-tools.runQuote: nameToSlug +
+  // normalizeStorage + canonicalCarrier), so the number is the one the chat
+  // and the funnel would show, and nothing is parsed a second way somewhere
+  // else. The condition is canonicalised HERE (canonicalCondition: substring
+  // match, "good" when unreadable) because the engine's normalizeCondition is
+  // an exact-match list and would carry "like new" through as a cell key.
+  if (body && typeof body === "object" && Array.isArray((body as { items?: unknown }).items)) {
+    const items = (body as { items: unknown[] }).items;
+    if (items.length > 60) {
+      return NextResponse.json({ error: "max 60 items per batch" }, { status: 400 });
+    }
+    const results = await Promise.all(
+      items.map(async (raw) => {
+        const it = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
+        const model = typeof it.model === "string" ? it.model : "";
+        const input: QuoteToolInput = {
+          model,
+          storage: it.storage == null || it.storage === "" ? undefined : String(it.storage),
+          condition: canonicalCondition(it.condition),
+          carrier: typeof it.carrier === "string" ? it.carrier : undefined,
+          mdm_locked: it.mdm_locked === true,
+          faceid_broken: it.faceid_broken === true,
+        };
+        // What the engine actually priced, echoed back so the caller can say
+        // "cricket → AT&T" instead of guessing how the text was read.
+        const echo = {
+          model,
+          storage: normalizeStorage(input.storage) ?? null,
+          condition: input.condition,
+          carrier: canonicalCarrier(input.carrier),
+        };
+        if (!model.trim()) {
+          return { ok: false, reason: "no model given", input: echo };
+        }
+        // One item the engine trips on must not 500 the batch.
+        const r = await runQuote(input).catch(() => ({ ok: false, reason: "quote failed" }));
+        return { ...r, input: echo };
+      }),
+    );
+    return NextResponse.json({ results });
   }
 
   // Batch: { devices: [...] } — quote all off ONE override read.
