@@ -16,12 +16,15 @@
 //
 // Single  -> QuoteResult
 // Batch   -> { results: QuoteResult[], overridesUpdatedAt }
-// Items   -> { results: (QuoteToolResult & { input })[] }
+// Items   -> { results: (QuoteToolResult & { input, resell })[] } -- `resell`
+//            is the sell side (app/lib/resell-view.ts): Atlas / eBay / the
+//            comp estimate as NET exits, and the best of them
 
 import { NextRequest, NextResponse } from "next/server";
 import { safeEqual } from "../../lib/admin-auth";
 import { quoteDevice, canonicalCondition, canonicalCarrier, normalizeStorage, type QuoteSpec } from "../../lib/quote";
 import { runQuote, type QuoteToolInput } from "../../lib/sell-tools";
+import { resellViewFor } from "../../lib/resell-view";
 // Last-good overrides (2026-09-26): a failed Blob read used to quote the whole
 // batch off the code table as if no overrides existed.
 import { cachedOverrides } from "../../lib/overrides-cache";
@@ -99,10 +102,11 @@ export async function POST(req: NextRequest) {
       items.map(async (raw) => {
         const it = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
         const model = typeof it.model === "string" ? it.model : "";
+        const condition = canonicalCondition(it.condition);
         const input: QuoteToolInput = {
           model,
           storage: it.storage == null || it.storage === "" ? undefined : String(it.storage),
-          condition: canonicalCondition(it.condition),
+          condition,
           carrier: typeof it.carrier === "string" ? it.carrier : undefined,
           mdm_locked: it.mdm_locked === true,
           faceid_broken: it.faceid_broken === true,
@@ -112,7 +116,7 @@ export async function POST(req: NextRequest) {
         const echo = {
           model,
           storage: normalizeStorage(input.storage) ?? null,
-          condition: input.condition,
+          condition,
           carrier: canonicalCarrier(input.carrier),
         };
         if (!model.trim()) {
@@ -120,7 +124,20 @@ export async function POST(req: NextRequest) {
         }
         // One item the engine trips on must not 500 the batch.
         const r = await runQuote(input).catch(() => ({ ok: false, reason: "quote failed" }));
-        return { ...r, input: echo };
+        // The sell side, whenever the device resolved to a catalog row -- a
+        // below-minimum unit still has a resale value in a lot. Best effort:
+        // a comps-file problem leaves `resell` null, never the quote.
+        const slug = (r as { slug?: string }).slug;
+        const resell = slug
+          ? await resellViewFor({
+              slug,
+              label: (r as { device?: string }).device || model,
+              storage: echo.storage,
+              condition,
+              carrier: echo.carrier,
+            }).catch(() => null)
+          : null;
+        return { ...r, input: echo, resell };
       }),
     );
     return NextResponse.json({ results });

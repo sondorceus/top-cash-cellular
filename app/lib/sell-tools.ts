@@ -13,7 +13,7 @@
 // lives in the route's system prompt, not in the tools.
 
 import { after } from "next/server";
-import { quoteDevice, normalizeStorage, canonicalCarrier, type QuoteSpec } from "./quote";
+import { quoteDevice, normalizeStorage, canonicalCarrier, type QuoteSpec, type QuoteResult } from "./quote";
 import { cachedOverrides } from "./overrides-cache";
 import { PRICE_TABLE } from "../data/prices";
 import { notifyOwnerSms } from "./owner-sms";
@@ -183,7 +183,17 @@ export type QuoteToolInput = {
   faceid_broken?: boolean;
 };
 
-export type QuoteToolResult = { ok: boolean; offer?: number; device?: string; slug?: string; reason?: string };
+export type QuoteToolResult = {
+  ok: boolean;
+  offer?: number;
+  device?: string;
+  slug?: string;
+  reason?: string;
+  // (2026-10-14) The engine's own arithmetic for the people-facing lookups
+  // (Theot's tcc_price): cell price, carrier deduction, margin cap. The chat
+  // route reads ok / offer / device / slug and ignores this.
+  breakdown?: QuoteResult["breakdown"];
+};
 
 /** Run get_quote through the real engine — identical to the funnel's path. */
 export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> {
@@ -244,7 +254,7 @@ export async function runQuote(input: QuoteToolInput): Promise<QuoteToolResult> 
     // offer anything", 2026-09-12 test).
     return { ok: false, device: hit.label, slug: hit.slug, reason: `no instant number for this exact config${r?.reason ? ` (${r.reason})` : ""} — a TEAM QUOTE: we still buy it and the team texts a real number. Keep it in the recap as 'team quote'; never say 'no offer', 'too low' or 'below what we pay'.` };
   }
-  return { ok: true, offer: r.offer, device: hit.label, slug: hit.slug };
+  return { ok: true, offer: r.offer, device: hit.label, slug: hit.slug, breakdown: r.breakdown };
 }
 
 export function luhnValid(num: string): boolean {
