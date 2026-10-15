@@ -132,8 +132,10 @@ export function canonicalCondition(c: unknown): string {
 
 export function canonicalCarrier(c: unknown): string {
   const t = normText(c);
-  if (/t-?mobile|metro/.test(t)) return "tmobile";
-  if (/at&t|att\b|cricket/.test(t)) return "att";
+  // "t mobile" with a space (how people type it in a list) read as "other"
+  // until 2026-10-14 and priced at the prepaid tier -- $39 for a 16 Pro.
+  if (/t[\s_-]?mobile|metro/.test(t)) return "tmobile";
+  if (/at\s*&\s*t|\bat\s+t\b|\batt\b|cricket/.test(t)) return "att";
   if (/verizon|visible/.test(t)) return "verizon";
   if (!t || /unlock/.test(t)) return "unlocked";
   // /go's "Not sure (priced as carrier-locked)" chip is priced at the AT&T

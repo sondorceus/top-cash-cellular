@@ -79,6 +79,20 @@ export function nameToSlug(raw: string): { slug: string; label: string } | null 
     const v = max ? "pm" : pro ? "p" : plus ? "plus" : mini ? "mini" : air ? "air" : /\b\d+\s*e\b|\be\b/.test(n) ? "e" : "";
     if (have("ip" + g + v)) return { slug: "ip" + g + v, label: slugToDisplay("ip" + g + v) };
   }
+  // (2026-10-14) A brand-less "13 pro max" / "16 pro" / "15 plus" -- the way a
+  // buy list or a seller types an iPhone -- is an iPhone, but ONLY when that
+  // is the whole model text (a trailing storage is allowed): a laptop label
+  // like "Dell Pro 13 Plus PB13255" also contains "13 plus", and an unanchored
+  // match sent twelve Dell rows to iPhone slugs in the parity gate. A bare
+  // number on its own stays unmatched (a team quote): "13" could be anything.
+  if (!/galaxy|samsung|pixel|note|ipad|tab\b|watch|buds|book|surface|moto|oneplus|nokia|huawei|xiaomi|\blg\b/.test(n)) {
+    const bare = n.match(/^\s*(\d{1,2})\s*(?:pro\s*max|pro|plus|mini|air)(?:\s+\d{2,4}\s*gb|\s+[12]\s*tb)?\s*$/);
+    if (bare) {
+      const g = bare[1];
+      const v = max ? "pm" : pro ? "p" : plus ? "plus" : mini ? "mini" : air ? "air" : "";
+      if (have("ip" + g + v)) return { slug: "ip" + g + v, label: slugToDisplay("ip" + g + v) };
+    }
+  }
   // Samsung Galaxy
   if (/galaxy|samsung/.test(n)) {
     let g2 = n.match(/z\s*flip\s*(\d+)/);
